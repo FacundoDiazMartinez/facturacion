@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Facturación Online</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <%= render template: '/layouts/navbar.html.erb' %>
+    <div class="row">
+      <div class="col-md-2 col-lg-2">
+        <%= render template: '/layouts/navpills.html.erb' %>
+      </div>
+      <div class="col-md-10 col-lg-10">
+        <%= yield %>
+      </div>
+    </div>
+  </body>
+</html>

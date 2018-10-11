@@ -1,0 +1,172 @@
+<%= nested_form_for @company, :html => { :class => "company" } do |f| %>
+
+  <%= error_explanation @company %>
+
+
+  <div class="row">
+
+    <div class="col-4">
+      <!-- LOFOTIPO EMPRESA -->
+      <div class="form-group">
+        <h3><%= icon('fas', 'image') %> Logotipo</h3>
+        <div class="comp_container" >
+          <img class="card-img-top" src="<%= @company.logo.url %>" alt="Card image cap">
+        </div>  
+      </div>
+      <!-- FIN LOGOTIPO -->
+    </div>
+
+    <div class="col-8">
+      <h3><%= icon('fas', 'briefcase') %> Información básica</h3>
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group row">
+            <%= f.label :name, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.text_field :name, :class => 'form-control', placeholder: "Lite Code" %>
+            </div>
+          </div>
+          <div class="form-group row">
+            <%= f.label :society_name, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.text_field :society_name, :class => 'form-control', placeholder: "Lite Code S.A.S." %>
+            </div>
+          </div>
+          <div class="form-group row">
+            <%= f.label :email, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.text_field :email, :class => 'form-control', placeholder: 'E-mail' %>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= f.label :cuit, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.text_field :cuit, :class => 'form-control', placeholder: '33-71619631-9' %>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= f.label :concepto, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.select :concepto, ::Afip::CONCEPTOS, {}, {:class => 'form-control'} %>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= f.label :moneda, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.select :moneda, ::Afip::MONEDAS, {}, {:class => 'form-control'} %>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= f.label :activity_init_date, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.text_field :activity_init_date, :class => 'form-control', data: {provide: 'datepicker'} %>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= f.label :contact_number, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.text_field :contact_number, :class => 'form-control' %>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= f.label :cbu, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.text_field :cbu, :class => 'form-control' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <div class="row">
+
+    <div class="col-md-12">
+      <h3><%= icon('fas', 'map-marker-alt') %> Ubicación</h3>
+      <div class="card">
+        <div class="card-body">
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <%= f.label :country %>
+
+              <%= f.text_field :country, value: "Argentina", disabled: true, :class => 'form-control' %>
+            </div>
+
+            <div class="form-group col-md-6">
+              <%= f.label :city %>
+
+              <%= f.text_field :city, :class => 'form-control' %>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <%= f.label :location %>
+              <%= f.text_field :location, :class => 'form-control' %>
+            </div>
+
+            <div class="form-group col-md-6">
+              <%= f.label :postal_code %>
+              <%= f.text_field :postal_code, :class => 'form-control' %>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :address %>
+            <%= f.text_field :address, class: 'form-control' %>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <div class="row">
+    <div class="col-md-12">
+      <h3>
+        <%= icon('fas', 'book') %> Información contable
+        <%= f.link_to_add "#{icon'fas', 'plus'} Añadir punto de venta".html_safe, :sale_points,  class: 'btn btn-sm btn-primary float-md-right', data: {target: '#sale_points'} %>
+      </h3>
+      <div class="card">
+        <div class="card-body">
+          <table id="sale_points">
+            <%= f.fields_for :sale_points, @company.sale_points.build, :wrapper => false do |sf| %>
+              <tr class="fields col-6 inline">
+                <td><%= sf.label :name, "Punto de venta Nº" %></td>
+                <td><%= sf.number_field :name, class: 'form-control' %></td>
+                <td><%= sf.link_to_remove icon('fas', 'trash')  %></td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+
+  
+
+  <div class="form-group">
+    <div class="col-lg-12">
+      <center>
+        <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', :class => 'btn btn-primary' %>
+      </center>
+    </div>
+  </div>
+
+<% end %>

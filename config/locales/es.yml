@@ -1,0 +1,20 @@
+es:
+  activerecord:
+      attributes:
+        company:
+          email: "E-mail"
+          code: "Código de empresa"
+          address: "Dirección"
+          name: "Nombre"
+          society_name: "Razón social"
+          cuit: "C.U.I.T."
+          iva_cond: "Condición ante I.V.A."
+          country: "País"
+          city: "Ciudad"
+          location: "Localidad"
+          postal_code: "Código postal"
+          activity_init_date: "Inicio de actividad"
+          contact_number: "Número de contacto"
+          cbu:  "C.B.U."
+        sale_point:
+          name: "Punto de venta Nº"
