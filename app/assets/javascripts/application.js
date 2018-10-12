@@ -18,4 +18,68 @@
 //= require bootstrap-datepicker
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
+//= require jquery.ui.widget
+//= require z.jquery.fileupload
 //= require_tree .
+
+$(document).ready(function() {
+  $('btn').on('click', function() {
+    var $this = $(this);
+    var loadingText = " Espere...";
+    if ($(this).html() !== loadingText) {
+      $this.data('original-text', $(this).html());
+      $this.html(loadingText);
+    }
+    setTimeout(function() {
+      $this.html($this.data('original-text'));
+    }, 2000);
+  });
+
+  $("#image").on("click", function(){
+    document.getElementById('file_input').click();
+  })
+});
+
+
+
+$(function() {
+  $('.directUpload').find("input:file").each(function(i, elem) {
+    var fileInput    = $(elem);
+    var form         = $(fileInput.parents('form:first'));
+    var submitButton = form.find('input[type="submit"]');
+    fileInput.fileupload({
+      fileInput:       fileInput,
+      url:             form.data('url'),
+      type:            'POST',
+      autoUpload:       true,
+      formData:         form.data('form-data'),
+      paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
+      dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
+      replaceFileInput: true,
+      start: function (e) {
+        submitButton.prop('disabled', true);
+        $('.caption').slideDown(250); //.fadeIn(250)
+      },
+      done: function(e, data) {
+        submitButton.prop('disabled', false);
+        console.log(data)
+        // extract key and generate URL from response
+        var key   = $(data.jqXHR.responseXML).find("Key").text();
+        var url   = 'https://' + form.data('host') + '/litecode.facturacion/' + key;
+
+        // create hidden field
+        if (!$('#hidden_photo').length){
+          var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, id: 'hidden_photo' })
+        }else {
+          $("#hidden_photo").val(url);
+        }
+        form.append(input);
+        $("#image").attr("src", url);
+        $('.caption').slideUp(250); //.fadeIn(250)
+      },
+      fail: function(e, data) {
+        submitButton.prop('disabled', false);
+      }
+    });
+  });
+});

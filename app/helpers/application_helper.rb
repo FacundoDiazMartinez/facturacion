@@ -31,4 +31,8 @@ module ApplicationHelper
   		end
 	end
 
+	def save_button
+		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
+	end
+
 end

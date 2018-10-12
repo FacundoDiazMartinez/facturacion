@@ -1,5 +1,5 @@
 .comp_container {
-    height: 545px;
+    height: 610px;
     text-align: center;  /* align the inline(-block) elements horizontally */
     font: 0/0 a;         /* remove the gap between inline(-block) elements */
     border: 1px solid;
