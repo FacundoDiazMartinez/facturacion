@@ -52,6 +52,8 @@ gem 'rmagick'
 #Librerias de AFIP - wsfe - wspsr - wsctg
 gem 'Afip'
 
+gem 'devise'
+
 #Nested forms
 gem "nested_form"
 
