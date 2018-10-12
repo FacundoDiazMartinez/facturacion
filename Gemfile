@@ -45,9 +45,6 @@ gem 'font-awesome-sass', '~> 5.3.1'
 #Carrierwave
 # Para la carga de imagenes -------------------------------
 gem 'aws-sdk', '~> 3'
-gem 'fog-aws'
-gem 'carrierwave-aws'
-gem 'rmagick'
 
 #Librerias de AFIP - wsfe - wspsr - wsctg
 gem 'Afip'
@@ -61,7 +58,7 @@ gem "nested_form"
 gem 'jquery-rails'
 
 #Datepicker
-gem 'bootstrap-datepicker-rails'
+gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails', :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

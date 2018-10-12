@@ -1,4 +1,4 @@
-<%= nested_form_for @company, :html => { :class => "company" } do |f| %>
+<%= nested_form_for @company, html: { class: 'directUpload', data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host } } do |f| %>
 
   <%= error_explanation @company %>
 
@@ -9,9 +9,13 @@
       <!-- LOFOTIPO EMPRESA -->
       <div class="form-group">
         <h3><%= icon('fas', 'image') %> Logotipo</h3>
-        <div class="comp_container" >
-          <img class="card-img-top" src="<%= @company.logo.url %>" alt="Card image cap">
-        </div>  
+        <div class="comp_container">
+          <div class="comp_container caption captionload"><img src="/images/load.gif" width="75px"></div>
+          <img class="card-img-top" src="<%= @company.logo %>" alt="Card image cap" id="image">
+        </div>
+        <div hidden>
+            <%= f.file_field :logo, :class => 'form-control', id: 'file_input' %>
+        </div> 
       </div>
       <!-- FIN LOGOTIPO -->
     </div>
@@ -23,61 +27,68 @@
           <div class="form-group row">
             <%= f.label :name, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.text_field :name, :class => 'form-control', placeholder: "Lite Code" %>
+              <%= f.text_field :name, :class => 'form-control', placeholder: "Lite Code", required: true %>
             </div>
           </div>
           <div class="form-group row">
             <%= f.label :society_name, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.text_field :society_name, :class => 'form-control', placeholder: "Lite Code S.A.S." %>
+              <%= f.text_field :society_name, :class => 'form-control', placeholder: "Lite Code S.A.S.", required: true %>
             </div>
           </div>
           <div class="form-group row">
             <%= f.label :email, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.text_field :email, :class => 'form-control', placeholder: 'E-mail' %>
+              <%= f.text_field :email, :class => 'form-control', placeholder: 'E-mail', required: true %>
             </div>
           </div>
 
           <div class="form-group row">
             <%= f.label :cuit, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.text_field :cuit, :class => 'form-control', placeholder: '33-71619631-9' %>
+              <%= f.text_field :cuit, :class => 'form-control', placeholder: '33-71619631-9', required: true %>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= f.label :iva_cond, class: 'col-sm-2 col-form-label' %>
+            <div class="col-sm-10">
+              <%= f.select :iva_cond, ["Responsable Inscripto", "Responsable Monotributo"], {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
             </div>
           </div>
 
           <div class="form-group row">
             <%= f.label :concepto, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.select :concepto, ::Afip::CONCEPTOS, {}, {:class => 'form-control'} %>
+              <%= f.select :concepto, ::Afip::CONCEPTOS, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
             </div>
           </div>
 
           <div class="form-group row">
             <%= f.label :moneda, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.select :moneda, ::Afip::MONEDAS, {}, {:class => 'form-control'} %>
+              <%= f.select :moneda, ::Afip::MONEDAS, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
             </div>
           </div>
 
           <div class="form-group row">
             <%= f.label :activity_init_date, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.text_field :activity_init_date, :class => 'form-control', data: {provide: 'datepicker'} %>
+              <%= f.text_field :activity_init_date, :class => 'form-control datepicker', data: {provide: 'datepicker'}, placeholder: 'Fecha de inicio de actividad', required: true %>
             </div>
           </div>
 
           <div class="form-group row">
             <%= f.label :contact_number, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.text_field :contact_number, :class => 'form-control' %>
+              <%= f.text_field :contact_number, :class => 'form-control', placeholder: "+54 387 155000000" %>
             </div>
           </div>
 
           <div class="form-group row">
             <%= f.label :cbu, class: 'col-sm-2 col-form-label' %>
             <div class="col-sm-10">
-              <%= f.text_field :cbu, :class => 'form-control' %>
+              <%= f.text_field :cbu, :class => 'form-control', placeholder: "C.B.U." %>
             </div>
           </div>
         </div>
@@ -98,32 +109,30 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <%= f.label :country %>
-
-              <%= f.text_field :country, value: "Argentina", disabled: true, :class => 'form-control' %>
+              <%= f.text_field :country, value: "Argentina", disabled: true, :class => 'form-control', required: true %>
             </div>
 
             <div class="form-group col-md-6">
               <%= f.label :city %>
-
-              <%= f.text_field :city, :class => 'form-control' %>
+              <%= f.select :city, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality()', required: true} %>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group col-md-6">
               <%= f.label :location %>
-              <%= f.text_field :location, :class => 'form-control' %>
-            </div>
+              <%= f.select :location,[], {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+            </div> 
 
             <div class="form-group col-md-6">
               <%= f.label :postal_code %>
-              <%= f.text_field :postal_code, :class => 'form-control' %>
+              <%= f.text_field :postal_code, :class => 'form-control', required: true %>
             </div>
           </div>
 
           <div class="form-group">
             <%= f.label :address %>
-            <%= f.text_field :address, class: 'form-control' %>
+            <%= f.text_field :address, class: 'form-control', required: true %>
           </div>
 
         </div>
@@ -158,15 +167,13 @@
 
   <hr>
 
-
-  
-
   <div class="form-group">
     <div class="col-lg-12">
       <center>
-        <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', :class => 'btn btn-primary' %>
+        <%= save_button %>
       </center>
     </div>
   </div>
 
 <% end %>
+
