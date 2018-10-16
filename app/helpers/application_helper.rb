@@ -36,8 +36,8 @@ module ApplicationHelper
 	end
 
 	def back_button icon = nil
-		icon ||= 'chevron-left'
-		link_to "#{fa_icon(icon)} Volver".html_safe, :back, :class => 'btn btn-danger', :style => 'color:#fff'
+		given_icon ||= 'chevron-left'
+		link_to "#{icon('fas', given_icon)} Volver".html_safe, :back, :class => 'btn btn-danger', :style => 'color:#fff'
 	end
 
 end

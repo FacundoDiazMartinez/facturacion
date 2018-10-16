@@ -21,3 +21,9 @@
 .inline{
     display: inline;
 }
+
+.mini-logo{
+    width: 75px;
+    border-radius: 100%;
+    border: solid 3px white;
+}
