@@ -34,4 +34,8 @@ class Company < ApplicationRecord
 			self.cuit = self.cuit.gsub(/\D/, '')
 		end
 	#Fin validaciones
+
+	def logo
+		read_attribute("logo") || "/images/default_company.png"
+	end
 end

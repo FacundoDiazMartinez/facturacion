@@ -49,6 +49,8 @@ gem 'aws-sdk', '~> 3'
 #Librerias de AFIP - wsfe - wspsr - wsctg
 gem 'Afip'
 
+gem 'devise'
+
 #Nested forms
 gem "nested_form"
 

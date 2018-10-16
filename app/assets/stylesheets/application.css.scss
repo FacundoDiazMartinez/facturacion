@@ -5,6 +5,8 @@
 @import "companies";
 @import "bootstrap-datepicker";
 
+
+
 body{
 	margin-top: 70px;
 }
@@ -16,6 +18,7 @@ label{
 .col-form-label{
 	text-align: right;
 }
+
 
 .field_with_errors{
 	display: block;
