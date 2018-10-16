@@ -43,13 +43,14 @@ gem 'bootstrap', '~> 4.1.3'
 gem 'font-awesome-sass', '~> 5.3.1'
 
 #Carrierwave
-# Para la carga de imagenes -------------------------------
 gem 'aws-sdk', '~> 3'
 
 #Librerias de AFIP - wsfe - wspsr - wsctg
 gem 'Afip'
 
 gem 'devise'
+
+gem 'devise-i18n-views'
 
 #Nested forms
 gem "nested_form"

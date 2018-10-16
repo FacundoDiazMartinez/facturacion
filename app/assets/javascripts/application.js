@@ -20,6 +20,9 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require jquery.ui.widget
 //= require z.jquery.fileupload
+//= require jquery3
+//= require popper
+//= require bootstrap
 //= require_tree .
 
 $(document).ready(function() {

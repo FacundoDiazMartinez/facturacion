@@ -19,8 +19,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.datetime "last_sign_in_at"
       t.inet     "current_sign_in_ip"
       t.inet     "last_sign_in_ip"
-      t.datetime "created_at",                                             null: false
-      t.datetime "updated_at",                                             null: false
       t.integer  "company_id"
       t.string   "first_name"
       t.string   "last_name"
@@ -28,7 +26,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.date     "birthday"
       t.string   "address"
       t.boolean  "active",                 default: true
-      t.string   "photo",                  default: "/images/default.png"
+      t.string   "avatar"
       t.string   "phone"
       t.string   "mobile_phone"
       t.string   "confirmation_token"
@@ -41,19 +39,11 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.boolean  "approved",               default: false,                 null: false
       t.string   "provider"
       t.string   "uid"
-      t.string   "name"
-      t.string   "provider_photo"
-      t.float    "comission_base",         default: 0.0,                   null: false
-      t.float    "comission_amoun",        default: 0.0,                   null: false
       t.string   "province"
       t.string   "city"
       t.integer  "postal_code"
-      t.string   "system",                 default: "market",              null: false
       t.boolean  "admin",                  default: true,                  null: false
-      t.integer  "role_id"
       t.string   "authentication_token"
-      t.boolean  "paid",                   default: false,                 null: false
-      t.boolean  "tutorial",               default: true,                  null: false
 
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false

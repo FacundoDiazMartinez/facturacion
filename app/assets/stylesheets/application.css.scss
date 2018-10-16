@@ -65,3 +65,11 @@ img#image{
 a:visited {
   color: white;
 }
+
+a.nav-link:visited{
+  color: black;
+}
+
+a.nav-link:hover{
+  background-color: white;
+}

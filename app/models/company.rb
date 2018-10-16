@@ -1,5 +1,6 @@
 class Company < ApplicationRecord
 	has_many :sale_points, dependent: :destroy
+	has_many :users
 
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
