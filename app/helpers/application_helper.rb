@@ -35,4 +35,9 @@ module ApplicationHelper
 		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
 	end
 
+	def back_button icon = nil
+		icon ||= 'chevron-left'
+		link_to "#{fa_icon(icon)} Volver".html_safe, :back, :class => 'btn btn-danger', :style => 'color:#fff'
+	end
+
 end

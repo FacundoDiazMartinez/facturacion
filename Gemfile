@@ -51,6 +51,8 @@ gem 'Afip'
 
 gem 'devise'
 
+gem 'devise-i18n-views'
+
 #Nested forms
 gem "nested_form"
 
@@ -81,6 +83,8 @@ group :test do
   # Easy installation and use of chromedriver to run system tests with Chrome
   gem 'chromedriver-helper'
 end
+
+gem "font-awesome-rails"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
