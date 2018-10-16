@@ -10,3 +10,91 @@
 </h1>
 
 <hr>
+
+<div class="row">
+
+	<!-- INICIO DEL LOGO -->
+	<div class="align-self-stretch col-4">
+		<div class="form-group shadow">
+	        <div class="comp_container">
+	          <img class="card-img-top" src="<%= @company.logo %>" alt="Card image cap">
+	        </div>
+	      </div>
+	</div>
+	<!-- FIN DE LOGO -->
+
+	<!-- INICIO DE DATOS BASICOS -->
+	<div class="align-self-stretch col-8">
+		<div class="row">
+			<div class="col-12 shadow">
+				<h3><%= icon('fas', 'briefcase') %> Información básica</h3>
+				<table>
+					<tr>
+						<td><strong>Nombre:</strong></td>
+						<td><%= @company.name %></td>
+					</tr>
+					<tr>
+						<td><strong>Razón social:</strong></td>
+						<td><%= @company.society_name %></td>
+					</tr>
+					<tr>
+						<td><strong>Email:</strong></td>
+						<td><%= @company.email %></td>
+					</tr>
+					<tr>
+						<td><strong>C.U.I.T.:</strong></td>
+						<td><%= @company.cuit %></td>
+					</tr>
+					<tr>
+						<td><strong>Condición ante I.V.A.:</strong></td>
+						<td><%= @company.iva_cond %></td>
+					</tr>
+					<tr>
+						<td><strong>Concepto:</strong></td>
+						<td><%= @company.concepto_text %></td>
+					</tr>
+					<tr>
+						<td><strong>Moneda:</strong></td>
+						<td><%= @company.moneda %></td>
+					</tr>
+					<tr>
+						<td><strong>Inicio de actividad:</strong></td>
+						<td><%= @company.activity_init_date %></td>
+					</tr>
+					<tr>
+						<td><strong>Número de contacto:</strong></td>
+						<td><%= @company.contact_number %></td>
+					</tr>
+					<tr>
+						<td><strong>C.B.U.:</strong></td>
+						<td><%= @company.cbu %></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="row with-margin-top">
+			<div class="col-12 shadow">
+				<h3><%= icon('fas', 'map-marker-alt') %> Ubicación</h3>
+				<table>
+					<tr>
+						<td><strong>País:</strong></td>
+						<td><%= @company.country %></td>
+					</tr>
+					<tr>
+						<td><strong>Provincia:</strong></td>
+						<td><%= @company.city_text %></td>
+					</tr>
+					<tr>
+						<td><strong>Localidad:</strong></td>
+						<td><%= @company.location_text %></td>
+					</tr>
+					<tr>
+						<td><strong>Dirección:</strong></td>
+						<td><%= @company.address %></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- FIN DE DATOS BASICOS -->
+</div>

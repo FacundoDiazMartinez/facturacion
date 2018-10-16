@@ -10,7 +10,7 @@ es:
           cuit: "C.U.I.T."
           iva_cond: "Condición ante I.V.A."
           country: "País"
-          city: "Ciudad"
+          city: "Provincia"
           location: "Localidad"
           postal_code: "Código postal"
           activity_init_date: "Inicio de actividad"

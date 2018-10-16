@@ -38,9 +38,11 @@
   <div class="form-group">
     <div class="row">
       <div class="col-md-4"><%= f.label :province, "Provincia", class:'control-label' %>
-      <%= f.select :province, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality()', required: true} %></div>
-      <div class="col-md-4"><%= f.label :city, "Ciudad", class:'control-label' %>
-      <%= f.select :city, ::Afip::CTG.new().consultar_localidades.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality()', required: true} %></div>
+      <%= f.select :province, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "user_city")', required: true} %></div>
+      <div class="col-md-4 with-spinner">
+        <%= f.label :city, "Localidad", class:'control-label' %>
+        <%= f.select :city,::Afip::CTG.new().consultar_localidades(current_user.province).map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+      </div>
     </div>
   </div>
 

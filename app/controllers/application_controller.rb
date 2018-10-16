@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 		render json: ::Afip::CTG.new().consultar_localidades(params[:city_id])
 	end
 
+
   protected
 
   def configure_permitted_parameters
@@ -13,4 +14,7 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :dni, :birthday, :address, :phone, :mobile_phone, :province, :city, :province, :postal_code])
   end
 
+  def set_s3_direct_post
+    @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
+  end
 end

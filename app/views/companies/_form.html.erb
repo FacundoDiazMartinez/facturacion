@@ -15,7 +15,7 @@
         </div>
         <div hidden>
             <%= f.file_field :logo, :class => 'form-control', id: 'file_input' %>
-        </div> 
+        </div>
       </div>
       <!-- FIN LOGOTIPO -->
     </div>
@@ -114,15 +114,15 @@
 
             <div class="form-group col-md-6">
               <%= f.label :city %>
-              <%= f.select :city, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality()', required: true} %>
+              <%= f.select :city, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "company_location")', required: true} %>
             </div>
           </div>
 
           <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-6 with-spinner">
               <%= f.label :location %>
               <%= f.select :location,[], {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
-            </div> 
+            </div>
 
             <div class="form-group col-md-6">
               <%= f.label :postal_code %>
@@ -176,4 +176,3 @@
   </div>
 
 <% end %>
-

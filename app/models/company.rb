@@ -20,7 +20,6 @@ class Company < ApplicationRecord
 	validates_numericality_of :cuit, message: "El C.U.I.T. debe contener únicamente números."
 
 	accepts_nested_attributes_for :sale_points, allow_destroy: true, reject_if: :all_blank
-	#mount_uploader :logo, ImageUploader
 
 	CONCEPTOS = ["Productos", "Servicios", "Productos y Servicios"]
 
@@ -36,7 +35,22 @@ class Company < ApplicationRecord
 		end
 	#Fin validaciones
 
-	def logo
-		read_attribute("logo") || "/images/default_company.png"
-	end
+
+	#Inicio atributos
+		def logo
+			read_attribute("logo") || "/images/default_company.png"
+		end
+
+		def concepto_text
+			::Afip::CONCEPTOS.map{|k,v| k unless v.to_i != concepto.to_i  }.compact.join()
+		end
+
+		def city_text
+			::Afip::CTG.new().consultar_provincias.map{|c,p| p unless c.to_i != city.to_i}.compact.join()			
+		end
+
+		def location_text
+			::Afip::CTG.new().consultar_localidades(city).map{|c,p| p unless c.to_i != location.to_i}.compact.join()			
+		end
+	#Fin atributos
 end
