@@ -65,7 +65,6 @@ $(function() {
       },
       done: function(e, data) {
         submitButton.prop('disabled', false);
-        console.log(data)
         // extract key and generate URL from response
         var key   = $(data.jqXHR.responseXML).find("Key").text();
         var url   = 'https://' + form.data('host') + '/litecode.facturacion/' + key;

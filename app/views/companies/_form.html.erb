@@ -114,7 +114,7 @@
 
             <div class="form-group col-md-6">
               <%= f.label :city %>
-              <%= f.select :city, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality()', required: true} %>
+              <%= f.select :city, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "company_location")', required: true} %>
             </div>
           </div>
 
