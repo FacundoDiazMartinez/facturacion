@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_11_194116) do
+ActiveRecord::Schema.define(version: 2018_10_17_133806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,8 +27,6 @@ ActiveRecord::Schema.define(version: 2018_10_11_194116) do
     t.string "moneda", default: "PES", null: false
     t.string "iva_cond", null: false
     t.string "country", default: "Argentina", null: false
-    t.string "city"
-    t.string "location"
     t.string "postal_code"
     t.date "activity_init_date"
     t.string "contact_number"
@@ -36,6 +34,26 @@ ActiveRecord::Schema.define(version: 2018_10_11_194116) do
     t.string "cbu"
     t.boolean "paid", default: false, null: false
     t.string "suscription_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "province_id", null: false
+    t.bigint "locality_id", null: false
+    t.index ["locality_id"], name: "index_companies_on_locality_id"
+    t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "localities", force: :cascade do |t|
+    t.string "name"
+    t.integer "code"
+    t.bigint "province_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["province_id"], name: "index_localities_on_province_id"
+  end
+
+  create_table "provinces", force: :cascade do |t|
+    t.string "name"
+    t.integer "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -93,5 +111,6 @@ ActiveRecord::Schema.define(version: 2018_10_11_194116) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "localities", "provinces"
   add_foreign_key "sale_points", "companies"
 end

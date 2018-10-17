@@ -2,6 +2,9 @@ class Company < ApplicationRecord
 	has_many :sale_points, dependent: :destroy
 	has_many :users
 
+	has_one :province
+	has_one :locality
+
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
 
@@ -43,14 +46,6 @@ class Company < ApplicationRecord
 
 		def concepto_text
 			::Afip::CONCEPTOS.map{|k,v| k unless v.to_i != concepto.to_i  }.compact.join()
-		end
-
-		def city_text
-			::Afip::CTG.new().consultar_provincias.map{|c,p| p unless c.to_i != city.to_i}.compact.join()			
-		end
-
-		def location_text
-			::Afip::CTG.new().consultar_localidades(city).map{|c,p| p unless c.to_i != location.to_i}.compact.join()			
 		end
 	#Fin atributos
 end

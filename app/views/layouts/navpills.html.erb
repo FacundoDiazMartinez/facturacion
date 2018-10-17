@@ -1,8 +1,14 @@
-<ul class="nav flex-column">
-  <li class="nav-item">
-    <a class="nav-link" href="#"><%= icon('fas', 'home') %> Inicio</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#"><%= icon('fas', 'building') %> Compañía</a>
-  </li>
-</ul>
+<% if user_signed_in? %>
+	<ul class="nav flex-column">
+	  <li class="nav-item">
+	    <%= link_to "#{icon('fas', 'home')} Inicio".html_safe, root_path, class: 'nav-link' %>
+	  </li>
+	  <li class="nav-item">
+	  	<% if current_user.has_company? %>
+	    	<%= link_to "#{icon('fas', 'building')} Compañía".html_safe, company_path(current_user.company_id), class: 'nav-link' %>
+	    <% else %>
+	    	<%= link_to "#{icon('fas', 'building')} Compañía".html_safe, new_company_path(), class: 'nav-link' %>
+	    <% end %>
+	  </li>
+	</ul>
+<% end %>

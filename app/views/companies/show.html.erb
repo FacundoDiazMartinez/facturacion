@@ -14,7 +14,7 @@
 <div class="row">
 
 	<!-- INICIO DEL LOGO -->
-	<div class="align-self-stretch col-4">
+	<div class="align-self-stretch col-3">
 		<div class="form-group shadow">
 	        <div class="comp_container">
 	          <img class="card-img-top" src="<%= @company.logo %>" alt="Card image cap">
@@ -24,11 +24,16 @@
 	<!-- FIN DE LOGO -->
 
 	<!-- INICIO DE DATOS BASICOS -->
-	<div class="align-self-stretch col-8">
-		<div class="row">
-			<div class="col-12 shadow">
+	<div class="align-self-stretch col-9">
+		<div class="row shadow">
+			<div class=" col-md-6 col-sm-12">
 				<h3><%= icon('fas', 'briefcase') %> Información básica</h3>
+				<hr>
 				<table>
+					<tr>
+						<td><strong>Código de registro</strong></td>
+						<td><%= @company.code %></td>
+					</tr>
 					<tr>
 						<td><strong>Nombre:</strong></td>
 						<td><%= @company.name %></td>
@@ -71,10 +76,9 @@
 					</tr>
 				</table>
 			</div>
-		</div>
-		<div class="row with-margin-top">
-			<div class="col-12 shadow">
+			<div class="col-md-6 col-sm-12">
 				<h3><%= icon('fas', 'map-marker-alt') %> Ubicación</h3>
+				<hr>
 				<table>
 					<tr>
 						<td><strong>País:</strong></td>
@@ -92,6 +96,28 @@
 						<td><strong>Dirección:</strong></td>
 						<td><%= @company.address %></td>
 					</tr>
+				</table>
+			</div>
+			<div class="col-12">
+				<hr>
+				<h3><%= icon('fas', 'users') %> Personal</h3>
+				<table class="table table-hover">
+					<thead>
+						<th scope="col">Foto</th>
+						<th scope="col">Nombre</th>
+						<th scope="col">Apellido</th>
+						<th scope="col">Rol</th>
+					</thead>
+					<tbody>
+						<% @users.each do |user| %>
+							<tr>
+								<td><%= user.avatar %></td>
+								<td><%= user.first_name %></td>
+								<td><%= user.last_name %></td>
+								<td>Sin Rol</td>
+							</tr>
+						<% end %>
+					</tbody>
 				</table>
 			</div>
 		</div>

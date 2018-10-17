@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
  before_action :authenticate_user!
 
 	def get_localities
-		render json: ::Afip::CTG.new().consultar_localidades(params[:city_id])
+		render json: Locality.where(province_id: params[:city_id]).map{|l| [l.id, l.name]}
 	end
 
 	def set_s3_direct_post

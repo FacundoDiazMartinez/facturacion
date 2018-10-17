@@ -113,15 +113,15 @@
             </div>
 
             <div class="form-group col-md-6">
-              <%= f.label :city %>
-              <%= f.select :city, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "company_location")', required: true} %>
+              <%= f.label :province_id %>
+              <%= f.select :province_id, options_from_collection_for_select(Province.all, :id, :name, f.object.province_id), {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "company_locality_id")', required: true} %>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group col-md-6">
-              <%= f.label :location %>
-              <%= f.select :location,[], {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+              <%= f.label :locality_id %>
+              <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id), :id, :name, f.object.locality_id), {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
             </div> 
 
             <div class="form-group col-md-6">

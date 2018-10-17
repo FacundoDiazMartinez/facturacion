@@ -9,4 +9,8 @@ class User < ApplicationRecord
   	def set_company company_id
   		update_attribute(:company_id, company_id)
   	end
+
+  	def has_company?
+  		not company_id.nil?
+  	end
 end

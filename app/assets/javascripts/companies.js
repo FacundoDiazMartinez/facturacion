@@ -18,7 +18,7 @@ function reloadLocality(province, dropdown){
 
 function populateSelect(data, dropdown){
 	select = $("#"+dropdown)
-	console.log(data)
+	select.html("")
 	$.each(data, function(id, d) {
     	select.append($("<option />").val(d[0]).text(d[1]));
 	});

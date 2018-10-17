@@ -6,6 +6,7 @@ class CompaniesController < ApplicationController
   # GET /companies/1
   # GET /companies/1.json
   def show
+    @users = @company.users.paginate(per_page: 5, page: params[:page])
   end
 
   # GET /companies/new
@@ -66,7 +67,7 @@ class CompaniesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def company_params
-      params.require(:company).permit(:email, :code, :name, :logo, :society_name, :cuit, :concepto, :moneda, :iva_cond, :country, :city, :location, :postal_code, :address, :activity_init_date, :contact_number, :environment, :cbu, :paid, :suscription_type)
+      params.require(:company).permit(:email, :code, :name, :logo, :society_name, :cuit, :concepto, :moneda, :iva_cond, :country, :province_id, :locality_id, :postal_code, :address, :activity_init_date, :contact_number, :environment, :cbu, :paid, :suscription_type)
     end
 
     def check_if_company_exists

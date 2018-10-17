@@ -40,4 +40,25 @@ module ApplicationHelper
 		link_to "#{icon('fas', given_icon)} Volver".html_safe, :back, :class => 'btn btn-danger', :style => 'color:#fff'
 	end
 
+	def paginate resource, param_name = nil
+		@resource = resource
+		content_tag :div, style: 'text-align: center;' do
+			concat(will_paginate_helper(param_name))
+			concat(javascript_paginate_helper)
+		end
+	end
+	def will_paginate_helper param_name
+		will_paginate @resource, :page_links => true,
+		 							 :inner_window => 1,
+		  							 :outer_window => 1,
+		  							 :param_name => param_name || "page",
+		   							 :previous_label => '← Anterior',
+		    						 :next_label => 'Siguiente →',
+		     						 renderer: BootstrapPagination::Rails
+	end
+
+	def javascript_paginate_helper
+		javascript_tag("$('ul.pagination a').click(function(){$.getScript(this.href); return false; });")
+	end
+
 end
