@@ -2,8 +2,8 @@ class Company < ApplicationRecord
 	has_many :sale_points, dependent: :destroy
 	has_many :users
 
-	has_one :province
-	has_one :locality
+	belongs_to :province
+	belongs_to :locality
 
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
@@ -16,8 +16,8 @@ class Company < ApplicationRecord
 	validates_presence_of :moneda, message: "Debe elegir su moneda principal."
 	validates_presence_of :activity_init_date, message: "Debe indicar la fecha de inicio de actividad de su compañía."
 	validates_presence_of :country, message: "No selecciono un país."
-	validates_presence_of :city, message: "No selecciono una ciudad."
-	validates_presence_of :location, message: "No selecciono una localidad."
+	validates_presence_of :province_id, message: "No selecciono una ciudad."
+	validates_presence_of :locality_id, message: "No selecciono una localidad."
 	validates_presence_of :postal_code, message: "Debe especificar el código postal."
 	validates_presence_of :address, message: "Debe especificar su dirección."
 	validates_numericality_of :cuit, message: "El C.U.I.T. debe contener únicamente números."

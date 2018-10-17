@@ -26,7 +26,7 @@ class CompaniesController < ApplicationController
     respond_to do |format|
       if @company.save
         current_user.set_company(@company.id)
-        format.html { redirect_to @company, notice: 'Company was successfully created.' }
+        format.html { redirect_to @company, notice: 'Compañía creada con éxito.' }
         format.json { render :show, status: :created, location: @company }
       else
         format.html { render :new }
@@ -40,7 +40,7 @@ class CompaniesController < ApplicationController
   def update
     respond_to do |format|
       if @company.update(company_params)
-        format.html { redirect_to @company, notice: 'Company was successfully updated.' }
+        format.html { redirect_to @company, notice: 'Compañía actualizada con éxito.' }
         format.json { render :show, status: :ok, location: @company }
       else
         format.html { render :edit }
@@ -54,7 +54,7 @@ class CompaniesController < ApplicationController
   def destroy
     @company.destroy
     respond_to do |format|
-      format.html { redirect_to companies_url, notice: 'Company was successfully destroyed.' }
+      format.html { redirect_to companies_url, notice: 'Compañía eliminada.' }
       format.json { head :no_content }
     end
   end
@@ -67,7 +67,7 @@ class CompaniesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def company_params
-      params.require(:company).permit(:email, :code, :name, :logo, :society_name, :cuit, :concepto, :moneda, :iva_cond, :country, :province_id, :locality_id, :postal_code, :address, :activity_init_date, :contact_number, :environment, :cbu, :paid, :suscription_type)
+      params.require(:company).permit(:email, :code, :name, :logo, :society_name, :cuit, :concepto, :moneda, :iva_cond, :country, :province_id, :locality_id, :postal_code, :address, :activity_init_date, :contact_number, :environment, :cbu, sale_points_attributes: [:id, :name, :_destroy])
     end
 
     def check_if_company_exists
