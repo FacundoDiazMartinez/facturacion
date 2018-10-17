@@ -3,6 +3,60 @@
 <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
   <%= devise_error_messages! %>
 
+
+  <br />
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4"><%= f.label :first_name, "Nombre", class:'control-label' %>
+      <%= f.text_field :first_name, class:'form-control' %></div>
+      <div class="col-md-4"><%= f.label :last_name, "Apellido", class:'control-label' %>
+      <%= f.text_field :last_name, class:'form-control' %></div>
+    </div>
+  </div>
+
+  <br />
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4"><%= f.label :dni, "DNI", class:'control-label' %>
+      <%= f.number_field :dni, class:'form-control' %></div>
+      <div class="col-md-4"><%= f.label :birthday, "Fecha nacimiento", class:'control-label' %>
+      <%= f.date_field :birthday, class:'form-control' %></div>
+    </div>
+  </div>
+
+  <br />
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4"><%= f.label :phone, "Teléfono fijo", class:'control-label' %>
+      <%= f.number_field :phone, class:'form-control' %></div>
+      <div class="col-md-4"><%= f.label :mobile_phone, "Celular", class:'control-label' %>
+      <%= f.number_field :mobile_phone, class:'form-control' %></div>
+    </div>
+  </div>
+
+  <br />
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4"><%= f.label :province, "Provincia", class:'control-label' %>
+      <%= f.select :province, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "user_city")', required: true} %></div>
+      <div class="col-md-4 with-spinner">
+        <%= f.label :city, "Localidad", class:'control-label' %>
+        <%= f.select :city,::Afip::CTG.new().consultar_localidades(current_user.province).map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+      </div>
+    </div>
+  </div>
+
+  <br />
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-4"><%= f.label :postal_code, "Código postal", class:'control-label' %>
+      <%= f.number_field :postal_code, class:'form-control' %></div>
+      <div class="col-md-4"><%= f.label :address, "Dirección", class:'control-label' %>
+      <%= f.text_field :address, class:'form-control' %></div>
+    </div>
+  </div>
+
+
   <br />
   <div class="form-group">
     <div><%= f.label :email, class:'control-label' %>

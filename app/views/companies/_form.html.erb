@@ -15,7 +15,7 @@
         </div>
         <div hidden>
             <%= f.file_field :logo, :class => 'form-control', id: 'file_input' %>
-        </div> 
+        </div>
       </div>
       <!-- FIN LOGOTIPO -->
     </div>
@@ -119,10 +119,17 @@
           </div>
 
           <div class="form-row">
+<<<<<<< HEAD
             <div class="form-group col-md-6">
               <%= f.label :locality_id %>
               <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id), :id, :name, f.object.locality_id), {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
             </div> 
+=======
+            <div class="form-group col-md-6 with-spinner">
+              <%= f.label :location %>
+              <%= f.select :location,[], {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+            </div>
+>>>>>>> fa4e2db3c5f6a2858d2f94c15deceda800b06041
 
             <div class="form-group col-md-6">
               <%= f.label :postal_code %>
@@ -176,4 +183,3 @@
   </div>
 
 <% end %>
-
