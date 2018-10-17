@@ -28,20 +28,23 @@
   <div class="form-group">
     <div class="row">
       <div class="col-md-4"><%= f.label :phone, "Teléfono fijo", class:'control-label' %>
-      <%= f.number_field :phone, class:'form-control' %></div>
+        <%= f.number_field :phone, class:'form-control' %>
+      </div>
       <div class="col-md-4"><%= f.label :mobile_phone, "Celular", class:'control-label' %>
-      <%= f.number_field :mobile_phone, class:'form-control' %></div>
+        <%= f.number_field :mobile_phone, class:'form-control' %>
+      </div>
     </div>
   </div>
 
   <br />
   <div class="form-group">
     <div class="row">
-      <div class="col-md-4"><%= f.label :province, "Provincia", class:'control-label' %>
-      <%= f.select :province, ::Afip::CTG.new().consultar_provincias.map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "user_city")', required: true} %></div>
+      <div class="col-md-4">
+        <%= f.label :province_id, "Provincia", class:'control-label' %>
+        <%= f.select :province_id, options_from_collection_for_select(Province.all, :id, :name, f.object.province_id), {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "user_locality_id")', required: true} %></div>
       <div class="col-md-4 with-spinner">
-        <%= f.label :city, "Localidad", class:'control-label' %>
-        <%= f.select :city,::Afip::CTG.new().consultar_localidades(current_user.province).map{|c,p| [p,c]}, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+        <%= f.label :locality_id, "Localidad", class:'control-label' %>
+        <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id).order(:name), :id, :name, f.object.locality_id), {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
       </div>
     </div>
   </div>

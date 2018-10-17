@@ -112,16 +112,18 @@ ActiveRecord::Schema.define(version: 2018_10_17_153501) do
     t.boolean "approved", default: false, null: false
     t.string "provider"
     t.string "uid"
-    t.string "province"
-    t.string "city"
     t.integer "postal_code"
     t.boolean "admin", default: true, null: false
     t.string "authentication_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "province_id"
+    t.bigint "locality_id"
     t.index ["company_id"], name: "index_users_on_company_id", unique: true
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["locality_id"], name: "index_users_on_locality_id"
+    t.index ["province_id"], name: "index_users_on_province_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end

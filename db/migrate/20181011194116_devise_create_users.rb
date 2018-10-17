@@ -39,8 +39,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.boolean  "approved",               default: false,                 null: false
       t.string   "provider"
       t.string   "uid"
-      t.string   "province"
-      t.string   "city"
       t.integer  "postal_code"
       t.boolean  "admin",                  default: true,                  null: false
       t.string   "authentication_token"
