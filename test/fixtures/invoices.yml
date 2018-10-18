@@ -1,0 +1,59 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: 2018-10-17
+  active: false
+  client: one
+  state: MyString
+  total: 1.5
+  total_pay: 1.5
+  header_result: MyString
+  authorized_on: MyString
+  cae_due_date: MyString
+  cae: MyString
+  iva_importe: 1.5
+  cbte_tipo: MyString
+  sale_point: one
+  concepto: MyString
+  cbte_fch: MyString
+  imp_tot_conc: 1.5
+  imp_op_ex: 1.5
+  imp_trib: 1.5
+  imp_neto: 1.5
+  imp_iva: 1.5
+  imp_total: 1.5
+  cbte_hasta: 1
+  cbte_desde: 1
+  iva_cond: MyString
+  comp_number: MyString
+  company: one
+  user: one
+
+two:
+  date: 2018-10-17
+  active: false
+  client: two
+  state: MyString
+  total: 1.5
+  total_pay: 1.5
+  header_result: MyString
+  authorized_on: MyString
+  cae_due_date: MyString
+  cae: MyString
+  iva_importe: 1.5
+  cbte_tipo: MyString
+  sale_point: two
+  concepto: MyString
+  cbte_fch: MyString
+  imp_tot_conc: 1.5
+  imp_op_ex: 1.5
+  imp_trib: 1.5
+  imp_neto: 1.5
+  imp_iva: 1.5
+  imp_total: 1.5
+  cbte_hasta: 1
+  cbte_desde: 1
+  iva_cond: MyString
+  comp_number: MyString
+  company: two
+  user: two

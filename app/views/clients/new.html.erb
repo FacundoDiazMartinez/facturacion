@@ -1,0 +1,16 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="clientModalTitle"><%= icon('far', 'users') %>Nuevo Cliente</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<%= form_for @client do |f| %>
+	<div class="modal-body">
+	  <%= render '/clients/form', f: f %>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	  <%= save_button %>
+	</div>
+<% end %>

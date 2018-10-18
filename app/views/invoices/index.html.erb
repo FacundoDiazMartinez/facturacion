@@ -1,0 +1,79 @@
+<h1 class="d-flex mb-2">
+  <div class="p-2">
+    <%= icon('fas', 'hand-holding-usd') %>
+    Ventas
+  </div>
+  <div class="ml-auto p-2">
+    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+    <%= link_to "#{icon('fas', 'plus')} Generar venta".html_safe, new_invoice_path(), class: 'btn btn-primary ' %>
+  </div>
+</h1>
+
+<hr>
+
+<div class="row">
+  <%= form_tag invoices_path(), {class: 'form-inline'} do %>
+    <!-- BUSCAR POR CLIENTE -->
+    <%= label_tag :client_name, "Cliente", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'user') %></div>
+      </div>
+      <%= text_field_tag :client_name, params[:client_name], class: 'form-control', placeholder: 'Buscar por cliente' %>
+    </div>
+    <!-- BUSCAR POR CLIENTE -->
+
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+    <%= label_tag :cbte_tipo, "Tipo", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+      </div>
+      <%= select_tag :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, params[:cbte_tipo]), {prompt: 'Buscar por tipo...', class: 'form-control'} %>
+    </div>
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+    <%= label_tag :state, "Estado", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+      </div>
+      <%= select_tag :state, options_for_select(Invoice::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control'} %>
+    </div>
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+  </div>
+<% end %>
+
+<div class="row">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Tipo de comprobante</th>
+        <th>Total</th>
+        <th>Estado</th>
+        <th>Fecha</th>
+        <th colspan="3"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @invoices.each do |invoice| %>
+        <tr>
+          <td><%= invoice.client.name %></td>
+          <td><%= invoice.cbte_tipo %></td>
+          <td><%= invoice.total %></td>
+          <td><%= invoice.state %></td>
+          <td><%= invoice.date %></td>
+          <td><%= link_to icon('fas' 'eye').html_safe, invoice %></td>
+          <td><%= link_to icon('fas' 'pencil').html_safe, edit_invoice_path(invoice) %></td>
+          <td><%= link_to icon('fas' 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<br>
+
+<%= link_to 'New Invoice', new_invoice_path %>

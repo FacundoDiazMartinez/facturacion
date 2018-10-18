@@ -11,18 +11,18 @@
 // about supported directives.
 //
 //= require jquery
+//= require bootstrap
 //= require rails-ujs
+//= require jquery3
+//= require jquery_nested_form
+//= require jquery.ui.widget
+//= require z.jquery.fileupload
 //= require activestorage
 //= require turbolinks
-//= require jquery_nested_form
 //= require bootstrap-datepicker
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
-//= require jquery.ui.widget
-//= require z.jquery.fileupload
-//= require jquery3
 //= require popper
-//= require bootstrap
 //= require_tree .
 
 $(document).ready(function() {

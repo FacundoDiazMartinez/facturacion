@@ -1,0 +1,2 @@
+json.extract! invoice, :id, :date, :active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :iva_importe, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :created_at, :updated_at
+json.url invoice_url(invoice, format: :json)

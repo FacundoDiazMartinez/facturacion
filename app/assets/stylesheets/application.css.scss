@@ -77,3 +77,12 @@ a.nav-link:hover{
 .with-margin-top{
   margin-top: 15px;
 }
+
+.input-group-text > a{
+  color: black !important;
+}
+
+.input-group-text > a:hover{
+  color: black;
+  background-color: transparent;
+}

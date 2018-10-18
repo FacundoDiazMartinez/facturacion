@@ -1,0 +1,131 @@
+<%= form_with(model: invoice, local: true) do |form| %>
+  <% if invoice.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(invoice.errors.count, "error") %> prohibited this invoice from being saved:</h2>
+
+      <ul>
+      <% invoice.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- HEADER -->
+    <div class="card shadow">
+      <div class="card-body">
+        <div class="row">
+          <!-- PRIMERA COLUMNA -->
+          <div class="col-sm">
+
+            <div class="form-group">
+              <%= form.label :state %>
+              <%= form.text_field :state, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :cbte_fch %>
+              <%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :cae %>
+              <%= form.text_field :cae, class: 'form-control', readonly: true %>
+            </div>
+          </div>
+          <!-- PRIMERA COLUMNA -->
+
+          <!-- SEGUNDA COLUMNA -->
+          <div class="col-sm">
+
+            <div class="form-group">
+              <%= form.label :total %>
+              <%= form.text_field :total, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :total_pay %>
+              <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= label_tag :total_left, "Monto faltante" %>
+              <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
+            </div>
+            
+          </div>
+          <!-- SEGUNDA COLUMNA -->
+
+          <!-- TERCERA COLUMNA -->
+          <div class="col-sm">
+
+            <div class="form-group">
+              <%= form.label :cbte_tipo %>
+              <%= form.select :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, invoice.cbte_tipo), {prompt: "Seleccione..."},{ class: 'form-control', disabled: invoice.editable?, autofocus: 'true' } %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :sale_point_id, "Punto de venta" %>
+              <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.id, sp.name]}, invoice.sale_point_id), {}, {class: 'form-control', disabled: invoice.editable?} %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :concepto %>
+              <%= form.select :concepto, options_for_select(Company::CONCEPTOS, invoice.concepto), {prompt: "Seleccione..."}, {class: 'form-control', disabled: invoice.editable?} %>
+            </div>
+
+          </div>
+          <!-- TERCERA COLUMNA -->
+
+          <!-- CUARTA COLUMNA -->
+          <div class="col-sm">
+            <div class="form-group">
+              <%= label_tag :client_name, "Cliente" %>
+              <div class="input-group mb-3">
+                <%= text_field_tag :client_name, @invoice.client_name, class: 'form-control', readonly: true %>
+                <div class="input-group-append">
+                  <span class="input-group-text">
+                    <%= link_to icon('far' , 'edit').html_safe, new_client_path(), data:{toggle: 'modal', target: '#clientModal', remote: true} %>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="form-group">
+              
+            </div>
+
+            <div class="form-group">
+              
+            </div>
+
+          </div>
+          <!-- CUARTA COLUMNA -->
+        </div>
+      </div>
+    </div>
+  <!-- HEADER -->
+
+  <!-- PAGOS -->
+  <div class="card shadow">
+    
+  </div>
+  <!-- PAGOs -->
+
+  <!-- DETALLE -->
+  <div class="card shadow">
+    
+  </div>
+  <!-- DETALLE -->
+
+<% end %>
+
+<div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="client_modal">
+      </div>
+    </div>
+  </div>
+</div>

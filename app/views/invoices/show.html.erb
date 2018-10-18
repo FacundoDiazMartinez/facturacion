@@ -1,0 +1,131 @@
+<p id="notice"><%= notice %></p>
+
+
+<p>
+  <strong>Active:</strong>
+  <%= @invoice.active %>
+</p>
+
+<p>
+  <strong>Client:</strong>
+  <%= @invoice.client %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @invoice.state %>
+</p>
+
+<p>
+  <strong>Total:</strong>
+  <%= @invoice.total %>
+</p>
+
+<p>
+  <strong>Total pay:</strong>
+  <%= @invoice.total_pay %>
+</p>
+
+<p>
+  <strong>Header result:</strong>
+  <%= @invoice.header_result %>
+</p>
+
+<p>
+  <strong>Authorized on:</strong>
+  <%= @invoice.authorized_on %>
+</p>
+
+<p>
+  <strong>Cae due date:</strong>
+  <%= @invoice.cae_due_date %>
+</p>
+
+<p>
+  <strong>Cae:</strong>
+  <%= @invoice.cae %>
+</p>
+
+
+<p>
+  <strong>Cbte tipo:</strong>
+  <%= @invoice.cbte_tipo %>
+</p>
+
+<p>
+  <strong>Sale point:</strong>
+  <%= @invoice.sale_point %>
+</p>
+
+<p>
+  <strong>Concepto:</strong>
+  <%= @invoice.concepto %>
+</p>
+
+<p>
+  <strong>Cbte fch:</strong>
+  <%= @invoice.cbte_fch %>
+</p>
+
+<p>
+  <strong>Imp tot conc:</strong>
+  <%= @invoice.imp_tot_conc %>
+</p>
+
+<p>
+  <strong>Imp op ex:</strong>
+  <%= @invoice.imp_op_ex %>
+</p>
+
+<p>
+  <strong>Imp trib:</strong>
+  <%= @invoice.imp_trib %>
+</p>
+
+<p>
+  <strong>Imp neto:</strong>
+  <%= @invoice.imp_neto %>
+</p>
+
+<p>
+  <strong>Imp iva:</strong>
+  <%= @invoice.imp_iva %>
+</p>
+
+<p>
+  <strong>Imp total:</strong>
+  <%= @invoice.imp_total %>
+</p>
+
+<p>
+  <strong>Cbte hasta:</strong>
+  <%= @invoice.cbte_hasta %>
+</p>
+
+<p>
+  <strong>Cbte desde:</strong>
+  <%= @invoice.cbte_desde %>
+</p>
+
+<p>
+  <strong>Iva cond:</strong>
+  <%= @invoice.iva_cond %>
+</p>
+
+<p>
+  <strong>Comp number:</strong>
+  <%= @invoice.comp_number %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @invoice.company %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @invoice.user %>
+</p>
+
+<%= link_to 'Edit', edit_invoice_path(@invoice) %> |
+<%= link_to 'Back', invoices_path %>

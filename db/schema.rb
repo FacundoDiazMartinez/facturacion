@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_17_153501) do
+ActiveRecord::Schema.define(version: 2018_10_17_165116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,6 +55,40 @@ ActiveRecord::Schema.define(version: 2018_10_17_153501) do
     t.bigint "locality_id", null: false
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.boolean "active"
+    t.bigint "client_id"
+    t.string "state"
+    t.float "total"
+    t.float "total_pay"
+    t.string "header_result"
+    t.string "authorized_on"
+    t.string "cae_due_date"
+    t.string "cae"
+    t.string "cbte_tipo"
+    t.bigint "sale_point_id"
+    t.string "concepto"
+    t.string "cbte_fch"
+    t.float "imp_tot_conc"
+    t.float "imp_op_ex"
+    t.float "imp_trib"
+    t.float "imp_neto"
+    t.float "imp_iva"
+    t.float "imp_total"
+    t.integer "cbte_hasta"
+    t.integer "cbte_desde"
+    t.string "iva_cond"
+    t.string "comp_number"
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_invoices_on_client_id"
+    t.index ["company_id"], name: "index_invoices_on_company_id"
+    t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
+    t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
   create_table "localities", force: :cascade do |t|
@@ -126,6 +160,10 @@ ActiveRecord::Schema.define(version: 2018_10_17_153501) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "invoices", "clients"
+  add_foreign_key "invoices", "companies"
+  add_foreign_key "invoices", "sale_points"
+  add_foreign_key "invoices", "users"
   add_foreign_key "localities", "provinces"
   add_foreign_key "sale_points", "companies"
 end
