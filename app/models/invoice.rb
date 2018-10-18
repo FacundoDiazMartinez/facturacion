@@ -45,7 +45,15 @@ class Invoice < ApplicationRecord
 
   	#ATRIBUTOS
   		def client_name
-  			client.nil? ? "Consumidor Final" : client.name
+  			client.nil? ? "Sin nombre" : client.name
+  		end
+
+  		def client_document
+  			client.nil? ? 0 : client.document_number
+  		end
+
+  		def client_iva_cond
+  			client.nil? ? "Consumidor Final" : client.iva_cond
   		end
   	#ATRIBUTOS
 end

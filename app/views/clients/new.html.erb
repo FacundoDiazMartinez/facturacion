@@ -5,7 +5,7 @@
   </button>
 </div>
 
-<%= form_for @client do |f| %>
+<%= form_for @client, url: create_client_invoices_path, remote: true do |f| %>
 	<div class="modal-body">
 	  <%= render '/clients/form', f: f %>
 	</div>

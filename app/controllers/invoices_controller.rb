@@ -61,6 +61,14 @@ class InvoicesController < ApplicationController
     end
   end
 
+  def create_client
+    @client = current_user.company.clients.create(client_params)
+    @invoice = Invoice.new(client_id: @client.id)
+    respond_to do |format|
+      format.js { render template: '/invoices/client/set_client.js.erb'}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_invoice
@@ -70,5 +78,9 @@ class InvoicesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
       params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id)
+    end
+
+    def client_params
+      params.require(:client).permit(:name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond)
     end
 end

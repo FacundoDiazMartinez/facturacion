@@ -7,5 +7,7 @@ class CreateProvinces < ActiveRecord::Migration[5.2]
     end
 
     add_reference :companies, :province, null: false
+    add_reference :users, :province
+    add_reference :users, :locality
   end
 end

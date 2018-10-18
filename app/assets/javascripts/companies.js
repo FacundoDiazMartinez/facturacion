@@ -12,9 +12,7 @@ function reloadLocality(province, dropdown){
 	    success:function(data) {
 	      populateSelect(data, dropdown);
         $("#spinner_icon").remove();
-
 	    },
-
 	});
 };
 

@@ -3,9 +3,9 @@ class CreateInvoices < ActiveRecord::Migration[5.2]
     create_table :invoices do |t|
       t.boolean :active
       t.references :client, foreign_key: true
-      t.string :state
-      t.float :total
-      t.float :total_pay
+      t.string :state, null: false, default: "Pendiente"
+      t.float :total, null: false, default: 0.0
+      t.float :total_pay, null: false, default: 0.0
       t.string :header_result
       t.string :authorized_on
       t.string :cae_due_date
@@ -14,12 +14,12 @@ class CreateInvoices < ActiveRecord::Migration[5.2]
       t.references :sale_point, foreign_key: true
       t.string :concepto
       t.string :cbte_fch
-      t.float :imp_tot_conc
-      t.float :imp_op_ex
-      t.float :imp_trib
-      t.float :imp_neto
-      t.float :imp_iva
-      t.float :imp_total
+      t.float :imp_tot_conc, null: false, default: 0.0
+      t.float :imp_op_ex, null: false, default: 0.0
+      t.float :imp_trib, null: false, default: 0.0
+      t.float :imp_neto, null: false, default: 0.0
+      t.float :imp_iva, null: false, default: 0.0
+      t.float :imp_total, null: false, default: 0.0
       t.integer :cbte_hasta
       t.integer :cbte_desde
       t.string :iva_cond

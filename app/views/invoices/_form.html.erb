@@ -16,22 +16,8 @@
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
-          <div class="col-sm">
-
-            <div class="form-group">
-              <%= form.label :state %>
-              <%= form.text_field :state, class: 'form-control', readonly: true %>
-            </div>
-
-            <div class="form-group">
-              <%= form.label :cbte_fch %>
-              <%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
-            </div>
-
-            <div class="form-group">
-              <%= form.label :cae %>
-              <%= form.text_field :cae, class: 'form-control', readonly: true %>
-            </div>
+          <div class="col-sm" id="client_form">
+            <%= render '/invoices/client/form' %>
           </div>
           <!-- PRIMERA COLUMNA -->
 
@@ -79,27 +65,21 @@
 
           <!-- CUARTA COLUMNA -->
           <div class="col-sm">
-            <div class="form-group">
-              <%= label_tag :client_name, "Cliente" %>
-              <div class="input-group mb-3">
-                <%= text_field_tag :client_name, @invoice.client_name, class: 'form-control', readonly: true %>
-                <div class="input-group-append">
-                  <span class="input-group-text">
-                    <%= link_to icon('far' , 'edit').html_safe, new_client_path(), data:{toggle: 'modal', target: '#clientModal', remote: true} %>
-                  </span>
-                </div>
-              </div>
-            </div>
-
 
             <div class="form-group">
-              
+              <%= form.label :state %>
+              <%= form.text_field :state, class: 'form-control', readonly: true %>
             </div>
 
             <div class="form-group">
-              
+              <%= form.label :cbte_fch %>
+              <%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
             </div>
 
+            <div class="form-group">
+              <%= form.label :cae %>
+              <%= form.text_field :cae, class: 'form-control', readonly: true %>
+            </div>
           </div>
           <!-- CUARTA COLUMNA -->
         </div>

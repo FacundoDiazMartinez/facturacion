@@ -11,11 +11,12 @@
 // about supported directives.
 //
 //= require jquery
-//= require bootstrap
-//= require rails-ujs
+
 //= require jquery3
 //= require jquery_nested_form
 //= require jquery.ui.widget
+//= require bootstrap
+//= require rails-ujs
 //= require z.jquery.fileupload
 //= require activestorage
 //= require turbolinks

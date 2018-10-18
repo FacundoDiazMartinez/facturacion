@@ -11,6 +11,7 @@ class CreateClients < ActiveRecord::Migration[5.2]
       t.string :birthday
       t.boolean :active, null: false, default: true
       t.string :iva_cond, null: false, default: "Responsable Monotributo"
+      t.references :company, foreign_key: true
 
       t.timestamps
     end

@@ -1,6 +1,8 @@
 class Company < ApplicationRecord
 	has_many :sale_points, dependent: :destroy
 	has_many :users
+	has_many :clients
+	has_many :invoices
 
 	belongs_to :province
 	belongs_to :locality

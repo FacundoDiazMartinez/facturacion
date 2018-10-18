@@ -1,5 +1,17 @@
+<% if @client.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@client.errors.count, "error") %> prohibited this client from being saved:</h2>
+
+    <ul>
+    <% @client.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <div class="form-group row">
-  <%= label_tag :iva_cond, "Condición frente a I.V.A.", class: 'col-sm-2 col-form-label col-form-label-sm' %>
+  <%= label_tag :iva_cond, "Condición I.V.A.", class: 'col-sm-2 col-form-label col-form-label-sm' %>
   <div class="col-md-10">
     <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"]],{},{class:'form-control form-control-sm'} %>
   </div>
@@ -28,7 +40,7 @@
 <div class="form-group row">
   <%= label_tag :birthday, "Nacimiento", class: 'col-sm-2 col-form-label col-form-label-sm' %>
   <div class="col-md-10">
-    <%= f.date_field :birthday, class: 'form-control form-control-sm' %>
+    <%= f.date_field :birthday, class: 'form-control form-control-sm date', data: {provide: 'datepicker'} %>
   </div>
 </div>
 

@@ -122,7 +122,7 @@
             <div class="form-group col-md-6">
               <%= f.label :locality_id %>
               <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id).order(:name), :id, :name, f.object.locality_id), {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
-            </div> 
+            </div>
             <div class="form-group col-md-6">
               <%= f.label :postal_code %>
               <%= f.text_field :postal_code, :class => 'form-control', required: true %>
