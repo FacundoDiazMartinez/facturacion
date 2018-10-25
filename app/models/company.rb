@@ -3,6 +3,7 @@ class Company < ApplicationRecord
 	has_many :users
 	has_many :clients
 	has_many :invoices
+	has_many :products
 
 	belongs_to :province
 	belongs_to :locality
@@ -48,6 +49,10 @@ class Company < ApplicationRecord
 
 		def concepto_text
 			::Afip::CONCEPTOS.map{|k,v| k unless v.to_i != concepto.to_i  }.compact.join()
+		end
+
+		def iva_cond_sym
+			iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
 		end
 	#Fin atributos
 end

@@ -2,8 +2,6 @@ class ApplicationController < ActionController::Base
  before_action :configure_permitted_parameters, :authenticate_user!, if: :devise_controller?
  before_action :authenticate_user!
 
-
-
 	def get_localities
 		render json: Locality.where(province_id: params[:city_id]).order(:name).map{|l| [l.id, l.name]}
 	end

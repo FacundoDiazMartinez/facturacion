@@ -4,7 +4,24 @@ class Invoice < ApplicationRecord
   	belongs_to :company
   	belongs_to :user
 
+    has_many :payments
+    has_many :invoice_details
+    has_many :products, through: :invoice_details
+
+    accepts_nested_attributes_for :payments, allow_destroy: true, reject_if: :all_blank
+    accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
+    accepts_nested_attributes_for :client, reject_if: :all_blank
+
+    after_save :set_state
+
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
+
+    validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
+    validates_presence_of :total, message: "El total no debe estar en blanco."
+    validates_presence_of :total_pay, message: "El total pagado no debe estar en blanco."
+    validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
+    validates_inclusion_of :state, in: STATES, message: "Estado inválido."
+
 
   	#FILTROS DE BUSQUEDA
 	  	def self.search_by_client name
@@ -39,9 +56,92 @@ class Invoice < ApplicationRecord
   		end
 
   		def editable?
-  			state == 'Confirmado' || state == 'Anulado'
+  			state != 'Confirmado' && state != 'Anulado'
   		end
+
+      def iva_sum
+        total = 0
+        invoice_details.each do |detail|
+          total += detail.iva_amount.to_f.round(2)
+        end
+        return total
+      end
+
+      def iva_array
+        i = Array.new
+        h = invoice_details.all.group(:iva_aliquot).sum(:price_per_unit)
+        j = invoice_details.all.group(:iva_aliquot).sum(:iva_amount)
+        iva_hash = h.merge(j){|k, h_value, j_value| [h_value , j_value]}
+        iva_hash.each do |iva|
+          i << [ Invoice.applicable_iva_for_detail(iva[0]), iva.second[0], iva.second[1] ]
+        end
+        return i
+      end
+
+      def self.applicable_iva_for_detail(aliquot)
+        case aliquot
+        when nil
+         return 0 
+        when 0.0 
+          return 0
+        when 10.5
+          return 1
+        when 21.0
+          return 2
+        when 27.0
+          return 3
+        end
+      end
+
+      def net_sum
+        total = 0
+        invoice_details.each do |detail|
+          total += detail.price_per_unit.to_f.round(2)
+        end
+        return total
+      end
+
+      def available_cbte_type
+        Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[self.company.iva_cond_sym][self.client.iva_cond_sym]}.map{|k,v| [v,k]}
+      end
   	#FUNCIONES
+
+    #PROCESOS
+      def set_state
+        if editable? && (total.to_f != 0.0)
+          case (total.to_f <= total_pay.to_f)
+          when true
+            update_column(:state, "Pagado")
+          when false
+            update_column(:state, "Pendiente")
+          end
+        end
+      end
+
+      def set_client params
+        if params[:client][:iva_cond] != "Consumidor Final"
+          client              = company.clients.where(document_number: params[:client][:document_number], document_type: params[:client][:document_type]).first_or_initialize
+          client.name         = params[:client][:name]
+          client.birthday     = params[:client][:birthday]
+          client.phone        = params[:client][:phone]
+          client.mobile_phone = params[:client][:mobile_phone]
+          client.email        = params[:client][:email]
+          client.address      = params[:client][:address]
+          client.iva_cond     = params[:client][:iva_cond]
+          if client.save
+            self.update_column(:client_id, client.id)
+          end
+        end
+      end
+
+      def update params, send_to_afip = false
+          response = super(params)
+          if response && send_to_afip
+            get_cae
+          end
+          return response && !self.errors.any?
+      end
+    #PROCESOS
 
   	#ATRIBUTOS
   		def client_name
@@ -55,5 +155,105 @@ class Invoice < ApplicationRecord
   		def client_iva_cond
   			client.nil? ? "Consumidor Final" : client.iva_cond
   		end
+
+      def sum_details
+        self.invoice_details.sum(:subtotal)
+      end
+
+      def sum_payments
+        self.payments.sum(:total)
+      end
   	#ATRIBUTOS
+
+
+    #AFIP
+      #FUNCIONES
+      def set_constants
+        if self.company.environment == "production"
+          #PRODUCCION
+          Afip.pkey               = "#{Rails.root}/app/afip/facturacion.key"
+          Afip.cert               = "#{Rails.root}/app/afip/pedido.crt"
+          Afip.auth_url     = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
+          Afip.service_url    = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
+          Afip.cuit         = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
+          Afip.openssl_bin    = '/usr/bin/openssl'
+        else
+          #TEST
+          Afip.cuit = "20368642682"
+          Afip.pkey = "#{Rails.root}/app/afip/facturacion.key"
+          Afip.cert = "#{Rails.root}/app/afip/testing.crt"
+          Afip.auth_url = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+          Afip.service_url = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+          Afip::AuthData.environment = :test
+          Afip.openssl_bin = '/usr/local/Cellar/openssl/1.0.2o_2/bin/openssl'
+        end
+
+        Afip.default_concepto   = Afip::CONCEPTOS.key(self.company.concepto)
+        Afip.default_documento  = "CUIT"
+        Afip.default_moneda   = self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
+        Afip.own_iva_cond     = self.company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
+      end
+
+      def set_bill
+        set_constants
+        bill = Afip::Bill.new(
+          net:        self.net_sum,
+          doc_num:    self.client.document_number,
+          sale_point: self.sale_point.name,
+          documento:  Afip::DOCUMENTOS.key(self.client.document_type),
+          moneda:     self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym,
+          iva_cond:   self.client.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym,
+          concepto:   self.concepto,
+          ivas:       self.iva_array,
+          cbte_type:  self.cbte_tipo
+        )
+        bill.doc_num = self.client.document_number
+        return bill
+      end
+
+      def auth_bill bill
+        bill.authorize
+        if not bill.authorized?
+          afip_errors(bill)
+        else
+          set_cae(bill)
+        end
+        pp bill.response
+        return bill
+      end
+
+      def get_cae
+        if state == "Pagado"
+          auth_bill(set_bill)
+        else
+          errors.add(:state, "La factura debe estar pagada antes de enviarse a A.F.I.P.")
+        end
+      end
+
+      def afip_errors(bill)
+        if not bill.response.observaciones.empty?
+          if bill.response.observaciones[:obs].class == Hash
+            self.errors.add(:bill, bill.response.observaciones[:obs][:msg])
+          elsif bill.response.observaciones[:obs].class == Array
+            bill.response.observaciones[:obs].each do |obs|
+              self.errors.add(:bill, obs[:msg])
+            end
+          end
+        end
+      end
+      #FUNCIONES
+
+      #PROCESOS
+        def set_cae bill
+          self.update_columns(
+            cae: bill.response.cae,
+            cae_due_date: bill.response.cae_due_date,
+            cbte_fch: bill.response.cbte_fch.to_date,
+            authorized_on: bill.response.authorized_on.to_time,
+            comp_number: bill.response.cbte_hasta,
+            state: "Confirmado"
+          )
+        end
+      #PROCESOS
+    #AFIP
 end

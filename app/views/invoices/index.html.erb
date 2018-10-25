@@ -65,10 +65,10 @@
           <td><%= invoice.cbte_tipo %></td>
           <td><%= invoice.total %></td>
           <td><%= invoice.state %></td>
-          <td><%= invoice.date %></td>
-          <td><%= link_to icon('fas' 'eye').html_safe, invoice %></td>
-          <td><%= link_to icon('fas' 'pencil').html_safe, edit_invoice_path(invoice) %></td>
-          <td><%= link_to icon('fas' 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' } %></td>
+          <td><%= invoice.cbte_fch %></td>
+          <td><%= link_to icon('fas', 'eye').html_safe, invoice %></td>
+          <td><%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice) %></td>
+          <td><%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' } %></td>
         </tr>
       <% end %>
     </tbody>

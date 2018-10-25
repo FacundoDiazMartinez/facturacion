@@ -62,6 +62,10 @@ gem "nested_form"
 
 #JQuery
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
+
+#Autocomplete
+gem 'rails-jquery-autocomplete'
 
 #Datepicker
 gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails', :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'

@@ -1,6 +1,7 @@
-<h1>Editing Invoice</h1>
-
+<% if @invoice.editable? %>
+	<h1><%= icon('fas', 'hand-holding-usd') %> Generar Factura</h1>
+<% else %>
+	<h1><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
+<% end %>
 <%= render 'form', invoice: @invoice %>
 
-<%= link_to 'Show', @invoice %> |
-<%= link_to 'Back', invoices_path %>

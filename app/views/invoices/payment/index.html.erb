@@ -1,0 +1,22 @@
+<table class="table table-striped" id="payments">
+	<thead>
+		<tr>
+			<th>#</th>
+			<th scope="col">Tipo de pago</th>
+			<th scope="col">Monto</th>
+			<th scope="col"></th>
+			<th scope="col"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= form.fields_for :payments, wrapper: false do |f| %>
+	      <tr>
+	      	<th scope="row">#</th>
+	      	<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control'} %></td>
+	      	<td><%= f.number_field :total, class: 'form-control' %></td>
+	      	<td></td>
+	      	<td><%= f.link_to_remove icon('fas', 'trash') %></td>
+	      </tr>
+	    <% end %>
+	</tbody>
+</table>

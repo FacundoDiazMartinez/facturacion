@@ -1,10 +1,10 @@
-<%= form_with(model: invoice, local: true) do |form| %>
-  <% if invoice.errors.any? %>
+<%= nested_form_for @invoice do |form| %>
+  <% if @invoice.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(invoice.errors.count, "error") %> prohibited this invoice from being saved:</h2>
+      <h2><%= pluralize(@invoice.errors.count, "error") %> prohibited this @invoice from being saved:</h2>
 
       <ul>
-      <% invoice.errors.full_messages.each do |message| %>
+      <% @invoice.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>
@@ -17,7 +17,7 @@
         <div class="row">
           <!-- PRIMERA COLUMNA -->
           <div class="col-sm" id="client_form">
-            <%= render '/invoices/client/form' %>
+            <%= render '/invoices/client/form', f: form %>
           </div>
           <!-- PRIMERA COLUMNA -->
 
@@ -47,17 +47,18 @@
 
             <div class="form-group">
               <%= form.label :cbte_tipo %>
-              <%= form.select :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, invoice.cbte_tipo), {prompt: "Seleccione..."},{ class: 'form-control', disabled: invoice.editable?, autofocus: 'true' } %>
+
+              <%= form.select :cbte_tipo, options_for_select(@invoice.available_cbte_type), {},{ class: 'form-control', disabled: !invoice.editable?, autofocus: 'true' } %>
             </div>
 
             <div class="form-group">
               <%= form.label :sale_point_id, "Punto de venta" %>
-              <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.id, sp.name]}, invoice.sale_point_id), {}, {class: 'form-control', disabled: invoice.editable?} %>
+              <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, invoice.sale_point_id), {}, {class: 'form-control', disabled: !invoice.editable?} %>
             </div>
 
             <div class="form-group">
               <%= form.label :concepto %>
-              <%= form.select :concepto, options_for_select(Company::CONCEPTOS, invoice.concepto), {prompt: "Seleccione..."}, {class: 'form-control', disabled: invoice.editable?} %>
+              <%= form.select :concepto, options_for_select(Company::CONCEPTOS, invoice.concepto), {}, {class: 'form-control', disabled: !invoice.editable?} %>
             </div>
 
           </div>
@@ -83,21 +84,52 @@
           </div>
           <!-- CUARTA COLUMNA -->
         </div>
+        <!-- BOTONES DE ACCION -->
+            <center>
+              <% if @invoice.state == "Pagado" %>
+                <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
+              <% end %>
+            </center>
+        <!-- BOTONES DE ACCION -->
       </div>
     </div>
   <!-- HEADER -->
-
+  <hr>
   <!-- PAGOS -->
+  <h3 class="d-flex mb-2">
+    <div class="p-2">
+      <%= icon('fas', 'money-bill-alt') %>
+      Pagos
+    </div>
+    <div class="ml-auto p-2">
+      <%= form.link_to_add "#{icon('fas', 'plus')} Agregar pago".html_safe, :payments, class: 'btn btn-success', data: {target: '#payments'} %>
+    </div>
+  </h3>
   <div class="card shadow">
-    
+    <%= render template: '/invoices/payment/index.html.erb', locals:{form: form} %>
   </div>
   <!-- PAGOs -->
-
+  <hr>
   <!-- DETALLE -->
+  <h3 class="d-flex mb-2">
+    <div class="p-2">
+      <%= icon('fas', 'boxes') %>
+      Productos
+    </div>
+    <div class="ml-auto p-2">
+      <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :invoice_details, class: 'btn btn-success', data: {target: '#details'} %>
+    </div>
+  </h3>
   <div class="card shadow">
-    
+    <%= render template: '/invoices/detail/index.html.erb', locals:{form: form} %>
   </div>
   <!-- DETALLE -->
+
+  <hr>
+  <center>
+    <%= check_box_tag :send_to_afip, false %>
+    <%= save_button %>
+  </center>
 
 <% end %>
 

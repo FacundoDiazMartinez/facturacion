@@ -1,8 +1,3 @@
-$(document).ready(function(){
-
-
- });
-
 function reloadLocality(province, dropdown){
 	$.ajax({
 	    url: '/city/'+province+'/get_localities',
@@ -20,7 +15,11 @@ function populateSelect(data, dropdown){
 	select = $("#"+dropdown)
 	select.html("")
 	$.each(data, function(id, d) {
-    	select.append($("<option />").val(d[0]).text(d[1]));
+		select.append($("<option />").val(d[0]).text(d[1]));
 	});
-
 };
+
+function setConfirmParam() {
+	$("#send_to_afip").prop('checked', true);
+	$("#send_to_afip").closest('form').submit();
+}

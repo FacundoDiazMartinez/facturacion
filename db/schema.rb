@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_17_165116) do
+ActiveRecord::Schema.define(version: 2018_10_19_181256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,12 +59,29 @@ ActiveRecord::Schema.define(version: 2018_10_17_165116) do
     t.index ["province_id"], name: "index_companies_on_province_id"
   end
 
+  create_table "invoice_details", force: :cascade do |t|
+    t.bigint "invoice_id"
+    t.bigint "product_id"
+    t.float "quantity", default: 1.0, null: false
+    t.string "measurement_unit", null: false
+    t.float "price_per_unit", default: 0.0, null: false
+    t.float "bonus_percentage", default: 0.0, null: false
+    t.float "bonus_amount", default: 0.0, null: false
+    t.float "subtotal", default: 0.0, null: false
+    t.integer "iva_aliquot"
+    t.float "iva_amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
+    t.index ["product_id"], name: "index_invoice_details_on_product_id"
+  end
+
   create_table "invoices", force: :cascade do |t|
     t.boolean "active"
     t.bigint "client_id"
-    t.string "state"
-    t.float "total"
-    t.float "total_pay"
+    t.string "state", default: "Pendiente", null: false
+    t.float "total", default: 0.0, null: false
+    t.float "total_pay", default: 0.0, null: false
     t.string "header_result"
     t.string "authorized_on"
     t.string "cae_due_date"
@@ -73,12 +90,12 @@ ActiveRecord::Schema.define(version: 2018_10_17_165116) do
     t.bigint "sale_point_id"
     t.string "concepto"
     t.string "cbte_fch"
-    t.float "imp_tot_conc"
-    t.float "imp_op_ex"
-    t.float "imp_trib"
-    t.float "imp_neto"
-    t.float "imp_iva"
-    t.float "imp_total"
+    t.float "imp_tot_conc", default: 0.0, null: false
+    t.float "imp_op_ex", default: 0.0, null: false
+    t.float "imp_trib", default: 0.0, null: false
+    t.float "imp_neto", default: 0.0, null: false
+    t.float "imp_iva", default: 0.0, null: false
+    t.float "imp_total", default: 0.0, null: false
     t.integer "cbte_hasta"
     t.integer "cbte_desde"
     t.string "iva_cond"
@@ -102,6 +119,43 @@ ActiveRecord::Schema.define(version: 2018_10_17_165116) do
     t.index ["province_id"], name: "index_localities_on_province_id"
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.string "type_of_payment"
+    t.float "total"
+    t.bigint "invoice_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+  end
+
+  create_table "product_categories", force: :cascade do |t|
+    t.string "name"
+    t.integer "iva_aliquot"
+    t.boolean "active"
+    t.bigint "company_id"
+    t.integer "products_count"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_product_categories_on_company_id"
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.boolean "active"
+    t.bigint "product_category_id"
+    t.bigint "company_id"
+    t.float "list_price"
+    t.float "price"
+    t.float "net_price"
+    t.string "photo"
+    t.string "measurement_unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_products_on_company_id"
+    t.index ["product_category_id"], name: "index_products_on_product_category_id"
+  end
+
   create_table "provinces", force: :cascade do |t|
     t.string "name"
     t.integer "code"
@@ -115,6 +169,15 @@ ActiveRecord::Schema.define(version: 2018_10_17_165116) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_sale_points_on_company_id"
+  end
+
+  create_table "stocks", force: :cascade do |t|
+    t.bigint "product_id"
+    t.string "state"
+    t.float "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_stocks_on_product_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -165,10 +228,17 @@ ActiveRecord::Schema.define(version: 2018_10_17_165116) do
   end
 
   add_foreign_key "clients", "companies"
+  add_foreign_key "invoice_details", "invoices"
+  add_foreign_key "invoice_details", "products"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "invoices", "sale_points"
   add_foreign_key "invoices", "users"
   add_foreign_key "localities", "provinces"
+  add_foreign_key "payments", "invoices"
+  add_foreign_key "product_categories", "companies"
+  add_foreign_key "products", "companies"
+  add_foreign_key "products", "product_categories"
   add_foreign_key "sale_points", "companies"
+  add_foreign_key "stocks", "products"
 end

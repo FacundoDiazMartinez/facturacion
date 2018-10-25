@@ -1,6 +1,4 @@
 <% if @client.errors.any? %>
-	$("#client_modal").html("<%= j render template: '/clients/new.html.erb' %>");
-<% else %>
-	$("#client_form").html("<%= j render '/invoices/client/form' %>");
-	$('#clientModal').modal('hide');
+	$("#client_modal").html("<%= j render template: '/clients/edit.html.erb' %>");
 <% end %>
+

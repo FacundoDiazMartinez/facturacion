@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy]
+  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :confirm]
 
   # GET /invoices
   # GET /invoices.json
@@ -14,7 +14,9 @@ class InvoicesController < ApplicationController
 
   # GET /invoices/new
   def new
-    @invoice = Invoice.new
+    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+    pp @client.errors
+    @invoice = Invoice.create(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
   end
 
   # GET /invoices/1/edit
@@ -24,12 +26,13 @@ class InvoicesController < ApplicationController
   # POST /invoices
   # POST /invoices.json
   def create
-    @invoice = Invoice.new(invoice_params)
+    @invoice = current_user.company.invoices.new(invoice_params)
+    @invoice.user_id = current_user.id
 
     respond_to do |format|
       if @invoice.save
-        format.html { redirect_to @invoice, notice: 'Invoice was successfully created.' }
-        format.json { render :show, status: :created, location: @invoice }
+        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Invoice was successfully created.' }
+        format.json { render :edit, status: :created, location: @invoice }
       else
         format.html { render :new }
         format.json { render json: @invoice.errors, status: :unprocessable_entity }
@@ -41,8 +44,8 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1.json
   def update
     respond_to do |format|
-      if @invoice.update(invoice_params)
-        format.html { redirect_to @invoice, notice: 'Invoice was successfully updated.' }
+      if @invoice.update(invoice_params, params[:send_to_afip])
+        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Invoice was successfully updated.' }
         format.json { render :show, status: :ok, location: @invoice }
       else
         format.html { render :edit }
@@ -61,23 +64,21 @@ class InvoicesController < ApplicationController
     end
   end
 
-  def create_client
-    @client = current_user.company.clients.create(client_params)
-    @invoice = Invoice.new(client_id: @client.id)
-    respond_to do |format|
-      format.js { render template: '/invoices/client/set_client.js.erb'}
-    end
+  def autocomplete_product_code
+    term = params[:term]
+    products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code} }
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_invoice
-      @invoice = Invoice.find(params[:id])
+      @invoice = current_user.company.invoices.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id)
+      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, payments_attributes: [:id, :type_of_payment, :total, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
     end
 
     def client_params

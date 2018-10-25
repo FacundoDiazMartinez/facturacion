@@ -4,6 +4,7 @@
 @import "font-awesome";
 @import "companies";
 @import "bootstrap-datepicker";
+@import "jquery-ui";
 
 
 
@@ -85,4 +86,19 @@ a.nav-link:hover{
 .input-group-text > a:hover{
   color: black;
   background-color: transparent;
+}
+
+.full_height{
+  height: 100vh;
+}
+
+.nav-col{
+  margin-left: -30px;
+}
+
+td.verical-align{
+  vertical-align: middle;
+}
+td > a:visited{
+  color: black;
 }

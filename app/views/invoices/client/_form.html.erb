@@ -4,7 +4,7 @@
     <%= text_field_tag :client_name, @invoice.client_name, class: 'form-control', readonly: true %>
     <div class="input-group-append">
       <span class="input-group-text">
-        <%= link_to icon('far' , 'edit').html_safe, new_client_path(), data:{toggle: 'modal', target: '#clientModal', remote: true} %>
+        <%= link_to icon('far' , 'edit').html_safe, edit_invoice_client_path(@invoice.id), data: {toggle: 'modal', target: '#clientModal', remote: true} %>
       </span>
     </div>
   </div>
@@ -20,3 +20,5 @@
   <%= label_tag :client_iva_cond, "Condicion I.V.A." %>
   <%= text_field_tag :client_iva_cond, @invoice.client_iva_cond, class: 'form-control', readonly: true %>
 </div>
+
+<%= f.hidden_field :client_id, value: @invoice.client_id %>
