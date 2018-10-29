@@ -1,0 +1,45 @@
+.ui-menu-item-wrapper {
+  font-size: 15px;
+  height: 100%;
+  margin:10px 0;
+  z-index: 10000;
+}
+
+.ui-menu-item-wrapper:hover, .ui-menu-item-wrapper:focus {
+  padding:10px 10px;
+  font-size: 15px;
+  z-index: 10000;
+  cursor: pointer;
+}
+
+ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover {
+  padding:10px 10px;
+  font-size: 15px;
+  border-bottom-left-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+  z-index: 10000;
+}
+
+.ui-menu.ui-widget.ui-widget-content.ui-autocomplete.ui-front {
+  border-bottom-left-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+  z-index: 10000;
+}
+
+.ui-menu-item {
+  border-bottom: 1px solid rgba(0,0,0,0.2);
+  z-index: 10000;
+}
+
+.ui-menu{
+	max-width: 20vw;
+	background-color: white;
+	border-style: solid;
+	border-width: 1px;
+	list-style-type: none;
+}

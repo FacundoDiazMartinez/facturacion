@@ -15,7 +15,6 @@ class InvoicesController < ApplicationController
   # GET /invoices/new
   def new
     @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
-    pp @client.errors
     @invoice = Invoice.create(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
   end
 
@@ -25,20 +24,20 @@ class InvoicesController < ApplicationController
 
   # POST /invoices
   # POST /invoices.json
-  def create
-    @invoice = current_user.company.invoices.new(invoice_params)
-    @invoice.user_id = current_user.id
+  # def create
+  #   @invoice = current_user.company.invoices.new(invoice_params)
+  #   @invoice.user_id = current_user.id
 
-    respond_to do |format|
-      if @invoice.save
-        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Invoice was successfully created.' }
-        format.json { render :edit, status: :created, location: @invoice }
-      else
-        format.html { render :new }
-        format.json { render json: @invoice.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  #   respond_to do |format|
+  #     if @invoice.save
+  #       format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Invoice was successfully created.' }
+  #       format.json { render :edit, status: :created, location: @invoice }
+  #     else
+  #       format.html { render :new }
+  #       format.json { render json: @invoice.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
 
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
@@ -67,7 +66,7 @@ class InvoicesController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit} }
   end
 
   private

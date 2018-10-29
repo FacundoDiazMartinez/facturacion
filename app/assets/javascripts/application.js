@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
-//= require autocomplete-rails
+
 //= require jquery_nested_form
 //= require invoices
 //= require bootstrap
@@ -23,6 +23,7 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require popper
 //= require_tree .
+//= require autocomplete-rails
 
 $(document).ready(function() {
   $('btn').on('click', function() {

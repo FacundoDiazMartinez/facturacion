@@ -1,7 +1,1 @@
 $("#client_modal").html("<%= j render template: '/clients/edit.html.erb' %>");
-<% if not @client.errors.any? %>
-	$("#clientModal").modal('hide');
-	'<%= form_for @invoice do |form| %>'
-		$("#client_form").html("<%= j render '/invoices/client/form', f: form %>");
-	'<% end %>'
-<% end %>

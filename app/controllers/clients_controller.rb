@@ -24,20 +24,21 @@ class ClientsController < ApplicationController
 	end
 
 	def update
-		client_exists = current_user.company.clients.where(document_type: params[:client][:document_type], document_number: params[:client][:document_number])
-		if client_exists.empty?
-			@client = @invoice.client
+		client_exists = current_user.company.clients.where(client_params)
+		if client_exists.empty? #Si no existe
+			@client = current_user.company.clients.create(client_params)
 		else
 			@client = client_exists.first
-			@invoice.update_column(:client_id, @client.id)
 		end
+		@invoice.update_column(:client_id, @client.id)
+		@invoice.update_column(:cbte_tipo, @invoice.available_cbte_type.last.last)
 		respond_to do |format|
 			if @client.update(client_params)
 				format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Cliente creado con éxito.' }
-				format.js 	{ render :edit }
+				format.js 	{ render :edit_client }
 	      	else
 	        	format.html { render :edit }
-	        	format.js 	{ render :edit }
+	        	format.js 	{ render :edit_client }
 	      	end
 	    end
 	end

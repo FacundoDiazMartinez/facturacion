@@ -3,5 +3,6 @@
 <% else %>
 	<h1><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
 <% end %>
-<%= render 'form', invoice: @invoice %>
-
+<div id="invoice_form">
+	<%= render 'form' %>
+</div>
