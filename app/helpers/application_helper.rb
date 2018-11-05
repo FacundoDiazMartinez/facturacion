@@ -48,17 +48,27 @@ module ApplicationHelper
 		end
 	end
 	def will_paginate_helper param_name
-		will_paginate @resource, :page_links => true,
+		will_paginate @resource, list_classes: %w(pagination justify-content-center), :page_links => true,
 		 							 :inner_window => 1,
 		  							 :outer_window => 1,
 		  							 :param_name => param_name || "page",
 		   							 :previous_label => '← Anterior',
 		    						 :next_label => 'Siguiente →',
-		     						 renderer: BootstrapPagination::Rails
+		     						 renderer: WillPaginate::ActionView::BootstrapLinkRenderer
 	end
 
 	def javascript_paginate_helper
 		javascript_tag("$('ul.pagination a').click(function(){$.getScript(this.href); return false; });")
+	end
+
+	def boolean_to_icon bool
+		if bool
+			icon = 'check-square'
+			"<div style='color: green;'> #{icon('fas', icon)} </div>".html_safe
+		else
+			icon = 'minus-square'
+			"<div style='color: red;'> #{icon('fas', icon)} </div>".html_safe
+		end
 	end
 
 end

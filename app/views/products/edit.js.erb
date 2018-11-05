@@ -1,0 +1,6 @@
+<% if @product_category %>
+	'<%= form_for Product.new do |f| %> '
+		$("#product_category_form").html("<%= j f.select :product_category_id, options_for_select(current_user.company.product_categories.all.map{|pc| [pc.name, pc.id]}, @product_category.id), {include_blank: "Sin categoría"}, {:class => 'form-control'} %>");
+	'<% end %>'
+	$("#product_category_modal").modal('hide');
+<% end %>

@@ -1,5 +1,6 @@
 @import "autocomplete";
 @import "bootstrap";
+@import "bootstrap-toggle";
 @import "scaffolds";
 @import "font-awesome-sprockets";
 @import "font-awesome";
@@ -15,6 +16,19 @@ body{
 
 label{
 	font-weight: bold;
+}
+
+.off{
+  color: white;
+  background-color: red;
+}
+
+.caption{
+  padding: 15px;
+}
+
+.green{
+  color: green;
 }
 
 .col-form-label{

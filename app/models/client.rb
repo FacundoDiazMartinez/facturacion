@@ -1,5 +1,7 @@
 class Client < ApplicationRecord
 	has_many :invoices
+	has_many :receipts, through: :invoices
+	has_many :account_movements
 	belongs_to :company
 
 	validates_numericality_of :document_number, message: 'Ingrese un numero de documento valido.'
@@ -31,6 +33,14 @@ class Client < ApplicationRecord
 
 		def default_client?
 			document_type == "99" && document_number == "0"
+		end
+
+		def full_document
+			"#{Afip::DOCUMENTOS.key(document_type)}: #{document_number}"
+		end
+
+		def birthday
+			read_attribute("birthday") || "Sin registrar"
 		end
 	#FUNCIONES
 end

@@ -1,43 +1,69 @@
-<p id="notice"><%= notice %></p>
+<h1 class="d-flex mb-2">
+  <div class="p-2">
+    <%= icon('fas', 'cubes') %>
+    Productos
+  </div>
+  <div class="ml-auto p-2">
+    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+    <%= link_to "#{icon('fas', 'plus')} Agregar producto".html_safe, new_product_path(), class: 'btn btn-primary ' %>
+  </div>
+</h1>
+<!-- Buscador de productos -->
+  <%= form_tag products_path(), {class: 'form-inline'} do %>
 
-<h1>Products</h1>
+    <!-- BUSCAR POR NOMBRE -->
+      <%= label_tag :product_name, "Nombre", class: 'sr-only' %>
+      <div class="input-group mb-2 mr-sm-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
+        </div>
+        <%= text_field_tag :product_name, params[:product_name], class: 'form-control', placeholder: 'Buscar por nombre' %>
+      </div>
+    <!-- BUSCAR POR NOMBRE -->
 
-<table>
-  <thead>
-    <tr>
-      <th>Code</th>
-      <th>Name</th>
-      <th>Active</th>
-      <th>Product category</th>
-      <th>List price</th>
-      <th>Price</th>
-      <th>Net price</th>
-      <th>Photo</th>
-      <th>Measurement unit</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+    <!-- BUSCAR POR CÓDIGO -->
+      <%= label_tag :product_code, "Código", class: 'sr-only' %>
+      <div class="input-group mb-2 mr-sm-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
+        </div>
+        <%= text_field_tag :product_code, params[:product_code], class: 'form-control', placeholder: 'Buscar por código' %>
+      </div>
+    <!-- BUSCAR POR CÓDIGO -->
 
-  <tbody>
-    <% @products.each do |product| %>
-      <tr>
-        <td><%= product.code %></td>
-        <td><%= product.name %></td>
-        <td><%= product.active %></td>
-        <td><%= product.product_category %></td>
-        <td><%= product.list_price %></td>
-        <td><%= product.price %></td>
-        <td><%= product.net_price %></td>
-        <td><%= product.photo %></td>
-        <td><%= product.measurement_unit %></td>
-        <td><%= link_to 'Show', product %></td>
-        <td><%= link_to 'Edit', edit_product_path(product) %></td>
-        <td><%= link_to 'Destroy', product, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <!-- BUSCAR POR CATEGORÍA -->
+      <%= label_tag :product_category, "Categoría", class: 'sr-only' %>
+      <div class="input-group mb-2 mr-sm-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
+        </div>
+        <%= text_field_tag :product_category, params[:product_category], class: 'form-control', placeholder: 'Buscar por categoría' %>
+      </div>
+    <!-- BUSCAR POR CATEGORÍA -->
+  <% end %>
+<!-- Buscador de productos -->
 
-<br>
 
-<%= link_to 'New Product', new_product_path %>
+
+<%= form_tag products_path, id:'onlystock', remote: true do %>
+  <label>
+    <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'myModal("#onlystock")'} %> 
+    Mostrar solo Productos con stock disponible
+  </label>
+<% end %>
+
+<!-- Importar y exportar productos -->
+  <%= link_to "#{icon('fas', 'file-excel')} Exportar productos".html_safe, export_products_path(format: :xlsx) %> |
+  <%= link_to "#{icon('far', 'file-excel')} Importar productos".html_safe, import_products_path(format: :xlsx) %>
+<!-- Importar y exportar productos -->
+<hr>
+<!-- Tabla de Producto -->
+  <div id="products_table">
+    <%= render 'products_table' %>
+  </div>
+<!-- Tabla de Producto -->
+
+<% if @products.empty? %>
+  <center><h1>¡Todavia no cargaste ningún producto!</h1></center>
+  <center><%= link_to "#{icon('fas', 'plus')} Agregar producto".html_safe, new_product_path, class: 'btn btn-primary' %></center>
+<% end %>

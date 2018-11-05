@@ -41,6 +41,29 @@ es:
         cbte_hasta: "Fin del servicio"
         iva_cond: "Condición ante I.V.A."
         comp_number: "Nº comprobante"
+      product:
+        photo: "Imagen"
+        product_category_id: "Categoría"
+        code: "Código"
+        name: "Nombre"
+        measurement_unit: "Unidad de medida"
+        cost_price: "Precio de costo"
+        gain_margin: "Margen de ganancia (%)"
+        net_price: "Precio neto"
+        iva_aliquot: "Alicuota de I.V.A."
+        price: "Precio final"
+      product_category:
+        name: "Nombre"
+        iva_aliquot: "Alicuota de I.V.A."
+      supplier:
+        name: "Nombre"
+        document_type: "Tipo de documento"
+        document_number: "Documento"
+        phone: "Teléfono"
+        mobile_phone: "Celular"
+        address: "Dirección"
+        email: "E-mail"
+        cbu:  "C.B.U."
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"

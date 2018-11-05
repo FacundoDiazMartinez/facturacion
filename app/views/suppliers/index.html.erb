@@ -1,0 +1,27 @@
+<!-- TITULO -->
+  <h1 class="d-flex mb-2">
+    <div class="p-2">
+      <%= icon('fas', 'plane') %>
+      Proveedores
+    </div>
+    <div class="ml-auto p-2">
+      <%= link_to "#{icon('fas', 'plus')} Agregar proveedor".html_safe, new_supplier_path(), class: 'btn btn-primary', data: {remote: true, toggle: 'modal', target: '#supplierModal'} %>
+      <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+    </div>
+  </h1>
+<!-- TITULO -->
+
+<!-- TABLA -->
+  <div id="suppliers_table">
+    <%= render 'suppliers_table' %>
+  </div>
+<!-- TABLA -->
+
+<div class="modal fade bd-example-modal-lg" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="supplier_modal">
+      </div>
+    </div>
+  </div>
+</div>

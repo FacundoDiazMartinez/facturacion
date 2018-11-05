@@ -1,0 +1,29 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Nombre</th>
+      <th scope="col">Cant. productos</th>
+      <th scope="col">Espacio total</th>
+      <th scope="col">Ubicación</th>
+      <th scope="col">¿Lleno?</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @depots.each do |depot| %>
+      <tr>
+        <td><%= depot.name %></td>
+        <td><%= depot.stock_count %></td>
+        <td><%= depot.stock_limit %></td>
+        <td><%= depot.location %></td>
+        <td><%= boolean_to_icon(depot.filled) %></td>
+        <td><%= link_to icon('fas', 'eye'), depot %></td>
+        <td><%= link_to icon('fas', 'edit'), edit_depot_path(depot.id), data: {remote: true, toggle: 'modal', target: '#depotModal'} %></td>
+        <td><%= link_to icon('fas', 'trash'), depot, method: :delete, data: {confirm: '¿Estás seguro?'} %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @depots %>

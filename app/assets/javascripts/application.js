@@ -17,6 +17,7 @@
 //= require jquery_nested_form
 //= require invoices
 //= require bootstrap
+//= require bootstrap-toggle
 //= require z.jquery.fileupload
 //= require activestorage
 //= require bootstrap-datepicker/core
@@ -41,6 +42,9 @@ $(document).ready(function() {
   $("#image").on("click", function(){
     document.getElementById('file_input').click();
   })
+
+  $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?");
+  $('input[type="checkbox"]').bootstrapToggle();
 });
 
 

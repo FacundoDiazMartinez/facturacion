@@ -3,7 +3,11 @@ class Company < ApplicationRecord
 	has_many :users
 	has_many :clients
 	has_many :invoices
+	has_many :product_categories
 	has_many :products
+	has_many :receipts, through: :invoices
+	has_many :depots
+	has_many :suppliers
 
 	belongs_to :province
 	belongs_to :locality

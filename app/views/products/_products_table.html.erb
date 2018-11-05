@@ -1,0 +1,30 @@
+<div class="row">
+	<% @products.each do |product|%>
+		<div class="col-lg-3 col-sm-6 col-xs-12">
+			<div class="thumbnail card">
+				<%= link_to product_path(product.id) do %>
+					<center>
+		      			<%= image_tag product.photo, alt: product.name, class: 'img-thumbnail', style: 'height: 25vh;' %>
+		      		</center>
+		      	<% end -%>
+		      	<div class="caption">
+		        	<h3 class="text-truncate"><%= product.name %></h3>
+			        <div class="text-truncate">
+		        		<strong>Categoria: </strong><%= product.category_name %>
+		        	</div>
+		        	<div class="row">
+			        	<div class="col-md-6 col-xs-12 text-truncate"><strong>Precio: <span class="green">$ <%= number_with_delimiter(product.price) %></span></strong></div>
+			        	<div class="col-md-6 col-xs-12 text-truncate text-right"><strong>Stock: </strong>Falta <%= link_to icon('fas', 'edit'), edit_product_path(product.id) %></div>
+			        </div>
+			        <div style="margin-top: 10px;">
+			        	<%= link_to icon('fas', 'eye'), product, class: 'btn btn-primary' %>
+			        	<%= link_to icon('fas', 'edit'), edit_product_path(product), class: 'btn btn-secondary' %>
+			        	<%= link_to icon('fas', 'trash'), product, method: :delete, data: {confirm: '¿Está seguro?'}, class: 'btn btn-danger float-right' %>
+			        </div>
+		      	</div>
+		    </div>
+		</div>
+	<% end %>
+</div>
+
+<%= paginate @products %>

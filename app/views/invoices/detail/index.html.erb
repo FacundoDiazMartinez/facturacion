@@ -1,6 +1,7 @@
 <table class="table table-striped" id="details">
 	<thead>
 		<tr>
+			<th></th>
 			<th scope="col">Código</th>
 			<th scope="col">Producto/Servicio</th>
 			<th scope="col">Precio unitario</th>
@@ -17,6 +18,8 @@
 		<%= form.fields_for :invoice_details, wrapper: false do |f| %>
 	      	<tr class="fields">
 	      		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
+
+	      			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>
 	      			<td><%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'autocomplete_field form-control' %></td>
 					<td><%= pf.text_field :name, class: 'form-control name' %></td>
 					<td><%= pf.number_field :price, class: 'form-control price' %></td>

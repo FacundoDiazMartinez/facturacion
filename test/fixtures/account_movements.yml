@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  client: one
+  invoice: one
+  receipt: one
+  days: 1
+  cbte_tipo: MyString
+  debe: false
+  haber: false
+
+two:
+  client: two
+  invoice: two
+  receipt: two
+  days: 1
+  cbte_tipo: MyString
+  debe: false
+  haber: false

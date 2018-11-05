@@ -1,0 +1,19 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Producto</th>
+      <th scope="col">Estado</th>
+      <th scope="col">Cantidad</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @stocks.each do |stock| %>
+      <tr>
+        <td><%= stock.product.name %></td>
+        <td><%= stock.state %></td>
+        <td><%= stock.quantity %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

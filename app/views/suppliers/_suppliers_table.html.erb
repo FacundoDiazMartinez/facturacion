@@ -1,0 +1,32 @@
+<table class="table table-stripped">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Documento</th>
+      <th>Teléfono</th>
+      <th>Celular</th>
+      <th>Dirección</th>
+      <th>E-mail</th>
+      <th>C.B.U.</th>
+      <th colspan="2"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @suppliers.each do |supplier| %>
+      <tr>
+        <td><%= supplier.name %></td>
+        <td><%= supplier.full_document %></td>
+        <td><%= supplier.phone %></td>
+        <td><%= supplier.mobile_phone %></td>
+        <td><%= supplier.address %></td>
+        <td><%= supplier.email %></td>
+        <td><%= supplier.cbu %></td>
+        <td><%= link_to icon('fas', 'edit'), edit_supplier_path(supplier), data: {remote: true, toggle: 'modal', target: '#supplierModal'} %></td>
+        <td><%= link_to icon('fas', 'trash'), supplier, method: :delete, data: { confirm: '¿Estás seguro?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @suppliers %>

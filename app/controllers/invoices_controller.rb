@@ -20,6 +20,7 @@ class InvoicesController < ApplicationController
 
   # GET /invoices/1/edit
   def edit
+    @client = @invoice.client
   end
 
   # POST /invoices

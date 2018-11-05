@@ -24,12 +24,13 @@ class ProductCategoriesController < ApplicationController
   # POST /product_categories
   # POST /product_categories.json
   def create
-    @product_category = ProductCategory.new(product_category_params)
+    @product_category = current_user.company.product_categories.new(product_category_params)
 
     respond_to do |format|
       if @product_category.save
         format.html { redirect_to @product_category, notice: 'Product category was successfully created.' }
         format.json { render :show, status: :created, location: @product_category }
+        format.js   { render template: '/products/edit.js.erb'}
       else
         format.html { render :new }
         format.json { render json: @product_category.errors, status: :unprocessable_entity }

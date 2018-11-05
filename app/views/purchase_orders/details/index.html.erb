@@ -1,0 +1,41 @@
+<table class="table table-striped" id="details">
+	<thead>
+		<tr>
+			<th></th>
+			<th scope="col">Código</th>
+			<th scope="col">Producto</th>
+			<th scope="col">Precio unitario</th>
+			<th scope="col">Medida</th>
+			<th scope="col">Cantidad</th>
+			<th style="display: <%= @invoice.cbte_tipo == '01' ? 'block' : 'none'%>;" scope="col">Alicuota I.V.A. (%)</th>
+			<th scope="col">% Bonificado</th>
+			<th scope="col">Monto Bonificado</th>
+			<th scope="col">Subtotal</th>
+			<th scope="col"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= form.fields_for :invoice_details, wrapper: false do |f| %>
+	      	<tr class="fields">
+	      		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
+
+	      			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>
+	      			<td><%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'autocomplete_field form-control' %></td>
+					<td><%= pf.text_field :name, class: 'form-control name' %></td>
+					<td><%= pf.number_field :price, class: 'form-control price' %></td>
+					<td><%= pf.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control measurement_unit'} %></td>
+					<%= pf.hidden_field :company_id, value: current_user.company_id %>
+				<% end %>
+				<td><%= f.number_field :quantity, class: 'form-control quantity' %></td>
+				<% if @invoice.cbte_tipo == "01" %>
+					<td><%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, "05"), {}, {class: 'form-control iva_aliquot'} %></td>
+				<% end %>
+				<td><%= f.number_field :bonus_percentage, class: 'form-control bonus_percentage' %></td>
+				<td><%= f.number_field :bonus_amount, class: 'form-control bonus_amount' %></td>
+				<%= f.hidden_field :iva_amount, class: 'form-control iva_amount' %>
+				<td><%= f.number_field :subtotal, class: 'form-control subtotal', readonly: true %></td>
+				<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
+	      	</tr>
+	    <% end %>
+	</tbody>
+</table>

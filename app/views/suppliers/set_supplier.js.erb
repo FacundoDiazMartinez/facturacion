@@ -1,0 +1,8 @@
+'<% if not @supplier.errors.any? %>'
+	$("#supplierModal").modal('hide');
+	$('#supplierModal').on('hidden.bs.modal', function (e) {
+	  	$("#suppliers_table").html("<%= j render '/suppliers/suppliers_table' %>");
+	});
+'<% else %>'
+	$("#supplier_errors").html("<%= j error_explanation(@supplier) %>");
+'<% end %>'

@@ -1,0 +1,27 @@
+<!-- TITULO -->
+  <h1 class="d-flex mb-2">
+      <div class="p-2">
+          <%= icon('fas', 'archive') %>
+          Depósitos
+      </div>
+      <div class="ml-auto p-2">
+          <%= link_to "#{icon('fas', 'plus')} Añadir depósito".html_safe, new_depot_path, class: 'btn btn-primary', data: {remote: true, toggle: 'modal', target: '#depotModal'} %>
+          <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+      </div>
+  </h1>
+<!-- TITULO -->
+
+<!-- STOCK ASOCIADO -->
+  <div id="depots_table">
+    <%= render 'depots_table' %>
+  </div>
+<!-- STOCK ASOCIADO -->
+
+<div class="modal fade bd-example-modal-lg" id="depotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="depot_modal">
+      </div>
+    </div>
+  </div>
+</div>

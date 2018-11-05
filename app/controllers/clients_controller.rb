@@ -1,59 +1,74 @@
 class ClientsController < ApplicationController
-	before_action :set_invoice, only: [:edit, :update]
-	before_action :set_client, only: [:edit, :update]
+  before_action :set_client, only: [:show, :edit, :update, :destroy]
 
-	def new
-		@client = Client.new
-	end
+  # GET /clients
+  # GET /clients.json
+  def index
+    @clients = current_user.company.clients.paginate(per_page: 10, page: params[:page])
+  end
 
-	def edit
-		
-	end
+  # GET /clients/1
+  # GET /clients/1.json
+  def show
+  end
 
-	def create
-		@client = current_user.company.clients.new(client_params)
-		respond_to do |format|
-			if @client.save
-				format.html { redirect_to @client, notice: 'Cliente creado con éxito.' }
-	        	format.json { render :show, status: :created, location: @company }
-	      	else
-	        	format.html { render :new }
-	        	format.json { render json: @company.errors, status: :unprocessable_entity }
-	      	end
-	    end
-	end
+  # GET /clients/new
+  def new
+    @client = Client.new
+  end
 
-	def update
-		client_exists = current_user.company.clients.where(client_params)
-		if client_exists.empty? #Si no existe
-			@client = current_user.company.clients.create(client_params)
-		else
-			@client = client_exists.first
-		end
-		@invoice.update_column(:client_id, @client.id)
-		@invoice.update_column(:cbte_tipo, @invoice.available_cbte_type.last.last)
-		respond_to do |format|
-			if @client.update(client_params)
-				format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Cliente creado con éxito.' }
-				format.js 	{ render :edit_client }
-	      	else
-	        	format.html { render :edit }
-	        	format.js 	{ render :edit_client }
-	      	end
-	    end
-	end
+  # GET /clients/1/edit
+  def edit
+  end
 
-	protected
+  # POST /clients
+  # POST /clients.json
+  def create
+    @client = Client.new(client_params)
 
-		def set_invoice
-			@invoice = current_user.company.invoices.find(params[:invoice_id])
-		end
+    respond_to do |format|
+      if @client.save
+        format.html { redirect_to @client, notice: 'Client was successfully created.' }
+        format.json { render :show, status: :created, location: @client }
+      else
+        format.html { render :new }
+        format.json { render json: @client.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
-		def set_client
-			@client = @invoice.client
-		end
+  # PATCH/PUT /clients/1
+  # PATCH/PUT /clients/1.json
+  def update
+    respond_to do |format|
+      if @client.update(client_params)
+        format.html { redirect_to @client, notice: 'Client was successfully updated.' }
+        format.json { render :show, status: :ok, location: @client }
+      else
+        format.html { render :edit }
+        format.json { render json: @client.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
-		def client_params
-			params.require(:client).permit(:name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond)
-		end
+  # DELETE /clients/1
+  # DELETE /clients/1.json
+  def destroy
+    @client.destroy
+    respond_to do |format|
+      format.html { redirect_to clients_url, notice: 'Client was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
+
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_client
+      @client = Client.find(params[:id])
+    end
+
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def client_params
+      params.require(:client).permit(:name, :phone, :mobile_phone, :email, :address, :document_type, :document_number, :birthday, :iva_cond)
+    end
 end

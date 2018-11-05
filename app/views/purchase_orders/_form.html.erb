@@ -1,0 +1,107 @@
+<%= nested_form_for @purchase_order do |form| %>
+  <% if @purchase_order.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@purchase_order.errors.count, "error") %> prohibited this @purchase_order from being saved:</h2>
+
+      <ul>
+      <% @purchase_order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- HEADER -->
+    <div class="card shadow">
+      <div class="card-body">
+        <div class="row">
+          <!-- PRIMERA COLUMNA -->
+          <div class="col-sm">
+            <div class="form-group">
+              <%= form.label :supplier_id, "Cliente" %>
+              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control'} %>
+            </div>
+
+            <div id="supplier_form">
+              <%= render '/purchase_orders/supplier_column' %>
+            </div>
+          </div>
+          <!-- PRIMERA COLUMNA -->
+
+          <!-- SEGUNDA COLUMNA -->
+          <div class="col-sm">
+
+            <div class="form-group">
+              <%= form.label :total %>
+              <%= form.text_field :total, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :total_pay %>
+              <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <div class="input-group">
+                <div class="custom-file">
+                  <%= form.file_field :budget, class: 'custom-file-input' %>
+                  <%= form.label :budget, "Presupuesto", class: 'custom-file-label' %>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <!-- SEGUNDA COLUMNA -->
+
+
+          <!-- TERCERA COLUMNA -->
+          <div class="col-sm">
+
+            <div class="form-group">
+              <%= form.label :state %>
+              <%= form.text_field :state, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :created_at %>
+              <%= form.text_field :created_at, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :shipping, "¿Incluye transporte?" %>
+              <div class="row">
+                <div class="col-2">
+                  <%= form.check_box :shipping, checked: true, data:{toggle: 'toggle', on: "Si", off: "No"} %>
+                </div>
+                <div class="col-10">
+                  <%= form.number_field :shipping_cost, class: 'form-control' %>
+                </div>
+            </div>
+          </div>
+          <!-- TERCERA COLUMNA -->
+        </div>
+
+        <!-- BOTONES DE ACCION -->
+            <center>
+              <% if not @purchase_order.new_record? %>
+                <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
+              <% end %>
+            </center>
+        <!-- BOTONES DE ACCION -->
+      </div>
+    </div>
+  <!-- HEADER -->
+
+  <hr>
+  <!-- DETALLE -->
+    <div class="card shadow">
+      <%#= render template: '/purchase_orders/detail/index.html.erb', locals:{form: form} %>
+    </div>
+  <!-- DETALLE -->
+
+  <hr>
+  <center>
+    <%= save_button %>
+  </center>
+
+<% end %>

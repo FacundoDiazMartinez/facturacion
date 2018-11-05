@@ -1,0 +1,13 @@
+<h1 class="d-flex mb-2">
+  <div class="p-2">
+    <%= icon('fas', 'briefcase') %> 
+    Cuenta corriente de <%= @client.name %>
+  </div>
+  <div class="ml-auto p-2">
+    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+  </div>
+</h1>
+
+<div id="account_movements_table">
+	<%= render 'account_movements_table' %>
+</div>

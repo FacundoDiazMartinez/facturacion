@@ -22,6 +22,13 @@ class InvoiceDetail < ApplicationRecord
     def set_total_to_invoice
       invoice.update_attribute(:total, invoice.sum_details)
     end
+
+    def product_attributes=(attributes)
+      if !attributes['id'].blank?
+        self.product = Product.find(attributes['id'])
+      end
+      super
+    end
   #PROCESOS
 
   #ATRIBUTOS

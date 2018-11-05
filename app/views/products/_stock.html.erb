@@ -1,0 +1,23 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Ubicación</th>
+      <th scope="col">Estado</th>
+      <th scope="col">Cantidad</th>
+      <th colspan="1"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @stocks.each do |stock| %>
+      <tr>
+        <td><%= link_to stock.depot.name, depot_path(stock.depot.id) %></td>
+        <td><%= stock.state %></td>
+        <td><%= stock.quantity %></td>
+        <td><%= link_to icon('fas', 'eye'), depot_path(stock.depot.id) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @stocks %>

@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Invoice:</strong>
+  <%= @receipt.invoice %>
+</p>
+
+<p>
+  <strong>Client:</strong>
+  <%= @receipt.client %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @receipt.active %>
+</p>
+
+<p>
+  <strong>Total:</strong>
+  <%= @receipt.total %>
+</p>
+
+<p>
+  <strong>Date:</strong>
+  <%= @receipt.date %>
+</p>
+
+<p>
+  <strong>Observation:</strong>
+  <%= @receipt.observation %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @receipt.company %>
+</p>
+
+<%= link_to 'Edit', edit_receipt_path(@receipt) %> |
+<%= link_to 'Back', receipts_path %>

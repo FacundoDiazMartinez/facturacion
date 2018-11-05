@@ -8,11 +8,15 @@ class Invoice < ApplicationRecord
     has_many :invoice_details
     has_many :products, through: :invoice_details
 
+    has_one  :receipt
+    has_one  :account_movement
+
     accepts_nested_attributes_for :payments, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
+    after_save :touch_account_movement, if: Proc.new{|i| i.saved_change_to_total?}
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -140,6 +144,22 @@ class Invoice < ApplicationRecord
             get_cae
           end
           return response && !self.errors.any?
+      end
+
+      def touch_account_movement
+        pp "ENTRO"
+        if cbte_tipo != nil
+          "AHORA ENTRO ACA"
+          am              = AccountMovement.where(invoice_id: id).first_or_initialize
+          am.client_id    = client_id
+          am.invoice_id   = id
+          am.cbte_tipo    = Afip::CBTE_TIPO[cbte_tipo]
+          am.debe         = true
+          am.haber        = false
+          am.total        = total.to_f
+          am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
+          am.save
+        end
       end
     #PROCESOS
 

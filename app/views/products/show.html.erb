@@ -1,49 +1,120 @@
-<p id="notice"><%= notice %></p>
+<!-- TITULO -->
+	<h1 class="d-flex mb-2">
+	    <div class="p-2">
+	      	<%= icon('fas', 'cube') %>
+	      	<%= @product.name %>
+	    </div>
+	    <div class="ml-auto p-2">
+	    	<%= link_to "#{icon('fas', 'edit')} Editar".html_safe, edit_product_path(@product.id), class: 'btn btn-primary' %>
+	      	<%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+	    </div>
+	</h1>
+<!-- TITULO -->
+<hr>
+<!-- DESCRIPCIÓN -->
+	<div class="row">
 
-<p>
-  <strong>Code:</strong>
-  <%= @product.code %>
-</p>
+	    <!-- IMAGEN DEL PRODUCTO -->
+	      	<div class="col-4">
+	        	<div class="form-group">
+	          		<h3><%= icon('fas', 'image') %> Imagen </h3>
+	          		<div class="comp_container shadow">
+	            		<img class="card-img-top" src="<%= @product.photo %>" alt="<%= @product.name %>">
+	          		</div>
+	        	</div>
+	    	</div>
+	    <!-- IMAGEN DEL PRODUCTO -->
 
-<p>
-  <strong>Name:</strong>
-  <%= @product.name %>
-</p>
+	    <!-- INFORMACIÓN BÁSICA -->
+	      	<div class="col-8">
+	        	<h3><%= icon('fas', 'list') %> Información básica</h3>
+	        	<div class="row">
+  					<div class="col-sm-6">
+			        	<div class="card">
+			          		<div class="card-body shadow">
 
-<p>
-  <strong>Active:</strong>
-  <%= @product.active %>
-</p>
+			          			<div class="form-group row">
+			              			<%= label_tag :name, "Nombre:", class: 'col-sm-6 col-form-label' %>
+			              			<div class="col-sm-6 col-form-label text-left">
+			                			<%= @product.name %>
+			              			</div>
+			            		</div>
+			            		<div class="form-group row">
+			              			<%= label_tag :product_category_id, "Categoría:", class: 'col-sm-6 col-form-label' %>
+			              			<div class="col-sm-6 col-form-label text-left">
+			                			<%= @product.category_name %>
+			              			</div>
+			            		</div>
+					            <div class="form-group row">
+					              	<%= label_tag :code, "Código:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	<%= @product.code %>
+					              	</div>
+					            </div>
+					            <div class="form-group row">
+					              	<%= label_tag :stock, "Stock disponible:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	<%= @product.available_stock %>
+					              	</div>
+					            </div>
+					            <div class="form-group row">
+					              	<%= label_tag :measurement_unit, "Unidad de medida:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	<%= Product::MEASUREMENT_UNITS[@product.measurement_unit] %>
+					              	</div>
+					            </div>
+					        </div>
+					    </div>
+					</div>
 
-<p>
-  <strong>Product category:</strong>
-  <%= @product.product_category %>
-</p>
+					<div class="col-sm-6">
+					    <div class="card">
+			          		<div class="card-body shadow">
+					            <div class="form-group row">
+					              	<%= label_tag :cost_price, "Precio de costo:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	$<%= @product.cost_price %>
+					              	</div>
+					            </div>
+					            <div class="form-group row">
+					              	<%= label_tag :gain_margin, "Margen de ganancia:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	<%= @product.gain_margin %>%
+					              	</div>
+					            </div>
+					            <div class="form-group row">
+					              	<%= label_tag :net_price, "Precio neto:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	$<%= @product.net_price %>
+					              	</div>
+					            </div>
+					            <div class="form-group row">
+					              	<%= label_tag :iva_aliquot, "Alícuota de I.V.A.:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	<%= Afip::ALIC_IVA[@product.iva_aliquot].to_f * 100 %>%
+					              	</div>
+					            </div>
+					            <div class="form-group row">
+					              	<%= label_tag :price, "Precio final:", class: 'col-sm-6 col-form-label' %>
+					              	<div class="col-sm-6 col-form-label text-left">
+					                	$<%= @product.price %>
+					              	</div>
+					            </div>
 
-<p>
-  <strong>List price:</strong>
-  <%= @product.list_price %>
-</p>
+			         		</div>
+			        	</div>
+			        </div>
 
-<p>
-  <strong>Price:</strong>
-  <%= @product.price %>
-</p>
-
-<p>
-  <strong>Net price:</strong>
-  <%= @product.net_price %>
-</p>
-
-<p>
-  <strong>Photo:</strong>
-  <%= @product.photo %>
-</p>
-
-<p>
-  <strong>Measurement unit:</strong>
-  <%= @product.measurement_unit %>
-</p>
-
-<%= link_to 'Edit', edit_product_path(@product) %> |
-<%= link_to 'Back', products_path %>
+			        <div class="col-sm-12" style="margin-top: 30px;">
+			        	<h3><%= icon('fas', 'list') %> Stock </h3>
+					    <div class="card">
+			          		<div class="card-body shadow" id="stock">
+			          			<%= render 'stock' %>
+			          		</div>
+			          	</div>
+			        </div>
+		    	</div>
+		    </div>
+	    <!-- INFORMACIÓN BÁSICA -->
+	</div>
+<!-- DESCRIPCIÓN -->

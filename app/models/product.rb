@@ -2,6 +2,7 @@ class Product < ApplicationRecord
   	belongs_to :product_category, optional: true
   	belongs_to :company
   	has_many   :stocks
+  	has_many   :depots, through: :stocks
   	has_many   :invoice_details
   	has_many   :invoice, through: :invoice_details
 
@@ -66,5 +67,29 @@ class Product < ApplicationRecord
 	  	def full_name
 	  		"#{code} - #{name}"
 	  	end
+
+	  	def photo
+			read_attribute("photo") || "/images/default_product.jpg"
+		end
+
+		def category_name
+			product_category.nil? ? "Sin categoría" : product_category.name
+		end
+
+		def available_stock
+			stocks.where(state: "Disponible").count
+		end
 	#ATRIBUTOS
+
+	#PROCESOS
+		def self.create params
+			pp "NTEOOOOOOOOO"
+			product = Product.where(company_id: company_id, code: code).first_or_initialize
+			if produc.new_record?
+				super
+			else
+				update(params)
+			end
+		end
+	#PROCESOS
 end

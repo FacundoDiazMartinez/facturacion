@@ -10,10 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_19_181256) do
+ActiveRecord::Schema.define(version: 2018_11_01_182257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "account_movements", force: :cascade do |t|
+    t.bigint "client_id"
+    t.bigint "invoice_id"
+    t.bigint "receipt_id"
+    t.integer "days"
+    t.string "cbte_tipo", null: false
+    t.boolean "debe"
+    t.boolean "haber"
+    t.float "total", default: 0.0, null: false
+    t.float "saldo", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_account_movements_on_client_id"
+    t.index ["invoice_id"], name: "index_account_movements_on_invoice_id"
+    t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
+  end
 
   create_table "clients", force: :cascade do |t|
     t.string "name", null: false
@@ -29,6 +46,7 @@ ActiveRecord::Schema.define(version: 2018_10_19_181256) do
     t.bigint "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "saldo", default: 0.0, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
   end
 
@@ -57,6 +75,19 @@ ActiveRecord::Schema.define(version: 2018_10_19_181256) do
     t.bigint "locality_id", null: false
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "depots", force: :cascade do |t|
+    t.string "name"
+    t.boolean "active", default: true, null: false
+    t.bigint "company_id"
+    t.float "stock_count", default: 0.0, null: false
+    t.float "stock_limit", default: 0.0, null: false
+    t.boolean "filled", default: false, null: false
+    t.string "location", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_depots_on_company_id"
   end
 
   create_table "invoice_details", force: :cascade do |t|
@@ -145,9 +176,11 @@ ActiveRecord::Schema.define(version: 2018_10_19_181256) do
     t.boolean "active"
     t.bigint "product_category_id"
     t.bigint "company_id"
-    t.float "list_price"
-    t.float "price"
+    t.float "cost_price"
+    t.float "gain_margin"
     t.float "net_price"
+    t.float "price"
+    t.float "iva_aliquot"
     t.string "photo"
     t.string "measurement_unit"
     t.datetime "created_at", null: false
@@ -163,6 +196,51 @@ ActiveRecord::Schema.define(version: 2018_10_19_181256) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "purchase_order_details", force: :cascade do |t|
+    t.bigint "purchase_order_id"
+    t.bigint "product_id"
+    t.float "price", default: 0.0, null: false
+    t.float "quantity", default: 0.0, null: false
+    t.float "total", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_purchase_order_details_on_product_id"
+    t.index ["purchase_order_id"], name: "index_purchase_order_details_on_purchase_order_id"
+  end
+
+  create_table "purchase_orders", force: :cascade do |t|
+    t.string "state", default: "Pendiente", null: false
+    t.bigint "supplier_id"
+    t.text "observation"
+    t.float "total", default: 0.0, null: false
+    t.float "total_pay", default: 0.0, null: false
+    t.bigint "user_id"
+    t.boolean "shipping", default: false, null: false
+    t.float "shipping_cost", default: 0.0, null: false
+    t.bigint "company_id"
+    t.bigint "budget_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
+    t.index ["company_id"], name: "index_purchase_orders_on_company_id"
+    t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
+    t.index ["user_id"], name: "index_purchase_orders_on_user_id"
+  end
+
+  create_table "receipts", force: :cascade do |t|
+    t.bigint "invoice_id"
+    t.boolean "active", default: true, null: false
+    t.float "total", default: 0.0, null: false
+    t.date "date", null: false
+    t.string "observation"
+    t.string "cbte_tipo", default: "01", null: false
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_receipts_on_company_id"
+    t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
+  end
+
   create_table "sale_points", force: :cascade do |t|
     t.bigint "company_id"
     t.string "name"
@@ -173,11 +251,29 @@ ActiveRecord::Schema.define(version: 2018_10_19_181256) do
 
   create_table "stocks", force: :cascade do |t|
     t.bigint "product_id"
+    t.bigint "depot_id"
     t.string "state"
     t.float "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["depot_id"], name: "index_stocks_on_depot_id"
     t.index ["product_id"], name: "index_stocks_on_product_id"
+  end
+
+  create_table "suppliers", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "document_type"
+    t.string "document_number"
+    t.string "phone"
+    t.string "mobile_phone"
+    t.string "address"
+    t.string "email"
+    t.string "cbu"
+    t.boolean "active", default: true, null: false
+    t.bigint "company_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -227,7 +323,11 @@ ActiveRecord::Schema.define(version: 2018_10_19_181256) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "account_movements", "clients"
+  add_foreign_key "account_movements", "invoices"
+  add_foreign_key "account_movements", "receipts"
   add_foreign_key "clients", "companies"
+  add_foreign_key "depots", "companies"
   add_foreign_key "invoice_details", "invoices"
   add_foreign_key "invoice_details", "products"
   add_foreign_key "invoices", "clients"
@@ -239,6 +339,15 @@ ActiveRecord::Schema.define(version: 2018_10_19_181256) do
   add_foreign_key "product_categories", "companies"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"
+  add_foreign_key "purchase_order_details", "products"
+  add_foreign_key "purchase_order_details", "purchase_orders"
+  add_foreign_key "purchase_orders", "companies"
+  add_foreign_key "purchase_orders", "suppliers"
+  add_foreign_key "purchase_orders", "users"
+  add_foreign_key "receipts", "companies"
+  add_foreign_key "receipts", "invoices"
   add_foreign_key "sale_points", "companies"
+  add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
+  add_foreign_key "suppliers", "companies"
 end
