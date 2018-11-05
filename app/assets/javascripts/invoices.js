@@ -1,5 +1,7 @@
 
 $(document).on('railsAutocomplete.select', '.autocomplete_field', function(event, data){
+	alert("entro")
+	$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.label);
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
@@ -15,7 +17,12 @@ $(document).on("change", ".price, .quantity", function(){
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
 
-	total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
+	if (bonus_amount.length) {
+		total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
+	}else{
+		total = (parseFloat(price.val()) * parseFloat(quantity.val()));
+	}
+
 	subtotal.val(total)
 });
 

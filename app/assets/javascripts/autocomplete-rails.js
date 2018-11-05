@@ -39,7 +39,7 @@
     this.init(_e);
   };
   jQuery.railsAutocomplete.options = {
-    showNoMatches: false,
+    showNoMatches: true,
     noMatchesLabel: 'No se encontro resultado.'
   }
 
@@ -84,7 +84,7 @@
             });
             if(arguments[0].length == 0 && jQuery.inArray(options.showNoMatches, [true, 'true']) >= 0) {
               arguments[0] = [];
-              arguments[0][0] = { id: "", label: options.noMatchesLabel };
+              arguments[0][0] = { id: "", label: request.term + "Crear producto." };
             }
             jQuery(arguments[0]).each(function(i, el) {
               var obj = {};

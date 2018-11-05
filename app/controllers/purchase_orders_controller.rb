@@ -71,6 +71,12 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order.supplier_id = @supplier.id
   end
 
+  def autocomplete_product_code
+    term = params[:term]
+    products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_purchase_order

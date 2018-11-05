@@ -5,6 +5,8 @@ class Product < ApplicationRecord
   	has_many   :depots, through: :stocks
   	has_many   :invoice_details
   	has_many   :invoice, through: :invoice_details
+  	has_many   :purchase_order_details
+  	has_many   :purchase_orders, through: :purchase_order_details
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."

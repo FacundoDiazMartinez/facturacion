@@ -6,6 +6,8 @@ class PurchaseOrder < ApplicationRecord
   has_many :payments
   has_many :purchase_order_details
 
+  has_one :product
+
   accepts_nested_attributes_for :payments, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :purchase_order_details, reject_if: :all_blank, allow_destroy: true
 
