@@ -1,7 +1,9 @@
 
 $(document).on('railsAutocomplete.select', '.autocomplete_field', function(event, data){
-	alert("entro")
-	$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.label);
+
+	if (data.item.nomatch.length) {
+		$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
+	}
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
@@ -63,5 +65,6 @@ $(document).on('nested:fieldAdded', function(event){
 	  	$(this).closest("tr.fields").find("input.price").val(data.item.price);
 	  	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	});
+	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 });
 

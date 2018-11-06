@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company: one
+  purchase_order: one
+  user: one
+  active: false
+  state: MyString
+
+two:
+  company: two
+  purchase_order: two
+  user: two
+  active: false
+  state: MyString

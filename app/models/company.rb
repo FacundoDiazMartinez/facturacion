@@ -8,6 +8,7 @@ class Company < ApplicationRecord
 	has_many :receipts, through: :invoices
 	has_many :depots
 	has_many :suppliers
+	has_many :purchase_orders
 
 	belongs_to :province
 	belongs_to :locality

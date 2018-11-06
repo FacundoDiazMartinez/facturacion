@@ -1,0 +1,29 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Cliente</th>
+      <th>Tipo de comprobante</th>
+      <th>Total</th>
+      <th>Estado</th>
+      <th>Fecha</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @invoices.each do |invoice| %>
+      <tr>
+        <td><%= invoice.client.name %></td>
+        <td><%= invoice.cbte_tipo %></td>
+        <td><%= invoice.total %></td>
+        <td><%= invoice.state %></td>
+        <td><%= invoice.cbte_fch %></td>
+        <td><%= link_to icon('fas', 'eye').html_safe, invoice %></td>
+        <td><%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice) %></td>
+        <td><%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @invoices %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_01_182257) do
+ActiveRecord::Schema.define(version: 2018_11_06_174006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,19 @@ ActiveRecord::Schema.define(version: 2018_11_01_182257) do
     t.index ["client_id"], name: "index_account_movements_on_client_id"
     t.index ["invoice_id"], name: "index_account_movements_on_invoice_id"
     t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
+  end
+
+  create_table "arrival_notes", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "purchase_order_id"
+    t.bigint "user_id"
+    t.boolean "active", null: false
+    t.string "state", default: "Pendiente", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_arrival_notes_on_company_id"
+    t.index ["purchase_order_id"], name: "index_arrival_notes_on_purchase_order_id"
+    t.index ["user_id"], name: "index_arrival_notes_on_user_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -75,6 +88,21 @@ ActiveRecord::Schema.define(version: 2018_11_01_182257) do
     t.bigint "locality_id", null: false
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "delivery_notes", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "invoice_id"
+    t.bigint "user_id"
+    t.bigint "client_id"
+    t.boolean "active", default: true, null: false
+    t.string "state", default: "Pendiente", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_delivery_notes_on_client_id"
+    t.index ["company_id"], name: "index_delivery_notes_on_company_id"
+    t.index ["invoice_id"], name: "index_delivery_notes_on_invoice_id"
+    t.index ["user_id"], name: "index_delivery_notes_on_user_id"
   end
 
   create_table "depots", force: :cascade do |t|
@@ -326,7 +354,14 @@ ActiveRecord::Schema.define(version: 2018_11_01_182257) do
   add_foreign_key "account_movements", "clients"
   add_foreign_key "account_movements", "invoices"
   add_foreign_key "account_movements", "receipts"
+  add_foreign_key "arrival_notes", "companies"
+  add_foreign_key "arrival_notes", "purchase_orders"
+  add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "delivery_notes", "clients"
+  add_foreign_key "delivery_notes", "companies"
+  add_foreign_key "delivery_notes", "invoices"
+  add_foreign_key "delivery_notes", "users"
   add_foreign_key "depots", "companies"
   add_foreign_key "invoice_details", "invoices"
   add_foreign_key "invoice_details", "products"

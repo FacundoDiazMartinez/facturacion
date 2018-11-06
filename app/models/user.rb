@@ -15,4 +15,8 @@ class User < ApplicationRecord
   	def has_company?
   		not company_id.nil?
   	end
+
+    def name
+      "#{last_name}, #{first_name}"
+    end
 end

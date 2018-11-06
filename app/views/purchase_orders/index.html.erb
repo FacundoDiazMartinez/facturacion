@@ -1,43 +1,50 @@
-<p id="notice"><%= notice %></p>
+<h1 class="d-flex mb-2">
+  <div class="p-2">
+    <%= icon('fas', 'shopping-cart') %>
+    Compras
+  </div>
+  <div class="ml-auto p-2">
+    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+    <%= link_to "#{icon('fas', 'plus')} Generar solicitud".html_safe, new_purchase_order_path(), class: 'btn btn-primary ' %>
+  </div>
+</h1>
 
-<h1>Purchase Orders</h1>
+<hr>
 
-<table>
-  <thead>
-    <tr>
-      <th>State</th>
-      <th>Supplier</th>
-      <th>Observation</th>
-      <th>Total</th>
-      <th>Total pay</th>
-      <th>User</th>
-      <th>Shipping</th>
-      <th>Shipping cost</th>
-      <th>Company</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class="row">
+  <%= form_tag purchase_orders_path(), {class: 'form-inline', id: 'search_form'} do %>
+    <!-- BUSCAR POR PROVEEDOR -->
+    <%= label_tag :supplier_name, "Proveedor", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'plane') %></div>
+      </div>
+      <%= text_field_tag :supplier_name, params[:supplier_name], class: 'form-control', placeholder: 'Buscar por proveedor', onkeyup: 'remoteSubmit("#search_form")' %>
+    </div>
+    <!-- BUSCAR POR PROVEEDOR -->
 
-  <tbody>
-    <% @purchase_orders.each do |purchase_order| %>
-      <tr>
-        <td><%= purchase_order.state %></td>
-        <td><%= purchase_order.supplier %></td>
-        <td><%= purchase_order.observation %></td>
-        <td><%= purchase_order.total %></td>
-        <td><%= purchase_order.total_pay %></td>
-        <td><%= purchase_order.user %></td>
-        <td><%= purchase_order.shipping %></td>
-        <td><%= purchase_order.shipping_cost %></td>
-        <td><%= purchase_order.company %></td>
-        <td><%= link_to 'Show', purchase_order %></td>
-        <td><%= link_to 'Edit', edit_purchase_order_path(purchase_order) %></td>
-        <td><%= link_to 'Destroy', purchase_order, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <!-- BUSCAR POR USUARIO -->
+    <%= label_tag :user_name, "Tipo", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'user') %></div>
+      </div>
+      <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+    </div>
+    <!-- BUSCAR POR USUARIO -->
 
-<br>
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+    <%= label_tag :state, "Estado", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+      </div>
+      <%= select_tag :state, options_for_select(PurchaseOrder::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+    </div>
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+  </div>
+<% end %>
 
-<%= link_to 'New Purchase Order', new_purchase_order_path %>
+<div class="row" id="purchase_orders_table">
+  <%= render 'purchase_orders_table' %>
+</div>

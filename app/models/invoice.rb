@@ -29,7 +29,7 @@ class Invoice < ApplicationRecord
 
   	#FILTROS DE BUSQUEDA
 	  	def self.search_by_client name
-	  		if name
+	  		if not name.blank?
 	  			where("clients.name ILIKE ?", "%#{name}%")
 	  		else
 	  			all 
@@ -37,15 +37,15 @@ class Invoice < ApplicationRecord
 	  	end
 
 	  	def self.search_by_tipo tipo 
-	  		if tipo
-	  			where(tipo: tipo)
+	  		if not tipo.blank?
+	  			where(cbte_tipo: tipo)
 	  		else
 	  			all 
 	  		end
 	 	 end
 
 	  	def self.search_by_state state 
-	  		if state
+	  		if not state.blank?
 	  			where(state: state)
 	  		else
 	  			all 

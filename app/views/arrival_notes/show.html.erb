@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @arrival_note.company %>
+</p>
+
+<p>
+  <strong>Purchase order:</strong>
+  <%= @arrival_note.purchase_order %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @arrival_note.user %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @arrival_note.active %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @arrival_note.state %>
+</p>
+
+<%= link_to 'Edit', edit_arrival_note_path(@arrival_note) %> |
+<%= link_to 'Back', arrival_notes_path %>

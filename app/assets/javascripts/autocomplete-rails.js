@@ -84,7 +84,7 @@
             });
             if(arguments[0].length == 0 && jQuery.inArray(options.showNoMatches, [true, 'true']) >= 0) {
               arguments[0] = [];
-              arguments[0][0] = { id: "", label: request.term + "Crear producto." };
+              arguments[0][0] = { id: "", label: options.noMatchesLabel, nomatch: request.term };
             }
             jQuery(arguments[0]).each(function(i, el) {
               var obj = {};

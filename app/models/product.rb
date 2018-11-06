@@ -13,7 +13,6 @@ class Product < ApplicationRecord
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
   	validates_presence_of :name, message: "El nombre del producto no puede estar en blanco."
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
-  	validates_presence_of :measurement_unit, message: "El producto debe tener una unidad de medida."
   	
 
   	MEASUREMENT_UNITS = {
@@ -63,7 +62,7 @@ class Product < ApplicationRecord
 	  	"96" => "packs",
 	  	"98" => "otras unidades"
 	}
-	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys
+	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}
 
   	#ATRIBUTOS
 	  	def full_name

@@ -5,7 +5,7 @@ $(function() {
 			$("#purchase_order_shipping_cost").val("0.0");
 		}else{
 			$("#purchase_order_shipping_cost").hide();
-			$("#purchase_order_shipping_cost").val("");
+			$("#purchase_order_shipping_cost").val("0.0");
 		}
     });
 });

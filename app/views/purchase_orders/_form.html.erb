@@ -21,7 +21,6 @@
               <%= form.label :supplier_id, "Cliente" %>
               <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control'} %>
             </div>
-
             <div id="supplier_form">
               <%= render '/purchase_orders/supplier_column' %>
             </div>
@@ -30,7 +29,6 @@
 
           <!-- SEGUNDA COLUMNA -->
           <div class="col-sm">
-
             <div class="form-group">
               <%= form.label :total %>
               <%= form.text_field :total, class: 'form-control', readonly: true %>
@@ -50,33 +48,30 @@
                 </div>
               </div>
             </div>
-            
           </div>
           <!-- SEGUNDA COLUMNA -->
 
 
           <!-- TERCERA COLUMNA -->
           <div class="col-sm">
-
             <div class="form-group">
               <%= form.label :state %>
               <%= form.text_field :state, class: 'form-control', readonly: true %>
             </div>
-
             <div class="form-group">
               <%= form.label :created_at %>
               <%= form.text_field :created_at, class: 'form-control', readonly: true %>
             </div>
-
             <div class="form-group">
               <%= form.label :shipping, "¿Incluye transporte?" %>
               <div class="row">
                 <div class="col-2">
-                  <%= form.check_box :shipping, checked: true, data:{toggle: 'toggle', on: "Si", off: "No"} %>
+                  <%= form.check_box :shipping, data:{toggle: 'toggle', on: "Si", off: "No"} %>
                 </div>
                 <div class="col-10">
-                  <%= form.number_field :shipping_cost, class: 'form-control', placeholder: "Precio del transporte" %>
+                  <%= form.number_field :shipping_cost, class: 'form-control', placeholder: "Precio del transporte", style: "display: #{@purchase_order.shipping ? 'block' : 'none'};" %>
                 </div>
+              </div>
             </div>
           </div>
           <!-- TERCERA COLUMNA -->
@@ -91,7 +86,6 @@
         <!-- BOTONES DE ACCION -->
       </div>
     </div>
-  </div>
   <!-- HEADER -->
 
   <hr>

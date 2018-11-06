@@ -18,7 +18,7 @@
 	      			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>
 	      			<td><%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'autocomplete_field form-control', data:{noMatchesLabel: "Crear nuevo producto."} %></td>
 					<td><%= pf.text_field :name, class: 'form-control name' %></td>
-					<td><%= pf.number_field :price, class: 'form-control price' %></td>
+					<td><%= pf.number_field :price, class: 'form-control price',step: :any %></td>
 
 				<% end %>
 				<td><%= f.number_field :quantity, class: 'form-control quantity' %></td>

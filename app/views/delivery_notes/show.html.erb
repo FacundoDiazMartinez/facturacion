@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @delivery_note.company %>
+</p>
+
+<p>
+  <strong>Invoice:</strong>
+  <%= @delivery_note.invoice %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @delivery_note.user %>
+</p>
+
+<p>
+  <strong>Client:</strong>
+  <%= @delivery_note.client %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @delivery_note.active %>
+</p>
+
+<p>
+  <strong>State:</strong>
+  <%= @delivery_note.state %>
+</p>
+
+<%= link_to 'Edit', edit_delivery_note_path(@delivery_note) %> |
+<%= link_to 'Back', delivery_notes_path %>

@@ -4,7 +4,7 @@ class InvoicesController < ApplicationController
   # GET /invoices
   # GET /invoices.json
   def index
-    @invoices = Invoice.includes(:client).search_by_client(params[:client_name]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page])
+    @invoices = current_user.company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page])
   end
 
   # GET /invoices/1
@@ -22,23 +22,6 @@ class InvoicesController < ApplicationController
   def edit
     @client = @invoice.client
   end
-
-  # POST /invoices
-  # POST /invoices.json
-  # def create
-  #   @invoice = current_user.company.invoices.new(invoice_params)
-  #   @invoice.user_id = current_user.id
-
-  #   respond_to do |format|
-  #     if @invoice.save
-  #       format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Invoice was successfully created.' }
-  #       format.json { render :edit, status: :created, location: @invoice }
-  #     else
-  #       format.html { render :new }
-  #       format.json { render json: @invoice.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
 
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json

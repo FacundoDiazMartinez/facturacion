@@ -27,6 +27,7 @@
 //= require autocomplete-rails
 
 $(document).ready(function() {
+
   $('btn').on('click', function() {
     var $this = $(this);
     var loadingText = " Espere...";
@@ -43,11 +44,14 @@ $(document).ready(function() {
     document.getElementById('file_input').click();
   })
 
-  $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?");
+  $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
   $('input[type="checkbox"]').bootstrapToggle();
 });
 
-
+function remoteSubmit(form_id){
+  form = $(form_id);
+  $.get(form.attr("action"), form.serialize(), null, "script");
+};
 
 $(function() {
   $('.directUpload').find("input:file").each(function(i, elem) {

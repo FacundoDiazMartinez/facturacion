@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
 
 
+  resources :arrival_notes
+  resources :delivery_notes
   resources :purchase_orders do
     resources :purchase_order_details, shallow: true
     get :autocomplete_product_code, :on => :collection
     get :set_supplier, on: :collection
+    get :generate_pdf, on: :member
   end
   resources :suppliers
   resources :depots

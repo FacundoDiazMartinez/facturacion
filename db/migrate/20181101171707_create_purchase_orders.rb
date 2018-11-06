@@ -1,7 +1,7 @@
 class CreatePurchaseOrders < ActiveRecord::Migration[5.2]
   def change
     create_table :purchase_orders do |t|
-      t.string :state, null: false, default: "Pendiente"
+      t.string :state, null: false, default: "Pendiente de aprobación"
       t.references :supplier, foreign_key: true
       t.text :observation
       t.float :total, null: false, default: 0.0

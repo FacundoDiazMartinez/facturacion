@@ -1,0 +1,37 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Delivery Notes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Company</th>
+      <th>Invoice</th>
+      <th>User</th>
+      <th>Client</th>
+      <th>Active</th>
+      <th>State</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @delivery_notes.each do |delivery_note| %>
+      <tr>
+        <td><%= delivery_note.company %></td>
+        <td><%= delivery_note.invoice %></td>
+        <td><%= delivery_note.user %></td>
+        <td><%= delivery_note.client %></td>
+        <td><%= delivery_note.active %></td>
+        <td><%= delivery_note.state %></td>
+        <td><%= link_to 'Show', delivery_note %></td>
+        <td><%= link_to 'Edit', edit_delivery_note_path(delivery_note) %></td>
+        <td><%= link_to 'Destroy', delivery_note, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Delivery Note', new_delivery_note_path %>
