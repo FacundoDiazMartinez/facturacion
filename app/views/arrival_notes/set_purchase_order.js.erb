@@ -1,0 +1,3 @@
+'<%= nested_form_for @arrival_note do |form| %>'
+	$("#arrival_details").html("<%= j render template: '/arrival_notes/details/index.html.erb', locals:{form: form} %>");
+'<% end %>'

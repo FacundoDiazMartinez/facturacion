@@ -1,6 +1,7 @@
 class CreatePurchaseOrders < ActiveRecord::Migration[5.2]
   def change
     create_table :purchase_orders do |t|
+      t.integer :number, null: false
       t.string :state, null: false, default: "Pendiente de aprobación"
       t.references :supplier, foreign_key: true
       t.text :observation

@@ -1,35 +1,50 @@
-<p id="notice"><%= notice %></p>
+<h1 class="d-flex mb-2">
+  <div class="p-2">
+    <%= icon('fas', 'file-alt') %>
+    Remitos
+  </div>
+  <div class="ml-auto p-2">
+    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+    <%= link_to "#{icon('fas', 'plus')} Cargar remito".html_safe, new_arrival_note_path(), class: 'btn btn-primary ' %>
+  </div>
+</h1>
 
-<h1>Arrival Notes</h1>
+<hr>
 
-<table>
-  <thead>
-    <tr>
-      <th>Company</th>
-      <th>Purchase order</th>
-      <th>User</th>
-      <th>Active</th>
-      <th>State</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class="row">
+  <%= form_tag arrival_notes_path(), {class: 'form-inline', id: 'search_form'} do %>
+    <!-- BUSCAR POR PROVEEDOR -->
+    <%= label_tag :purchase_order_number, "Nº Orden de compra", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'plane') %></div>
+      </div>
+      <%= text_field_tag :purchase_order_number, params[:purchase_order_number], class: 'form-control', placeholder: 'Buscar por orden de compra', onkeyup: 'remoteSubmit("#search_form")' %>
+    </div>
+    <!-- BUSCAR POR PROVEEDOR -->
 
-  <tbody>
-    <% @arrival_notes.each do |arrival_note| %>
-      <tr>
-        <td><%= arrival_note.company %></td>
-        <td><%= arrival_note.purchase_order %></td>
-        <td><%= arrival_note.user %></td>
-        <td><%= arrival_note.active %></td>
-        <td><%= arrival_note.state %></td>
-        <td><%= link_to 'Show', arrival_note %></td>
-        <td><%= link_to 'Edit', edit_arrival_note_path(arrival_note) %></td>
-        <td><%= link_to 'Destroy', arrival_note, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <!-- BUSCAR POR USUARIO -->
+    <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'user') %></div>
+      </div>
+      <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+    </div>
+    <!-- BUSCAR POR USUARIO -->
 
-<br>
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+    <%= label_tag :state, "Estado", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+      </div>
+      <%= select_tag :state, options_for_select(ArrivalNote::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+    </div>
+    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+  </div>
+<% end %>
 
-<%= link_to 'New Arrival Note', new_arrival_note_path %>
+<div class="row" id="arrival_notes_table">
+  <%= render 'arrival_notes_table' %>
+</div>

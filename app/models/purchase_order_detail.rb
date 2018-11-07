@@ -18,7 +18,7 @@ class PurchaseOrderDetail < ApplicationRecord
       end
     end
 
-     def product_attributes=(attributes)
+    def product_attributes=(attributes)
       if !attributes['id'].blank?
         self.product = Product.find(attributes['id'])
       end

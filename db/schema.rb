@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_06_174006) do
+ActiveRecord::Schema.define(version: 2018_11_07_165542) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,15 +32,30 @@ ActiveRecord::Schema.define(version: 2018_11_06_174006) do
     t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
   end
 
+  create_table "arrival_note_details", force: :cascade do |t|
+    t.bigint "arrival_note_id"
+    t.bigint "product_id"
+    t.string "quantity"
+    t.boolean "cumpliment"
+    t.string "observation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["arrival_note_id"], name: "index_arrival_note_details_on_arrival_note_id"
+    t.index ["product_id"], name: "index_arrival_note_details_on_product_id"
+  end
+
   create_table "arrival_notes", force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "purchase_order_id"
     t.bigint "user_id"
-    t.boolean "active", null: false
+    t.bigint "depot_id"
+    t.integer "number", null: false
+    t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_arrival_notes_on_company_id"
+    t.index ["depot_id"], name: "index_arrival_notes_on_depot_id"
     t.index ["purchase_order_id"], name: "index_arrival_notes_on_purchase_order_id"
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
   end
@@ -95,6 +110,7 @@ ActiveRecord::Schema.define(version: 2018_11_06_174006) do
     t.bigint "invoice_id"
     t.bigint "user_id"
     t.bigint "client_id"
+    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -198,6 +214,15 @@ ActiveRecord::Schema.define(version: 2018_11_06_174006) do
     t.index ["company_id"], name: "index_product_categories_on_company_id"
   end
 
+  create_table "product_price_histories", force: :cascade do |t|
+    t.bigint "product_id"
+    t.float "price"
+    t.float "percentage"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_product_price_histories_on_product_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "code"
     t.string "name"
@@ -237,7 +262,8 @@ ActiveRecord::Schema.define(version: 2018_11_06_174006) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.string "state", default: "Pendiente", null: false
+    t.integer "number", null: false
+    t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
     t.float "total", default: 0.0, null: false
@@ -354,7 +380,10 @@ ActiveRecord::Schema.define(version: 2018_11_06_174006) do
   add_foreign_key "account_movements", "clients"
   add_foreign_key "account_movements", "invoices"
   add_foreign_key "account_movements", "receipts"
+  add_foreign_key "arrival_note_details", "arrival_notes"
+  add_foreign_key "arrival_note_details", "products"
   add_foreign_key "arrival_notes", "companies"
+  add_foreign_key "arrival_notes", "depots"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"
@@ -372,6 +401,7 @@ ActiveRecord::Schema.define(version: 2018_11_06_174006) do
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "invoices"
   add_foreign_key "product_categories", "companies"
+  add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"
   add_foreign_key "purchase_order_details", "products"
