@@ -1,6 +1,16 @@
 <h1>Editing Client</h1>
 
-<%= render 'form', client: @client %>
+<%= form_for [@invoice, @client], remote: true, format: :js  do |f| %>
+	<div class="modal-body">
+	  <%= render '/invoices/clients/form', f: f %>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	  <%= save_button %>
+	</div>
+<% end %>
+
+
 
 <%= link_to 'Show', @client %> |
 <%= link_to 'Back', clients_path %>
