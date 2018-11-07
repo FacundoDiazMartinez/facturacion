@@ -19,6 +19,10 @@ class InvoiceDetail < ApplicationRecord
       end
     end
 
+    def destroy
+      update_column(:active,false)
+    end
+
     def set_total_to_invoice
       invoice.update_attribute(:total, invoice.sum_details)
     end
@@ -35,6 +39,6 @@ class InvoiceDetail < ApplicationRecord
     def measurement_unit_value
       Product::MEASUREMENT_UNITS[measurement_unit.to_s]
     end
-  #ATRIBUTOS 
+  #ATRIBUTOS
 
 end

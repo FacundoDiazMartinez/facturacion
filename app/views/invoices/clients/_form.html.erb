@@ -29,7 +29,7 @@
 <div class="form-group row">
   <%= label_tag :birthday, "Nacimiento", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.date_field :birthday, class: 'form-control form-control-sm date', data: {provide: 'datepicker'} %>
+    <%= f.text_field :birthday, value:"", class: "form-control datepicker", value: l(Date.today),  autocomplete: "off" %>
   </div>
 </div>
 
@@ -62,3 +62,14 @@
 </div>
 
 <center><i>* Campos obligatorios</i></center>
+
+<script type="text/javascript">
+
+$('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoclose: true,
+  });
+
+</script>

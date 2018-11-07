@@ -4,6 +4,8 @@ class Client < ApplicationRecord
 	has_many :account_movements
 	belongs_to :company
 
+	default_scope {where(active:true)}
+
 	validates_numericality_of :document_number, message: 'Ingrese un numero de documento valido.'
 	validates :document_number, length: { is: 11, message: 'Numero de documento inválido, verifique.' }, 		if: Proc.new{|c| ['CUIT', 'CUIL', 'CDI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
 	validates :document_number, length: { maximum: 11, message: 'Numero de documento inválido, verifique.' }, 	if: Proc.new{|c| ['LE', 'LC', 'CI Extranjera', 'Acta Nacimiento', 'Pasaporte'].include?(Afip::DOCUMENTOS.key(c.document_type))}
@@ -18,7 +20,9 @@ class Client < ApplicationRecord
 	#ATRIBUTOS
 
 	#PROCESOS
-		
+		def destroy
+			update_column(:active,false)
+		end
 	#PROCESOS
 
 	#FUNCIONES
