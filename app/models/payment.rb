@@ -20,6 +20,8 @@ class Payment < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
+
+
     def check_receipt
       r = Receipt.where(invoice_id: invoice.id).first_or_initialize
       r.total       = invoice.total_pay
@@ -28,4 +30,11 @@ class Payment < ApplicationRecord
       r.save
     end
   #PROCESOS
+
+  #FUNCIONES
+    def self.set_payment
+      any? ? all : new
+    end
+
+  #FUNCIONES
 end

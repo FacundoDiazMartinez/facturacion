@@ -15,7 +15,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<%= form.fields_for :invoice_details,@invoice.invoice_details.build, wrapper: false do |f| %>
+		<%= form.fields_for :invoice_details, wrapper: false do |f| %>
     	<tr class="fields">
     		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 	  			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>

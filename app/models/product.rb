@@ -8,12 +8,14 @@ class Product < ApplicationRecord
   	has_many   :purchase_order_details
   	has_many   :purchase_orders, through: :purchase_order_details
 
+    default_scope {where(active:true)}
+
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
   	validates_presence_of :name, message: "El nombre del producto no puede estar en blanco."
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
-  	
+
 
   	MEASUREMENT_UNITS = {
 	  	"1" => "kilogramos",
@@ -92,5 +94,9 @@ class Product < ApplicationRecord
 				update(params)
 			end
 		end
+
+    def destroy
+      update_column(:active,false)
+    end
 	#PROCESOS
 end

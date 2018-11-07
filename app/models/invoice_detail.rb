@@ -33,6 +33,12 @@ class InvoiceDetail < ApplicationRecord
       end
       super
     end
+
+    def product
+      Product.unscoped{super}
+    end
+
+
   #PROCESOS
 
   #ATRIBUTOS
