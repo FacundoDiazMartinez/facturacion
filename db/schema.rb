@@ -48,14 +48,11 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
     t.bigint "company_id"
     t.bigint "purchase_order_id"
     t.bigint "user_id"
-    t.bigint "depot_id"
-    t.integer "number", null: false
-    t.boolean "active", default: true, null: false
+    t.boolean "active", null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_arrival_notes_on_company_id"
-    t.index ["depot_id"], name: "index_arrival_notes_on_depot_id"
     t.index ["purchase_order_id"], name: "index_arrival_notes_on_purchase_order_id"
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
   end
@@ -110,7 +107,6 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
     t.bigint "invoice_id"
     t.bigint "user_id"
     t.bigint "client_id"
-    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -271,10 +267,6 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-<<<<<<< HEAD
-    t.integer "number", null: false
-=======
->>>>>>> cfb4047a1adff61b505a22e543c5cbd186f6f119
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -411,7 +403,6 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
   add_foreign_key "arrival_note_details", "arrival_notes"
   add_foreign_key "arrival_note_details", "products"
   add_foreign_key "arrival_notes", "companies"
-  add_foreign_key "arrival_notes", "depots"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"
