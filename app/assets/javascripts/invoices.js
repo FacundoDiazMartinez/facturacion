@@ -6,15 +6,16 @@ $( document ).ready(function() {
 });
 
 $(document).on('railsAutocomplete.select', '.autocomplete_field', function(event, data){
-
-	if (data.item.nomatch.length) {
-		$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
+	console.log(data.item)
+	if (data.intem == NaN){
+		if (data.item.nomatch.length) {
+			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
+		}
 	}
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-  	console.log(data.item)
 });
 
 $(document).on("change", ".price, .quantity", function(){
