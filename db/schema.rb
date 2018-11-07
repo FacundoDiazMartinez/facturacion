@@ -137,7 +137,7 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
   create_table "invoice_details", force: :cascade do |t|
     t.bigint "invoice_id"
     t.bigint "product_id"
-    t.float "quantity", default: 1.0, null: false
+    t.float "quantity", default: 0.0, null: false
     t.string "measurement_unit", null: false
     t.float "price_per_unit", default: 0.0, null: false
     t.float "bonus_percentage", default: 0.0, null: false
@@ -203,6 +203,15 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
   end
 
+  create_table "permissions", force: :cascade do |t|
+    t.string "subject_class"
+    t.string "action_name"
+    t.text "description"
+    t.string "friendly_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
     t.integer "iva_aliquot"
@@ -262,7 +271,10 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
+<<<<<<< HEAD
     t.integer "number", null: false
+=======
+>>>>>>> cfb4047a1adff61b505a22e543c5cbd186f6f119
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -293,6 +305,22 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
+  end
+
+  create_table "role_permissions", force: :cascade do |t|
+    t.bigint "role_id"
+    t.bigint "permission_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["permission_id"], name: "index_role_permissions_on_permission_id"
+    t.index ["role_id"], name: "index_role_permissions_on_role_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sale_points", force: :cascade do |t|
@@ -411,6 +439,8 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
   add_foreign_key "purchase_orders", "users"
   add_foreign_key "receipts", "companies"
   add_foreign_key "receipts", "invoices"
+  add_foreign_key "role_permissions", "permissions"
+  add_foreign_key "role_permissions", "roles"
   add_foreign_key "sale_points", "companies"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"

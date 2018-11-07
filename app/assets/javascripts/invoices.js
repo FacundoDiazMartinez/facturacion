@@ -1,4 +1,10 @@
 
+$( document ).ready(function() {
+    var total_venta = parseInt(0);
+		var rest = parseInt(0);
+		autocomplete_field();
+});
+
 $(document).on('railsAutocomplete.select', '.autocomplete_field', function(event, data){
 
 	if (data.item.nomatch.length) {
@@ -25,7 +31,8 @@ $(document).on("change", ".price, .quantity", function(){
 		total = (parseFloat(price.val()) * parseFloat(quantity.val()));
 	}
 
-	subtotal.val(total)
+	subtotal.val(total);
+	subtotal.trigger("change");
 });
 
 $(document).on("change", ".bonus_percentage", function(){
@@ -57,14 +64,39 @@ $(document).on("change", ".iva_aliquot", function(){
 	iva_amount.val(parseFloat(subtotal.val()) * parseFloat(iva_aliquot.text()))
 });
 
+function autocomplete_field() {
+	$('.autocomplete_field').on('railsAutocomplete.select', function(event, data){
+			$(this).closest("tr.fields").find("input.name").val(data.item.name);
+			$(this).closest("tr.fields").find("input.price").val(data.item.price);
+			$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+	});
+}
 
+function complete_payments(){
+	var suma = parseInt(0);
+	$(".amount").each(function(){
+		suma = parseInt(suma) + parseInt($(this).val());
+	});
+
+	var resto = parseInt( total_venta - suma);
+	if (resto > 0) {
+		$("#payments").find(".amount").filter(':visible:last').val(resto);
+	}
+}
 
 $(document).on('nested:fieldAdded', function(event){
-	$('.autocomplete_field').on('railsAutocomplete.select', function(event, data){
-	  	$(this).closest("tr.fields").find("input.name").val(data.item.name);
-	  	$(this).closest("tr.fields").find("input.price").val(data.item.price);
-	  	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-	});
+	autocomplete_field();
+	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 });
 
+
+$(document).on("change", ".subtotal", function(){
+	var total = parseInt(0);
+	$(".subtotal").each(function(){
+	    total = total + parseInt($(this).val());
+	});
+	$("#payments").find(".amount").filter(':visible:first').val(total);
+	total_venta = total;
+	// subtotal 	= $(this).closest("tr.fields").find("input.subtotal");
+});

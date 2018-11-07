@@ -11,6 +11,8 @@ class Product < ApplicationRecord
   	has_many   :arrival_note, through: :arrival_note_details
   	has_many   :product_price_histories
 
+    default_scope {where(active:true)}
+
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
@@ -108,5 +110,10 @@ class Product < ApplicationRecord
 			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
 			s.save
 		end
+
+	    def destroy
+	      update_column(:active,false)
+	    end
+	    
 	#PROCESOS
 end

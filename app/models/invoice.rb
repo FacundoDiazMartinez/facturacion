@@ -4,8 +4,11 @@ class Invoice < ApplicationRecord
   	belongs_to :company
   	belongs_to :user
 
+    default_scope {where(active:true)}
+
+
     has_many :payments
-    has_many :invoice_details
+    has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
 
     has_one  :receipt
@@ -32,23 +35,23 @@ class Invoice < ApplicationRecord
 	  		if not name.blank?
 	  			where("clients.name ILIKE ?", "%#{name}%")
 	  		else
-	  			all 
+	  			all
 	  		end
 	  	end
 
-	  	def self.search_by_tipo tipo 
+	  	def self.search_by_tipo tipo
 	  		if not tipo.blank?
 	  			where(cbte_tipo: tipo)
 	  		else
-	  			all 
+	  			all
 	  		end
 	 	 end
 
-	  	def self.search_by_state state 
+	  	def self.search_by_state state
 	  		if not state.blank?
 	  			where(state: state)
 	  		else
-	  			all 
+	  			all
 	  		end
 	  	end
   	#FILTROS DE BUSQUEDA
@@ -85,8 +88,8 @@ class Invoice < ApplicationRecord
       def self.applicable_iva_for_detail(aliquot)
         case aliquot
         when nil
-         return 0 
-        when 0.0 
+         return 0
+        when 0.0
           return 0
         when 10.5
           return 1
@@ -120,6 +123,10 @@ class Invoice < ApplicationRecord
             update_column(:state, "Pendiente")
           end
         end
+      end
+
+      def destroy
+        update_column(:active,false)
       end
 
       def set_client params
