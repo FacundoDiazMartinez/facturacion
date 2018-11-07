@@ -7,7 +7,7 @@ $( document ).ready(function() {
 
 $(document).on('railsAutocomplete.select', '.autocomplete_field', function(event, data){
 	console.log(data.item)
-	if (data.intem == NaN){
+	if (data.intem !== 'undefined'){
 		if (data.item.nomatch.length) {
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
