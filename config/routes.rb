@@ -1,25 +1,34 @@
 Rails.application.routes.draw do
 
 
-  resources :arrival_notes
-  resources :delivery_notes
+  resources :arrival_notes do
+    resources :arrival_note_details, shallow: true
+    get :set_purchase_order, on: :collection
+    get :generate_pdf, on: :member
+  end
+
   resources :purchase_orders do
     resources :purchase_order_details, shallow: true
     get :autocomplete_product_code, :on => :collection
     get :set_supplier, on: :collection
     get :generate_pdf, on: :member
   end
+
+  resources :products do
+    get :autocomplete_product_code, :on => :collection
+    get :export, on: :collection
+    get :import, on: :collection
+  end
+
   resources :suppliers
   resources :depots
   resources :receipts
   resources :clients
-  resources :products do
-    get :export, on: :collection
-    get :import, on: :collection
-  end
+  resources :delivery_notes
   resources :product_categories
-  devise_for :users
   resources  :companies
+
+  devise_for :users
 
   #CLIENTES
   get   '/invoices/:invoice_id/client/', to: 'invoices/clients#show', as: 'invoice_client'

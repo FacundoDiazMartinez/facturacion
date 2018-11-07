@@ -7,6 +7,9 @@ class Product < ApplicationRecord
   	has_many   :invoice, through: :invoice_details
   	has_many   :purchase_order_details
   	has_many   :purchase_orders, through: :purchase_order_details
+  	has_many   :arrival_note_details
+  	has_many   :arrival_note, through: :arrival_note_details
+  	has_many   :product_price_histories
 
     default_scope {where(active:true)}
 
@@ -16,6 +19,8 @@ class Product < ApplicationRecord
   	validates_presence_of :name, message: "El nombre del producto no puede estar en blanco."
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
 
+  	after_create :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
+  	
 
   	MEASUREMENT_UNITS = {
 	  	"1" => "kilogramos",
@@ -86,7 +91,6 @@ class Product < ApplicationRecord
 
 	#PROCESOS
 		def self.create params
-			pp "NTEOOOOOOOOO"
 			product = Product.where(company_id: company_id, code: code).first_or_initialize
 			if produc.new_record?
 				super
@@ -95,8 +99,21 @@ class Product < ApplicationRecord
 			end
 		end
 
-    def destroy
-      update_column(:active,false)
-    end
+		def add_price_history
+			old_price = saved_changes[:price].first.to_f
+			percentage = (price * 100 / old_price).to_f.round(2) - 100
+			self.product_price_histories.create(price: price, percentage: percentage)
+		end
+
+		def add_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
+			s.save
+		end
+
+	    def destroy
+	      update_column(:active,false)
+	    end
+	    
 	#PROCESOS
 end

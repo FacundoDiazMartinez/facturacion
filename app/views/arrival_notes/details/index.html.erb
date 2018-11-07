@@ -1,0 +1,34 @@
+<table class="table table-striped" id="details">
+	<thead>
+		<tr>
+			<th></th>
+			<th scope="col">Código</th>
+			<th scope="col">Producto</th>
+			<th scope="col">Cantidad solicitada</th>
+			<th scope="col">Cantidad recibida</th>
+			<th scope="col">Observación</th>
+			<th scope="col"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= form.fields_for :arrival_note_details, wrapper: false do |f| %>
+	      	<tr class="fields">
+	      		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
+
+	      			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>
+	      			<td><%= pf.autocomplete_field :code, autocomplete_product_code_products_path, class: 'autocomplete_field form-control', data: { noMatchesLabel: "Crear nuevo producto." } %></td>
+					<td>
+						<%= pf.text_field :name, class: 'form-control name' %>
+						<% if pf.object.new_record? %>
+							<%= pf.hidden_field :price, value: 0.0, class: 'form-control' %>
+						<% end %>
+					</td>
+				<% end %>
+				<td><%= number_field_tag :req_quantity, f.object.quantity, class: 'form-control req_quantity' %></td>
+				<td><%= f.number_field :quantity, class: 'form-control quantity' %></td>
+				<td><%= f.text_field :observation, class: 'form-control' %></td>
+				<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
+	      	</tr>
+	    <% end %>
+	</tbody>
+</table>

@@ -4,8 +4,11 @@ class CreateArrivalNotes < ActiveRecord::Migration[5.2]
       t.references :company, foreign_key: true
       t.references :purchase_order, foreign_key: true
       t.references :user, foreign_key: true
-      t.boolean :active, null: false
+      t.references :depot, foreign_key: true
+      t.integer :number, null: false
+      t.boolean :active, null: false, default: true
       t.string :state, null: false, default: "Pendiente"
+
 
       t.timestamps
     end

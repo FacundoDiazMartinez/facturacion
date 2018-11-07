@@ -11,7 +11,11 @@ class PurchaseOrder < ApplicationRecord
   accepts_nested_attributes_for :payments, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :purchase_order_details, reject_if: :all_blank, allow_destroy: true
 
-  STATES = ["Pendiente de aprobación", "Aprobado", "Concretado", "Pagado", "Anulado", "Finalizado"]
+  before_create :set_number
+
+  validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
+
+  STATES = ["Pendiente de aprobación", "Aprobado", "Enviado", "Anulado", "Finalizado"]
 
   #ATRIBUTOS
   	def total_left
@@ -28,6 +32,10 @@ class PurchaseOrder < ApplicationRecord
 
     def details
       purchase_order_details
+    end
+
+    def name
+      "Nº: #{number} - De: #{supplier.name}"
     end
   #ATRIBUTOS
 
@@ -56,4 +64,17 @@ class PurchaseOrder < ApplicationRecord
       end
     end
   #FILTROS DE BUSQUEDA
+
+  #PROCESOS
+    def set_number
+      last_po = PurchaseOrder.where(company_id: company_id).last
+      self.number = last_po.nil? ? 1 : (last_po.number.to_i + 1) 
+    end
+  #PROCESOS
+
+  #FUNCIONES
+    def self.sended_orders
+      where(state: "Enviado").map{|s| [s.name, s.id]}
+    end
+  #FUNCIONES
 end
