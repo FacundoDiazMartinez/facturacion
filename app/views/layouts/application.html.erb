@@ -12,10 +12,10 @@
   <body>
     <%= render template: '/layouts/navbar.html.erb' %>
     <div class="row">
-      <div class="col-md-2 col-lg-2 nav-col">
+      <div class="col-md-2 d-none d-md-block bg-light sidebar shadow">
         <%= render template: '/layouts/navpills.html.erb' %>
       </div>
-      <div class="col-md-10 col-lg-10">
+      <div class="col-md-9 ml-sm-auto col-lg-10 px-4">
         <% if notice %>
           <p class="alert alert-success"><%= notice %></p>
         <% end %>
