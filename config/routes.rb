@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
 
 
+  resources :iva_books do
+    get :generate_pdf, on: :collection
+  end
+  resources :purchase_invoices do
+    get :autocomplete_arrival_note_id, on: :collection
+  end
   resources :arrival_notes do
     resources :arrival_note_details, shallow: true
     get :set_purchase_order, on: :collection

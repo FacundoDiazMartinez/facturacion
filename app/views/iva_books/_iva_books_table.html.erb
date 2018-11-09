@@ -1,0 +1,31 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Tipo</th>
+      <th>Factura</th>
+      <th>Fecha</th>
+      <th>Monto neto</th>
+      <th>Monto I.V.A.</th>
+      <th>Total</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @iva_books.each do |iva_book| %>
+      <tr>
+        <td><%= iva_book.tipo %></td>
+        <td><%= iva_book.full_invoice %></td>
+        <td><%= iva_book.date %></td>
+        <td><%= iva_book.net_amount %></td>
+        <td><%= iva_book.iva_amount %></td>
+        <td><%= iva_book.total %></td>
+        <td><%= link_to 'Show', iva_book %></td>
+        <td><%= link_to 'Edit', edit_iva_book_path(iva_book) %></td>
+        <td><%= link_to 'Destroy', iva_book, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @iva_books %>

@@ -1,0 +1,56 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @purchase_invoice.company %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @purchase_invoice.user %>
+</p>
+
+<p>
+  <strong>Arrival note:</strong>
+  <%= @purchase_invoice.arrival_note %>
+</p>
+
+<p>
+  <strong>Number:</strong>
+  <%= @purchase_invoice.number %>
+</p>
+
+<p>
+  <strong>Supplier:</strong>
+  <%= @purchase_invoice.supplier %>
+</p>
+
+
+
+<p>
+  <strong>Cbte tipo:</strong>
+  <%= @purchase_invoice.cbte_tipo %>
+</p>
+
+<p>
+  <strong>Net amount:</strong>
+  <%= @purchase_invoice.net_amount %>
+</p>
+
+<p>
+  <strong>Iva amount:</strong>
+  <%= @purchase_invoice.iva_amount %>
+</p>
+
+<p>
+  <strong>Imp op ex:</strong>
+  <%= @purchase_invoice.imp_op_ex %>
+</p>
+
+<p>
+  <strong>Total:</strong>
+  <%= @purchase_invoice.total %>
+</p>
+
+<%= link_to 'Edit', edit_purchase_invoice_path(@purchase_invoice) %> |
+<%= link_to 'Back', purchase_invoices_path %>

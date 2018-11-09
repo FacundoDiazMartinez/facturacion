@@ -1,13 +1,13 @@
 
 $( document ).ready(function() {
-    var total_venta = parseInt(0);
-		var rest = parseInt(0);
-		autocomplete_field();
+	autocomplete_field();
 });
 
+var total_venta = parseInt(0);
+var rest = parseInt(0);
+
 $(document).on('railsAutocomplete.select', '.autocomplete_field', function(event, data){
-	console.log(data.item)
-	if (data.intem !== 'undefined'){
+	if (typeof data.item.nomatch !== 'undefined'){
 		if (data.item.nomatch.length) {
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
@@ -78,7 +78,6 @@ function complete_payments(){
 	$(".amount").each(function(){
 		suma = parseInt(suma) + parseInt($(this).val());
 	});
-
 	var resto = parseInt( total_venta - suma);
 	if (resto > 0) {
 		$("#payments").find(".amount").filter(':visible:last').val(resto);

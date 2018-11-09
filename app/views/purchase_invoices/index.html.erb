@@ -1,18 +1,18 @@
 <h1 class="d-flex mb-2">
   <div class="p-2">
     <%= icon('fas', 'shopping-cart') %>
-    Ordenes de compras
+    Comprobantes de compras
   </div>
   <div class="ml-auto p-2">
     <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
-    <%= link_to "#{icon('fas', 'plus')} Generar solicitud".html_safe, new_purchase_order_path(), class: 'btn btn-primary ' %>
+    <%= link_to "#{icon('fas', 'plus')} Registrar comprobante".html_safe, new_purchase_invoice_path(), class: 'btn btn-primary ' %>
   </div>
 </h1>
 
 <hr>
 
 <div class="row">
-  <%= form_tag purchase_orders_path(), {class: 'form-inline', id: 'search_form'} do %>
+  <%= form_tag purchase_invoices_path(), {class: 'form-inline', id: 'search_form'} do %>
     <!-- BUSCAR POR PROVEEDOR -->
     <%= label_tag :supplier_name, "Proveedor", class: 'sr-only' %>
     <div class="input-group mb-2 mr-sm-2">
@@ -45,6 +45,6 @@
   </div>
 <% end %>
 
-<div class="row" id="purchase_orders_table">
-  <%= render 'purchase_orders_table' %>
+<div class="row" id="purchase_invoices_table">
+  <%= render 'purchase_invoices_table' %>
 </div>

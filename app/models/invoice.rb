@@ -10,6 +10,7 @@ class Invoice < ApplicationRecord
     has_many :payments
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
+    has_many :iva_books
 
     has_one  :receipt
     has_one  :account_movement

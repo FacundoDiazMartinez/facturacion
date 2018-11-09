@@ -16,13 +16,13 @@
 
 //= require jquery_nested_form
 //= require invoices
+//= require popper
 //= require bootstrap
 //= require bootstrap-toggle
 //= require z.jquery.fileupload
 //= require activestorage
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
-//= require popper
 //= require_tree .
 //= require autocomplete-rails
 
@@ -45,7 +45,13 @@ $(document).ready(function() {
   })
 
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
-  $('input[type="checkbox"]').bootstrapToggle();
+  $('.toogle').bootstrapToggle();
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoclose: true,
+  });
 });
 
 function remoteSubmit(form_id){

@@ -4,6 +4,7 @@ class User < ApplicationRecord
 	belongs_to :locality, optional: true
 
   has_many :arrival_notes
+  has_many :purchase_invoices
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,

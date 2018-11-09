@@ -1,0 +1,40 @@
+<h1 class="d-flex mb-2">
+  <div class="p-2">
+    <%= icon('fas', 'shopping-cart') %>
+    Ordenes de compras
+  </div>
+  <div class="ml-auto p-2">
+    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
+  </div>
+</h1>
+
+<hr>
+
+<div class="row">
+  <%= form_tag iva_books_path(), {class: 'form-inline', id: 'search_form'} do %>
+    <!-- BUSCAR POR PROVEEDOR -->
+    <%= label_tag :from, "Desde", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'calendar-alt') %></div>
+      </div>
+      <%= text_field_tag :from, params[:from], class: 'form-control datepicker', placeholder: 'Fecha desde', onchange: 'remoteSubmit("#search_form")' %>
+    </div>
+    <!-- BUSCAR POR PROVEEDOR -->
+
+    <!-- BUSCAR POR USUARIO -->
+    <%= label_tag :to, "Hasta", class: 'sr-only' %>
+    <div class="input-group mb-2 mr-sm-2">
+      <div class="input-group-prepend">
+        <div class="input-group-text"><%= icon('fas', 'calendar-alt') %></div>
+      </div>
+      <%= text_field_tag :to, params[:to], class: 'form-control datepicker', placeholder: 'Fecha hasta', onchange: 'remoteSubmit("#search_form")' %>
+    </div>
+    <div class="input-group mb-2 mr-sm-2" id="pdf_file"></div>
+    <!-- BUSCAR POR USUARIO -->
+  </div>
+<% end %>
+
+<div class="row" id="iva_books_table">
+  <%= render 'iva_books_table' %>
+</div>

@@ -64,6 +64,15 @@ es:
         address: "Dirección"
         email: "E-mail"
         cbu:  "C.B.U."
+      purchase_invoice:
+        supplier_id: "Proveedor"
+        arrival_note_id: "Remito asociado"
+        number: "Número de comprobante"
+        cbte_tipo: "Tipo de comprobante"
+        net_amount: "Monto Neto"
+        iva_amount: "Monto I.V.A."
+        imp_op_ex:  "monto exento"
+        total: "Total"
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"
