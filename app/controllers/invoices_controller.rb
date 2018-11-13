@@ -4,7 +4,7 @@ class InvoicesController < ApplicationController
   # GET /invoices
   # GET /invoices.json
   def index
-    @invoices = current_user.company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page])
+    @invoices = current_user.company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 10)
   end
 
   # GET /invoices/1
@@ -61,7 +61,7 @@ class InvoicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, payments_attributes: [:id, :type_of_payment, :total, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
+      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, payments_attributes: [:id, :type_of_payment, :total, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
     end
 
     def client_params

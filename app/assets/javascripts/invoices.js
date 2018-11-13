@@ -6,7 +6,7 @@ $( document ).ready(function() {
 var total_venta = parseInt(0);
 var rest = parseInt(0);
 
-$(document).on('railsAutocomplete.select', '.autocomplete_field', function(event, data){
+$(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
 		if (data.item.nomatch.length) {
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
@@ -23,6 +23,7 @@ $(document).on("change", ".price, .quantity", function(){
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
+	iva_aliquot 		= $(this).closest("tr.fields").find("input.iva_aliquot");
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
 
@@ -62,7 +63,9 @@ $(document).on("change", ".iva_aliquot", function(){
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	iva_amount			= $(this).closest("tr.fields").find("input.iva_amount");
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").find('option:selected');
-	iva_amount.val(parseFloat(subtotal.val()) * parseFloat(iva_aliquot.text()))
+
+	amount = parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text());
+	iva_amount.val(amount)
 });
 
 function autocomplete_field() {
@@ -98,5 +101,6 @@ $(document).on("change", ".subtotal", function(){
 	});
 	$("#payments").find(".amount").filter(':visible:first').val(total);
 	total_venta = total;
+	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
 	// subtotal 	= $(this).closest("tr.fields").find("input.subtotal");
 });

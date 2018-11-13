@@ -42,7 +42,7 @@ module ApplicationHelper
 
 	def paginate resource, param_name = nil
 		@resource = resource
-		content_tag :div, style: 'text-align: center;' do
+		content_tag :div, style: 'width: 100%' do
 			concat(will_paginate_helper(param_name))
 			concat(javascript_paginate_helper)
 		end

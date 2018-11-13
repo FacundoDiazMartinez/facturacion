@@ -7,30 +7,30 @@ class Invoices::ClientsController < ApplicationController
 	end
 
 	def update
-		client_exists = current_user.company.clients.where(client_params)
-		if client_exists.empty? #Si no existe
-			@client = current_user.company.clients.create(client_params)
-		else
-			@client = client_exists.first
-		end
-		if @client.errors.any?
-			@client.errors.full_messages.each do |ce|
-				@invoice.errors.add(:client, ce)
-			end
-		else
-			@invoice.update_column(:client_id, @client.id)
-			@invoice.update_column(:cbte_tipo, @invoice.available_cbte_type.last.last)
-		end
-	
+		@client = current_user.company.clients.find_by_full_document(client_params).first_or_initialize
+		@client.set_attributes(params["client"].as_json)
+		
 		respond_to do |format|
-			if @client.update(client_params)
+			if @client.save
+				@invoice.update_column(:client_id, @client.id)
+				@invoice.update_column(:cbte_tipo, @invoice.available_cbte_type.last.last)
+				@invoice.reload
 				format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Cliente creado con éxito.' }
 				format.js 	{ render :edit_client }
 	      	else
+	      		@client.errors.full_messages.each do |ce|
+					@invoice.errors.add(:client, ce)
+				end
 	        	format.html { render :edit }
 	        	format.js 	{ render :edit_client }
 	      	end
 	    end
+	end
+
+	def autocomplete_document
+		term = params[:term]
+    	clients = current_user.company.clients.where('document_number ILIKE ?', "%#{term}%").all
+    	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
 	end
 
 	protected

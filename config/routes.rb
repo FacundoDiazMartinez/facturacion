@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   get   '/invoices/:invoice_id/client/edit', to: 'invoices/clients#edit', as: 'edit_invoice_client'
   patch '/invoices/:invoice_id/client', to: 'invoices/clients#update'
   post  '/invoices/:invoice_id/client/edit', to: 'invoices/clients#create'
+  get   '/invoices/:invoice_id/clients/autocomplete_document', to: 'invoices/clients#autocomplete_document', as: 'autocomplete_document_clients'
   #CLIENTES
 
   #ACCOUNT MOVEMENTS

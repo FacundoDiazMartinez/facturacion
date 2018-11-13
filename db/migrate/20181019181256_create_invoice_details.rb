@@ -9,7 +9,7 @@ class CreateInvoiceDetails < ActiveRecord::Migration[5.2]
       t.float :bonus_percentage, null: false, default: 0.0
       t.float :bonus_amount, null: false, default: 0.0
       t.float :subtotal, null: false, default: 0.0
-      t.integer :iva_aliquot
+      t.string :iva_aliquot
       t.float :iva_amount
 
       t.timestamps

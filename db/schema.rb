@@ -143,7 +143,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.float "bonus_percentage", default: 0.0, null: false
     t.float "bonus_amount", default: 0.0, null: false
     t.float "subtotal", default: 0.0, null: false
-    t.integer "iva_aliquot"
+    t.string "iva_aliquot"
     t.float "iva_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -187,10 +187,10 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
 
   create_table "iva_books", force: :cascade do |t|
     t.string "tipo"
+    t.date "date"
     t.bigint "invoice_id"
     t.bigint "company_id"
     t.bigint "purchase_invoice_id"
-    t.string "date"
     t.float "net_amount"
     t.float "iva_amount"
     t.float "total"
@@ -269,9 +269,10 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.bigint "company_id"
     t.bigint "user_id"
     t.bigint "arrival_note_id"
-    t.integer "number", null: false
+    t.string "number", null: false
     t.bigint "supplier_id"
     t.string "cbte_tipo"
+    t.date "date"
     t.float "net_amount", default: 0.0, null: false
     t.float "iva_amount", default: 0.0, null: false
     t.float "imp_op_ex", default: 0.0, null: false

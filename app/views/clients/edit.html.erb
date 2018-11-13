@@ -1,6 +1,15 @@
-<h1>Editing Client</h1>
-
-<%= render 'form', client: @client %>
-
-<%= link_to 'Show', @client %> |
-<%= link_to 'Back', clients_path %>
+<div class="modal-header">
+  <h5 class="modal-title" id="clientModalTitle"><%= icon('far', 'users') %> Editar cliente</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%= form_for @client, remote: true, format: :js  do |f| %>
+	<div class="modal-body">
+	  <%= render 'form', f: f %>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	  <%= save_button %>
+	</div>
+<% end %>
