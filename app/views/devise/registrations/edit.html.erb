@@ -22,14 +22,14 @@
           <div class="col-6">
             <div class="form-group">
               <%= f.label :first_name, "Nombre", class:'control-label' %>
-              <%= f.text_field :first_name, class:'form-control', placeholder: "Nombre" %>
+              <%= f.text_field :first_name, class:'form-control', placeholder: "Nombre", required: true %>
             </div>
           </div>
 
           <div class="col-6">
             <div class="form-group">
               <%= f.label :last_name, "Apellido", class:'control-label' %>
-              <%= f.text_field :last_name, class:'form-control', placeholder: "Apellido" %>
+              <%= f.text_field :last_name, class:'form-control', placeholder: "Apellido", required: true %>
             </div>
           </div>
 
@@ -37,14 +37,14 @@
           <div class="col-6">
             <div class="form-group">
               <%= f.label :dni, "D.N.I.", class:'control-label' %>
-              <%= f.number_field :dni, class:'form-control', placeholder: "D.N.I." %>
+              <%= f.number_field :dni, class:'form-control', placeholder: "D.N.I.", required: true %>
             </div>
           </div>
 
           <div class="col-6">
             <div class="form-group">
               <%= f.label :birthday, "Fecha nacimiento", class:'control-label' %>
-              <%= f.text_field :birthday, class:'form-control datepicker', placeholder: "Fecha de nacimiento" %>
+              <%= f.text_field :birthday, class:'form-control datepicker', placeholder: "Fecha de nacimiento", required: true %>
             </div>
           </div>
 

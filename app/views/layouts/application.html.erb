@@ -11,19 +11,23 @@
 
   <body>
     <%= render template: '/layouts/navbar.html.erb' %>
-    <div class="row">
-      <div class="col-md-2 d-none d-md-block bg-light sidebar shadow">
-        <%= render template: '/layouts/navpills.html.erb' %>
+    <% if user_signed_in? %>
+      <div class="row">
+        <div class="col-md-2 d-none d-md-block bg-light sidebar shadow">
+          <%= render template: '/layouts/navpills.html.erb' %>
+        </div>
+        <div class="col-md-10 ml-sm-auto col-lg-10 px-4">
+          <% if notice %>
+            <p class="alert alert-success"><%= notice %></p>
+          <% end %>
+          <% if alert %>
+            <p class="alert alert-danger"><%= alert %></p>
+          <% end %>
+          <%= yield %>
+        </div>
       </div>
-      <div class="col-md-10 ml-sm-auto col-lg-10 px-4">
-        <% if notice %>
-          <p class="alert alert-success"><%= notice %></p>
-        <% end %>
-        <% if alert %>
-          <p class="alert alert-danger"><%= alert %></p>
-        <% end %>
-        <%= yield %>
-      </div>
-    </div>
+    <% else %>
+      <%= yield %>
+    <% end %>
   </body>
 </html>

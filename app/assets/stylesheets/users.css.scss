@@ -1,0 +1,23 @@
+#bg { 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  min-width: 100%;
+  min-height: 100%;
+  background-image: url("/images/background-market.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-filter: blur(5px); /* Safari 6.0 - 9.0 */
+  filter: blur(5px);
+}
+
+.full-table{
+  height: 100vh;
+  width: 100vw;
+  overflow-y: scroll;
+  overflow-y: hidden;
+}
+
+.login-header{
+  background-color:#f57c00;
+}
