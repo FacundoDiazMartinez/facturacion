@@ -64,6 +64,16 @@ es:
         address: "Dirección"
         email: "E-mail"
         cbu:  "C.B.U."
+      purchase_invoice:
+        supplier_id: "Proveedor"
+        arrival_note_id: "Remito asociado"
+        number: "Número de comprobante"
+        cbte_tipo: "Tipo de comprobante"
+        net_amount: "Monto Neto"
+        iva_amount: "Monto I.V.A."
+        imp_op_ex:  "monto exento"
+        total: "Total"
+        date: "Fecha"
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"
@@ -274,7 +284,7 @@ es:
   time:
     am: am
     formats:
-      default: "%a, %d de %b de %Y a las %H:%M:%S %Z"
+      default: "%d/%m/%Y a las %H:%M:%S %Z"
       long: "%A, %d de %B de %Y a las %I:%M %p"
       short: "%d de %b a las %H:%M hrs"
     pm: pm

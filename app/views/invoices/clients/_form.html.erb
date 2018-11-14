@@ -2,7 +2,7 @@
 <div class="form-group row">
   <%= label_tag :iva_cond, "Condición I.V.A. *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Excento"]],{},{class:'form-control form-control-sm'} %>
+    <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Exento"]],{},{class:'form-control form-control-sm'} %>
   </div>
 </div>
 
@@ -13,7 +13,7 @@
       <div class="input-group-prepend">
         <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text'} %>
       </div>
-      <%= f.text_field :document_number, class: 'form-control form-control-sm', required: true %>
+      <%= f.autocomplete_field :document_number, autocomplete_document_clients_path, class: 'form-control form-control-sm client-autocomplete_field', required: true %>
     </div>
   </div>
 </div>
@@ -22,54 +22,44 @@
 <div class="form-group row">
   <%= label_tag :name, "Nombre *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.text_field :name, class: 'form-control form-control-sm', required: true %>
+    <%= f.text_field :name, class: 'form-control form-control-sm name', required: true %>
   </div>
 </div>
 
 <div class="form-group row">
   <%= label_tag :birthday, "Nacimiento", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.text_field :birthday, value:"", class: "form-control datepicker", value: l(Date.today),  autocomplete: "off" %>
+    <%= f.text_field :birthday, value:"", class: "form-control datepicker birthday", value: l(Date.today),  autocomplete: "off" %>
   </div>
 </div>
 
 <div class="form-group row">
   <%= label_tag :phone, "Teléfono", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.text_field :phone,class: 'form-control form-control-sm' %>
+    <%= f.text_field :phone,class: 'form-control form-control-sm phone' %>
   </div>
 </div>
 
 <div class="form-group row">
   <%= label_tag :mobile_phone, "Celular", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.text_field :mobile_phone,class: 'form-control form-control-sm' %>
+    <%= f.text_field :mobile_phone,class: 'form-control form-control-sm mobile_phone' %>
   </div>
 </div>
 
 <div class="form-group row">
   <%= label_tag :address, "Dirección", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.text_field :address,class: 'form-control form-control-sm' %>
+    <%= f.text_field :address,class: 'form-control form-control-sm address' %>
   </div>
 </div>
 
 <div class="form-group row">
   <%= label_tag :email, "Email", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.email_field :email,class: 'form-control form-control-sm' %>
+    <%= f.email_field :email,class: 'form-control form-control-sm email' %>
   </div>
 </div>
 
 <center><i>* Campos obligatorios</i></center>
 
-<script type="text/javascript">
-
-$('.datepicker').datepicker({
-      language: "es",
-      dateFormat: "dd/mm/yyyy",
-      todayHighlight: true,
-      autoclose: true,
-  });
-
-</script>

@@ -10,6 +10,7 @@ class Invoice < ApplicationRecord
     has_many :payments
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
+    has_many :iva_books
 
     has_one  :receipt
     has_one  :account_movement
@@ -20,6 +21,7 @@ class Invoice < ApplicationRecord
 
     after_save :set_state
     after_save :touch_account_movement, if: Proc.new{|i| i.saved_change_to_total?}
+    after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -76,11 +78,9 @@ class Invoice < ApplicationRecord
 
       def iva_array
         i = Array.new
-        h = invoice_details.all.group(:iva_aliquot).sum(:price_per_unit)
-        j = invoice_details.all.group(:iva_aliquot).sum(:iva_amount)
-        iva_hash = h.merge(j){|k, h_value, j_value| [h_value , j_value]}
+        iva_hash = invoice_details.all.group_by{|i_d| i_d.iva_aliquot}.map{|aliquot, inv_det| {aliquot:aliquot, net_amount: inv_det.sum{|id| id.neto}, iva_amount: inv_det.sum{|s| s.iva_amount}}}
         iva_hash.each do |iva|
-          i << [ Invoice.applicable_iva_for_detail(iva[0]), iva.second[0], iva.second[1] ]
+          i << [ iva[:aliquot], iva[:net_amount].round(2), iva[:iva_amount].round(2) ]
         end
         return i
       end
@@ -100,20 +100,38 @@ class Invoice < ApplicationRecord
         end
       end
 
-      def net_sum
+      def net_amount_sum
         total = 0
         invoice_details.each do |detail|
-          total += detail.price_per_unit.to_f.round(2)
+          total += detail.neto
+        end
+        return total.round(2)
+      end
+
+      def iva_amount_sum
+        total = 0
+        invoice_details.each do |detail|
+          total += detail.iva_amount.to_f.round(2)
         end
         return total
       end
 
       def available_cbte_type
-        Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[self.company.iva_cond_sym][self.client.iva_cond_sym]}.map{|k,v| [v,k]}
+        pp self.company.iva_cond_sym
+        pp self.client.iva_cond_sym
+        pp Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[self.company.iva_cond_sym][self.client.iva_cond_sym]}.map{|k,v| [v,k]}
+      end
+
+      def tipo
+        Afip::CBTE_TIPO[cbte_tipo]
       end
   	#FUNCIONES
 
     #PROCESOS
+      def create_iva_book
+        IvaBook.add_from_invoice(self)    
+      end
+
       def set_state
         if editable? && (total.to_f != 0.0)
           case (total.to_f <= total_pay.to_f)
@@ -154,9 +172,7 @@ class Invoice < ApplicationRecord
       end
 
       def touch_account_movement
-        pp "ENTRO"
         if cbte_tipo != nil
-          "AHORA ENTRO ACA"
           am              = AccountMovement.where(invoice_id: id).first_or_initialize
           am.client_id    = client_id
           am.invoice_id   = id
@@ -189,6 +205,11 @@ class Invoice < ApplicationRecord
 
       def sum_payments
         self.payments.sum(:total)
+      end
+
+      def cbte_fch
+        fecha = read_attribute("cbte_fch")
+        fecha.blank? ? nil : I18n.l(fecha.to_date)
       end
   	#ATRIBUTOS
 
@@ -224,7 +245,7 @@ class Invoice < ApplicationRecord
       def set_bill
         set_constants
         bill = Afip::Bill.new(
-          net:        self.net_sum,
+          net:        self.net_amount_sum,
           doc_num:    self.client.document_number,
           sale_point: self.sale_point.name,
           documento:  Afip::DOCUMENTOS.key(self.client.document_type),
@@ -258,26 +279,31 @@ class Invoice < ApplicationRecord
       end
 
       def afip_errors(bill)
-        if not bill.response.observaciones.empty?
-          if bill.response.observaciones[:obs].class == Hash
-            self.errors.add(:bill, bill.response.observaciones[:obs][:msg])
-          elsif bill.response.observaciones[:obs].class == Array
-            bill.response.observaciones[:obs].each do |obs|
-              self.errors.add(:bill, obs[:msg])
+        if not bill.response.observaciones.nil?
+          if bill.response.observaciones.any?
+            if bill.response.observaciones[:obs].class == Hash
+              self.errors.add(:bill, bill.response.observaciones[:obs][:msg])
+            elsif bill.response.observaciones[:obs].class == Array
+              bill.response.observaciones[:obs].each do |obs|
+                self.errors.add(:bill, obs[:msg])
+              end
             end
           end
+        end
+        if not bill.response.errores.nil?
+          self.errors.add(:bill, bill.response.errores[:msg])
         end
       end
       #FUNCIONES
 
       #PROCESOS
         def set_cae bill
-          self.update_columns(
+          self.update(
             cae: bill.response.cae,
             cae_due_date: bill.response.cae_due_date,
             cbte_fch: bill.response.cbte_fch.to_date,
             authorized_on: bill.response.authorized_on.to_time,
-            comp_number: bill.response.cbte_hasta,
+            comp_number: bill.response.cbte_hasta.to_s.rjust(8,padstr= '0'),
             state: "Confirmado"
           )
         end

@@ -7,6 +7,7 @@
 @import "companies";
 @import "bootstrap-datepicker";
 @import "jquery-ui";
+@import "users";
 
 
 
@@ -16,6 +17,34 @@ body{
 
 label{
 	font-weight: bold;
+}
+
+a.dropdown-item:visited {
+  color: black !important;
+}
+
+li.nav-item > .dropdown-menu {
+  width: 100%;
+}
+
+.dropdown-menu.show{
+  position: relative !important;
+  transform: translate3d(0px, 0px, 0px) !important;
+  border: none;
+}
+
+.dropdown-menu > .dropdown-item{
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 10px 15px;
+}
+
+.nav-link{
+  font-family: verdana, arial, helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 10px 15px;
 }
 
 .sidebar {

@@ -5,7 +5,7 @@
   </div>
   <div class="ml-auto p-2">
     <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
-    <%= link_to "#{icon('fas', 'plus')} Añadir cliente".html_safe, new_client_path(), class: 'btn btn-primary ' %>
+    <%= link_to "#{icon('fas', 'plus')} Añadir cliente".html_safe, new_client_path(), class: 'btn btn-primary ', data: {target: '#clientModal', toggle: 'modal', remote: true}  %>
   </div>
 </h1>
 
@@ -13,3 +13,11 @@
   <%= render 'clients_table' %>
 </div>
 
+<div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="client_modal">
+      </div>
+    </div>
+  </div>
+</div>

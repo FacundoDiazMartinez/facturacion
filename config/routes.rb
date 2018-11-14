@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
 
 
+  resources :iva_books do
+    get :generate_pdf, on: :collection
+  end
+  resources :purchase_invoices do
+    get :autocomplete_arrival_note_id, on: :collection
+  end
   resources :arrival_notes do
     resources :arrival_note_details, shallow: true
     get :set_purchase_order, on: :collection
@@ -20,21 +26,23 @@ Rails.application.routes.draw do
     get :import, on: :collection
   end
 
+  #resources :users, only: [:index, :show]
   resources :suppliers
   resources :depots
   resources :receipts
   resources :clients
   resources :delivery_notes
   resources :product_categories
-  resources  :companies
+  resources :companies
 
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'users/registrations' }
 
   #CLIENTES
   get   '/invoices/:invoice_id/client/', to: 'invoices/clients#show', as: 'invoice_client'
   get   '/invoices/:invoice_id/client/edit', to: 'invoices/clients#edit', as: 'edit_invoice_client'
   patch '/invoices/:invoice_id/client', to: 'invoices/clients#update'
   post  '/invoices/:invoice_id/client/edit', to: 'invoices/clients#create'
+  get   '/invoices/:invoice_id/clients/autocomplete_document', to: 'invoices/clients#autocomplete_document', as: 'autocomplete_document_clients'
   #CLIENTES
 
   #ACCOUNT MOVEMENTS

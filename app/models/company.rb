@@ -9,7 +9,9 @@ class Company < ApplicationRecord
 	has_many :depots
 	has_many :suppliers
 	has_many :purchase_orders
+	has_many :purchase_invoices
 	has_many :arrival_notes
+	has_many :iva_books
 
 	belongs_to :province
 	belongs_to :locality

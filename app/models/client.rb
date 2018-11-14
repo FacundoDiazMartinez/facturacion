@@ -12,6 +12,12 @@ class Client < ApplicationRecord
 	validates :document_number, length: {minimum: 6, message: 'Numero de documento inválido, verifique.' }, 	if: Proc.new{|c| ['en tramite', 'DNI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
 	validates_uniqueness_of :document_number, scope: [:company_id, :document_type], message: 'Ya existe un cliente con ese documento.', if: Proc.new{|c| not c.default_client?}
 
+	#FILTROS DE BUSQUEDA
+		def self.find_by_full_document params={}
+			where(document_type: params[:document_type], document_number: params[:document_number])	
+		end
+		
+	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS
 		def iva_cond_sym
@@ -22,6 +28,13 @@ class Client < ApplicationRecord
 	#PROCESOS
 		def destroy
 			update_column(:active,false)
+		end
+
+		def set_attributes attrs
+			# attrs.each do |key, value|
+  			# 	self.send( "#{key}=", value )
+			# end
+			self.attributes = self.attributes.merge(attrs)
 		end
 	#PROCESOS
 

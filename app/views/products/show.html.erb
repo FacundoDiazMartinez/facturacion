@@ -91,7 +91,7 @@
 					            <div class="form-group row">
 					              	<%= label_tag :iva_aliquot, "Alícuota de I.V.A.:", class: 'col-sm-6 col-form-label' %>
 					              	<div class="col-sm-6 col-form-label text-left">
-					                	<%= Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != @product.iva_aliquot}.compact.join().to_f * 100 %>%
+					                	<%= @product.iva %>%
 					              	</div>
 					            </div>
 					            <div class="form-group row">
