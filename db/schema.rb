@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.string "cbte_tipo", null: false
     t.boolean "debe"
     t.boolean "haber"
+    t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.float "saldo", default: 0.0, null: false
     t.datetime "created_at", null: false

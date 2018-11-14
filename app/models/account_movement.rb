@@ -6,6 +6,8 @@ class AccountMovement < ApplicationRecord
   before_save :update_others_movements, if: Proc.new{|am|  !am.new_record?}
   after_save  :update_debt
 
+  default_scope {where(active: true)}
+
   #FUNCIONES
   	def days
   		read_attribute("days") || (Date.today - created_at.to_date).to_i / 1.days 
@@ -36,5 +38,9 @@ class AccountMovement < ApplicationRecord
   		pp saldo = AccountMovement.where(client_id: client_id).last.saldo
   		client.update_column(:saldo, saldo)
   	end
+
+    def destroy
+      update(active: false)
+    end
   #FUNCIONES
 end
