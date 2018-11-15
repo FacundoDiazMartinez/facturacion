@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.float "subtotal", default: 0.0, null: false
     t.string "iva_aliquot"
     t.float "iva_amount"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
@@ -195,6 +196,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.float "net_amount"
     t.float "iva_amount"
     t.float "total"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_iva_books_on_company_id"
@@ -214,6 +216,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
   create_table "payments", force: :cascade do |t|
     t.string "type_of_payment"
     t.float "total", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -299,7 +302,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.integer "number", null: false
+    t.string "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
