@@ -1,0 +1,7 @@
+'<% if params[:from] && params[:to] %>'
+	$("#pdf_file").html("<%= j link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_iva_books_path(from: params[:from], to: params[:to]), class: 'btn btn-primary ' %>");
+'<% end %>'
+
+'<% if params[:page] %>'
+	$("#iva_books_table").html("<%= j render 'iva_books_table' %>");
+'<% end %>'

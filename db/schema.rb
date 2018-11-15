@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_07_165542) do
+ActiveRecord::Schema.define(version: 2018_11_08_185753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,22 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
+  create_table "iva_books", force: :cascade do |t|
+    t.string "tipo"
+    t.date "date"
+    t.bigint "invoice_id"
+    t.bigint "company_id"
+    t.bigint "purchase_invoice_id"
+    t.float "net_amount"
+    t.float "iva_amount"
+    t.float "total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_iva_books_on_company_id"
+    t.index ["invoice_id"], name: "index_iva_books_on_invoice_id"
+    t.index ["purchase_invoice_id"], name: "index_iva_books_on_purchase_invoice_id"
+  end
+
   create_table "localities", force: :cascade do |t|
     t.string "name"
     t.integer "code"
@@ -252,6 +268,26 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
     t.integer "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "purchase_invoices", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.bigint "arrival_note_id"
+    t.string "number", null: false
+    t.bigint "supplier_id"
+    t.string "cbte_tipo"
+    t.date "date"
+    t.float "net_amount", default: 0.0, null: false
+    t.float "iva_amount", default: 0.0, null: false
+    t.float "imp_op_ex", default: 0.0, null: false
+    t.float "total", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["arrival_note_id"], name: "index_purchase_invoices_on_arrival_note_id"
+    t.index ["company_id"], name: "index_purchase_invoices_on_company_id"
+    t.index ["supplier_id"], name: "index_purchase_invoices_on_supplier_id"
+    t.index ["user_id"], name: "index_purchase_invoices_on_user_id"
   end
 
   create_table "purchase_order_details", force: :cascade do |t|
@@ -417,12 +453,19 @@ ActiveRecord::Schema.define(version: 2018_11_07_165542) do
   add_foreign_key "invoices", "companies"
   add_foreign_key "invoices", "sale_points"
   add_foreign_key "invoices", "users"
+  add_foreign_key "iva_books", "companies"
+  add_foreign_key "iva_books", "invoices"
+  add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "invoices"
   add_foreign_key "product_categories", "companies"
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"
+  add_foreign_key "purchase_invoices", "arrival_notes"
+  add_foreign_key "purchase_invoices", "companies"
+  add_foreign_key "purchase_invoices", "suppliers"
+  add_foreign_key "purchase_invoices", "users"
   add_foreign_key "purchase_order_details", "products"
   add_foreign_key "purchase_order_details", "purchase_orders"
   add_foreign_key "purchase_orders", "companies"

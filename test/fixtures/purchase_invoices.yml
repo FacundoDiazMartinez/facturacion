@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company: one
+  user: one
+  arrival_note: one
+  number: 1
+  supplier: one
+  state: MyString
+  cbte_tipo: MyString
+  net_amount: 1.5
+  iva_amount: 1.5
+  imp_op_ex: 1.5
+  total: 1.5
+
+two:
+  company: two
+  user: two
+  arrival_note: two
+  number: 1
+  supplier: two
+  state: MyString
+  cbte_tipo: MyString
+  net_amount: 1.5
+  iva_amount: 1.5
+  imp_op_ex: 1.5
+  total: 1.5

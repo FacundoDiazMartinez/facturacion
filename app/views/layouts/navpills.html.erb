@@ -26,11 +26,16 @@
 		  <li class="nav-item">
 		    <%= link_to "#{icon('fas', 'plane')} Proveedores".html_safe, suppliers_path, class: 'nav-link' %>
 		  </li>
-		  <li class="nav-item">
-		    <%= link_to "#{icon('fas', 'shopping-cart')} Compras".html_safe, purchase_orders_path, class: 'nav-link' %>
+		  <li class="nav-item dropdown">
+		  	<%= link_to "#{icon('fas', 'shopping-cart')} Compras".html_safe, "#", role: 'button', class: 'nav-link dropdown-toggle', data:{ toggle:'dropdown' }, aria: {haspopup: true, expanded: 'false'} %>
+		  	<div class="dropdown-menu">
+		    	<%= link_to 'Solicitudes', purchase_orders_path, class: 'dropdown-item' %>
+		    	<%= link_to 'Comprobantes', purchase_invoices_path, class: 'dropdown-item' %>
+		    	<%= link_to "Remitos", arrival_notes_path, class: 'dropdown-item' %>
+		    </div>
 		  </li>
 		  <li class="nav-item">
-		    <%= link_to "#{icon('fas', 'file-alt')} Remitos".html_safe, arrival_notes_path, class: 'nav-link' %>
+		    <%= link_to "#{icon('fas', 'book')} Libro I.V.A.".html_safe, iva_books_path, class: 'nav-link' %>
 		  </li>
 		</ul>
 	</div>

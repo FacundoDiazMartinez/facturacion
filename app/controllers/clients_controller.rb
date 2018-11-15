@@ -34,6 +34,7 @@ class ClientsController < ApplicationController
         format.html { render :new }
         format.json { render json: @client.errors, status: :unprocessable_entity }
       end
+      format.js { render :set_client }
     end
   end
 
@@ -48,6 +49,7 @@ class ClientsController < ApplicationController
         format.html { render :edit }
         format.json { render json: @client.errors, status: :unprocessable_entity }
       end
+      format.js { render :set_client }
     end
   end
 

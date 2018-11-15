@@ -13,7 +13,7 @@
 	      <tr class="fields">
 	      	<th scope="row">#</th>
 	      	<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control'} %></td>
-	      	<td><%= f.number_field :total, class: 'form-control amount', default: 0 %></td>
+	      	<td><%= f.number_field :total, class: 'form-control amount', default: 0.0 %></td>
 	      	<td></td>
 	      	<td><%= f.link_to_remove icon('fas', 'trash') %></td>
 	      </tr>

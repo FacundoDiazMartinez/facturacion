@@ -107,6 +107,7 @@
 						<th scope="col">Nombre</th>
 						<th scope="col">Apellido</th>
 						<th scope="col">Rol</th>
+						<th scope="col" colspan="3"></th>
 					</thead>
 					<tbody>
 						<% @users.each do |user| %>
@@ -115,6 +116,7 @@
 								<td><%= user.first_name %></td>
 								<td><%= user.last_name %></td>
 								<td>Sin Rol</td>
+								<td><%= link_to icon('fas', 'edit'), edit_user_registration_path %></td>
 							</tr>
 						<% end %>
 					</tbody>

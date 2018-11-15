@@ -42,7 +42,7 @@ module ApplicationHelper
 
 	def paginate resource, param_name = nil
 		@resource = resource
-		content_tag :div, style: 'text-align: center;' do
+		content_tag :div, style: 'width: 100%' do
 			concat(will_paginate_helper(param_name))
 			concat(javascript_paginate_helper)
 		end
@@ -71,4 +71,39 @@ module ApplicationHelper
 		end
 	end
 
+	def title icon, text, path=nil, path_title=nil
+		@icon = icon
+		@text = text
+		@path = path
+		content_tag :div, class: 'title-container' do
+			concat(full_title)
+			concat(hr_line)
+		end
+	end
+
+	def full_title
+		content_tag :h1, class: 'd-flex mb-2' do
+			concat(left_title)
+			concat(right_title)
+		end
+		
+	end
+
+	def left_title
+		content_tag :div, class: 'p-2' do
+			concat(icon('fas', 'user'))
+			concat(@text)
+		end
+	end
+
+	def right_title
+		content_tag :div, class: 'ml-auto p-2' do
+			concat(link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger')
+			concat(link_to "#{icon('fas', 'plus')} #{path_title}".html_safe, @path, class: 'btn btn-primary') unless @path.nil?
+		end
+	end
+
+	def hr_line
+		content_tag :hr
+	end
 end

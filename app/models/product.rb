@@ -87,6 +87,10 @@ class Product < ApplicationRecord
 		def available_stock
 			stocks.where(state: "Disponible").count
 		end
+
+		def iva
+			Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f * 100
+		end
 	#ATRIBUTOS
 
 	#PROCESOS

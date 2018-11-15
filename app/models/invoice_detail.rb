@@ -19,9 +19,9 @@ class InvoiceDetail < ApplicationRecord
       end
     end
 
-    def destroy
-      update_column(:active,false)
-    end
+    #def destroy
+      #update_column(:active,false)
+    #end
 
     def set_total_to_invoice
       invoice.update_attribute(:total, invoice.sum_details)
@@ -45,6 +45,21 @@ class InvoiceDetail < ApplicationRecord
     def measurement_unit_value
       Product::MEASUREMENT_UNITS[measurement_unit.to_s]
     end
+
+    def default_iva
+      iva_aliquot.nil? ? "05" : iva_aliquot
+    end
   #ATRIBUTOS
+
+
+  #FUNCIONES
+    def neto
+      (subtotal / (1 + iva)).round(2)
+    end
+
+    def iva
+      Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f 
+    end
+  #FUNCIONES
 
 end

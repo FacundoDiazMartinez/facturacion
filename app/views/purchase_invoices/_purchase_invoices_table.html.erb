@@ -1,0 +1,35 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Número</th>
+      <th>Tipo</th>
+      <th>Proveedor</th>
+      <th>Creado por</th>
+      <th>Neto</th>
+      <th>I.V.A.</th>
+      <th>Excento</th>
+      <th>Total</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @purchase_invoices.each do |purchase_invoice| %>
+      <tr>
+        <td><strong><%= purchase_invoice.number %></strong></td>
+        <td><%= purchase_invoice.cbte_tipo %></td>
+        <td><%= purchase_invoice.supplier.name %></td>
+        <td><%= purchase_invoice.user.name %></td>
+        <td>$<%= purchase_invoice.net_amount %></td>
+        <td>$<%= purchase_invoice.iva_amount %></td>
+        <td>$<%= purchase_invoice.imp_op_ex %></td>
+        <td><%= purchase_invoice.total %></td>
+        <td><%= link_to icon('fas', 'eye').html_safe, purchase_invoice %></td>
+        <td><%= link_to icon('fas', 'edit').html_safe, edit_purchase_invoice_path(purchase_invoice.id) %></td>
+        <td><%= link_to icon('fas', 'trash').html_safe, purchase_invoice, method: :delete, data: { confirm: '¿Está seguro?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @purchase_invoices %>
