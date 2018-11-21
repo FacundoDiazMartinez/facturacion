@@ -11,6 +11,7 @@ class CreateInvoiceDetails < ActiveRecord::Migration[5.2]
       t.float :subtotal, null: false, default: 0.0
       t.string :iva_aliquot
       t.float :iva_amount
+      t.boolean :active, null: false, default: true
 
       t.timestamps
     end

@@ -8,6 +8,7 @@ class CreateAccountMovements < ActiveRecord::Migration[5.2]
       t.string :cbte_tipo, null: false
       t.boolean :debe
       t.boolean :haber
+      t.boolean :active, null: false, default: true
       t.float :total, null: false, default: 0.0
       t.float :saldo, null:false, default: 0.0
 

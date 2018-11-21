@@ -23,7 +23,7 @@
         <td><%= client.email %></td>
         <td><%= client.address %></td>
         <td><%= client.birthday %></td>
-        <td><%= link_to(icon('fas', 'briefcase'), account_movements_path , :options) %></td>
+        <td><%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id) %></td>
         <td><%= link_to icon('fas', 'eye'), client %></td>
         <td><%= link_to icon('fas', 'edit'), edit_client_path(client) %></td>
         <td><%= link_to icon('fas', 'trash'), client, method: :delete, data: { confirm: 'Are you sure?' } %></td>

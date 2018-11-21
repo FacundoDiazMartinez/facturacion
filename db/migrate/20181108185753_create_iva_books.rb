@@ -9,6 +9,7 @@ class CreateIvaBooks < ActiveRecord::Migration[5.2]
       t.float :net_amount
       t.float :iva_amount
       t.float :total
+      t.boolean :active, null: false, default: true
 
       t.timestamps
     end
