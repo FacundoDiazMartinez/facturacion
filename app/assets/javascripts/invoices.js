@@ -16,6 +16,10 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+		$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
+
+		subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+		subtotal.trigger("change");
 });
 
 $(document).on("change", ".price, .quantity", function(){

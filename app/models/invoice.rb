@@ -4,7 +4,7 @@ class Invoice < ApplicationRecord
   	belongs_to :company
   	belongs_to :user
 
-    default_scope {where(active:true)}
+    default_scope { where(active: true) }
 
 
     has_many :payments, dependent: :destroy
@@ -123,6 +123,12 @@ class Invoice < ApplicationRecord
       def tipo
         Afip::CBTE_TIPO[cbte_tipo]
       end
+
+      def destroy
+        update_column(:active, false)
+        run_callbacks :destroy
+        freeze
+      end
   	#FUNCIONES
 
     #PROCESOS
@@ -140,12 +146,6 @@ class Invoice < ApplicationRecord
             update_column(:state, "Pendiente")
           end
         end
-      end
-
-      def destroy
-        update(active: false)
-        run_callbacks :destroy
-        freeze
       end
 
       def set_client params

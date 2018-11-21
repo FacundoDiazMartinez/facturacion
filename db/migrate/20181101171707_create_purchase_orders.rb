@@ -4,6 +4,7 @@ class CreatePurchaseOrders < ActiveRecord::Migration[5.2]
       t.integer :number, null: false
       t.string :state, null: false, default: "Pendiente de aprobación"
       t.references :supplier, foreign_key: true
+      t.string :number, null: false
       t.text :observation
       t.float :total, null: false, default: 0.0
       t.float :total_pay, null: false, default: 0.0

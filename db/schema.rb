@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.string "cbte_tipo", null: false
     t.boolean "debe"
     t.boolean "haber"
+    t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.float "saldo", default: 0.0, null: false
     t.datetime "created_at", null: false
@@ -48,11 +49,14 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.bigint "company_id"
     t.bigint "purchase_order_id"
     t.bigint "user_id"
-    t.boolean "active", null: false
+    t.bigint "depot_id"
+    t.integer "number", null: false
+    t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_arrival_notes_on_company_id"
+    t.index ["depot_id"], name: "index_arrival_notes_on_depot_id"
     t.index ["purchase_order_id"], name: "index_arrival_notes_on_purchase_order_id"
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
   end
@@ -107,6 +111,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.bigint "invoice_id"
     t.bigint "user_id"
     t.bigint "client_id"
+    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -133,14 +138,15 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
   create_table "invoice_details", force: :cascade do |t|
     t.bigint "invoice_id"
     t.bigint "product_id"
-    t.float "quantity", default: 0.0, null: false
+    t.float "quantity", default: 1.0, null: false
     t.string "measurement_unit", null: false
     t.float "price_per_unit", default: 0.0, null: false
     t.float "bonus_percentage", default: 0.0, null: false
     t.float "bonus_amount", default: 0.0, null: false
     t.float "subtotal", default: 0.0, null: false
-    t.integer "iva_aliquot"
+    t.string "iva_aliquot"
     t.float "iva_amount"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
@@ -190,6 +196,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.float "net_amount"
     t.float "iva_amount"
     t.float "total"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_iva_books_on_company_id"
@@ -208,7 +215,8 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
 
   create_table "payments", force: :cascade do |t|
     t.string "type_of_payment"
-    t.float "total"
+    t.float "total", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -254,7 +262,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.float "gain_margin"
     t.float "net_price"
     t.float "price"
-    t.float "iva_aliquot"
+    t.string "iva_aliquot"
     t.string "photo"
     t.string "measurement_unit"
     t.datetime "created_at", null: false
@@ -294,7 +302,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.bigint "purchase_order_id"
     t.bigint "product_id"
     t.float "price", default: 0.0, null: false
-    t.float "quantity", default: 0.0, null: false
+    t.float "quantity", default: 1.0, null: false
     t.float "total", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -303,6 +311,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
+    t.string "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -439,6 +448,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
   add_foreign_key "arrival_note_details", "arrival_notes"
   add_foreign_key "arrival_note_details", "products"
   add_foreign_key "arrival_notes", "companies"
+  add_foreign_key "arrival_notes", "depots"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"

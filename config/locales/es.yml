@@ -74,6 +74,11 @@ es:
         imp_op_ex:  "monto exento"
         total: "Total"
         date: "Fecha"
+      purchase_order:
+        state: "Estado"
+        total_pay: "Total a pagar"
+        created_at: "Creado el"
+        budget: "Presupuesto"
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"

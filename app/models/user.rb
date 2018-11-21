@@ -22,4 +22,10 @@ class User < ApplicationRecord
     def name
       "#{last_name}, #{first_name}"
     end
+
+		def birthday
+			if not super.blank?
+				I18n.l(super)
+			end
+	  end
 end

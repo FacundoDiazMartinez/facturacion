@@ -1,39 +1,95 @@
-<h2><%= t('.sign_up', :default => "Sign up") %></h2>
 
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-  <%= devise_error_messages! %>
+<div id="bg"></div>
 
-  <br />
+<table class="full-table">
+    <tbody>
+      <td class="align-middle">
+        <div class="col-sm-5" style="margin: auto;">
+          <div class="card" id="login">
+            <div class="card-header login-header">
+              <center>
+                <%= image_tag '/images/logo_blanco1.png', :style => "width:60%;margin:5px auto" %>
+              </center>
+            </div>
+            <div class="card-body">
+              <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
 
-  <br />
+                <center>
+                  <h2><%= t('.sign_up', :default => "Sign up") %></h2>
+                  <br>
 
-  <div class="form-group">
-        <%= f.label :email %>
-        <%= f.email_field :email, class:'form-control col-sm-4' %>
-  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <%= f.text_field :first_name, autofocus: true, class:'form-control', placeholder: "Nombre", required: true %>
+                    </div>
 
-  <br />
+                    <div class="form-group col-md-6" id="container-date">
+                      <%= f.text_field :last_name, class:'form-control', placeholder: "Apellido", required: true %>
+                    </div>
 
-  <div class="form-group">
-        <%= f.label :password %>
-        <%= f.password_field :password, class:'form-control col-sm-4' %>
-  </div>
-
-  <br />
-
-  <div class="form-group">
-        <%= f.label :password_confirmation %>
-        <%= f.password_field :password_confirmation, class:'form-control col-sm-4' %>
-  </div>
+                  </div>
 
 
-  <br />
-  <div class="col-sm-4">
-    <div class="float-right">
-        <%= save_button %>
-    </div>
-  </div>
+                  <div class="row">
+                    <div class="form-group col-md-6">
+                      <%= f.text_field :dni, class:'form-control', placeholder: "D.N.I.", required: true %>
+                    </div>
 
-<% end %>
+                    <div class="form-group col-md-6" id="picker-containter">
+                      <%= f.text_field :birthday, class:'form-control datepicker', placeholder: "  Fecha de nacimiento", required: true, autocomplete: "off" %>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <%= f.text_field :address, class:'form-control', placeholder: "Domicilio" %>
+                  </div>
+
+
+                    <div class="form-group">
+                      <%= f.email_field :email, class:'form-control', placeholder: "E-mail", required: true %>
+                    </div>
+
+                    <div class="row">
+                      <div class="form-group col-md-6">
+                        <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: "Contraseña", required: true %>
+                      </div>
+
+                      <div class="form-group col-md-6">
+                        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', placeholder: "Repetir contraseña", required: true %>
+                      </div>
+                    </div>
+
+
+
+
+                    <div class="actions">
+                      <%= f.submit "Registrarse", class:'btn btn-primary' %>
+                      <hr style="background-color: red; height: 1px; border: 0;">
+                      <%= link_to "Ingresar", new_session_path(resource_name), class: 'btn btn-secondary btn-sm' %> <br>
+                    </div>
+
+                </center>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tbody>
+  </table>
+
+
+
+
 
 <%= render "devise/shared/links" %>
+
+
+
+<script type="text/javascript">
+$('.datepicker').datepicker({
+    language: "es",
+    todayHighlight: true,
+    autoclose:true,
+    container: '#container-date'
+});
+</script>

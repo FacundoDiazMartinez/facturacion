@@ -37,6 +37,12 @@ class PurchaseOrder < ApplicationRecord
     def name
       "Nº: #{number} - De: #{supplier.name}"
     end
+
+    def created_at
+      if not super.blank?
+  			I18n.l(super.to_date)
+  		end
+    end
   #ATRIBUTOS
 
   #FILTROS DE BUSQUEDA
@@ -44,23 +50,23 @@ class PurchaseOrder < ApplicationRecord
       if not name.blank?
         where("suppliers.name ILIKE ?", "%#{name}%")
       else
-        all 
+        all
       end
     end
 
-    def self.search_by_user name 
+    def self.search_by_user name
       if not name.blank?
         where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
       else
-        all 
+        all
       end
    end
 
-    def self.search_by_state state 
+    def self.search_by_state state
       if not state.blank?
         where(state: state)
       else
-        all 
+        all
       end
     end
   #FILTROS DE BUSQUEDA
@@ -68,13 +74,17 @@ class PurchaseOrder < ApplicationRecord
   #PROCESOS
     def set_number
       last_po = PurchaseOrder.where(company_id: company_id).last
-      self.number = last_po.nil? ? 1 : (last_po.number.to_i + 1) 
+      self.number = last_po.nil? ? 1 : (last_po.number.to_i + 1)
     end
   #PROCESOS
 
   #FUNCIONES
     def self.sended_orders
       where(state: "Enviado").map{|s| [s.name, s.id]}
+    end
+
+    def sum_details
+      self.purchase_order_details.sum(:total)
     end
   #FUNCIONES
 end
