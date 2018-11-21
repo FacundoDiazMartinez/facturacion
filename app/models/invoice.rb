@@ -309,4 +309,18 @@ class Invoice < ApplicationRecord
         end
       #PROCESOS
     #AFIP
+
+    #FILL_COMP_NUMBER
+    def fill_comp_number
+      if !self.comp_number.nil?
+        self.comp_number.to_s.rjust(8,padstr= '0')
+      end
+    end
+    #FILL_COMP_NUMBER
+
+    def payment_array
+      if !self.payments.nil?
+        self.payments.map{|p| "#{p.type_of_payment}"}.join(", ")
+      end
+    end
 end
