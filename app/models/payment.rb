@@ -36,5 +36,11 @@ class Payment < ApplicationRecord
       any? ? all : new
     end
 
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
+    end
+
   #FUNCIONES
 end

@@ -26,15 +26,16 @@ Rails.application.routes.draw do
     get :import, on: :collection
   end
 
+  #resources :users, only: [:index, :show]
   resources :suppliers
   resources :depots
   resources :receipts
   resources :clients
   resources :delivery_notes
   resources :product_categories
-  resources  :companies
+  resources :companies
 
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'users/registrations' }
 
   #CLIENTES
   get   '/invoices/:invoice_id/client/', to: 'invoices/clients#show', as: 'invoice_client'

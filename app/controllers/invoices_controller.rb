@@ -10,6 +10,12 @@ class InvoicesController < ApplicationController
   # GET /invoices/1
   # GET /invoices/1.json
   def show
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@invoice.id}", layout: 'pdf',template: 'invoices/show', viewport_size: '1280x1024'   # Excluding ".pdf" extension.
+      end
+    end
   end
 
   # GET /invoices/new

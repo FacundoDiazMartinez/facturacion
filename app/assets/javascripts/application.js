@@ -16,6 +16,7 @@
 //= require main-mockup
 //= require jquery_nested_form
 //= require invoices
+//= require users
 //= require popper
 //= require bootstrap
 //= require bootstrap-toggle

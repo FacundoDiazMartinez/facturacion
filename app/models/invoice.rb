@@ -4,16 +4,16 @@ class Invoice < ApplicationRecord
   	belongs_to :company
   	belongs_to :user
 
-    default_scope {where(active:true)}
+    default_scope { where(active: true) }
 
 
-    has_many :payments
+    has_many :payments, dependent: :destroy
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
-    has_many :iva_books
+    has_many :iva_books, dependent: :destroy
 
-    has_one  :receipt
-    has_one  :account_movement
+    has_one  :receipt, dependent: :destroy
+    has_one  :account_movement, dependent: :destroy
 
     accepts_nested_attributes_for :payments, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
@@ -117,17 +117,22 @@ class Invoice < ApplicationRecord
       end
 
       def available_cbte_type
-        pp self.company.iva_cond_sym
-        pp self.client.iva_cond_sym
-        pp Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[self.company.iva_cond_sym][self.client.iva_cond_sym]}.map{|k,v| [v,k]}
+        Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[self.company.iva_cond_sym][self.client.iva_cond_sym]}.map{|k,v| [v,k]}
       end
 
       def tipo
         Afip::CBTE_TIPO[cbte_tipo]
       end
+
+      def destroy
+        update_column(:active, false)
+        run_callbacks :destroy
+        freeze
+      end
   	#FUNCIONES
 
     #PROCESOS
+
       def create_iva_book
         IvaBook.add_from_invoice(self)
       end
@@ -141,10 +146,6 @@ class Invoice < ApplicationRecord
             update_column(:state, "Pendiente")
           end
         end
-      end
-
-      def destroy
-        update_column(:active,false)
       end
 
       def set_client params
@@ -307,4 +308,18 @@ class Invoice < ApplicationRecord
         end
       #PROCESOS
     #AFIP
+
+    #FILL_COMP_NUMBER
+    def fill_comp_number
+      if !self.comp_number.nil?
+        self.comp_number.to_s.rjust(8,padstr= '0')
+      end
+    end
+    #FILL_COMP_NUMBER
+
+    def payment_array
+      if !self.payments.nil?
+        self.payments.map{|p| "#{p.type_of_payment}"}.join(", ")
+      end
+    end
 end

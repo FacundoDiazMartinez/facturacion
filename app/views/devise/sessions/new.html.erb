@@ -1,40 +1,47 @@
-<h2><%= t('.sign_in', :default => "Sign in") %></h2>
-
-<br />
-<br />
-
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-
-<div class="form-group">
-      <%= f.label :email %>
-      <%= f.email_field :email, class:'form-control col-sm-4' %>
+<div id="bg">
 </div>
+<table class="full-table">
+    <tbody>
+      <td class="align-middle">
+        <div class="col-sm-5" style="margin: auto;">
+          <div class="card" id="login">
+            <div class="card-header login-header">
+              <center>
+                <%= image_tag '/images/logo_blanco1.png', :style => "width:60%;margin:5px auto" %>
+              </center>
+            </div>
+            <div class="card-body">
+              <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+                <center>
+                    <div class="form-group">
+                      <%= f.email_field :email, autofocus: true, class:'form-control', placeholder: "E-mail", required: true %>
+                    </div>
 
-<br />
+                    <div class="form-group">
+                      <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: "Contraseña", required: true %>
+                    </div>
 
-<div class="form-group">
-      <%= f.label :password %>
-      <%= f.password_field :password, class:'form-control col-sm-4' %>
-</div>
+                    <% if devise_mapping.rememberable? -%>
+                      <div class="form-group">
+                        <%= f.label :remember_me do %>
+                          <%= f.check_box :remember_me %>
+                          Recordar usuario
+                        <% end %>
+                      </div>
+                    <% end -%>
 
-<br />
-
-
-  <% if devise_mapping.rememberable? -%>
-    <div class="form-group">
-      <div class="col-md-4">
-        <div class="row">
-          <%= f.check_box :remember_me %> &nbsp; &nbsp;
-          <%= f.label :remember_me %>
+                    <div class="actions">
+                      <%= f.submit "Ingresar", class:'btn btn-primary' %>
+                      <hr>
+                      <%= link_to "Registrarse", new_registration_path(resource_name), class: 'btn btn-secondary btn-sm' %> <br>
+                      <br>
+                      <%= link_to "¿Olvidaste tu contraseña?", new_password_path(resource_name) %>
+                    </div>
+                </center>
+              <% end %>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  <% end -%>
-
-  <div>
-    <%= button_tag "Iniciar sesión".html_safe, type: 'sign_in', class: 'btn btn-primary', id: 'sign_in' %>
-  </div>
-
-<% end %>
-
-<%= render "devise/shared/links" %>
+      </td>
+    </tbody>
+  </table>
