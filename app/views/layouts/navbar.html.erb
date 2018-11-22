@@ -30,7 +30,12 @@
     <form class="form-inline my-2 my-lg-0">
       <p class="navbar-text pull-right">
       <% if user_signed_in? %>
-        Bienvenid@ <strong><%= current_user.email %></strong>.
+        <%= subscribe_to "/facturacion/notifications/#{current_user.id}" %>
+        <%= link_to notifications_path, class: 'navbar-link', remote: true, id: 'notify_link' do %>
+          <%= icon('fas','bell') %> <span class='badge badge-light notifications' id="span_notify"><%= current_user.count_notifications %></span>
+        <% end %>
+        |
+        <strong><%= current_user.name %></strong> | 
         <%= link_to 'Editar perfil', edit_user_registration_path, :class => 'navbar-link' %> |
         <%= link_to "Salir", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
       <% else %>
@@ -38,6 +43,7 @@
         <%= link_to "Ingresar", new_user_session_path, :class => 'navbar-link'  %>
       <% end %>
       </p>
+      <div id="notifications"></div>
     </form>
   </div>
 </nav>

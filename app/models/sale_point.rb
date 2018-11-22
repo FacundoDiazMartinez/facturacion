@@ -7,7 +7,6 @@ class SalePoint < ApplicationRecord
 
   #VALIDACIONES
 	  def fill_name
-	  	pp "ENTRO"
 	  	self.name = self.name.to_s.rjust(5,padstr= '0')
 	  end
   #VALIDACIONES

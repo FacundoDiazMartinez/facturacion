@@ -12,6 +12,9 @@
 		    <% end %>
 		  </li>
 		  <li class="nav-item">
+		    <%= link_to "#{icon('fas', 'users')} Personal".html_safe, users_path, class: 'nav-link' %>
+		  </li>
+		  <li class="nav-item">
 		    <%= link_to "#{icon('fas', 'hand-holding-usd')} Ventas".html_safe, invoices_path, class: 'nav-link' %>
 		  </li>
 		  <li class="nav-item">

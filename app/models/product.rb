@@ -11,7 +11,7 @@ class Product < ApplicationRecord
   	has_many   :arrival_note, through: :arrival_note_details
   	has_many   :product_price_histories
 
-    default_scope {where(active:true)}
+    default_scope { where(active: true) }
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."

@@ -1,8 +1,14 @@
 class Payment < ApplicationRecord
   belongs_to :invoice
+  has_one :delayed_job, dependent: :destroy
 
   after_save :set_total_pay_to_invoice
+  after_save :set_notification
   after_save :check_receipt
+
+  after_initialize :set_payment_date
+
+  default_scope { where(active: true) }
 
   TYPES = {
   	0 => "Contado",
@@ -20,7 +26,13 @@ class Payment < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
+    def set_notification
+      Notification.create_from_payment(self)
+    end
 
+    def set_payment_date
+      self.payment_date = Date.today
+    end
 
     def check_receipt
       r = Receipt.where(invoice_id: invoice.id).first_or_initialize

@@ -64,14 +64,14 @@ module ApplicationHelper
 	def boolean_to_icon bool
 		if bool
 			icon = 'check-square'
-			"<div style='color: green;'> #{icon('fas', icon)} </div>".html_safe
+			"<span style='color: green;'> #{icon('fas', icon)} </span>".html_safe
 		else
 			icon = 'minus-square'
-			"<div style='color: red;'> #{icon('fas', icon)} </div>".html_safe
+			"<span style='color: red;'> #{icon('fas', icon)} </span>".html_safe
 		end
 	end
 
-	def title icon, text, path=nil, path_title=nil
+	def title icon, text, path=nil, path_text=nil
 		@icon = icon
 		@text = text
 		@path = path
@@ -99,7 +99,7 @@ module ApplicationHelper
 	def right_title
 		content_tag :div, class: 'ml-auto p-2' do
 			concat(link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger')
-			concat(link_to "#{icon('fas', 'plus')} #{path_title}".html_safe, @path, class: 'btn btn-primary') unless @path.nil?
+			concat(link_to "#{icon('fas', 'plus')} #{path_text}".html_safe, @path, class: 'btn btn-primary') unless @path.nil?
 		end
 	end
 

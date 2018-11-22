@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :notifications, only: :index
   resources :iva_books do
     get :generate_pdf, on: :collection
   end
@@ -26,7 +27,10 @@ Rails.application.routes.draw do
     get :import, on: :collection
   end
 
-  #resources :users, only: [:index, :show]
+  resources :users, only: [:index, :show] do
+    patch :approve, on: :member
+    patch :disapprove, on: :member
+  end
   resources :suppliers
   resources :depots
   resources :receipts
@@ -35,7 +39,7 @@ Rails.application.routes.draw do
   resources :product_categories
   resources :companies
 
-  devise_for :users, controllers: { registrations: 'users/registrations' }
+  devise_for :users, :path_prefix => 'sessions', controllers: { registrations: 'users/registrations' }
 
   #CLIENTES
   get   '/invoices/:invoice_id/client/', to: 'invoices/clients#show', as: 'invoice_client'
