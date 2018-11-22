@@ -1,4 +1,39 @@
-<p id="notice"><%= notice %></p>
+<%= title("user", "Perfil de #{@user.name}") %>
 
-<%= link_to 'Edit', edit_user_path(@user) %> |
-<%= link_to 'Back', users_path %>
+<div class="row">
+
+	<!-- INICIO DEL LOGO -->
+	<div class="align-self-stretch col-3">
+		<div class="form-group shadow">
+	        <div class="comp_container">
+	          <img class="card-img-top" src="<%= @user.avatar %>" alt="<%= @user.name %>">
+	        </div>
+	      </div>
+	</div>
+	<!-- FIN DE LOGO -->
+
+	<!-- INICIO DE DATOS BASICOS -->
+	<div class="align-self-stretch col-9">
+		<div class="row shadow">
+			<ul class="nav nav-pills nav-fill">
+			  	<li class="nav-item">
+			    	<%= link_to "#{icon('fas', 'briefcase')} Información básica".html_safe, user_path(@user, view: 'basic_info'), class: "nav-link #{params[:view] == 'basic_info' ? 'bg-secondary' : ''}" %>
+				</li>
+			  	<li class="nav-item">
+			  		<%= link_to "#{icon('fas', 'list-alt')} Actividad reciente".html_safe, user_path(@user, view: 'activity'), class: "nav-link #{params[:view] == 'activity' ? 'bg-secondary' : ''}" %>
+				</li>
+			</ul>
+		</div>
+
+		<hr>
+
+		<div class="row shadow">
+			<% params[:view] ||= "basic_info" %>
+			<% if ["basic_info", "activity"].include?(params[:view]) %>
+				<%= render "/users/#{params[:view]}" %>
+			<% end %>
+		</div>
+
+	</div> 
+
+</div>

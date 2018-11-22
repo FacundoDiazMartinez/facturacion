@@ -8,6 +8,8 @@ class Receipt < ApplicationRecord
 
   after_save :touch_account_movement, if: Proc.new{|r| r.saved_change_to_total?}
 
+  default_scope {where(active: true)}
+
   CBTE_TIPO = {
     "04"=>"Recibo A",
     "09"=>"Recibo B",
@@ -29,4 +31,12 @@ class Receipt < ApplicationRecord
   		am.save
   	end
   #PROCESOS
+
+  #FUNCIONES
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
+    end
+  #FUNCIONES
 end

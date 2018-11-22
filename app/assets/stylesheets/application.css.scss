@@ -9,6 +9,7 @@
 @import "jquery-ui";
 @import "users";
 @import "popup";
+@import "notifications";
 
 
 
@@ -19,6 +20,14 @@ body{
 
 label{
 	font-weight: bold;
+}
+
+.nav-fill{
+  width: 100%;
+}
+
+a.bg-secondary {
+  color: white !important;
 }
 
 a.dropdown-item:visited {

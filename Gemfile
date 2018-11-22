@@ -75,6 +75,13 @@ gem 'rails-jquery-autocomplete'
 #Datepicker
 gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails', :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'
 
+#Workers
+gem 'delayed_job_active_record'
+
+#Push notifications
+gem 'private_pub'
+gem "thin"
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

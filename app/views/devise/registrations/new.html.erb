@@ -1,95 +1,43 @@
-
 <div id="bg"></div>
-
 <table class="full-table">
-    <tbody>
-      <td class="align-middle">
-        <div class="col-sm-5" style="margin: auto;">
-          <div class="card" id="login">
-            <div class="card-header login-header">
-              <center>
-                <%= image_tag '/images/logo_blanco1.png', :style => "width:60%;margin:5px auto" %>
-              </center>
+  <tbody>
+    <td class="align-middle">
+      <div class="col-sm-5" style="margin: auto;">
+        <div class="card" id="login">
+          <div class="card-header login-header">
+            <center>
+              <%= image_tag '/images/logo_blanco1.png', :style => "width:60%;margin:5px auto" %>
+            </center>
+          </div>
+          <div class="card-body">
+            <div class="card-options row">
+              <div class="card col">
+                <div class="card-body">
+                  <h5 class="card-title text-center">Soy el dueño</h5>
+                  <h6 class="card-subtitle mb-2 text-muted text-justify">Selecciona esta opción si eres el dueño de la compañía.</h6>
+                  <div id="manager-card">
+                    <%= image_tag "/images/manager.jpg", class: 'rounded mx-auto d-block responsive-img' %>
+                  </div>
+                  <button onclick='displayForm("manager")' class="btn btn-secondary btn-lg btn-block"><%= icon('fas', 'check-circle') %> Seleccionar</button>
+                </div>
+              </div>
+              <div class="card col">
+                <div class="card-body">
+                  <h5 class="card-title text-center">Soy empleado</h5>
+                  <h6 class="card-subtitle mb-2 text-muted text-justify">Selecciona esta opción si no eres el dueño de la compañía.</h6>
+                  <div id="employee-card">
+                    <%= image_tag "/images/employees.png", class: 'rounded mx-auto d-block responsive-img' %>
+                  </div>
+                  <button onclick='displayForm("employee")' class="btn btn-secondary btn-lg btn-block"><%= icon('fas', 'check-circle') %> Seleccionar</button>
+                </div>
+              </div>
             </div>
-            <div class="card-body">
-              <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-
-                <center>
-                  <h2><%= t('.sign_up', :default => "Sign up") %></h2>
-                  <br>
-
-                  <div class="row">
-                    <div class="form-group col-md-6">
-                      <%= f.text_field :first_name, autofocus: true, class:'form-control', placeholder: "Nombre", required: true %>
-                    </div>
-
-                    <div class="form-group col-md-6" id="container-date">
-                      <%= f.text_field :last_name, class:'form-control', placeholder: "Apellido", required: true %>
-                    </div>
-
-                  </div>
-
-
-                  <div class="row">
-                    <div class="form-group col-md-6">
-                      <%= f.text_field :dni, class:'form-control', placeholder: "D.N.I.", required: true %>
-                    </div>
-
-                    <div class="form-group col-md-6" id="picker-containter">
-                      <%= f.text_field :birthday, class:'form-control datepicker', placeholder: "  Fecha de nacimiento", required: true, autocomplete: "off" %>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <%= f.text_field :address, class:'form-control', placeholder: "Domicilio" %>
-                  </div>
-
-
-                    <div class="form-group">
-                      <%= f.email_field :email, class:'form-control', placeholder: "E-mail", required: true %>
-                    </div>
-
-                    <div class="row">
-                      <div class="form-group col-md-6">
-                        <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: "Contraseña", required: true %>
-                      </div>
-
-                      <div class="form-group col-md-6">
-                        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-control', placeholder: "Repetir contraseña", required: true %>
-                      </div>
-                    </div>
-
-
-
-
-                    <div class="actions">
-                      <%= f.submit "Registrarse", class:'btn btn-primary' %>
-                      <hr style="background-color: red; height: 1px; border: 0;">
-                      <%= link_to "Ingresar", new_session_path(resource_name), class: 'btn btn-secondary btn-sm' %> <br>
-                    </div>
-
-                </center>
-              <% end %>
+            <div id="form" style="display: none;">
+              <%= render 'form' %>
             </div>
           </div>
         </div>
-      </td>
-    </tbody>
-  </table>
-
-
-
-
-
-<%= render "devise/shared/links" %>
-
-
-
-<script type="text/javascript">
-$('.datepicker').datepicker({
-    language: "es",
-    todayHighlight: true,
-    autoclose:true,
-    container: '#container-date'
-});
-</script>
+      </div>
+    </td>
+  </tbody>
+</table>

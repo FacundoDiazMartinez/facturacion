@@ -12,6 +12,7 @@
             </div>
             <div class="card-body">
               <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+                <%= error_explanation resource %>
                 <center>
                     <div class="form-group">
                       <%= f.email_field :email, autofocus: true, class:'form-control', placeholder: "E-mail", required: true %>
@@ -32,7 +33,7 @@
 
                     <div class="actions">
                       <%= f.submit "Ingresar", class:'btn btn-primary' %>
-                      <hr style="background-color: red; height: 1px; border: 0;">
+                      <hr>
                       <%= link_to "Registrarse", new_registration_path(resource_name), class: 'btn btn-secondary btn-sm' %> <br>
                       <br>
                       <%= link_to "¿Olvidaste tu contraseña?", new_password_path(resource_name) %>

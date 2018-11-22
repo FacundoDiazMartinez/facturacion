@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
-
+//= require private_pub
 //= require jquery_nested_form
 //= require invoices
 //= require users

@@ -16,6 +16,7 @@ es:
       timeout: "Tu sesión ha expirado. Inicia sesión nuevamente."
       unauthenticated: "Tienes que registrarte o iniciar sesión antes de continuar."
       unconfirmed: "Tienes que confirmar tu cuenta antes de continuar."
+      not_approved: 'Tu cuenta no fue aprobada aún.'
     mailer:
       confirmation_instructions:
         subject: "Instrucciones de confirmación"
@@ -37,6 +38,9 @@ es:
       updated: "Tu contraseña fue modificada correctamente. Has iniciado sesión."
       updated_not_active: "Tu contraseña fue modificada correctamente."
     registrations:
+      user:
+        signed_up_but_not_approved: 'Ingresaste correctamente pero tu cuenta aun no fue aprobada. Solicita aprobación con el administrador de tu compañía.'
+      not_approved: 'Your account has not been approved by your administrator yet.'
       destroyed: "Adiós, tu cuenta ha sido eliminada. Esperamos verte de vuelta pronto!"
       signed_up: "Bienvenido! Te has registrado correctamente."
       signed_up_but_inactive: "Te has registrado correctamente, pero tu cuenta aun no ha sido activada."

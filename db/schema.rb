@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_08_185753) do
+ActiveRecord::Schema.define(version: 2018_11_21_194358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -104,6 +104,23 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.bigint "locality_id", null: false
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "delayed_jobs", force: :cascade do |t|
+    t.integer "priority", default: 0, null: false
+    t.integer "attempts", default: 0, null: false
+    t.text "handler", null: false
+    t.text "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string "locked_by"
+    t.string "queue"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.bigint "payment_id"
+    t.index ["payment_id"], name: "index_delayed_jobs_on_payment_id"
+    t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
   create_table "delivery_notes", force: :cascade do |t|
@@ -213,11 +230,24 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.index ["province_id"], name: "index_localities_on_province_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "body", null: false
+    t.string "link"
+    t.time "read_at"
+    t.bigint "sender_id", null: false
+    t.bigint "receiver_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "payments", force: :cascade do |t|
     t.string "type_of_payment"
     t.float "total", default: 0.0, null: false
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
+    t.bigint "delayed_job_id"
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
@@ -395,6 +425,17 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
+  create_table "user_activities", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "photo", null: false
+    t.string "title", null: false
+    t.text "body", null: false
+    t.string "link"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_activities_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -452,6 +493,7 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
   add_foreign_key "delivery_notes", "invoices"
@@ -489,4 +531,5 @@ ActiveRecord::Schema.define(version: 2018_11_08_185753) do
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"
+  add_foreign_key "user_activities", "users"
 end
