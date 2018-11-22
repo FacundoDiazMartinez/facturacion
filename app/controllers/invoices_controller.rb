@@ -13,7 +13,12 @@ class InvoicesController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@invoice.id}", layout: 'pdf',template: 'invoices/show', viewport_size: '1280x1024'   # Excluding ".pdf" extension.
+        render pdf: "#{@invoice.id}",
+        layout: 'pdf.html',
+        template: 'invoices/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
       end
     end
   end

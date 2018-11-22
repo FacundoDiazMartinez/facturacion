@@ -134,8 +134,14 @@ class Invoice < ApplicationRecord
     #PROCESOS
 
       def create_iva_book
-        IvaBook.add_from_invoice(self)    
+        IvaBook.add_from_invoice(self)
       end
+
+      # def created_at
+      #   if not super.blank?
+      #     I18n.l(super)
+      #   end
+      # end
 
       def set_state
         if editable? && (total.to_f != 0.0)

@@ -31,10 +31,12 @@ $(document).on("change", ".price, .quantity", function(){
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
 
-	if (bonus_amount.length) {
+	if (bonus_amount.val() > 0) {
 		total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
+		alert("A");
 	}else{
 		total = (parseFloat(price.val()) * parseFloat(quantity.val()));
+		alert("B");
 	}
 
 	subtotal.val(total);
@@ -103,8 +105,9 @@ $(document).on("change", ".subtotal", function(){
 	$(".subtotal").each(function(){
 	    total = total + parseInt($(this).val());
 	});
-	$("#payments").find(".amount").filter(':visible:first').val(total);
+	$("#invoice_total").val(total);
 	total_venta = total;
+	complete_payments();
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
 	// subtotal 	= $(this).closest("tr.fields").find("input.subtotal");
 });

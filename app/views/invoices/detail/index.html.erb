@@ -37,8 +37,8 @@
 						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control iva_aliquot'} %>
 					</td>
 				<% end %>
-				<td><%= f.number_field :bonus_percentage, class: 'form-control bonus_percentage' %></td>
-				<td><%= f.number_field :bonus_amount, class: 'form-control bonus_amount' %></td>
+				<td><%= f.number_field :bonus_percentage, class: 'form-control bonus_percentage', min: 0 %></td>
+				<td><%= f.number_field :bonus_amount, class: 'form-control bonus_amount', min: 0 %></td>
 
 				<td><%= f.number_field :subtotal, class: 'form-control subtotal', readonly: true %></td>
 				<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
