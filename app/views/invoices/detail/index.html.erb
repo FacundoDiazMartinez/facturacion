@@ -7,7 +7,7 @@
 			<th scope="col">Precio unitario</th>
 			<th scope="col">Medida</th>
 			<th scope="col">Cantidad</th>
-			<th style="display: <%= @invoice.cbte_tipo == '01' ? 'block' : 'none'%>;" scope="col">Alicuota I.V.A. (%)</th>
+			<th style="display: <%= @invoice.cbte_tipo != '12' ? 'block' : 'none'%>;" scope="col">Alicuota I.V.A. (%)</th>
 			<th scope="col">% Bonificado</th>
 			<th scope="col">Monto Bonificado</th>
 			<th scope="col">Subtotal</th>
@@ -34,12 +34,12 @@
 				<% else %>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control iva_amount' %>
-						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control iva_aliquot'} %>		
+						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control iva_aliquot'} %>
 					</td>
 				<% end %>
 				<td><%= f.number_field :bonus_percentage, class: 'form-control bonus_percentage' %></td>
 				<td><%= f.number_field :bonus_amount, class: 'form-control bonus_amount' %></td>
-				
+
 				<td><%= f.number_field :subtotal, class: 'form-control subtotal', readonly: true %></td>
 				<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
     	</tr>

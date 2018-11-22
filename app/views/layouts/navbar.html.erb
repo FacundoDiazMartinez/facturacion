@@ -1,43 +1,43 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-  <%= image_tag '/images/logo_blanco2.png', alt: "Desideral - Sistema de facturación online", class: 'img-fluid', width: '175px;' %>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+
+  <button type="button" class="navbar-toggler collapsed " data-toggle="collapse" data-target="#navbar" aria-expanded="false" onclick="toggleNav()">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#">Disabled</a>
-      </li>
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <p class="navbar-text pull-right">
+  <%= image_tag '/images/logo_blanco2.png', alt: "desideral.com - Sistema de facturación online", class: 'img-fluid', width: '175px;' %>
+
+  <button type="button" class="navbar-toggler navbar-toggle-left collapsed" onclick="toggleSidebar()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div id="navbar" class="collapse navbar-collapse" style="display:none !important">
+    <div class="navbar-nav navbar-right">
       <% if user_signed_in? %>
-        Bienvenid@ <strong><%= current_user.email %></strong>.
-        <%= link_to 'Editar perfil', edit_user_registration_path, :class => 'navbar-link' %> |
-        <%= link_to "Salir", destroy_user_session_path, method: :delete, :class => 'navbar-link'  %>
+      <li>
+        Bienvenid@ <strong><%= current_user.email %></strong>
+      </li>
+      <li>
+        <li class="dropdown">
+          <a href="" id="navbarDropdownMenuMiCuenta" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Mi cuenta</a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuMiCuenta">
+            <li>
+              <%= link_to "Editar perfil", edit_user_registration_path %>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li>
+              <%= link_to('Salir', destroy_user_session_path, :method => :delete) %>
+            </li>
+          </ul>
+        </li>
+      </li>
       <% else %>
-        <%= link_to "Registrarse", new_user_registration_path, :class => 'navbar-link'  %> |
-        <%= link_to "Ingresar", new_user_session_path, :class => 'navbar-link'  %>
+      <li>
+        <%= link_to("Registrarse", new_user_registration_path) %>
+      </li>
+      <li>
+        <%= link_to("Ingresar", new_user_session_path) %>
+      </li>
       <% end %>
-      </p>
-    </form>
+    </div>
   </div>
 </nav>

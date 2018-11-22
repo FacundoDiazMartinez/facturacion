@@ -3,7 +3,7 @@ Afip.setup do |config|
 	config.cert = "#{Rails.root}/app/afip/testing.crt"
 	config.environment = :test
 	config.cuit = "20368642682" #"30709038148"
-	config.openssl_bin = "/usr/local/Cellar/openssl/1.0.2o_2/bin/openssl"
-	#config.openssl_bin = "/usr/bin/openssl"
-	config.service_url = "https://fwshomo.afip.gov.ar/wsctg/services/CTGService_v3.0?wsdl"
+	#config.openssl_bin = "/usr/local/Cellar/openssl/1.0.2o_2/bin/openssl"
+	config.openssl_bin = "/usr/bin/openssl"
+	config.service_url = "https://fwshomo.afip.gov.ar/wsctg/services/CTGService_v4.0?wsdl"
 end

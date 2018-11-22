@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
-
+//= require main-mockup
 //= require jquery_nested_form
 //= require invoices
 //= require popper
