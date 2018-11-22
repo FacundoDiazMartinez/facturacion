@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :approve, :disapprove]
+  skip_before_action :authenticate_user!, only: :autocomplete_company_code
 
   # GET /users
   # GET /users.json
@@ -35,6 +36,12 @@ class UsersController < ApplicationController
         end
       end
     end
+  end
+
+  def autocomplete_company_code
+    term = params[:term]
+    pp companies = Company.where('code = ?', term).order(:name).all
+    render :json => companies.map { |company| {:id => company.id, :label => company.name, :value => company.name} }
   end
 
   private

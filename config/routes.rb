@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   end
 
   resources :users, only: [:index, :show] do
+    get :autocomplete_company_code, :on => :collection
     patch :approve, on: :member
     patch :disapprove, on: :member
   end

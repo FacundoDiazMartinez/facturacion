@@ -16,3 +16,19 @@ function changeInformation(action){
       $("#account_i").find('a').addClass("active")
     }
   }
+
+function displayForm(type){
+  $(".card-options").hide();  
+  $("#form").show("slow");
+  if (type == "manager") {
+    $("#company_code").hide();
+  }else{
+     $("#company_code").show();
+  }
+}
+
+$(document).ready(function(){
+  $("#company_code_popover").popover({
+    content: "Para conseguir el código de la compañía debes solicitarselo al gerente de la misma. El lo puede encontrar los datos básicos de la compañía."
+  });
+});

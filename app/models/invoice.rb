@@ -134,8 +134,14 @@ class Invoice < ApplicationRecord
     #PROCESOS
 
       def create_iva_book
-        IvaBook.add_from_invoice(self)    
+        IvaBook.add_from_invoice(self)
       end
+
+      # def created_at
+      #   if not super.blank?
+      #     I18n.l(super)
+      #   end
+      # end
 
       def set_state
         if editable? && (total.to_f != 0.0)
@@ -310,4 +316,18 @@ class Invoice < ApplicationRecord
         end
       #PROCESOS
     #AFIP
+
+    #FILL_COMP_NUMBER
+    def fill_comp_number
+      if !self.comp_number.nil?
+        self.comp_number.to_s.rjust(8,padstr= '0')
+      end
+    end
+    #FILL_COMP_NUMBER
+
+    def payment_array
+      if !self.payments.nil?
+        self.payments.map{|p| "#{p.type_of_payment}"}.join(", ")
+      end
+    end
 end

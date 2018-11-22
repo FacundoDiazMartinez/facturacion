@@ -26,6 +26,24 @@
   border-radius: 100%;
   border-color: grey;
   border-style: solid;
-  width: 50px;
+  width: 35px;
+  border-width: 2px;
 
+}
+
+.responsive-img{
+  width: 100%;
+}
+
+#employee-card, #manager-card{
+  height: 200px;
+  overflow: hidden;
+  border-style: solid;
+  border-color: grey;
+  border-top-right-radius: 5%;
+  border-top-left-radius: 5%;
+}
+
+#company_code_popover{
+  color: black;
 }

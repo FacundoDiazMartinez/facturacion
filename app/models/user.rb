@@ -69,4 +69,11 @@ class User < ApplicationRecord
     def send_admin_mail
       AdminMailer.new_user_waiting_for_approval(email).deliver
     end
+
+		def birthday
+			if not super.blank?
+				I18n.l(super)
+			end
+	  end
+
 end
