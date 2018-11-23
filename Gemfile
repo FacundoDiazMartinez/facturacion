@@ -28,6 +28,9 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# GENA código de barras
+gem 'barby', '~> 0.6.2'
+
 #GEMA DE WICKED PDFKit
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'

@@ -38,11 +38,13 @@
   margin: 0px;
   outline-width: 0px;
 }
-.footer_top {
-  position: absolute;
-  bottom:0px;
+
+.alwaysbreak {
+   page-break-before: always;
+ }
+.nobreak:before {
+  clear:both;
 }
-.footer_bottom {
-  position: absolute;
-  bottom:-200px;
+.nobreak {
+  page-break-inside: avoid;
 }
