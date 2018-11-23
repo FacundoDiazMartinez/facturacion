@@ -1,64 +1,56 @@
-<div class="form-group row">
-  <%= label_tag :iva_cond, "Condición I.V.A. *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Excento"]],{},{class:'form-control form-control-sm'} %>
+<div class="form-group">
+  <%= f.label :name, "Nombre *" %>
+  <%= f.text_field :name, class: 'form-control form-control-sm', required: true %>
+</div>
+
+<div class="form-group">
+  <div class="row">
+    <div class="col">
+      <%= f.label :iva_cond, "Condición I.V.A. *" %>
+      <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Excento"]],{},{class:'form-control form-control-sm'} %>
+    </div>
+    <div class="col">
+      <%= f.label :document_number, "Documento *" %>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text'} %>
+        </div>
+        <%= f.text_field :document_number, class: 'form-control form-control-sm', required: true %>
+      </div>
+    </div>
   </div>
 </div>
 
-<div class="form-group row">
-  <%= label_tag :document_number, "Documento *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <div class="input-group mb-3">
-      <div class="input-group-prepend">
-        <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text'} %>
-      </div>
-      <%= f.text_field :document_number, class: 'form-control form-control-sm', required: true %>
+<div class="form-group">
+  <div class="row">
+    <div class="col">
+      <%= f.label :phone, "Teléfono" %>
+      <%= f.text_field :phone,class: 'form-control form-control-sm' %>
+    </div>
+    <div class="col">
+      <%= f.label :mobile_phone, "Celular" %>
+      <%= f.text_field :mobile_phone,class: 'form-control form-control-sm' %>
+    </div>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="row">
+    <div class="col">
+      <%= f.label :email, "Email" %>
+      <%= f.email_field :email,class: 'form-control form-control-sm' %>
+    </div>
+    <div class="col">
+      <%= f.label :birthday, "Nacimiento" %>
+      <%= f.text_field :birthday, class: "form-control form-control-sm datepicker",  autocomplete: "off" %>
     </div>
   </div>
 </div>
 
 
-<div class="form-group row">
-  <%= label_tag :name, "Nombre *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :name, class: 'form-control form-control-sm', required: true %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :birthday, "Nacimiento", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :birthday, value:"", class: "form-control datepicker", value: l(Date.today),  autocomplete: "off" %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :phone, "Teléfono", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :phone,class: 'form-control form-control-sm' %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :mobile_phone, "Celular", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :mobile_phone,class: 'form-control form-control-sm' %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :address, "Dirección", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :address,class: 'form-control form-control-sm' %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :email, "Email", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.email_field :email,class: 'form-control form-control-sm' %>
-  </div>
+<div class="form-group">
+  <%= f.label :address, "Dirección" %>
+  <%= f.text_field :address,class: 'form-control form-control-sm' %>
 </div>
 
 <center><i>* Campos obligatorios</i></center>
-

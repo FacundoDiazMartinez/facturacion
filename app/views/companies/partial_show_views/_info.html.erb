@@ -1,0 +1,88 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md">
+      <div class="card">
+        <div class="card-header">
+          <h6>
+            Compañía
+          </h6>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <small>Nombre:</small> <%= @company.name %>
+          </li>
+          <li class="list-group-item">
+            <small>Razón social:</small> <%= @company.society_name %>
+          </li>
+          <li class="list-group-item">
+            <small>Código de registro:</small> <%= @company.code %>
+          </li>
+          <li class="list-group-item">
+            <small>E-mail:</small> <%= @company.email %>
+          </li>
+          <li class="list-group-item">
+            <small>CUIT:</small> <%= @company.cuit %>
+          </li>
+          <li class="list-group-item">
+            <small>Condición IVA:</small> <%= @company.iva_cond %>
+          </li>
+          <li class="list-group-item">
+            <small>Concepto:</small> <%= @company.concepto_text %>
+          </li>
+          <li class="list-group-item">
+            <small>Moneda:</small> <%= @company.moneda %>
+          </li>
+          <li class="list-group-item">
+            <small>Actividad desde:</small> <%= @company.activity_init_date %>
+          </li>
+          <li class="list-group-item">
+            <small>Contacto:</small> <%= @company.contact_number %>
+          </li>
+          <li class="list-group-item">
+            <small>CBU:</small> <%= @company.cbu %>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-md">
+      <div class="card">
+        <div class="card-header">
+          <h6>
+            Ubicación
+          </h6>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <small>País:</small> <%= @company.country %>
+          </li>
+          <li class="list-group-item">
+            <small>Provincia:</small> <%= @company.province.name %>
+          </li>
+          <li class="list-group-item">
+            <small>Localidad:</small> <%= @company.locality.name %>
+          </li>
+          <li class="list-group-item">
+            <small>Dirección:</small> <%= @company.address %>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h6>
+            Contable
+          </h6>
+        </div>
+        <ul class="list-group list-group-flush">
+          <% @company.sale_points.all.each do |sp| %>
+          <li class="list-group-item">
+            <small>Punto de venta:</small> <%= sp.name %>
+          </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>

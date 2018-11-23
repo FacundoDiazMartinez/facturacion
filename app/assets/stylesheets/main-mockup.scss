@@ -12,8 +12,6 @@ $sidebar-phone-background-color: #343a40;
 #yield-wrapper {
   width: 84%;
   margin-left: 16%;
-  padding-left: 10px;
-  padding-right: 10px;
 }
 
 .sidebar-left {
@@ -21,7 +19,7 @@ $sidebar-phone-background-color: #343a40;
 }
 
 .nav {
-  display: block !important;
+  --display: block !important;
 }
 
 /* animation class - optional: without it the sidebar would just pop in and out*/

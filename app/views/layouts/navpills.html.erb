@@ -1,6 +1,6 @@
 <% if user_signed_in? %>
 	<div class="sidebar sidebar-animate">
-		<ul class="nav">
+		<ul class="nav flex-column">
 
 		  <li class="nav-item">
 		    <%= link_to "#{icon('fas', 'home')} <span class='only-desktop'>Inicio</span>".html_safe, root_path, class: 'nav-link', title: 'Inicio' %>
@@ -30,13 +30,10 @@
 		    <%= link_to "#{icon('fas', 'archive')} <span class='only-desktop'>Depósitos</span>".html_safe, depots_path, class: 'nav-link', title: 'Depósitos' %>
 		  </li>
 
-		  <li class="nav-item">
-		    <%= link_to "#{icon('fas', 'plane')} <span class='only-desktop'>Proveedores</span>".html_safe, suppliers_path, class: 'nav-link', title: 'Proveedores' %>
-		  </li>
-
 		  <li class="nav-item dropdown">
 		  	<%= link_to "#{icon('fas', 'shopping-cart')} <span class='only-desktop'>Compras</span>".html_safe, "#", role: 'button', class: 'nav-link dropdown-toggle', data:{ toggle:'dropdown' }, aria: {haspopup: true, expanded: 'false'}, title: 'Compras' %>
 		  	<div class="dropdown-menu">
+					<%= link_to 'Proveedores', suppliers_path, class: 'dropdown-item' %>
 		    	<%= link_to 'Solicitudes', purchase_orders_path, class: 'dropdown-item' %>
 		    	<%= link_to 'Comprobantes', purchase_invoices_path, class: 'dropdown-item' %>
 		    	<%= link_to "Remitos", arrival_notes_path, class: 'dropdown-item' %>

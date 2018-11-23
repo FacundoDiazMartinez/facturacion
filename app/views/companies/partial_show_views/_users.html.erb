@@ -1,0 +1,15 @@
+<div class="container-fluid">
+  <div class="col-md">
+    <% @users.each do |user| %>
+    <div class="card" style="width:18rem;">
+      <img class="card-img-top" src="<%= user.avatar %>" alt="<%= user.first_name %>">
+      <div class="card-body">
+        <h6 class="card-title"><%= user.first_name %>, <%= user.last_name %></h6>
+        <h6><small><%= user.email %></small></h6>
+        <h6><small>Sin acceso al sistema</small></h6>
+        <td><%= link_to icon('fas', 'edit'), edit_user_registration_path %></td>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>
