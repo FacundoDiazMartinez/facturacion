@@ -231,7 +231,6 @@ class Invoice < ApplicationRecord
           Afip.auth_url     = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
           Afip.service_url    = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
           Afip.cuit         = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
-          Afip.openssl_bin    = '/usr/bin/openssl'
         else
           #TEST
           Afip.cuit = "20368642682"
@@ -240,7 +239,6 @@ class Invoice < ApplicationRecord
           Afip.auth_url = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
           Afip.service_url = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
           Afip::AuthData.environment = :test
-          Afip.openssl_bin = '/usr/local/Cellar/openssl/1.0.2o_2/bin/openssl'
         end
 
         Afip.default_concepto   = Afip::CONCEPTOS.key(self.company.concepto)

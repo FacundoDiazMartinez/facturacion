@@ -1,0 +1,28 @@
+$light-dark-background: #e6e8ed;
+$light-background: #f6f6f9;
+$primary-color: #007bff;
+
+.justify-flex-content {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.padding-20 {
+  padding:20px;
+}
+
+.light-dark-background {
+  background-color: $light-dark-background;
+}
+
+.light-background {
+  background-color: $light-background;
+}
+
+.nav-border{
+  .active {
+    border-bottom: 4px solid $primary-color;
+  }
+}

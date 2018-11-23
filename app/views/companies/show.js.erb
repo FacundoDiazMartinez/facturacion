@@ -1,0 +1,5 @@
+<% if params[:company_view] %>
+  $('#show_section').html('<%= j render "/companies/partial_show_views/#{params[:company_view]}" %>')
+<% else %>
+  $('#show_section').html('<%= j render "/companies/partial_show_views/info" %>')
+<% end %>

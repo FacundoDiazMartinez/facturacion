@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+//= require main-mockup
 //= require private_pub
 //= require jquery_nested_form
 //= require invoices

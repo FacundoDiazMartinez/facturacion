@@ -1,126 +1,46 @@
-<h1 class="d-flex mb-2">
-  <div class="p-2">
-    <%= image_tag @company.logo, alt: @company.name, class: 'mini-logo' %>
-    <%= @company.name %>
+<div class="container-fluid justify-flex-content p-4 light-dark-background">
+  <div class="form-group">
+    <%= image_tag @company.logo, alt: @company.name, style: 'max-height:150px; max-width:300px;' %>
   </div>
-  <div class="ml-auto p-2">
-    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
-    <%= link_to "#{icon('fas', 'edit')} Editar".html_safe, edit_company_path(@company.id), class: 'btn btn-primary ' %>
+  <div class="form-group">
+    <center>
+      <h4>
+        <%= @company.name %>
+      </h4>
+      <h6>
+        <small>
+          <%= @company.society_name %>
+        </small>
+      </h6>
+    </center>
   </div>
-</h1>
 
-<hr>
-
-<div class="row">
-
-	<!-- INICIO DEL LOGO -->
-	<div class="align-self-stretch col-3">
-		<div class="form-group shadow">
-	        <div class="comp_container">
-	          <img class="card-img-top" src="<%= @company.logo %>" alt="Card image cap">
-	        </div>
-	      </div>
-	</div>
-	<!-- FIN DE LOGO -->
-
-	<!-- INICIO DE DATOS BASICOS -->
-	<div class="align-self-stretch col-9">
-		<div class="row shadow">
-			<div class=" col-md-6 col-sm-12">
-				<h3><%= icon('fas', 'briefcase') %> Información básica</h3>
-				<hr>
-				<table>
-					<tr>
-						<td><strong>Código de registro</strong></td>
-						<td><%= @company.code %></td>
-					</tr>
-					<tr>
-						<td><strong>Nombre:</strong></td>
-						<td><%= @company.name %></td>
-					</tr>
-					<tr>
-						<td><strong>Razón social:</strong></td>
-						<td><%= @company.society_name %></td>
-					</tr>
-					<tr>
-						<td><strong>Email:</strong></td>
-						<td><%= @company.email %></td>
-					</tr>
-					<tr>
-						<td><strong>C.U.I.T.:</strong></td>
-						<td><%= @company.cuit %></td>
-					</tr>
-					<tr>
-						<td><strong>Condición ante I.V.A.:</strong></td>
-						<td><%= @company.iva_cond %></td>
-					</tr>
-					<tr>
-						<td><strong>Concepto:</strong></td>
-						<td><%= @company.concepto_text %></td>
-					</tr>
-					<tr>
-						<td><strong>Moneda:</strong></td>
-						<td><%= @company.moneda %></td>
-					</tr>
-					<tr>
-						<td><strong>Inicio de actividad:</strong></td>
-						<td><%= @company.activity_init_date %></td>
-					</tr>
-					<tr>
-						<td><strong>Número de contacto:</strong></td>
-						<td><%= @company.contact_number %></td>
-					</tr>
-					<tr>
-						<td><strong>C.B.U.:</strong></td>
-						<td><%= @company.cbu %></td>
-					</tr>
-				</table>
-			</div>
-			<div class="col-md-6 col-sm-12">
-				<h3><%= icon('fas', 'map-marker-alt') %> Ubicación</h3>
-				<hr>
-				<table>
-					<tr>
-						<td><strong>País:</strong></td>
-						<td><%= @company.country %></td>
-					</tr>
-					<tr>
-						<td><strong>Provincia:</strong></td>
-						<td><%= @company.province.name %></td>
-					</tr>
-					<tr>
-						<td><strong>Localidad:</strong></td>
-						<td><%= @company.locality.name %></td>
-					</tr>
-					<tr>
-						<td><strong>Dirección:</strong></td>
-						<td><%= @company.address %></td>
-					</tr>
-				</table>
-			</div>
-			<div class="col-12">
-				<hr>
-				<h3><%= icon('fas', 'users') %> Personal</h3>
-				<table class="table table-hover">
-					<thead>
-						<th scope="col">Foto</th>
-						<th scope="col">Nombre</th>
-						<th scope="col">Apellido</th>
-						<th scope="col">Rol</th>
-					</thead>
-					<tbody>
-						<% @users.each do |user| %>
-							<tr>
-								<td><%= image_tag user.avatar, class: 'avatar' %></td>
-								<td><%= user.first_name %></td>
-								<td><%= user.last_name %></td>
-								<td>Sin Rol</td>
-							</tr>
-						<% end %>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<!-- FIN DE DATOS BASICOS -->
 </div>
+
+<div style="padding-top:10px">
+  <ul class="nav nav-border justify-content-center">
+    <li class="nav-item overview">
+      <%= link_to "General", company_path(@company, company_view: 'overview'), id: 'overview-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    </li>
+    <li class="nav-item users">
+      <%= link_to "Personal", company_path(@company, company_view: 'users'), id: 'users-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    </li>
+    <li class="nav-item activities">
+      <%= link_to "Actividades", company_path(@company, company_view: 'activities'), id: 'activities-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    </li>
+    <li class="nav-item info">
+      <%= link_to "Información", company_path(@company, company_view: 'info'), id: 'info-tab', remote: true, class: 'nav-link active', data: { toggle: 'tab' } %>
+    </li>
+    <li class="nav-item settings">
+      <%= link_to "Configuraciones", company_path(@company, company_view: 'settings'), id: 'settings-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    </li>
+  </ul>
+</div>
+
+<div id="show_section" class="light-background border-top padding-20">
+  <%= render '/companies/partial_show_views/info' %>
+</div>
+
+<script type="text/javascript">
+
+</script>
