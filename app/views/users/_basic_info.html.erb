@@ -50,11 +50,11 @@
 		</tr>
 		<tr>
 			<td><strong>Ultimo inicio de sesión:</strong></td>
-			<td><%= l(@user.current_sign_in_at) %></td>
+			<td><%= @user.current_sign_in_at %></td>
 		</tr>
 		<tr>
 			<td><strong>Registrado en:</strong></td>
-			<td><%= l(@user.created_at) %></td>
+			<td><%= @user.created_at %></td>
 		</tr>
 		<tr>
 			<td><strong>Cantidad de veces que inicio sesión:</strong></td>
