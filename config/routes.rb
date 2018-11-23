@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
 
 
+  namespace :invoices do
+    resources :clients do
+      get :autocomplete_document, on: :collection
+    end
+  end
+
   resources :notifications, only: :index
   resources :iva_books do
     get :generate_pdf, on: :collection
@@ -43,16 +49,19 @@ Rails.application.routes.draw do
   devise_for :users, :path_prefix => 'sessions', controllers: { registrations: 'users/registrations' }
 
   #CLIENTES
-  get   '/invoices/:invoice_id/client/', to: 'invoices/clients#show', as: 'invoice_client'
-  get   '/invoices/:invoice_id/client/edit', to: 'invoices/clients#edit', as: 'edit_invoice_client'
-  patch '/invoices/:invoice_id/client', to: 'invoices/clients#update'
-  post  '/invoices/:invoice_id/client/edit', to: 'invoices/clients#create'
-  get   '/invoices/:invoice_id/clients/autocomplete_document', to: 'invoices/clients#autocomplete_document', as: 'autocomplete_document_clients'
+  # get   '/invoices/:invoice_id/client/', to: 'invoices/clients#show', as: 'invoice_client'
+  # get   '/invoices/:invoice_id/client/edit', to: 'invoices/clients#edit', as: 'edit_invoice_client'
+  # get   '/invoices/:invoice_id/client/edit', to: 'invoices/clients#edit', as: 'edit_invoice_client'
+  # patch '/invoices/:invoice_id/client', to: 'invoices/clients#update'
+  # post  '/invoices/:invoice_id/client/edit', to: 'invoices/clients#create'
+  # get   '/invoices/:invoice_id/clients/autocomplete_document', to: 'invoices/clients#autocomplete_document', as: 'autocomplete_document_clients'
   #CLIENTES
 
   #ACCOUNT MOVEMENTS
   get '/clients/:id/account_movements', to: 'clients/account_movements#index', as: 'client_account_movements'
   #ACCOUNT MOVEMENTS
+
+
   resources :invoices do
     resources :invoice_details
     get :autocomplete_product_code, :on => :collection

@@ -1,0 +1,189 @@
+$breakpoint-tablet: 992px;
+$breakpoint-phone: 768px;
+
+$navbar-background-color: #343a40;
+$sidebar-tablet-background-color: #353a40e0;
+$sidebar-phone-background-color: #343a40;
+
+#sidebar-wrapper {
+  padding: 0 !important;
+}
+
+#yield-wrapper {
+  width: 84%;
+  margin-left: 16%;
+}
+
+.sidebar-left {
+    left: 0;
+}
+
+.nav {
+  --display: block !important;
+}
+
+/* animation class - optional: without it the sidebar would just pop in and out*/
+.sidebar-animate {
+    -webkit-transition: -webkit-transform 300ms ease;
+    -moz-transition: -moz-transform 300ms ease;
+    -o-transition: transform 300ms ease;
+    transition: transform 300ms ease;
+}
+
+.sidebar {
+  padding: 0px;
+  padding-top:5px;
+  background-color: transparent;
+  border: none;
+  left: 0;
+  top: 50px;
+  bottom: 0;
+  min-height:calc(100vh - 50px);
+  position: fixed;
+  height: auto;
+  display: block;
+  overflow-y: scroll;
+  width: 16%;
+  z-index: 99;
+  border-right: 1px solid rgba(0,0,0,0.1);
+
+  a {
+    color: #000;
+    cursor: pointer;
+  }
+
+}
+
+@media (min-width: $breakpoint-tablet) {
+  $height-navbar: 47px;
+
+  body {
+    margin-top: $height-navbar !important;
+  }
+
+  .sidebar {
+    top: 0 !important;
+  }
+}
+
+
+@media (max-width: $breakpoint-tablet) {
+  $sidebar-width: 7%;
+  $height-navbar: 56px;
+
+  // Ocultamos las palabras de la barra lateral, dejando los iconos
+  body {
+    margin-top: $height-navbar !important;
+  }
+
+  .sidebar {
+    background-color: $sidebar-tablet-background-color;
+    width: $sidebar-width !important;
+
+    .nav-item {
+      text-align: center;
+
+      a {
+        // tranisiciones para hover
+        // -webkit-transition: -webkit-transform 1300ms ease;
+        // -moz-transition: -moz-transform 1300ms ease;
+        // -o-transition: transform 1300ms ease;
+        transition: 0.7s;
+        font-size: 1.2rem;
+
+
+        &:visited, &:focus, &.nav-link:hover {
+          background-color: transparent !important;
+        }
+
+        &:hover i {
+          color: #007bff;
+        }
+      }
+
+      a i{
+        color: #FFF;
+      }
+
+      span.only-desktop {
+        display: none;
+      }
+    }
+  }
+
+  #main-content {
+
+    .here-i-am {
+
+      .sidebar {
+        display:block !important;
+        width:100%;
+        text-align: center;
+
+        ul {
+          text-align: center !important;
+
+          li a {
+            color: #FFF !important;
+          }
+        }
+      }
+
+      #sidebar-wrapper {
+        width:90%;
+        position: absolute;
+      }
+
+      #yield-wrapper {
+        display: none;
+      }
+
+    }
+  }
+
+  #yield-wrapper {
+    width: 100% - $sidebar-width;
+    margin-left: $sidebar-width;
+  }
+
+}
+
+@media (max-width: $breakpoint-phone) {
+  // Para dispositivos con resoluciones pequeñas
+  $height-navbar: 70px;
+
+  body {
+    margin-top: $height-navbar !important;
+  }
+
+  #yield-wrapper {
+    width: 100%;
+    margin: auto;
+  }
+
+  .navbar {
+    height: $height-navbar;
+  }
+
+
+  .sidebar {
+    width: 70%;
+    top: 52px !important;
+    background-color: $sidebar-phone-background-color;
+    display: none;
+
+    .nav-item {
+      text-align: left;
+      padding: 10px;
+
+      a {
+        font-size: 26px;
+
+        span.only-desktop {
+          display: inline !important;
+          color: #fff !important;
+        }
+      }
+    }
+  }
+}

@@ -31,9 +31,6 @@ class Client < ApplicationRecord
 		end
 
 		def set_attributes attrs
-			# attrs.each do |key, value|
-  			# 	self.send( "#{key}=", value )
-			# end
 			self.attributes = self.attributes.merge(attrs)
 		end
 	#PROCESOS

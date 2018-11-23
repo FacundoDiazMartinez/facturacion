@@ -1,0 +1,16 @@
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 7px;  /* remove scrollbar space */
+    padding-top: 60px;
+
+    /*background: transparent;   optional: just make scrollbar invisible */
+}
+
+/* optional: show position indicator in red */
+::-webkit-scrollbar-thumb {
+    background: #3e6990;
+}

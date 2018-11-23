@@ -4,30 +4,26 @@
     <title>Facturación Online</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
   <body>
     <%= render template: '/layouts/navbar.html.erb' %>
-    <% if user_signed_in? %>
-      <div class="row">
-        <div class="col-md-2 d-none d-md-block bg-light sidebar shadow">
-          <%= render template: '/layouts/navpills.html.erb' %>
-        </div>
-        <div class="col-md-10 ml-sm-auto col-lg-10 px-4">
-          <% if notice %>
-            <p class="alert alert-success"><%= notice %></p>
-          <% end %>
-          <% if alert %>
-            <p class="alert alert-danger"><%= alert %></p>
-          <% end %>
-          <%= yield %>
-        </div>
+    <div id="main-content">
+      <div id="sidebar-wrapper">
+        <%= render template: '/layouts/navpills.html.erb' %>
       </div>
-    <% else %>
-      <%= yield %>
-    <% end %>
+      <div id="yield-wrapper">
+        <% if notice %>
+        <p class="alert alert-success"><%= notice %></p>
+        <% end %>
+        <% if alert %>
+        <p class="alert alert-danger"><%= alert %></p>
+        <% end %>
+        <%= yield %>
+      </div>
+    </div>
   </body>
 </html>

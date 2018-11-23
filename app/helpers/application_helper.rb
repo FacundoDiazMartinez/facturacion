@@ -1,6 +1,20 @@
 module ApplicationHelper
 
-	def error_explanation object
+	def flash_error
+		messages = flash.map{|name, msg| content_tag :li, msg if msg.is_a?(String)}.join
+		html = <<-HTML
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			#{messages}
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  			</button>
+		</div>
+		HTML
+	    return html.html_safe
+	end
+
+
+	def error_explanation object=nil
 		@object = object
 		if not object.nil?
 			content_tag :div do
@@ -31,8 +45,17 @@ module ApplicationHelper
   		end
 	end
 
+	def button_new_helper path
+		link_to "#{icon('fas', 'plus')}".html_safe, path, class: 'btn btn-success btn-floated'
+	end
+
+	def button_new_modal_helper path, target
+		target ||= "myModal"
+		link_to "#{icon('fas', 'plus')}".html_safe, path, class: 'btn btn-success btn-floated', data: { toggle: 'modal', target: "##{target}" }, remote: true
+	end
+
 	def save_button
-		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
+		button_tag "Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
 	end
 
 	def back_button icon = nil
@@ -86,7 +109,7 @@ module ApplicationHelper
 			concat(left_title)
 			concat(right_title)
 		end
-		
+
 	end
 
 	def left_title
