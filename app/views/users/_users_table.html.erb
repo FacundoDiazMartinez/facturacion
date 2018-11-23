@@ -21,8 +21,8 @@
         <td><%= user.mobile_phone %></td>
         <td><%= change_state_to_user(user) %></td>
         <td>
-          <%= link_to icon('fas', 'eye'), user %>
-          <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' } %>
+          <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
         </td>
       </tr>
       <% end %>

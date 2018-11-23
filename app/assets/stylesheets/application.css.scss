@@ -28,9 +28,15 @@
 @import "notifications";
 
 
+@font-face {
+	font-family: 'Montserrat Regular';
+	src:url('/fonts/montserrat-font/Montserrat-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
 
 * {
-	font-family: "Montserrat";
+	font-family: "Montserrat Regular";
 }
 
 label{
