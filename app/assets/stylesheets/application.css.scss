@@ -24,6 +24,9 @@
 @import "bootstrap-datepicker";
 @import "jquery-ui";
 @import "users";
+@import "popup";
+@import "notifications";
+
 
 
 * {
@@ -32,6 +35,17 @@
 
 label{
 	font-weight: bold;
+}
+.close{
+  font-size: 1rem;
+}
+
+.nav-fill{
+  width: 100%;
+}
+
+a.bg-secondary {
+  color: white !important;
 }
 
 a.dropdown-item:visited {

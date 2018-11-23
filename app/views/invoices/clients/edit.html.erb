@@ -4,7 +4,7 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<%= form_for [@invoice, @client], remote: true, format: :js  do |f| %>
+<%= form_for [:invoices, @client] , remote: true, format: :js  do |f| %>
 	<div class="modal-body">
 	  <%= render '/invoices/clients/form', f: f %>
 	</div>

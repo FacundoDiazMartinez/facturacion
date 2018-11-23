@@ -6,7 +6,7 @@ class AccountMovement < ApplicationRecord
   before_save :update_others_movements, if: Proc.new{|am|  !am.new_record?}
   after_save  :update_debt
 
-  default_scope {where(active: true)}
+  default_scope { where(active: true) }
 
   #FUNCIONES
   	def days
@@ -26,7 +26,7 @@ class AccountMovement < ApplicationRecord
   		debe_dif 	= debe ? (total - total_was) : 0.0
   		haber_dif	= haber ? (total - total_was) : 0.0
   		total_dif = debe_dif + haber_dif
-  		pp next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
+  		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
   		next_movements.each do |am|
   			total_saldo = am.saldo + total_dif
   			am.update_column(:saldo, total_saldo)
@@ -35,12 +35,14 @@ class AccountMovement < ApplicationRecord
   	end
 
   	def update_debt
-  		pp saldo = AccountMovement.where(client_id: client_id).last.saldo
+  		saldo = AccountMovement.where(client_id: client_id).last.saldo
   		client.update_column(:saldo, saldo)
   	end
 
     def destroy
-      update(active: false)
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
     end
   #FUNCIONES
 end

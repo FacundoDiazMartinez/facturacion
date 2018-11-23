@@ -12,32 +12,34 @@
   <% end %>
 
   <!-- HEADER -->
-  <div class="card shadow">
-    <div class="card-body">
-      <div class="row">
-        <!-- PRIMERA COLUMNA -->
-        <div class="col-sm" id="client_form">
-          <%= render '/invoices/client_column', f: form %>
-        </div>
-        <!-- PRIMERA COLUMNA -->
+    <div class="card shadow">
+      <div class="card-body">
+        <div class="row">
+          <!-- PRIMERA COLUMNA -->
+          <div class="col-sm" id="client_form">
+            <%= render '/invoices/client_column' %>
+          </div>
+          <%= form.hidden_field :client_id, value: @client.id %>
+          <!-- PRIMERA COLUMNA -->
 
-        <!-- SEGUNDA COLUMNA -->
-        <div class="col-sm">
-          <div class="form-group">
-            <%= form.label :total_pay %>
-            <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
-          </div>
+          <!-- SEGUNDA COLUMNA -->
+          <div class="col-sm">
 
-          <div class="form-group">
-            <%= label_tag :total_left, "Monto faltante" %>
-            <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
-          </div>
-          
-          <div class="form-group">
-            <%= form.label :total %>
-            <%= form.text_field :total, class: 'form-control', readonly: true %>
-          </div>
-        </div>
+            <div class="form-group">
+              <%= form.label :total %>
+              <%= form.text_field :total, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :total_pay %>
+              <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
+            </div>
+
+            <div class="form-group">
+              <%= label_tag :total_left, "Monto faltante" %>
+              <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
+            </div>
+
         <!-- SEGUNDA COLUMNA -->
 
         <!-- TERCERA COLUMNA -->
@@ -127,6 +129,7 @@
 
 <% end %>
 
+
 <div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -135,3 +138,7 @@
     </div>
   </div>
 </div>
+
+<style media="screen">
+
+</style>

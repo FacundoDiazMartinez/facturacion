@@ -2,6 +2,8 @@ class IvaBook < ApplicationRecord
   belongs_to :invoice, optional: true
   belongs_to :purchase_invoice, optional: true
 
+  default_scope { where(active: true) }
+
   CBTE_TIPO = {
     "01"=>"FA",
     "02"=>"NDA",
@@ -32,6 +34,12 @@ class IvaBook < ApplicationRecord
 
     def is_debit?
       invoice_id.nil?
+    end
+
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
     end
   #FUNCIONES
 

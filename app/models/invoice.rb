@@ -137,6 +137,12 @@ class Invoice < ApplicationRecord
         IvaBook.add_from_invoice(self)
       end
 
+      # def created_at
+      #   if not super.blank?
+      #     I18n.l(super)
+      #   end
+      # end
+
       def set_state
         if editable? && (total.to_f != 0.0)
           case (total.to_f <= total_pay.to_f)

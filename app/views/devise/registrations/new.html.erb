@@ -1,39 +1,43 @@
-<h2><%= t('.sign_up', :default => "Sign up") %></h2>
-
-<%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
-  <%= devise_error_messages! %>
-
-  <br />
-
-  <br />
-
-  <div class="form-group">
-        <%= f.label :email %>
-        <%= f.email_field :email, class:'form-control col-sm-4' %>
-  </div>
-
-  <br />
-
-  <div class="form-group">
-        <%= f.label :password %>
-        <%= f.password_field :password, class:'form-control col-sm-4' %>
-  </div>
-
-  <br />
-
-  <div class="form-group">
-        <%= f.label :password_confirmation %>
-        <%= f.password_field :password_confirmation, class:'form-control col-sm-4' %>
-  </div>
-
-
-  <br />
-  <div class="col-sm-4">
-    <div class="float-right">
-        <%= save_button %>
-    </div>
-  </div>
-
-<% end %>
-
-<%= render "devise/shared/links" %>
+<div id="bg"></div>
+<table class="full-table">
+  <tbody>
+    <td class="align-middle">
+      <div class="col-sm-5" style="margin: auto;">
+        <div class="card" id="login">
+          <div class="card-header login-header">
+            <center>
+              <%= image_tag '/images/logo_blanco1.png', :style => "width:60%;margin:5px auto" %>
+            </center>
+          </div>
+          <div class="card-body">
+            <div class="card-options row">
+              <div class="card col">
+                <div class="card-body">
+                  <h5 class="card-title text-center">Soy el dueño</h5>
+                  <h6 class="card-subtitle mb-2 text-muted text-justify">Selecciona esta opción si eres el dueño de la compañía.</h6>
+                  <div id="manager-card">
+                    <%= image_tag "/images/manager.jpg", class: 'rounded mx-auto d-block responsive-img' %>
+                  </div>
+                  <button onclick='displayForm("manager")' class="btn btn-secondary btn-lg btn-block"><%= icon('fas', 'check-circle') %> Seleccionar</button>
+                </div>
+              </div>
+              <div class="card col">
+                <div class="card-body">
+                  <h5 class="card-title text-center">Soy empleado</h5>
+                  <h6 class="card-subtitle mb-2 text-muted text-justify">Selecciona esta opción si no eres el dueño de la compañía.</h6>
+                  <div id="employee-card">
+                    <%= image_tag "/images/employees.png", class: 'rounded mx-auto d-block responsive-img' %>
+                  </div>
+                  <button onclick='displayForm("employee")' class="btn btn-secondary btn-lg btn-block"><%= icon('fas', 'check-circle') %> Seleccionar</button>
+                </div>
+              </div>
+            </div>
+            <div id="form" style="display: none;">
+              <%= render 'form' %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </td>
+  </tbody>
+</table>

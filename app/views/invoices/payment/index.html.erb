@@ -4,7 +4,7 @@
 			<th>#</th>
 			<th scope="col">Tipo de pago</th>
 			<th scope="col">Monto</th>
-			<th scope="col"></th>
+			<th scope="col">Fecha de pago</th>
 			<th scope="col"></th>
 		</tr>
 	</thead>
@@ -13,8 +13,13 @@
 	      <tr class="fields">
 	      	<th scope="row">#</th>
 	      	<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control'} %></td>
-	      	<td><%= f.number_field :total, class: 'form-control amount', default: 0.0 %></td>
-	      	<td></td>
+	      	<td>
+				<div class="popup">
+					<%= f.number_field :total, class: 'form-control amount', default: 0.0 %>
+			    <span class="popuptext" id="myPopup">Esta intentando cobrar un monto superior.</span>
+			  </div>
+			</td>
+	      	<td><%= f.text_field :payment_date, class: 'form-control datepicker' %></td>
 	      	<td><%= f.link_to_remove icon('fas', 'trash') %></td>
 	      </tr>
 	    <% end %>

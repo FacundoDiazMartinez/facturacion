@@ -6,6 +6,7 @@ $( document ).ready(function() {
 var total_venta = parseInt(0);
 var rest = parseInt(0);
 
+
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
 		if (data.item.nomatch.length) {
@@ -16,6 +17,10 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+		$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
+
+		subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+		subtotal.trigger("change");
 });
 
 $(document).on("change", ".price, .quantity", function(){
@@ -27,7 +32,7 @@ $(document).on("change", ".price, .quantity", function(){
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
 
-	if (bonus_amount.length) {
+	if (bonus_amount.val() > 0) {
 		total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
 	}else{
 		total = (parseFloat(price.val()) * parseFloat(quantity.val()));
@@ -65,7 +70,7 @@ $(document).on("change", ".iva_aliquot", function(){
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").find('option:selected');
 
 	amount = parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text());
-	iva_amount.val(amount)
+	iva_amount.val(amount);
 });
 
 function autocomplete_field() {
@@ -78,13 +83,36 @@ function autocomplete_field() {
 
 function complete_payments(){
 	var suma = parseInt(0);
-	$(".amount").each(function(){
+	var payment_fields = parseInt(0);
+	$(".amount").each(function(){  /// calculamos la suma total en sector pagos
 		suma = parseInt(suma) + parseInt($(this).val());
+		payment_fields = payment_fields + 1;
 	});
-	var resto = parseInt( total_venta - suma);
-	if (resto > 0) {
-		$("#payments").find(".amount").filter(':visible:last').val(resto);
+	if (payment_fields == 1) { /// si solo hay un tipo de pago, el monto es igual al total de la venta
+		$("#payments").find(".amount").filter(':visible:last').val(total_venta);
 	}
+	else { // en caso de haber más de un tipo de pago, la diferencia entre los pagos y el total de la venta se suma al último campo de pago
+		var resto = parseInt( total_venta - suma);
+		last_amount = parseInt($("#payments").find(".amount").filter(':visible:last').val());
+		if (resto > 0) {
+			$("#payments").find(".amount").filter(':visible:last').val(resto + last_amount);
+		}
+		else {
+			if (resto < 0) { // en caso de que el total de venta haya disminuido, se actualizan los pagos
+				payment_fields = 0;
+				$(".amount").each(function(){
+					payment_fields = payment_fields + 1;
+					if (payment_fields == 1) {
+						$(this).val(total_venta);
+					}
+					else {
+						$(this).val(0);
+					}
+				});
+			}
+		}
+	}
+	check_payment_limit();
 }
 
 $(document).on('nested:fieldAdded', function(event){
@@ -93,14 +121,46 @@ $(document).on('nested:fieldAdded', function(event){
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 });
 
+$(document).on('nested:fieldRemoved', function(event){
+	payment_fields = parseInt(0);
+	$(".amount").each(function(){ /// dejamos todo en 0 y colocamos el total de venta en el primer tipo de pago
+		payment_fields = payment_fields + 1;
+		if (payment_fields == 1) {
+			$(this).val(total_venta);
+		}
+		else {
+			$(this).val(0);
+		}
+	});
+})
+
 
 $(document).on("change", ".subtotal", function(){
 	var total = parseInt(0);
 	$(".subtotal").each(function(){
 	    total = total + parseInt($(this).val());
 	});
-	$("#payments").find(".amount").filter(':visible:first').val(total);
+	$("#invoice_total").val(total);
 	total_venta = total;
+	complete_payments();
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
-	// subtotal 	= $(this).closest("tr.fields").find("input.subtotal");
 });
+
+$(document).on("change", ".amount", function(){
+	check_payment_limit();
+});
+
+function check_payment_limit(){  //Funcion que indica si se superó el monto de factura al ingresar tipos de pagos
+	var suma = parseInt(0);
+	$(".amount").each(function(){  /// calculamos la suma total en sector pagos
+		suma = parseInt(suma) + parseInt($(this).val());
+	});
+	var popup = $("#myPopup");
+	if (suma > total_venta) {
+		// popup.removeClass("popuptext");
+    popup.addClass("show");
+	}
+	else {
+		popup.removeClass("show");
+	}
+}

@@ -1,0 +1,13 @@
+<div class="card shadow">
+	<% @activities.each do |activity| %>
+		<ul class="list-unstyled">
+		  	<li class="media">
+		    	<%= image_tag activity.photo, alt: 'activity.title', class: 'mr-3' %>
+		    	<div class="media-body">
+		      		<h5 class="mt-0 mb-1"><%= activity.title %></h5>
+		      		<%= activity.body %>
+		    	</div>
+		  	</li>
+		</ul>
+	<% end -%>
+</div>

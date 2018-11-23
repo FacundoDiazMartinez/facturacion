@@ -27,10 +27,11 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
-#GEMA DE WICKED PDFKit
 
+#GEMA DE WICKED PDFKit
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -73,6 +74,13 @@ gem 'rails-jquery-autocomplete'
 
 #Datepicker
 gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails', :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'
+
+#Workers
+gem 'delayed_job_active_record'
+
+#Push notifications
+gem 'private_pub'
+gem "thin"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
