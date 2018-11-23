@@ -112,6 +112,7 @@ function complete_payments(){
 			}
 		}
 	}
+	check_payment_limit();
 }
 
 $(document).on('nested:fieldAdded', function(event){
@@ -130,7 +131,6 @@ $(document).on('nested:fieldRemoved', function(event){
 		else {
 			$(this).val(0);
 		}
-
 	});
 })
 
@@ -147,6 +147,10 @@ $(document).on("change", ".subtotal", function(){
 });
 
 $(document).on("change", ".amount", function(){
+	check_payment_limit();
+});
+
+function check_payment_limit(){  //Funcion que indica si se superó el monto de factura al ingresar tipos de pagos
 	var suma = parseInt(0);
 	$(".amount").each(function(){  /// calculamos la suma total en sector pagos
 		suma = parseInt(suma) + parseInt($(this).val());
@@ -159,4 +163,4 @@ $(document).on("change", ".amount", function(){
 	else {
 		popup.removeClass("show");
 	}
-});
+}

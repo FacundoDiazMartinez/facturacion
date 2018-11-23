@@ -69,13 +69,12 @@
     </div>
   <!-- FIN DEL ENCABEZADO -->
 
-<br>
-<!-- ABAJO DEL ENCABEZADO -->
+<!-- DATOS CLIENTE -->
 <div class="row">
   <div class="container border">
     <table class="width_100">
     <tr>
-      <td><b>CUIT: <%= @invoice.client.document_number %></b></td>
+      <td><b>CUIT: </b><%= @invoice.client.document_number %></td>
       <td><b>Apellido y Nombre / Razon Social: </b> <%= @invoice.client.name %></td>
       <td></td>
     </tr>
@@ -94,7 +93,9 @@
   </table>
   </div>
 </div>
-<!-- FIN DEL UNDER-ENCABEZADO -->
+<!-- FIN DATOS CLIENTE -->
+
+
 <!-- DETALLE -->
 <div class="row">
   <div class="container">
@@ -128,7 +129,7 @@
 
 
 
-<div class="row">
+<div class="row footer_top">
   <div class="container border">
     <table class="width_100">
       <col width="600">

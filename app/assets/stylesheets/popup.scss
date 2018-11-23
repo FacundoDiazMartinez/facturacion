@@ -23,8 +23,8 @@
   padding: 8px 0;
   position: absolute;
   z-index: 1;
-  bottom: -15%; /// con bottom y left lo ubicamos, la posicion original es centrado sobre el input
-  left: 140%;
+  bottom: 115%; /// con bottom y left lo ubicamos, la posicion original es centrado sobre el input
+  left: 70%;
   margin-left: -80px;
 }
 
@@ -32,9 +32,9 @@
 .popup .popuptext::after {
   content: "";
   position: absolute;
-  top: 45%; /// con top y left la movemos, la posicion original es centrada debajo del cuerpo apuntando hacia abajo
-  left: -3%;
-  transform: rotate(90deg); // rota la flecha
+  top: 100%; /// con top y left la movemos, la posicion original es centrada debajo del cuerpo apuntando hacia abajo
+  left: 30%;
+  transform: rotate(0deg); // rota la flecha
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
