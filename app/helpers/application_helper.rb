@@ -1,6 +1,20 @@
 module ApplicationHelper
 
-	def error_explanation object
+	def flash_error
+		messages = flash.map{|name, msg| content_tag :li, msg if msg.is_a?(String)}.join
+		html = <<-HTML
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			#{messages}
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  			</button>
+		</div>
+		HTML
+	    return html.html_safe
+	end
+
+
+	def error_explanation object=nil
 		@object = object
 		if not object.nil?
 			content_tag :div do

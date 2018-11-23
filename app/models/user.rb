@@ -15,12 +15,20 @@ class User < ApplicationRecord
 
   validate :cant_disapprove_if_has_management_role
 
-  after_create :send_admin_mail
+  after_create :send_admin_mail, if: Proc.new{ |u| !u.company_id.nil?}
+  after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && !company_id.nil?}
 
-    
+    def set_approved_activity
+     UserActivity.create(
+        user_id: id,
+        photo: "/images/log-in.png",
+        title: "El usuario fue aprobado. Ahora pertenece y tiene acceso a #{company.name}",
+        body: "El dia #{I18n.l(Date.today)} se le dio acceso a #{name} para hacer uso de las funciones del sistema de #{company.name}."
+      )
+    end
 
     def cant_disapprove_if_has_management_role
-      errors.add(:approve, "No puedes eliminar a un usuario con rol de Gerente.") unless not has_management_role?
+      #errors.add(:approve, "No puedes eliminar a un usuario con rol de Gerente.") unless not has_management_role?
     end
 
 
@@ -46,6 +54,10 @@ class User < ApplicationRecord
 
     def avatar
       read_attribute("avatar") || "/images/default_user.png"
+    end
+
+    def approved?
+      has_management_role? ? true : read_attribute("approved")
     end
 
     def active_for_authentication? 

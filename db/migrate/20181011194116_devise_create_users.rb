@@ -42,6 +42,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
       t.integer  "postal_code"
       t.boolean  "admin",                  default: true,                  null: false
       t.string   "authentication_token"
+      t.references "company", foreign_key: true
 
       ## Trackable
       # t.integer  :sign_in_count, default: 0, null: false
@@ -69,7 +70,6 @@ class DeviseCreateUsers < ActiveRecord::Migration[5.2]
     add_index :users, :reset_password_token, unique: true
     add_index :users, :confirmation_token,   unique: true
     add_index :users, :unlock_token,         unique: true
-    add_index :users, :company_id,           unique: true
 
   end
 end
