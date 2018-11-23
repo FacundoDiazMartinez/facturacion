@@ -116,8 +116,8 @@ class Invoice < ApplicationRecord
         return total
       end
 
-      def available_cbte_type
-        Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[self.company.iva_cond_sym][self.client.iva_cond_sym]}.map{|k,v| [v,k]}
+      def self.available_cbte_type(company, client)
+        Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[company.iva_cond_sym][client.iva_cond_sym]}.map{|k,v| [v,k]}
       end
 
       def tipo
