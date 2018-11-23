@@ -1,10 +1,4 @@
 <div id="client_errors"></div>
-<div class="form-group row">
-  <%= label_tag :iva_cond, "Condición I.V.A. *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Exento"]],{},{class:'form-control form-control-sm'} %>
-  </div>
-</div>
 
 <div class="form-group row">
   <%= label_tag :document_number, "Documento *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
@@ -13,8 +7,15 @@
       <div class="input-group-prepend">
         <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text'} %>
       </div>
-      <%= f.autocomplete_field :document_number, autocomplete_document_clients_path, class: 'form-control form-control-sm client-autocomplete_field', required: true %>
+      <%= f.autocomplete_field :document_number, autocomplete_document_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field', placeholder: "Busque aquí cliente o ingrese uno nuevo", required: true %>
     </div>
+  </div>
+</div>
+
+<div class="form-group row">
+  <%= label_tag :iva_cond, "Condición I.V.A. *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+  <div class="col-md-9">
+    <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Exento"]],{},{class:'form-control form-control-sm'} %>
   </div>
 </div>
 
@@ -62,4 +63,3 @@
 </div>
 
 <center><i>* Campos obligatorios</i></center>
-

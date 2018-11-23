@@ -1,5 +1,5 @@
 class Invoices::ClientsController < ApplicationController
-	before_action :set_invoice, only: [:edit, :update]
+	#before_action :set_invoice, only: [:edit, :update]
 	before_action :set_client, only: [:edit, :update]
 
 	def edit
@@ -9,18 +9,11 @@ class Invoices::ClientsController < ApplicationController
 	def update
 		@client = current_user.company.clients.find_by_full_document(client_params).first_or_initialize
 		@client.set_attributes(params["client"].as_json)
-		
 		respond_to do |format|
 			if @client.save
-				@invoice.update_column(:client_id, @client.id)
-				@invoice.update_column(:cbte_tipo, @invoice.available_cbte_type.last.last)
-				@invoice.reload
-				format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Cliente creado con éxito.' }
+				format.html { render :back, notice: 'Cliente creado con éxito.' }
 				format.js 	{ render :edit_client }
 	      	else
-	      		@client.errors.full_messages.each do |ce|
-					@invoice.errors.add(:client, ce)
-				end
 	        	format.html { render :edit }
 	        	format.js 	{ render :edit_client }
 	      	end
@@ -40,7 +33,7 @@ class Invoices::ClientsController < ApplicationController
 		end
 
 		def set_client
-			@client = @invoice.client
+			@client = current_user.company.clients.find(params[:id])
 		end
 
 		def client_params

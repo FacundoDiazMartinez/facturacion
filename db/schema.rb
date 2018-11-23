@@ -231,11 +231,11 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   end
 
   create_table "notifications", force: :cascade do |t|
-    t.string "title"
-    t.text "body"
+    t.string "title", null: false
+    t.text "body", null: false
     t.string "link"
     t.time "read_at"
-    t.bigint "sender_id"
+    t.bigint "sender_id", null: false
     t.bigint "receiver_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
