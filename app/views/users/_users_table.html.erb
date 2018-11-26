@@ -1,17 +1,18 @@
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th colspan="2">Usuario</th>
-      <th>D.N.I.</th>
-      <th>Nacimiento</th>
-      <th>Celular</th>
-      <th>Estado</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th colspan="2">Usuario</th>
+        <th>D.N.I.</th>
+        <th>Nacimiento</th>
+        <th>Celular</th>
+        <th>Estado</th>
+        <th colspan="2"></th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <% @users.each do |user| %>
+    <tbody>
+      <% @users.each do |user| %>
       <tr>
         <td><%= image_tag user.avatar, alt: user.name, class: 'avatar' %></td>
         <td><%= user.name %></td>
@@ -19,11 +20,14 @@
         <td><%= l(user.birthday.to_date) %></td>
         <td><%= user.mobile_phone %></td>
         <td><%= change_state_to_user(user) %></td>
-        <td><%= link_to icon('fas', 'eye'), user %></td>
-        <td><%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' } %></td>
+        <td>
+          <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+        </td>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+      <% end %>
+    </tbody>
+  </table>
+</div>
 
 <%= paginate @users %>
