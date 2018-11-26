@@ -3,7 +3,7 @@
       <table class="width_100">
         <tr>
           <th class="text_size_25 text_left header_width_50" style="text-align: center;"><%= @invoice.company.society_name %></th>
-          <th class="text_size_invoice_type invoice_type"><%= @invoice.available_cbte_type.first.first.last %>
+          <th class="text_size_invoice_type invoice_type"><%= Invoice.available_cbte_type(@invoice.company, @invoice.client).first.first.last %>
             <table>
               <tbody>
                 <tr>

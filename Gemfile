@@ -29,7 +29,8 @@ gem 'jbuilder', '~> 2.5'
 # gem 'bcrypt', '~> 3.1.7'
 
 # GENA código de barras
-gem 'barby', '~> 0.6.2'
+gem 'barby', '~> 0.6.6'
+gem 'chunky_png'
 
 #GEMA DE WICKED PDFKit
 gem 'wicked_pdf'
