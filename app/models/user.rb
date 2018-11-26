@@ -19,12 +19,7 @@ class User < ApplicationRecord
   after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && !company_id.nil?}
 
     def set_approved_activity
-     UserActivity.create(
-        user_id: id,
-        photo: "/images/log-in.png",
-        title: "El usuario fue aprobado. Ahora pertenece y tiene acceso a #{company.name}",
-        body: "El dia #{I18n.l(Date.today)} se le dio acceso a #{name} para hacer uso de las funciones del sistema de #{company.name}."
-      )
+     UserActivity.create_for_approved_user(self)
     end
 
     def cant_disapprove_if_has_management_role

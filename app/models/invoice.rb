@@ -22,6 +22,7 @@ class Invoice < ApplicationRecord
     after_save :set_state
     after_save :touch_account_movement, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
+    after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado"}
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -190,6 +191,10 @@ class Invoice < ApplicationRecord
           am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
           am.save
         end
+      end
+
+      def set_invoice_activity
+        UserActivity.create_for_confirmed_invoice(self)
       end
     #PROCESOS
 
