@@ -1,30 +1,27 @@
-<div class="row">
+<% if not @products.empty? %>
+<div class="row d-flex align-items-stretch">
 	<% @products.each do |product|%>
-		<div class="col-lg-3 col-sm-6 col-xs-12">
-			<div class="thumbnail card">
-				<%= link_to product_path(product.id) do %>
-					<center>
-		      			<%= image_tag product.photo, alt: product.name, class: 'img-thumbnail', style: 'height: 25vh;' %>
-		      		</center>
-		      	<% end -%>
-		      	<div class="caption">
-		        	<h3 class="text-truncate"><%= product.name %></h3>
-			        <div class="text-truncate">
-		        		<strong>Categoria: </strong><%= product.category_name %>
-		        	</div>
-		        	<div class="row">
-			        	<div class="col-md-6 col-xs-12 text-truncate"><strong>Precio: <span class="green">$ <%= number_with_delimiter(product.price) %></span></strong></div>
-			        	<div class="col-md-6 col-xs-12 text-truncate text-right"><strong>Stock: </strong>Falta <%= link_to icon('fas', 'edit'), edit_product_path(product.id) %></div>
-			        </div>
-			        <div style="margin-top: 10px;">
-			        	<%= link_to icon('fas', 'eye'), product, class: 'btn btn-primary' %>
-			        	<%= link_to icon('fas', 'edit'), edit_product_path(product), class: 'btn btn-secondary' %>
-			        	<%= link_to icon('fas', 'trash'), product, method: :delete, data: {confirm: '¿Está seguro?'}, class: 'btn btn-danger float-right' %>
-			        </div>
-		      	</div>
-		    </div>
+	<div class="col-xs-12 col-md-6 col-lg-3 mb-4">
+		<div class="card card-shadow" style="height:100%;">
+			<%= link_to product_path(product.id) do %>
+			<div class="card-div-img-top" style="background: url('<%= product.photo %>')">
+			</div>
+			<div class="card-body">
+				<center>
+					<h5 class="card-title"><%= product.name %></h5>
+					<p class="card-text text-muted"><%= product.category_name %></p>
+					<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(product.price) %></span></strong></p>
+				<center>
+			</div>
+			<% end -%>
 		</div>
+	</div>
+
 	<% end %>
 </div>
-
 <%= paginate @products %>
+
+
+<% else %>
+  <center><h1>¡Todavia no cargaste ningún producto!</h1></center>
+<% end %>
