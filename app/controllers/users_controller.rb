@@ -18,7 +18,7 @@ class UsersController < ApplicationController
     if current_user.has_management_role?
       respond_to do |format|
         if @user.update(approved: true)
-          format.html { redirect_to @user, notice: "El usuario ahora pertenece a su empresa." }
+          format.html { redirect_to users_path, notice: "El usuario ahora pertenece a su empresa." }
         else
           format.html {render :show}
         end
@@ -30,7 +30,7 @@ class UsersController < ApplicationController
     if current_user.has_management_role?
       respond_to do |format|
         if @user.update(approved: false)
-          format.html { redirect_to @user, notice: "El usuario ya no tiene acceso a su empresa." }
+          format.html { redirect_to users_path, notice: "El usuario ya no tiene acceso a su empresa." }
         else
           format.html {render :show}
         end

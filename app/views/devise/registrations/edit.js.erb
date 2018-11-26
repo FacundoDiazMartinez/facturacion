@@ -1,0 +1,5 @@
+<% if params[:user_view] %>
+  $('#show_section').html('<%= j render "/devise/registrations/partial_edit_views/#{params[:user_view]}" %>')
+<% else %>
+  $('#show_section').html('<%= j render "/devise/registrations/partial_edit_views/data" %>')
+<% end %>
