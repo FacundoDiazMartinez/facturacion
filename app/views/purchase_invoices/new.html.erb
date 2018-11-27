@@ -1,3 +1,4 @@
-<h1><%= icon('fas', 'plus') %> Nuevo comprobante de compra</h1>
-<hr>
-<%= render 'form', purchase_invoice: @purchase_invoice %>
+<div class="p-4">
+  <%= title_helper 'Nuevo comprobante de compra' %>
+  <%= render 'form', purchase_invoice: @purchase_invoice %>
+</div>

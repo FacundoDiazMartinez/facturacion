@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
 	end
 
 
-
   protected
   def redirect_to_company
     if user_signed_in?

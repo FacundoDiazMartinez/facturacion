@@ -1,27 +1,31 @@
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Número</th>
-      <th>Orden de compra</th>
-      <th>Generado por</th>
-      <th>Estado</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Orden de compra</th>
+        <th>Generado por</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <% @arrival_notes.each do |arrival_note| %>
+    <tbody>
+      <% @arrival_notes.each do |arrival_note| %>
       <tr>
         <td><%= arrival_note.number %></td>
         <td><%= arrival_note.purchase_order.number %></td>
         <td><%= arrival_note.user.name %></td>
         <td><%= arrival_note.state %></td>
-        <td><%= link_to icon('fas', 'eye'), arrival_note %></td>
-        <td><%= link_to icon('fas', 'edit'), edit_arrival_note_path(arrival_note) %></td>
-        <td><%= link_to icon('fas', 'trash'), arrival_note, method: :delete, data: { confirm: '¿Estas seguro?' } %></td>
+        <td>
+          <%= link_to icon('fas', 'eye'), arrival_note, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit'), edit_arrival_note_path(arrival_note), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash'), arrival_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+        </td>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+      <% end %>
+    </tbody>
+  </table>
 
-<%= paginate @arrival_notes %> 
+  <%= paginate @arrival_notes %>
+</div>

@@ -7,7 +7,7 @@
       <th>Total</th>
       <th>Estado</th>
       <th>Fecha</th>
-      <th colspan="3"></th>
+      <th></th>
     </tr>
   </thead>
 
@@ -20,9 +20,11 @@
         <td><%= purchase_order.total %></td>
         <td><%= purchase_order.state %></td>
         <td><%= purchase_order.created_at %></td>
-        <td><%= link_to icon('fas', 'eye').html_safe, purchase_order %></td>
-        <td><%= link_to icon('fas', 'edit').html_safe, edit_purchase_order_path(purchase_order.id) %></td>
-        <td><%= link_to icon('fas', 'trash').html_safe, purchase_order, method: :delete, data: { confirm: '¿Está seguro?' } %></td>
+        <td class="text-right">
+          <%= link_to icon('fas', 'eye').html_safe, purchase_order, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_purchase_order_path(purchase_order.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash').html_safe, purchase_order, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+        </td>
       </tr>
     <% end %>
   </tbody>
