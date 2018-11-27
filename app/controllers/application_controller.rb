@@ -1,13 +1,20 @@
 class ApplicationController < ActionController::Base
  before_action :configure_permitted_parameters, :authenticate_user!, if: :devise_controller?
  before_action :authenticate_user!
+ before_action :redirect_to_company, except: [:get_localities]
 
 	def get_localities
 		render json: Locality.where(province_id: params[:city_id]).order(:name).map{|l| [l.id, l.name]}
 	end
 
 
+
   protected
+  def redirect_to_company
+    if not current_user.has_company?
+      redirect_to root_path
+    end
+  end
 
   def configure_permitted_parameters
     # devise_parameter_sanitizer.permit(:sign_up, keys: [:username])

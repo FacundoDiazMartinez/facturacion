@@ -5,7 +5,7 @@ class InvoiceDetail < ApplicationRecord
   accepts_nested_attributes_for :product, reject_if: :all_blank, allow_destroy: true
 
   before_validation :check_product
-  
+
   after_save :set_total_to_invoice
 
   default_scope {where(active: true)}
@@ -60,7 +60,7 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def iva
-      Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f 
+      Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f
     end
 
     def destroy

@@ -2,172 +2,138 @@
 
   <%= error_explanation @company %>
 
+  <!-- IMAGEN DE LA EMPRESA -->
+  <p class="text-muted">Selecciona un logo para tu empresa</p>
+  <div class="card mb-4 card-shadow" style="width:30%;margin:auto;">
+    <div class="comp_container caption captionload">
+      <img src="/images/load.gif" width="80%">
+    </div>
+    <img class="card-img-top" src="<%= @company.logo %>" alt="Añadir imágen" id="image"  width="80%">
+    <div hidden>
+      <%= f.file_field :logo, :class => 'form-control', id: 'file_input' %>
+    </div>
+  </div>
+  <!-- IMAGEN DE LA EMPRESA -->
 
-  <div class="row">
+  <!-- INFORMACIÓN BÁSICA -->
+    <p class="text-muted">Completa los datos principales de tu empresa</p>
+    <div class="card mb-4 card-shadow">
+      <div class="card-body">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <%= f.label :name %>
+            <%= f.text_field :name, :class => 'form-control', placeholder: "Lite Code", required: true %>
+          </div>
+          <div class="form-group col-md-6">
+            <%= f.label :email %>
+            <%= f.text_field :email, :class => 'form-control', placeholder: 'E-mail', required: true %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <%= f.label :society_name %>
+            <%= f.text_field :society_name, :class => 'form-control', placeholder: "Lite Code S.A.S.", required: true %>
+          </div>
+          <div class="form-group col-md-6">
+            <%= f.label :cuit %>
+            <%= f.text_field :cuit, :class => 'form-control', placeholder: '33-71619631-9', required: true %>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <%= f.label :iva_cond %>
+            <%= f.select :iva_cond, ["Responsable Inscripto", "Responsable Monotributo"], {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+          </div>
+          <div class="form-group col-md-6">
+            <%= f.label :concepto %>
+            <%= f.select :concepto, ::Afip::CONCEPTOS, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+          </div>
+        </div>
 
-    <div class="col-4">
-      <!-- LOFOTIPO EMPRESA -->
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <%= f.label :moneda %>
+            <%= f.select :moneda, ::Afip::MONEDAS, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+          </div>
+          <div class="form-group col-md-6">
+            <%= f.label :activity_init_date %>
+            <%= f.text_field :activity_init_date, :class => 'form-control datepicker', data: {provide: 'datepicker'}, placeholder: 'Fecha de inicio de actividad', required: true %>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <%= f.label :contact_number %>
+            <%= f.text_field :contact_number, :class => 'form-control', placeholder: "+54 387 155000000" %>
+          </div>
+          <div class="form-group col-md-6">
+            <%= f.label :cbu %>
+            <%= f.text_field :cbu, :class => 'form-control', placeholder: "C.B.U." %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <!-- INFORMACIÓN BÁSICA -->
+
+
+  <!-- UBICACIÓN -->
+  <p class="text-muted">Ingresa los datos de ubicación</p>
+  <div class="card mb-4 card-shadow">
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= f.label :country %>
+          <%= f.text_field :country, value: "Argentina", disabled: true, :class => 'form-control', required: true %>
+        </div>
+
+        <div class="form-group col-md-6">
+          <%= f.label :province_id %>
+          <%= f.select :province_id, options_from_collection_for_select(Province.all, :id, :name, f.object.province_id), {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "company_locality_id")', required: true} %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= f.label :locality_id %>
+          <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id).order(:name), :id, :name, f.object.locality_id), {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
+        </div>
+        <div class="form-group col-md-6">
+          <%= f.label :postal_code %>
+          <%= f.text_field :postal_code, :class => 'form-control', required: true %>
+        </div>
+      </div>
+
       <div class="form-group">
-        <h3><%= icon('fas', 'image') %> Logotipo</h3>
-        <div class="comp_container">
-          <div class="comp_container caption captionload"><img src="/images/load.gif" width="75px"></div>
-          <img class="card-img-top" src="<%= @company.logo %>" alt="Card image cap" id="image">
-        </div>
-        <div hidden>
-            <%= f.file_field :logo, :class => 'form-control', id: 'file_input' %>
-        </div>
-      </div>
-      <!-- FIN LOGOTIPO -->
-    </div>
-
-    <div class="col-8">
-      <h3><%= icon('fas', 'briefcase') %> Información básica</h3>
-      <div class="card">
-        <div class="card-body">
-          <div class="form-group row">
-            <%= f.label :name, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :name, :class => 'form-control', placeholder: "Lite Code", required: true %>
-            </div>
-          </div>
-          <div class="form-group row">
-            <%= f.label :society_name, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :society_name, :class => 'form-control', placeholder: "Lite Code S.A.S.", required: true %>
-            </div>
-          </div>
-          <div class="form-group row">
-            <%= f.label :email, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :email, :class => 'form-control', placeholder: 'E-mail', required: true %>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <%= f.label :cuit, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :cuit, :class => 'form-control', placeholder: '33-71619631-9', required: true %>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <%= f.label :iva_cond, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.select :iva_cond, ["Responsable Inscripto", "Responsable Monotributo"], {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <%= f.label :concepto, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.select :concepto, ::Afip::CONCEPTOS, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <%= f.label :moneda, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.select :moneda, ::Afip::MONEDAS, {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <%= f.label :activity_init_date, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :activity_init_date, :class => 'form-control datepicker', data: {provide: 'datepicker'}, placeholder: 'Fecha de inicio de actividad', required: true %>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <%= f.label :contact_number, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :contact_number, :class => 'form-control', placeholder: "+54 387 155000000" %>
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <%= f.label :cbu, class: 'col-sm-2 col-form-label' %>
-            <div class="col-sm-10">
-              <%= f.text_field :cbu, :class => 'form-control', placeholder: "C.B.U." %>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <hr>
-
-  <div class="row">
-
-    <div class="col-md-12">
-      <h3><%= icon('fas', 'map-marker-alt') %> Ubicación</h3>
-      <div class="card">
-        <div class="card-body">
-
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <%= f.label :country %>
-              <%= f.text_field :country, value: "Argentina", disabled: true, :class => 'form-control', required: true %>
-            </div>
-
-            <div class="form-group col-md-6">
-              <%= f.label :province_id %>
-              <%= f.select :province_id, options_from_collection_for_select(Province.all, :id, :name, f.object.province_id), {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "company_locality_id")', required: true} %>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <%= f.label :locality_id %>
-              <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id).order(:name), :id, :name, f.object.locality_id), {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
-            </div>
-            <div class="form-group col-md-6">
-              <%= f.label :postal_code %>
-              <%= f.text_field :postal_code, :class => 'form-control', required: true %>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :address %>
-            <%= f.text_field :address, class: 'form-control', required: true %>
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <hr>
-
-  <div class="row">
-    <div class="col-md-12">
-      <h3>
-        <%= icon('fas', 'book') %> Información contable
-        <%= f.link_to_add "#{icon'fas', 'plus'} Añadir punto de venta".html_safe, :sale_points,  class: 'btn btn-sm btn-primary float-md-right', data: {target: '#sale_points'} %>
-      </h3>
-      <div class="card">
-        <div class="card-body">
-          <table id="sale_points">
-            <%= f.fields_for :sale_points, :wrapper => false do |sf| %>
-              <tr class="fields col-6 inline">
-                <td><%= sf.label :name, "Punto de venta Nº" %></td>
-                <td><%= sf.number_field :name, class: 'form-control' %></td>
-                <td><%= sf.link_to_remove icon('fas', 'trash')  %></td>
-              </tr>
-            <% end %>
-          </table>
-        </div>
+        <%= f.label :address %>
+        <%= f.text_field :address, class: 'form-control', required: true %>
       </div>
     </div>
   </div>
+  <!-- UBICACIÓN -->
 
-  <hr>
+
+  <!-- CONTABLE -->
+  <p class="text-muted">
+    Registra tus puntos de venta
+    <%= f.link_to_add "#{icon'fas', 'plus'} Añadir punto de venta".html_safe, :sale_points,  class: 'btn btn-sm btn-success float-md-right', data: {target: '#sale_points'} %>
+  </p>
+  <div class="card mb-4 card-shadow">
+    <div  class="card-body">
+      <div id="sale_points" class="form-row">
+        <%= f.fields_for :sale_points, :wrapper => false do |sf| %>
+        <div class="fields form-group col-md-6 button-inside">
+          <%= sf.label :name, "Punto de venta Nº" %>
+          <%= sf.text_field :name, class: 'form-control', required: true %>
+          <%= sf.link_to_remove icon('fas', 'times'), class: 'text-danger', title: 'Eliminar punto de venta', data: { confirm: '¿Está seguro?' } %>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 
   <div class="form-group">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <center>
         <%= save_button %>
       </center>
@@ -175,3 +141,11 @@
   </div>
 
 <% end %>
+
+<script type="text/javascript">
+
+$(document).on('nested:fieldRemoved', function (event) {
+  $('[required]', event.field).removeAttr('required');
+});
+
+</script>
