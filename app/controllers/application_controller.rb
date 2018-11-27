@@ -8,11 +8,12 @@ class ApplicationController < ActionController::Base
 	end
 
 
-
   protected
   def redirect_to_company
-    if not current_user.has_company?
-      redirect_to root_path
+    if current_user
+      if not current_user.has_company?
+        redirect_to root_path
+      end
     end
   end
 

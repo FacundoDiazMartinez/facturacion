@@ -1,21 +1,22 @@
-<!-- TITULO -->
-  <h1 class="d-flex mb-2">
-      <div class="p-2">
-          <%= icon('fas', 'archive') %>
-          Depósitos
-      </div>
-      <div class="ml-auto p-2">
-          <%= link_to "#{icon('fas', 'plus')} Añadir depósito".html_safe, new_depot_path, class: 'btn btn-primary', data: {remote: true, toggle: 'modal', target: '#depotModal'} %>
-          <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
-      </div>
-  </h1>
-<!-- TITULO -->
+<div class="p-4">
+  <%= title_helper 'Depósitos' %>
+  <%= button_new_modal_helper(new_depot_path, 'depotModal') %>
 
-<!-- STOCK ASOCIADO -->
-  <div id="depots_table">
-    <%= render 'depots_table' %>
+  <div class="page-section">
+    <div class="card card-fluid">
+      <div class="card-header">
+        FILTROS
+      </div>
+      <div id="depots_table" class="card-body">
+        <!-- STOCK ASOCIADO -->
+        <%= render 'depots_table' %>
+        <!-- STOCK ASOCIADO -->
+      </div>
+    </div>
   </div>
-<!-- STOCK ASOCIADO -->
+</div>
+
+
 
 <div class="modal fade bd-example-modal-lg" id="depotModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">

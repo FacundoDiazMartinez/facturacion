@@ -1,18 +1,19 @@
-<!-- TITULO -->
-	<h1 class="d-flex mb-2">
-	    <div class="p-2">
-	      	<%= icon('fas', 'archive') %>
-	      	<%= @depot.name %>
-	    </div>
-	    <div class="ml-auto p-2">
-	      	<%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
-	    </div>
-	</h1>
-<!-- TITULO -->
+<div class="p-4">
+	<%= title_helper("#{@depot.name}") %>
 
-<!-- STOCK ASOCIADO -->
-	<div id="stock">
-		<%= render 'stock' %>
+	<div class="page-section">
+		<div class="card">
+			<div class="card-header">
+				FILTROS
+			</div>
+			<div class="card-body">
+				<div id="stock">
+					<!-- STOCK ASOCIADO -->
+					<%= render 'stock' %>
+					<!-- STOCK ASOCIADO -->
+				</div>
+
+			</div>
+		</div>
 	</div>
-<!-- STOCK ASOCIADO -->
-<%= paginate @stocks %>
+</div>
