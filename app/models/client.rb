@@ -3,8 +3,13 @@ class Client < ApplicationRecord
 	has_many :receipts, through: :invoices
 	has_many :account_movements
 	belongs_to :company
+	belongs_to :user, optional: true
 
-	default_scope {where(active:true)}
+	default_scope { where(active:true) }
+
+	after_create :set_create_activity, if: :belongs_to_user?
+
+	after_update :set_update_activity
 
 	validates_numericality_of :document_number, message: 'Ingrese un numero de documento valido.'
 	validates :document_number, length: { is: 11, message: 'Numero de documento inválido, verifique.' }, 		if: Proc.new{|c| ['CUIT', 'CUIL', 'CDI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
@@ -33,9 +38,22 @@ class Client < ApplicationRecord
 		def set_attributes attrs
 			self.attributes = self.attributes.merge(attrs)
 		end
+
+		def set_create_activity
+			UserActivity.create_for_new_client self
+		end
+
+		def set_update_activity
+			UserActivity.create_for_updated_client self
+		end
 	#PROCESOS
 
 	#FUNCIONES
+
+		def belongs_to_user?
+			not user_id.nil?
+		end
+
 		def self.create_or_update_for_invoice params, invoice
 			client = where(document_number: params[:document_number], document_type: params[:document_type]).first_or_initialize
 			client.update_attributes(client.attributes.merge(params))

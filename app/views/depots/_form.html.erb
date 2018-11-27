@@ -25,9 +25,16 @@
     </div>
 
     <div class="form-group row">
-      <%= form.label :stock_limit , class: 'col-sm-3 col-form-label col-form-label-sm' %>
+      <%= form.label :filled, "Disponibilidad" , class: 'col-sm-3 col-form-label col-form-label-sm' %>
       <div class="col-md-9">
-        <%= form.number_field :stock_limit, class: 'form-control form-control-sm', required: true %>
+        <div class="custom-control custom-radio custom-control-inline">
+          <%= form.radio_button :filled, false, class: 'custom-control-input', id: 'filled_false' %>
+          <%= label_tag :filled_false, "Espacio disponible", class: 'custom-control-label' %>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <%= form.radio_button :filled, true, class: 'custom-control-input', id: 'filled_true' %>
+          <%= label_tag :filled_true, "Completo", class: 'custom-control-label' %>
+        </div>
       </div>
     </div>
 

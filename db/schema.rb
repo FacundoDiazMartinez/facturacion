@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.string "cbte_tipo", null: false
     t.boolean "debe"
     t.boolean "haber"
+    t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.float "saldo", default: 0.0, null: false
     t.datetime "created_at", null: false
@@ -72,10 +73,12 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.boolean "active", default: true, null: false
     t.string "iva_cond", default: "Responsable Monotributo", null: false
     t.bigint "company_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "companies", force: :cascade do |t|
@@ -143,7 +146,6 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.float "stock_count", default: 0.0, null: false
-    t.float "stock_limit", default: 0.0, null: false
     t.boolean "filled", default: false, null: false
     t.string "location", null: false
     t.datetime "created_at", null: false
@@ -161,7 +163,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   create_table "invoice_details", force: :cascade do |t|
     t.bigint "invoice_id"
     t.bigint "product_id"
-    t.float "quantity", default: 0.0, null: false
+    t.float "quantity", default: 1.0, null: false
     t.string "measurement_unit", null: false
     t.float "price_per_unit", default: 0.0, null: false
     t.float "bonus_percentage", default: 0.0, null: false
@@ -169,6 +171,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.float "subtotal", default: 0.0, null: false
     t.string "iva_aliquot"
     t.float "iva_amount"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
@@ -218,6 +221,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.float "net_amount"
     t.float "iva_amount"
     t.float "total"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_iva_books_on_company_id"
@@ -248,7 +252,10 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   create_table "payments", force: :cascade do |t|
     t.string "type_of_payment"
     t.float "total", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
+    t.bigint "delayed_job_id"
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
@@ -333,7 +340,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.bigint "purchase_order_id"
     t.bigint "product_id"
     t.float "price", default: 0.0, null: false
-    t.float "quantity", default: 0.0, null: false
+    t.float "quantity", default: 1.0, null: false
     t.float "total", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -342,7 +349,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.integer "number", null: false
+    t.string "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -504,6 +511,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "clients", "users"
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
