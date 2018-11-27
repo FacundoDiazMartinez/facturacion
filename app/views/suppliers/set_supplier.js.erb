@@ -1,8 +1,15 @@
 '<% if not @supplier.errors.any? %>'
 	$("#supplierModal").modal('hide');
-	$('#supplierModal').on('hidden.bs.modal', function (e) {
-	  	$("#suppliers_table").html("<%= j render '/suppliers/suppliers_table' %>");
+	
+	$("#supplierModal").on('hidden.bs.modal', function (e) {
+		if ($("#suppliers_table").length != 0){
+	  		$("#suppliers_table").html("<%= j render '/suppliers/suppliers_table' %>");
+	  	}
 	});
+
+	if ($("#purchase_invoice_supplier_id").length != 0){
+		$('#purchase_invoice_supplier_id').html(new Option("<%= @supplier.name %>","<%= @supplier.id %>") );
+	}
 '<% else %>'
 	$("#supplier_errors").html("<%= j error_explanation(@supplier) %>");
 '<% end %>'

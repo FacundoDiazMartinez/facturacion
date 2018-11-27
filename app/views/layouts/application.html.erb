@@ -22,7 +22,9 @@
         <% if alert %>
         <p class="alert alert-danger"><%= alert %></p>
         <% end %>
-        <%= yield %>
+        <div data-pjax-container>
+          <%= yield %>
+        </div>
       </div>
     </div>
   </body>

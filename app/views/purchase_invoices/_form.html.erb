@@ -17,7 +17,12 @@
 
       <div class="form-group">
         <%= form.label :supplier_id %>
-        <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control'} %>
+        <div class="input-group mb-3">
+          <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', aria:{label: "Proveedor", describedby: "add-supplier"}} %>
+          <div class="input-group-append">
+            <%= link_to icon('fas', 'plus'), new_supplier_path(), data:{remote: true, toggle: 'modal', target: '#supplierModal'}, class: 'btn btn-outline-secondary' %>
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
@@ -71,3 +76,12 @@
     <%= save_button %>
   </center>
 <% end %>
+
+<div class="modal fade bd-example-modal-lg" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="supplier">
+      </div>
+    </div>
+  </div>
+</div>

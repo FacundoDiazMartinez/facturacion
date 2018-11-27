@@ -23,12 +23,15 @@
 //= require bootstrap-toggle
 //= require z.jquery.fileupload
 //= require activestorage
+//=require jquery.pjax
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require_tree .
 //= require autocomplete-rails
 
 $(document).ready(function() {
+
+  $(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]')
 
   $('btn').on('click', function() {
     var $this = $(this);
