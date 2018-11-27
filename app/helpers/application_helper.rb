@@ -49,6 +49,10 @@ module ApplicationHelper
 		link_to "#{icon('fas', 'plus')}".html_safe, path, class: 'btn btn-success btn-floated'
 	end
 
+	def button_edit_helper path
+		link_to "#{icon('fas', 'edit')}".html_safe, path, class: 'btn btn-success btn-floated'
+	end
+
 	def button_new_modal_helper path, target
 		target ||= "myModal"
 		link_to "#{icon('fas', 'plus')}".html_safe, path, class: 'btn btn-success btn-floated', data: { toggle: 'modal', target: "##{target}" }, remote: true
@@ -94,39 +98,16 @@ module ApplicationHelper
 		end
 	end
 
-	def title icon, text, path=nil, path_text=nil
-		@icon = icon
+	def title_helper text
 		@text = text
-		@path = path
-		content_tag :div, class: 'title-container' do
+		content_tag :div, class: 'd-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3' do
 			concat(full_title)
-			concat(hr_line)
 		end
 	end
 
 	def full_title
-		content_tag :h1, class: 'd-flex mb-2' do
-			concat(left_title)
-			concat(right_title)
-		end
-
-	end
-
-	def left_title
-		content_tag :div, class: 'p-2' do
-			concat(icon('fas', 'user'))
+		content_tag :h1, class: 'h2' do
 			concat(@text)
 		end
-	end
-
-	def right_title
-		content_tag :div, class: 'ml-auto p-2' do
-			concat(link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger')
-			concat(link_to "#{icon('fas', 'plus')} #{path_text}".html_safe, @path, class: 'btn btn-primary') unless @path.nil?
-		end
-	end
-
-	def hr_line
-		content_tag :hr
 	end
 end

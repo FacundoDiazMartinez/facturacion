@@ -36,7 +36,13 @@ class User < ApplicationRecord
   	end
 
     def has_management_role?
-      true #TODO - Completar cuandoe ste listo lo de permisos
+			true
+			# if !self.role.blank?
+      #   if self.role.name == "Administrador"
+      #     return true
+      #   end
+      # end
+      # return false
     end
 
     def name
@@ -55,11 +61,11 @@ class User < ApplicationRecord
       has_management_role? ? true : read_attribute("approved")
     end
 
-    def active_for_authentication? 
-      super && approved? 
-    end 
-    
-    def inactive_message 
+    def active_for_authentication?
+      super && approved?
+    end
+
+    def inactive_message
       approved? ? super : :not_approved
     end
 

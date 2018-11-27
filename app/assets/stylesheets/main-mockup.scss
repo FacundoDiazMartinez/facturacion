@@ -5,6 +5,11 @@ $navbar-background-color: #343a40;
 $sidebar-tablet-background-color: #353a40e0;
 $sidebar-phone-background-color: #343a40;
 
+$light-dark-background: #e6e8ed;
+$light-background: #f6f6f9;
+$primary-color: #007bff;
+
+
 #sidebar-wrapper {
   padding: 0 !important;
 }
@@ -33,7 +38,7 @@ $sidebar-phone-background-color: #343a40;
 .sidebar {
   padding: 0px;
   padding-top:5px;
-  background-color: transparent;
+  background-color: #FFF;
   border: none;
   left: 0;
   top: 50px;

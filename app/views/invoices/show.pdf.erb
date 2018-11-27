@@ -1,20 +1,9 @@
-<p id="notice"><%= notice %></p>
-    <div class="container">
-      <div class="border">
-            <center>
-              <h2 class="text_size_25">ORIGINAL</h2>
-            </center>
-      </div>
-    </div>
-
-
-
-  <!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
+<!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
     <div class=" border">
       <table class="width_100">
         <tr>
           <th class="text_size_25 text_left header_width_50" style="text-align: center;"><%= @invoice.company.society_name %></th>
-          <th class="text_size_invoice_type invoice_type"><%= @invoice.available_cbte_type.first.first.last %>
+          <th class="text_size_invoice_type invoice_type"><%= Invoice.available_cbte_type(@invoice.company, @invoice.client).first.first.last %>
             <table>
               <tbody>
                 <tr>
@@ -70,7 +59,7 @@
   <!-- FIN DEL ENCABEZADO -->
 
 <!-- DATOS CLIENTE -->
-<div class="row">
+<div>
   <div class="container border">
     <table class="width_100">
     <tr>
@@ -98,7 +87,7 @@
 
 <!-- DETALLE -->
 <div class="row">
-  <div class="container">
+  <div class="container" style="height: 700px;">
     <table class="width_100">
     <tr>
       <th class="description_header">Codigo</th>
@@ -157,10 +146,10 @@
   <div class="container">
     <table class="width_100">
     <tr>
-      <td>AFIP</td>
+      <td><%= wicked_pdf_image_tag '/images/afip.png',:width => "150"%></td>
       <td><b>Comprobante Autorizado</b></td>
       <td>Pag. 1/1</td>
-      <td class="text_right"><b>CAE Num.:</b> NUMERO DE CAE</td>
+      <td class="text_right"><b>CAE N°:</b> NUMERO DE CAE</td>
     </tr>
 
     <tr>
@@ -172,4 +161,9 @@
   </table>
   </div>
 </div>
+Page <span class="page"></span> of <span class="topage"></span>
 <!-- FIN PIE DE PAGINA -->
+
+<div class="nobreak">
+
+</div>

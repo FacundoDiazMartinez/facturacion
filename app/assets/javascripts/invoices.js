@@ -1,10 +1,12 @@
+var total_venta = parseInt(0);
+var rest = parseInt(0);
 
 $( document ).ready(function() {
 	autocomplete_field();
+	if ($("#invoice_total").val() > 0) {
+		total_venta = parseInt($("#invoice_total").val());
+	}
 });
-
-var total_venta = parseInt(0);
-var rest = parseInt(0);
 
 
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){

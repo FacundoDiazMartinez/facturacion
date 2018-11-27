@@ -28,6 +28,10 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# GENA código de barras
+gem 'barby', '~> 0.6.6'
+gem 'chunky_png'
+
 #GEMA DE WICKED PDFKit
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
@@ -47,6 +51,9 @@ gem 'bootstrap-toggle-rails'
 
 #Fontawesome
 gem 'font-awesome-sass', '~> 5.3.1'
+
+#CanCanCan
+gem 'cancancan', '~> 2.0'
 
 #Carrierwave
 gem 'aws-sdk', '~> 3'
@@ -81,6 +88,9 @@ gem 'delayed_job_active_record'
 #Push notifications
 gem 'private_pub'
 gem "thin"
+
+#Consultas automaticas en AJAX
+gem 'pjax_rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

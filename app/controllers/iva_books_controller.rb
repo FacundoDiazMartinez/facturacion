@@ -4,7 +4,7 @@ class IvaBooksController < ApplicationController
   # GET /iva_books
   # GET /iva_books.json
   def index
-    @iva_books = current_user.company.iva_books.find_by_period(params[:from], params[:to]).paginate(page: params[:page], per_page: 15)
+    @iva_books = current_user.company.iva_books.find_by_period(params[:from], params[:to]).find_by_tipo(params[:iva_compras]).paginate(page: params[:page], per_page: 15)
   end
 
   def generate_pdf

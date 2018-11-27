@@ -2,7 +2,6 @@
   <% if product.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(product.errors.count, "error") %> prohibited this product from being saved:</h2>
-
       <ul>
       <% product.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -11,102 +10,105 @@
     </div>
   <% end %>
 
-  <div class="row">
-    <!-- IMAGEN DEL PRODUCTO -->
-      <div class="col-4">
-        <div class="form-group">
-          <h3><%= icon('fas', 'image') %> Imagen </h3>
-          <div class="comp_container shadow">
-            <div class="comp_container caption captionload"><img src="/images/load.gif" width="75px"></div>
-            <img class="card-img-top" src="<%= @product.photo %>" alt="Card image cap" id="image">
+  <!-- IMAGEN DEL PRODUCTO -->
+  <p class="text-muted">Selecciona una imágen para el producto</p>
+  <div class="card mb-4 card-shadow" style="width:30%;margin:auto;">
+    <div class="comp_container caption captionload">
+      <img src="/images/load.gif" width="80%">
+    </div>
+    <img class="card-img-top" src="<%= @product.photo %>" alt="Añadir foto" id="image"  width="80%">
+    <div hidden>
+      <%= f.file_field :photo, :class => 'form-control', id: 'file_input' %>
+    </div>
+  </div>
+  <!-- IMAGEN DEL PRODUCTO -->
+
+  <!-- INFORMACIÓN BÁSICA -->
+    <p class="text-muted">Completa los datos principales del producto</p>
+    <div class="card mb-4 card-shadow">
+      <div class="card-body">
+
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <%= f.label :name, "Nombre*" %>
+            <%= f.text_field :name, :class => 'form-control', required: true %>
           </div>
-          <div hidden>
-              <%= f.file_field :photo, :class => 'form-control', id: 'file_input' %>
+          <div class="form-group col-md-6">
+            <%= f.label :measurement_unit, "Unidad de medida*" %>
+            <%= f.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{ prompt: "Seleccione..."}, class: 'form-control', required: true %>
           </div>
         </div>
-      </div>
-    <!-- IMAGEN DEL PRODUCTO -->
 
-    <!-- INFORMACIÓN BÁSICA -->
-      <div class="col-8">
-        <h3><%= icon('fas', 'list') %> Información básica</h3>
-        <div class="card">
-          <div class="card-body shadow">
-
-            <div class="form-group row">
-              <%= f.label :product_category_id, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-9" id="product_category_form">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <%= f.label :product_category_id, "Categoría" %>
+            <div class="row">
+              <div class="col-sm-10" id="product_category_form">
                 <%= f.select :product_category_id, current_user.company.product_categories.all.map{|pc| [pc.name, pc.id]}, {include_blank: "Sin categoría"}, {:class => 'form-control'} %>
               </div>
-              <div class="col-sm-1">
-                <%= link_to icon('fas', 'plus'), new_product_category_path(), data:{remote: true, toggle: 'modal', target: '#product_category_modal'}, class: 'btn btn-success' %>
+              <div class="col-sm-2">
+                <%= link_to icon('fas', 'plus'), new_product_category_path(), data:{remote: true, toggle: 'modal', target: '#product_category_modal'}, class: 'btn btn-success btn-block' %>
               </div>
             </div>
-            <div class="form-group row">
-              <%= f.label :code, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.text_field :code, :class => 'form-control', placeholder: "Código de barras, código de proveedor, código propio, etc...", required: true %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= f.label :name, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.text_field :name, :class => 'form-control', placeholder: "Nombre del producto", required: true %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= f.label :measurement_unit, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control'} %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= f.label :cost_price, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.number_field :cost_price, :class => 'form-control', placeholder: "Precio de costo", required: true, step: '.01' %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= f.label :gain_margin, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.number_field :gain_margin, :class => 'form-control', placeholder: "Margen de ganancia (%)", required: true, step: '.01' %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= f.label :net_price, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.number_field :net_price, :class => 'form-control', placeholder: "Precio de venta neto", required: true, step: '.01' %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= f.label :iva_aliquot, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {}, {class: 'form-control'} %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= f.label :price, class: 'col-sm-2 col-form-label' %>
-              <div class="col-sm-10">
-                <%= f.number_field :price, :class => 'form-control', placeholder: "Precio de venta c/ I.V.A.", required: true, step: '.01' %>
-              </div>
-            </div>
-
-            <center>
-              <%= save_button %>
-            </center>
-
+          </div>
+          <div class="form-group col-md-6">
+            <%= f.label :code, "Código*" %>
+            <%= f.text_field :code, :class => 'form-control', required: true %>
           </div>
         </div>
+
       </div>
-    <!-- INFORMACIÓN BÁSICA -->
+    </div>
+  <!-- INFORMACIÓN BÁSICA -->
+
+
+  <!-- COSTOS Y GANANCIAS -->
+  <p class="text-muted">Ingresa los costos y precio del producto</p>
+  <div class="card mb-4 card-shadow">
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= f.label :cost_price, "Precio de costo*" %>
+          <%= f.number_field :cost_price, :class => 'form-control', required: true, step: '.01' %>
+        </div>
+        <div class="form-group col-md-6">
+          <%= f.label :gain_margin, "Márgen de ganancia (%)*" %>
+          <%= f.number_field :gain_margin, :class => 'form-control', required: true, step: '.01' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= f.label :net_price, "Precio neto*" %>
+          <%= f.number_field :net_price, :class => 'form-control', required: true, step: '.01' %>
+        </div>
+        <div class="form-group col-md-6">
+          <%= f.label :iva_aliquot, "Alícuota de IVA" %>
+          <%= f.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {}, {class: 'form-control'} %>
+        </div>
+      </div>
+
+      <div class="form-row justify-content-end">
+        <div class="form-group col-md-6">
+          <%= f.label :price, "Precio final*" %>
+          <%= f.number_field :price, :class => 'form-control', required: true, step: '.01' %>
+        </div>
+      </div>
+    </div>
   </div>
+  <!-- COSTOS Y GANANCIAS -->
+
+
+  <center>
+    <%= save_button %>
+  </center>
 <% end %>
 
 <div class="modal fade bd-example-modal-lg" id="product_category_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="clientModalTitle"><%= icon('far', 'plus') %> Nueva categoría</h5>
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Nueva categoría</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
