@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :roles
   namespace :invoices do
     resources :clients do
       get :autocomplete_document, on: :collection

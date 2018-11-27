@@ -1,4 +1,5 @@
 class ProductsController < ApplicationController
+  load_and_authorize_resource except: :autocomplete_product_code
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   before_action :set_s3_direct_post, only: [:new, :edit, :create, :update]
   # GET /products

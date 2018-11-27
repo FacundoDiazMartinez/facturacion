@@ -3,6 +3,8 @@ class User < ApplicationRecord
 	belongs_to :province, optional: true
 	belongs_to :locality, optional: true
 
+	has_many :user_roles
+	has_many :permissions, through: :user_roles
   has_many :arrival_notes
   has_many :purchase_invoices
   has_many :pull_notifications, foreign_key: "receiver_id", class_name: "Notification"
@@ -41,14 +43,16 @@ class User < ApplicationRecord
   	end
 
     def has_management_role?
-			true
-			# if !self.role.blank?
-      #   if self.role.name == "Administrador"
-      #     return true
-      #   end
-      # end
-      # return false
+			return self.admin
     end
+
+		def role_label
+			if self.has_management_role?
+				"Administrador"
+			else
+				self.roles.nil? ? "Sin acceso" : self.roles.first.name
+			end
+		end
 
     def name
       "#{last_name}, #{first_name}"

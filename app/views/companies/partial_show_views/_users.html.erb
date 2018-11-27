@@ -8,7 +8,7 @@
       <div class="card-body">
         <h6 class="card-title"><%= user.first_name %>, <%= user.last_name %></h6>
         <h6><small><%= user.email %></small></h6>
-        <h6><small>Sin acceso al sistema</small></h6>
+        <h6><small><%= user.role_label %></small></h6>
       </div>
       <% end %>
     </div>

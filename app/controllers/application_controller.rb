@@ -22,6 +22,11 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :dni, :birthday, :address, :phone, :mobile_phone, :province_id, :locality_id, :postal_code])
   end
 
+  rescue_from CanCan::AccessDenied do |exception|
+    flash[:danger] = "Acceso denegado. No posee los permisos para realizar esta acción."
+    redirect_to user_path(current_user)
+  end
+
   def set_s3_direct_post
     @s3_direct_post = S3_BUCKET.presigned_post(key: "uploads/#{SecureRandom.uuid}/${filename}", success_action_status: '201', acl: 'public-read')
   end

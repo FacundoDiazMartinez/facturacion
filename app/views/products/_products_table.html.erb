@@ -1,26 +1,25 @@
 <% if not @products.empty? %>
-<div class="row d-flex align-items-stretch">
-	<% @products.each do |product|%>
-	<div class="col-xs-12 col-md-6 col-lg-3 mb-4">
-		<div class="card card-shadow" style="height:100%;">
-			<%= link_to product_path(product.id) do %>
-			<div class="card-div-img-top" style="background: url('<%= product.photo %>')">
+	<div class="row d-flex align-items-stretch">
+		<% @products.each do |product|%>
+		<div class="col-xs-12 col-md-6 col-lg-4 mb-4">
+			<div class="card card-shadow" style="height:100%;">
+				<%= link_to product_path(product.id) do %>
+				<div class="card-div-img-top" style="background: url('<%= product.photo %>')">
+				</div>
+				<div class="card-body">
+					<center>
+						<h5 class="card-title"><%= product.name %></h5>
+						<p class="card-text text-muted"><%= product.category_name %></p>
+						<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(product.price) %></span></strong></p>
+					</center>
+				</div>
+				<% end -%>
 			</div>
-			<div class="card-body">
-				<center>
-					<h5 class="card-title"><%= product.name %></h5>
-					<p class="card-text text-muted"><%= product.category_name %></p>
-					<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(product.price) %></span></strong></p>
-				</center>
-			</div>
-			<% end -%>
 		</div>
+
+		<% end %>
 	</div>
-
-	<% end %>
-</div>
-<%= paginate @products %>
-
+	<%= paginate @products %>
 
 <% else %>
   <center><h1>¡Todavia no cargaste ningún producto!</h1></center>

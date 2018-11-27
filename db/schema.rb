@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_21_194358) do
+ActiveRecord::Schema.define(version: 2018_11_27_150729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -151,6 +151,13 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.index ["company_id"], name: "index_depots_on_company_id"
   end
 
+  create_table "friendly_names", force: :cascade do |t|
+    t.string "name"
+    t.string "subject_class"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "invoice_details", force: :cascade do |t|
     t.bigint "invoice_id"
     t.bigint "product_id"
@@ -245,6 +252,15 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+  end
+
+  create_table "permissions", force: :cascade do |t|
+    t.string "action_name"
+    t.text "description"
+    t.bigint "friendly_name_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["friendly_name_id"], name: "index_permissions_on_friendly_name_id"
   end
 
   create_table "product_categories", force: :cascade do |t|
@@ -359,6 +375,23 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
   end
 
+  create_table "role_permissions", force: :cascade do |t|
+    t.bigint "role_id"
+    t.bigint "permission_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["permission_id"], name: "index_role_permissions_on_permission_id"
+    t.index ["role_id"], name: "index_role_permissions_on_role_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.bigint "company_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_roles_on_company_id"
+  end
+
   create_table "sale_points", force: :cascade do |t|
     t.bigint "company_id"
     t.string "name"
@@ -403,6 +436,15 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_activities_on_user_id"
+  end
+
+  create_table "user_roles", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_user_roles_on_role_id"
+    t.index ["user_id"], name: "index_user_roles_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -479,6 +521,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "invoices"
+  add_foreign_key "permissions", "friendly_names"
   add_foreign_key "product_categories", "companies"
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
@@ -494,9 +537,14 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   add_foreign_key "purchase_orders", "users"
   add_foreign_key "receipts", "companies"
   add_foreign_key "receipts", "invoices"
+  add_foreign_key "role_permissions", "permissions"
+  add_foreign_key "role_permissions", "roles"
+  add_foreign_key "roles", "companies"
   add_foreign_key "sale_points", "companies"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"
   add_foreign_key "user_activities", "users"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
 end
