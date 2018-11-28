@@ -48,14 +48,11 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.bigint "company_id"
     t.bigint "purchase_order_id"
     t.bigint "user_id"
-    t.bigint "depot_id"
-    t.integer "number", null: false
-    t.boolean "active", default: true, null: false
+    t.boolean "active", null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_arrival_notes_on_company_id"
-    t.index ["depot_id"], name: "index_arrival_notes_on_depot_id"
     t.index ["purchase_order_id"], name: "index_arrival_notes_on_purchase_order_id"
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
   end
@@ -127,7 +124,6 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.bigint "invoice_id"
     t.bigint "user_id"
     t.bigint "client_id"
-    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -167,7 +163,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.float "bonus_percentage", default: 0.0, null: false
     t.float "bonus_amount", default: 0.0, null: false
     t.float "subtotal", default: 0.0, null: false
-    t.string "iva_aliquot"
+    t.integer "iva_aliquot"
     t.float "iva_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -247,7 +243,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
 
   create_table "payments", force: :cascade do |t|
     t.string "type_of_payment"
-    t.float "total", default: 0.0, null: false
+    t.float "total"
     t.bigint "invoice_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -255,12 +251,12 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   end
 
   create_table "permissions", force: :cascade do |t|
+    t.string "subject_class"
     t.string "action_name"
     t.text "description"
-    t.bigint "friendly_name_id"
+    t.string "friendly_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["friendly_name_id"], name: "index_permissions_on_friendly_name_id"
   end
 
   create_table "product_categories", force: :cascade do |t|
@@ -293,7 +289,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.float "gain_margin"
     t.float "net_price"
     t.float "price"
-    t.string "iva_aliquot"
+    t.float "iva_aliquot"
     t.string "photo"
     t.string "measurement_unit"
     t.datetime "created_at", null: false
@@ -342,7 +338,6 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.integer "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -385,11 +380,10 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   end
 
   create_table "roles", force: :cascade do |t|
-    t.bigint "company_id"
     t.string "name"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["company_id"], name: "index_roles_on_company_id"
   end
 
   create_table "sale_points", force: :cascade do |t|
@@ -500,7 +494,6 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   add_foreign_key "arrival_note_details", "arrival_notes"
   add_foreign_key "arrival_note_details", "products"
   add_foreign_key "arrival_notes", "companies"
-  add_foreign_key "arrival_notes", "depots"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"
@@ -521,7 +514,6 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "invoices"
-  add_foreign_key "permissions", "friendly_names"
   add_foreign_key "product_categories", "companies"
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
@@ -539,7 +531,6 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   add_foreign_key "receipts", "invoices"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
-  add_foreign_key "roles", "companies"
   add_foreign_key "sale_points", "companies"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
