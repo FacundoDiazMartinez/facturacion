@@ -25,7 +25,7 @@ class SuppliersController < ApplicationController
   # POST /suppliers.json
   def create
     @supplier = current_user.company.suppliers.new(supplier_params)
-
+    @supplier.current_user = current_user
     respond_to do |format|
       if @supplier.save
         set_suppliers
@@ -42,6 +42,7 @@ class SuppliersController < ApplicationController
   # PATCH/PUT /suppliers/1
   # PATCH/PUT /suppliers/1.json
   def update
+    @supplier.current_user = current_user
     respond_to do |format|
       if @supplier.update(supplier_params)
         set_suppliers

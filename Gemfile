@@ -92,6 +92,17 @@ gem "thin"
 #Consultas automaticas en AJAX
 gem 'pjax_rails'
 
+#Importar en una sola consulta a la DB
+gem 'activerecord-import'
+
+#Gemas para importar o trabajar con excel
+gem 'rubyzip'
+gem 'axlsx'
+gem 'axlsx_rails'
+gem 'roo'
+gem 'zip-zip' 
+gem 'roo-xls'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -104,6 +115,9 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+
+  #Performance
+  gem 'ruby-prof'
 end
 
 group :test do

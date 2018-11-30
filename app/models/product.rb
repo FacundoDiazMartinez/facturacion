@@ -1,6 +1,8 @@
 class Product < ApplicationRecord
   	belongs_to :product_category, optional: true
   	belongs_to :company
+  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
+  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User"
   	has_many   :stocks
   	has_many   :depots, through: :stocks
   	has_many   :invoice_details
@@ -12,14 +14,19 @@ class Product < ApplicationRecord
   	has_many   :product_price_histories
 
     default_scope { where(active: true) }
+    scope :active, -> { where(active: true) }
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
+  	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
+  	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
   	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
   	validates_presence_of :name, message: "El nombre del producto no puede estar en blanco."
+  	validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
 
-  	after_create :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
+  	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
+  	after_create :create_price_history
   	
 
   	MEASUREMENT_UNITS = {
@@ -71,6 +78,40 @@ class Product < ApplicationRecord
 	}
 	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}
 
+	#FILTROS DE BUSQUEDA
+		def self.search_by_name name 
+			if not name.blank?
+				where("products.name ILIKE ? ", "%#{name}%")
+			else
+				all 
+			end
+		end
+
+		def self.search_by_code code 
+			if not code.blank?
+				where("products.code ILIKE ? ", "%#{code}%")
+			else
+				all 
+			end
+		end
+
+		def self.search_by_category category 
+			if not category.blank?
+				joins(:product_category).where("product_categories.name ILIKE ? ", "%#{category}%")
+			else
+				all 
+			end
+		end
+
+		def self.search_with_stock stock 
+			if stock == "on"
+				joins(:stocks).where("stocks.state = 'Disponible'")
+			else
+				all 
+			end
+		end
+	#FILTROS DE BUSQUEDA
+
   	#ATRIBUTOS
 	  	def full_name
 	  		"#{code} - #{name}"
@@ -95,7 +136,7 @@ class Product < ApplicationRecord
 
 	#PROCESOS
 		def self.create params
-			product = Product.where(company_id: company_id, code: code).first_or_initialize
+			product = Product.where(company_id: company_id, code: code, name: name).first_or_initialize
 			if produc.new_record?
 				super
 			else
@@ -106,7 +147,11 @@ class Product < ApplicationRecord
 		def add_price_history
 			old_price = saved_changes[:price].first.to_f
 			percentage = (price * 100 / old_price).to_f.round(2) - 100
-			self.product_price_histories.create(price: price, percentage: percentage)
+			self.product_price_histories.create(price: price, percentage: percentage, created_by: created_by)
+		end
+
+		def create_price_history
+			self.product_price_histories.create(price: price, percentage: 0, created_by: created_by)
 		end
 
 		def add_stock attrs={}
@@ -118,6 +163,72 @@ class Product < ApplicationRecord
 	    def destroy
 	      update_column(:active,false)
 	    end
+
+	    #IMPORTAR EXCEL o CSV
+	    def self.save_excel file, current_user
+	    	#TODO Añadir created_by y updated_by
+	      	spreadsheet = open_spreadsheet(file)
+        	header = self.permited_params
+        	categories = current_user.company.product_categories.map{|pc| {pc.name => pc.id}}.first || {} 
+        	delay.load_products(spreadsheet, header, categories, current_user)
+		end
+
+		def self.load_products spreadsheet, header, categories, current_user
+			products 	= []
+	    	invalid 	= []
+			(2..spreadsheet.last_row).each do |i|
+          		row = Hash[[header, spreadsheet.row(i)].transpose]
+          		product = new
+          		if not categories["#{row[:product_category_name]}"].nil?
+          		 	product.product_category.build(name: row[:product_category_name], company_id: current_user.company_id)
+          		else
+          		 	product.product_category_id = categories["#{row[:product_category_name]}"]
+          		end
+          		product.attributes = row.reject{|e| e == :product_category_name}.to_hash
+          		product.company_id = current_user.company_id
+          		product.created_by = current_user.id
+          		product.updated_by = current_user.id
+          		if product.valid?
+          			product.save!
+          		else
+          			pp product.errors
+          			invalid << i
+          		end
+        	end
+        	return_process_result(invalid, current_user)
+		end
+
+		def self.return_process_result invalid, user
+			if invalid.any?
+        		{
+        			'result' => false,
+        			'message' => 'Uno o mas productos no pudieron importarse.',
+        			'product_with_errors' => invalid
+        		}
+        		Notification.create_for_failed_import invalid, user
+        	else
+        		{
+        			'result' => true,
+        			'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
+        			'product_with_errors' => []
+        		}
+        		Notification.create_for_success_import user
+        	end
+		end
+
+		def self.permited_params
+		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price]
+		end
+
+		def self.open_spreadsheet(file)
+		    case File.extname(file.original_filename)
+		    when ".csv" then Roo::Csv.new(file.path)
+		    when ".xls" then Roo::Spreadsheet.open(file.path, extension: :xlsx)
+		    when ".xlsx" then Roo::Excelx.new(file.path)
+		    else raise "Unknown file type: #{file.original_filename}"
+		    end
+		end
+		#IMPORTAR EXCEL o CSV
 	    
 	#PROCESOS
 end

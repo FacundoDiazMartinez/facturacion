@@ -7,6 +7,7 @@ class PurchaseInvoice < ApplicationRecord
   has_many   :iva_books
 
   after_create :create_iva_book
+  after_create :set_create_activity
 
   STATES=["Pendiente", "Falta remito", "Finalizado"]
 
@@ -40,6 +41,10 @@ class PurchaseInvoice < ApplicationRecord
   #PROCESOS
     def create_iva_book
       IvaBook.add_from_purchase(self)    
+    end
+
+    def set_create_activity
+      UserActivity.create_for_purchase_invoice self
     end
   #PROCESOS
 end
