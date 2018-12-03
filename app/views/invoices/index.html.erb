@@ -8,35 +8,35 @@
     <div class="card card-fluid">
       <div class="card-header">
         <%= form_tag invoices_path(), {class: 'form-inline', id: 'search_form'} do %>
-        <!-- BUSCAR POR CLIENTE -->
-        <%= label_tag :client_name, "Cliente", class: 'sr-only' %>
-        <div class="input-group col">
-          <div class="input-group-prepend">
-            <div class="input-group-text"><%= icon('fas', 'user') %></div>
+          <!-- BUSCAR POR CLIENTE -->
+          <%= label_tag :client_name, "Cliente", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= text_field_tag :client_name, params[:client_name], class: 'form-control', placeholder: 'Buscar por cliente', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <%= text_field_tag :client_name, params[:client_name], class: 'form-control', placeholder: 'Buscar por cliente', onkeyup: 'remoteSubmit("#search_form")' %>
-        </div>
-        <!-- BUSCAR POR CLIENTE -->
+          <!-- BUSCAR POR CLIENTE -->
 
-        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-        <%= label_tag :cbte_tipo, "Tipo", class: 'sr-only' %>
-        <div class="input-group col">
-          <div class="input-group-prepend">
-            <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= label_tag :cbte_tipo, "Tipo", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+            </div>
+            <%= select_tag :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, params[:cbte_tipo]), {prompt: 'Buscar por tipo...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
-          <%= select_tag :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, params[:cbte_tipo]), {prompt: 'Buscar por tipo...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
-        </div>
-        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
 
-        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-        <%= label_tag :state, "Estado", class: 'sr-only' %>
-        <div class="input-group col">
-          <div class="input-group-prepend">
-            <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= label_tag :state, "Estado", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+            </div>
+            <%= select_tag :state, options_for_select(Invoice::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
-          <%= select_tag :state, options_for_select(Invoice::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
-        </div>
-        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
         <% end %>
       </div>
       <div class="card-body">

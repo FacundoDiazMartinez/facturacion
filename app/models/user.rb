@@ -21,6 +21,33 @@ class User < ApplicationRecord
   after_create :send_admin_mail, if: Proc.new{ |u| !u.company_id.nil?}
   after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && !company_id.nil?}
 
+  #FILTROS DE BUSQUEDA
+
+    def self.search_by_name name
+      if !name.nil?
+        where("LOWER(first_name ||' ' || last_name) LIKE LOWER(?)", "%#{name}%")
+      else
+        all 
+      end
+    end
+
+    def self.search_by_document document_number
+      if !document_number.blank?
+        where("dni::text ILIKE ?", "#{document_number}%")
+      else
+        all 
+      end
+    end
+
+    def self.search_by_state state
+      if state == "Aprobados"
+        where("approved = 'true'")
+      else
+        all 
+      end
+    end
+  #FILTROS DE BUSQUEDA
+
     def set_approved_activity
      UserActivity.create_for_approved_user(self)
     end

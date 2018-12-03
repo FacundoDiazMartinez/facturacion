@@ -64,7 +64,7 @@ class PurchaseOrder < ApplicationRecord
       else
         all
       end
-   end
+    end
 
     def self.search_by_state state
       if not state.blank?

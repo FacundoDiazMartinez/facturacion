@@ -5,7 +5,27 @@
   <div class="page-section">
     <div class="card">
       <div class="card-header">
-        FILTROS
+        <%= form_tag suppliers_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <!-- BUSCAR POR CLIENTE -->
+          <%= label_tag :name, "Nombre", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR CLIENTE -->
+
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= label_tag :document_number, "Documento", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+            </div>
+            <%= text_field_tag :document_number, params[:document_number], class: 'form-control', placeholder: 'Buscar por documento', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+        <% end %>
       </div>
       <div id="suppliers_table" class="card-body">
         <%= render 'suppliers_table' %>

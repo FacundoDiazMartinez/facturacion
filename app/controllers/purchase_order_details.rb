@@ -1,4 +1,4 @@
-class PurchaseOrderDetailsController < PurchaseOrderController
+class PurchaseOrderDetailsController < PurchaseOrdersController
 	before_action :set_purchase_order_detail, only: [:edit, :update]
 
 
