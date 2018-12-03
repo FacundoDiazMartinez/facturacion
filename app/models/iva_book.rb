@@ -25,6 +25,18 @@ class IvaBook < ApplicationRecord
   			all 
   		end
   	end
+
+    def self.find_by_tipo iva_compra
+      if not iva_compra.blank?
+        if iva_compra
+          where(tipo: "Crédito Fiscal")
+        else
+          where(tipo: "Débito Fiscal")
+        end
+      else
+        all
+      end
+    end
   #FILTROS DE BUSQUEDA
 
   #FUNCIONES

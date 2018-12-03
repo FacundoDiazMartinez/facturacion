@@ -9,6 +9,8 @@ class ArrivalNote < ApplicationRecord
 
   before_create :set_number
 
+  before_validation :check_details
+
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
 
@@ -44,4 +46,10 @@ class ArrivalNote < ApplicationRecord
       self.number = last_an.nil? ? 1 : (last_an.number.to_i + 1) 
     end
   #PROCESOS
+
+  #FUNCIONES
+    def check_details
+      errors.add(:details, "No puede guardar un remito vacio.") unless arrival_note_details.count > 0
+    end
+  #FUNCIONES
 end

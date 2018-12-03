@@ -2,10 +2,9 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th colspan="2">Usuario</th>
+        <th colspan="2">Nombre</th>
         <th>D.N.I.</th>
         <th>Nacimiento</th>
-        <th>Celular</th>
         <th>Estado</th>
         <th colspan="2"></th>
       </tr>
@@ -18,7 +17,6 @@
         <td><%= user.name %></td>
         <td><%= user.dni %></td>
         <td><%= l(user.birthday.to_date) %></td>
-        <td><%= user.mobile_phone %></td>
         <td><%= change_state_to_user(user) %></td>
         <td>
           <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_21_194358) do
+ActiveRecord::Schema.define(version: 2018_11_29_150855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,10 +73,12 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.boolean "active", default: true, null: false
     t.string "iva_cond", default: "Responsable Monotributo", null: false
     t.bigint "company_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "companies", force: :cascade do |t|
@@ -144,12 +146,18 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.float "stock_count", default: 0.0, null: false
-    t.float "stock_limit", default: 0.0, null: false
     t.boolean "filled", default: false, null: false
     t.string "location", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_depots_on_company_id"
+  end
+
+  create_table "friendly_names", force: :cascade do |t|
+    t.string "name"
+    t.string "subject_class"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "invoice_details", force: :cascade do |t|
@@ -254,12 +262,12 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   end
 
   create_table "permissions", force: :cascade do |t|
-    t.string "subject_class"
     t.string "action_name"
     t.text "description"
-    t.string "friendly_name"
+    t.bigint "friendly_name_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["friendly_name_id"], name: "index_permissions_on_friendly_name_id"
   end
 
   create_table "product_categories", force: :cascade do |t|
@@ -279,6 +287,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.float "percentage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by"
     t.index ["product_id"], name: "index_product_price_histories_on_product_id"
   end
 
@@ -297,6 +306,8 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.string "measurement_unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by"
+    t.bigint "updated_by"
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
   end
@@ -384,10 +395,11 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   end
 
   create_table "roles", force: :cascade do |t|
+    t.bigint "company_id"
     t.string "name"
-    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_roles_on_company_id"
   end
 
   create_table "sale_points", force: :cascade do |t|
@@ -436,6 +448,15 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.index ["user_id"], name: "index_user_activities_on_user_id"
   end
 
+  create_table "user_roles", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "role_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["role_id"], name: "index_user_roles_on_role_id"
+    t.index ["user_id"], name: "index_user_roles_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -447,7 +468,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.integer "company_id"
+    t.bigint "company_id"
     t.string "first_name"
     t.string "last_name"
     t.integer "dni"
@@ -474,7 +495,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
     t.datetime "updated_at", null: false
     t.bigint "province_id"
     t.bigint "locality_id"
-    t.index ["company_id"], name: "index_users_on_company_id", unique: true
+    t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["locality_id"], name: "index_users_on_locality_id"
@@ -493,6 +514,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "clients", "users"
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
@@ -510,6 +532,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "invoices"
+  add_foreign_key "permissions", "friendly_names"
   add_foreign_key "product_categories", "companies"
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
@@ -527,9 +550,13 @@ ActiveRecord::Schema.define(version: 2018_11_21_194358) do
   add_foreign_key "receipts", "invoices"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
+  add_foreign_key "roles", "companies"
   add_foreign_key "sale_points", "companies"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"
   add_foreign_key "user_activities", "users"
+  add_foreign_key "user_roles", "roles"
+  add_foreign_key "user_roles", "users"
+  add_foreign_key "users", "companies"
 end

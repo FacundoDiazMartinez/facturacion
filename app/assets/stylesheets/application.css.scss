@@ -39,11 +39,24 @@
 	font-family: "Montserrat Regular";
 }
 
+.custom-control-label{
+  font-size: 14px;
+  font-weight: normal;
+}
+
 label{
 	font-weight: bold;
 }
 .close{
   font-size: 1rem;
+}
+
+.navbar-nav > li > a{
+  color:white;
+}
+
+.navbar-nav > li{
+  color:white;
 }
 
 .nav-fill{
@@ -193,7 +206,7 @@ img#image{
 }
 
 a:visited {
-  color: white;
+  color: black;
 }
 
 a.nav-link:visited{

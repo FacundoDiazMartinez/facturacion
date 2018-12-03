@@ -1,15 +1,17 @@
-<div class="container-fluid">
-  <div class="col-md">
-    <% @users.each do |user| %>
-    <div class="card" style="width:18rem;">
-      <img class="card-img-top" src="<%= user.avatar %>" alt="<%= user.first_name %>">
+<div class="row d-flex align-items-stretch">
+  <% @users.each do |user| %>
+  <div class="col-xs-12 col-md-6 col-lg-3 mb-4">
+    <div class="card card-shadow" style="height:100%;">
+      <%= link_to user_path(user) do %>
+      <div class="card-div-img-top" style="background: url('<%= user.avatar %>')">
+			</div>
       <div class="card-body">
         <h6 class="card-title"><%= user.first_name %>, <%= user.last_name %></h6>
         <h6><small><%= user.email %></small></h6>
-        <h6><small>Sin acceso al sistema</small></h6>
-        <td><%= link_to icon('fas', 'edit'), edit_user_registration_path %></td>
+        <h6><small><%= user.role_label %></small></h6>
       </div>
+      <% end %>
     </div>
-    <% end %>
   </div>
+  <% end %>
 </div>

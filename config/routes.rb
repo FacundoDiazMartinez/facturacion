@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :roles
   namespace :invoices do
     resources :clients do
       get :autocomplete_document, on: :collection
@@ -30,7 +31,7 @@ Rails.application.routes.draw do
   resources :products do
     get :autocomplete_product_code, :on => :collection
     get :export, on: :collection
-    get :import, on: :collection
+    post :import, on: :collection
   end
 
   resources :users, only: [:index, :show] do

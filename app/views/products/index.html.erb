@@ -1,69 +1,95 @@
-<h1 class="d-flex mb-2">
-  <div class="p-2">
-    <%= icon('fas', 'cubes') %>
-    Productos
-  </div>
-  <div class="ml-auto p-2">
-    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
-    <%= link_to "#{icon('fas', 'plus')} Agregar producto".html_safe, new_product_path(), class: 'btn btn-primary ' %>
-  </div>
-</h1>
-<!-- Buscador de productos -->
-  <%= form_tag products_path(), {class: 'form-inline'} do %>
-
-    <!-- BUSCAR POR NOMBRE -->
-      <%= label_tag :product_name, "Nombre", class: 'sr-only' %>
-      <div class="input-group mb-2 mr-sm-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
-        </div>
-        <%= text_field_tag :product_name, params[:product_name], class: 'form-control', placeholder: 'Buscar por nombre' %>
+<div class="p-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+    <h1 class="h2">Productos</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group mr-2">
+        <!-- Importar y exportar productos -->
+          <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(), class: 'btn btn-sm btn-outline-secondary', title: 'Exportar productos a una hoja de cálculo' %>
+          <%= link_to "#{icon('fas','upload')} Importar".html_safe, "#", class: 'btn btn-sm btn-outline-secondary', title: 'Importar productos desde una hoja de cálculo', data:{toggle: 'modal', target: '#importModal'} %>
+        <!-- Importar y exportar productos -->
       </div>
-    <!-- BUSCAR POR NOMBRE -->
-
-    <!-- BUSCAR POR CÓDIGO -->
-      <%= label_tag :product_code, "Código", class: 'sr-only' %>
-      <div class="input-group mb-2 mr-sm-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
-        </div>
-        <%= text_field_tag :product_code, params[:product_code], class: 'form-control', placeholder: 'Buscar por código' %>
-      </div>
-    <!-- BUSCAR POR CÓDIGO -->
-
-    <!-- BUSCAR POR CATEGORÍA -->
-      <%= label_tag :product_category, "Categoría", class: 'sr-only' %>
-      <div class="input-group mb-2 mr-sm-2">
-        <div class="input-group-prepend">
-          <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
-        </div>
-        <%= text_field_tag :product_category, params[:product_category], class: 'form-control', placeholder: 'Buscar por categoría' %>
-      </div>
-    <!-- BUSCAR POR CATEGORÍA -->
-  <% end %>
-<!-- Buscador de productos -->
-
-
-
-<%= form_tag products_path, id:'onlystock', remote: true do %>
-  <label>
-    <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'myModal("#onlystock")'} %> 
-    Mostrar solo Productos con stock disponible
-  </label>
-<% end %>
-
-<!-- Importar y exportar productos -->
-  <%= link_to "#{icon('fas', 'file-excel')} Exportar productos".html_safe, export_products_path(format: :xlsx) %> |
-  <%= link_to "#{icon('far', 'file-excel')} Importar productos".html_safe, import_products_path(format: :xlsx) %>
-<!-- Importar y exportar productos -->
-<hr>
-<!-- Tabla de Producto -->
-  <div id="products_table">
-    <%= render 'products_table' %>
+    </div>
   </div>
-<!-- Tabla de Producto -->
 
-<% if @products.empty? %>
-  <center><h1>¡Todavia no cargaste ningún producto!</h1></center>
-  <center><%= link_to "#{icon('fas', 'plus')} Agregar producto".html_safe, new_product_path, class: 'btn btn-primary' %></center>
-<% end %>
+
+  <%= button_new_helper(new_product_path()) %>
+
+  <div class="page-section">
+    <div class="card card-fluid">
+      <div class="card-header">
+        <!-- Buscador de productos -->
+          <%= form_tag products_path(), {class: 'form-inline', id: 'search_form'} do %>
+              <!-- BUSCAR POR NOMBRE -->
+              <%= label_tag :name, "Nombre", class: 'sr-only' %>
+              <div class="input-group col">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
+                </div>
+                <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+              </div>
+              <!-- BUSCAR POR NOMBRE -->
+
+              <!-- BUSCAR POR CÓDIGO -->
+              <%= label_tag :code, "Código", class: 'sr-only' %>
+              <div class="input-group col">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
+                </div>
+                <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form")' %>
+              </div>
+              <!-- BUSCAR POR CÓDIGO -->
+
+              <!-- BUSCAR POR CATEGORÍA -->
+              <%= label_tag :category, "Categoría", class: 'sr-only' %>
+              <div class="input-group col">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
+                </div>
+                <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
+              </div>
+            <!-- BUSCAR POR CATEGORÍA -->
+
+            <!-- BUSCAR POR STOCK -->
+            <label>
+              <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'remoteSubmit("#search_form")'} %>
+              Sólo con disponibilidad en inventario
+            </label>
+            <!-- BUSCAR POR STOCK -->
+          <% end %>
+        <!-- Buscador de productos -->
+      </div>
+      <div class="card-body">
+        <!-- Tabla de Producto -->
+          <div id="products_table">
+            <%= render 'products_table' %>
+          </div>
+        <!-- Tabla de Producto -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Importar productos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_tag import_products_path(), multipart: true  do %>
+        <div class="modal-body">
+          
+            <%= label_tag :file, "Seleccione archivo excel" %>
+            <%= file_field_tag :file , :class => 'form-control'%>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <%= save_button %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

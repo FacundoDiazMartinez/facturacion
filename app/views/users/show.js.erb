@@ -3,3 +3,7 @@
 <% else %>
   $('#show_section').html('<%= j render "/companies/partial_show_views/info" %>')
 <% end %>
+
+<% if params[:user_view] == "activities" && params[:page] %>
+	$('#show_section').html('<%= j render "/users/partial_show_views/activities" %>');
+<% end %>

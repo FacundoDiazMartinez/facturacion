@@ -1,26 +1,29 @@
-<table class="table table-stripped">
-  <thead>
-    <tr>
-      <th>Nombre</th>
-      <th>Documento</th>
-      <th>Teléfono</th>
-      <th>E-mail</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
+<div class="table-responsive">
+  <table class="table table-stripped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Documento</th>
+        <th>Teléfono</th>
+        <th>E-mail</th>
+        <th></th>
+      </tr>
+    </thead>
 
-  <tbody>
-    <% @suppliers.each do |supplier| %>
+    <tbody>
+      <% @suppliers.each do |supplier| %>
       <tr>
         <td><%= supplier.name %></td>
         <td><%= supplier.full_document %></td>
         <td><%= supplier.phone %></td>
         <td><%= supplier.email %></td>
-        <td><%= link_to icon('fas', 'edit'), edit_supplier_path(supplier), data: {remote: true, toggle: 'modal', target: '#supplierModal'} %></td>
-        <td><%= link_to icon('fas', 'trash'), supplier, method: :delete, data: { confirm: '¿Estás seguro?' } %></td>
+        <td class="text-right">
+        <%= link_to icon('fas', 'edit'), edit_supplier_path(supplier), data: { toggle: 'modal', target: '#supplierModal'}, remote: true, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+        <%= link_to icon('fas', 'trash'), supplier, method: :delete, data: { confirm: '¿Estás seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+      <% end %>
+    </tbody>
+  </table>
 
-<%= paginate @suppliers %>
+  <%= paginate @suppliers %>
+</div>

@@ -1,50 +1,47 @@
-<h1 class="d-flex mb-2">
-  <div class="p-2">
-    <%= icon('fas', 'shopping-cart') %>
-    Comprobantes de compras
-  </div>
-  <div class="ml-auto p-2">
-    <%= link_to "#{icon('fas', 'chevron-left')} Volver".html_safe, :back, class: 'btn btn-danger' %>
-    <%= link_to "#{icon('fas', 'plus')} Registrar comprobante".html_safe, new_purchase_invoice_path(), class: 'btn btn-primary ' %>
-  </div>
-</h1>
+<div class="p-4">
+  <%= title_helper 'Comprobantes de Compras' %>
+  <%= button_new_helper new_purchase_invoice_path %>
 
-<hr>
+  <div class="page-section">
+    <div class="card">
+      <div class="card-header">
+        <%= form_tag purchase_invoices_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <!-- BUSCAR POR PROVEEDOR -->
+          <%= label_tag :supplier_name, "Proveedor", class: 'sr-only' %>
+          <div class="input-group mb-2 col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'plane') %></div>
+            </div>
+            <%= text_field_tag :supplier_name, params[:supplier_name], class: 'form-control', placeholder: 'Buscar por proveedor', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR PROVEEDOR -->
 
-<div class="row">
-  <%= form_tag purchase_invoices_path(), {class: 'form-inline', id: 'search_form'} do %>
-    <!-- BUSCAR POR PROVEEDOR -->
-    <%= label_tag :supplier_name, "Proveedor", class: 'sr-only' %>
-    <div class="input-group mb-2 mr-sm-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text"><%= icon('fas', 'plane') %></div>
+          <!-- BUSCAR POR USUARIO -->
+          <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
+          <div class="input-group mb-2 col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR USUARIO -->
+
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= label_tag :state, "Estado", class: 'sr-only' %>
+          <div class="input-group mb-2 col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+            </div>
+            <%= select_tag :state, options_for_select(PurchaseOrder::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          </div>
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <% end %>
       </div>
-      <%= text_field_tag :supplier_name, params[:supplier_name], class: 'form-control', placeholder: 'Buscar por proveedor', onkeyup: 'remoteSubmit("#search_form")' %>
-    </div>
-    <!-- BUSCAR POR PROVEEDOR -->
 
-    <!-- BUSCAR POR USUARIO -->
-    <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
-    <div class="input-group mb-2 mr-sm-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text"><%= icon('fas', 'user') %></div>
+      <div id="purchase_invoices_table" class="card-body">
+        <%= render 'purchase_invoices_table' %>
       </div>
-      <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
     </div>
-    <!-- BUSCAR POR USUARIO -->
-
-    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-    <%= label_tag :state, "Estado", class: 'sr-only' %>
-    <div class="input-group mb-2 mr-sm-2">
-      <div class="input-group-prepend">
-        <div class="input-group-text"><%= icon('far', 'check-square') %></div>
-      </div>
-      <%= select_tag :state, options_for_select(PurchaseOrder::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
-    </div>
-    <!-- BUSCAR POR TIPO DE COMPROBANTE -->
   </div>
-<% end %>
 
-<div class="row" id="purchase_invoices_table">
-  <%= render 'purchase_invoices_table' %>
 </div>

@@ -1,8 +1,8 @@
 <div class="p-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-    <h1 class="h2">Ventas Registradas</h1>
+  <%= title_helper 'Ventas Registradas' %>
+  <% if can? :create, Invoice %>
     <%= button_new_helper(new_invoice_path()) %>
-  </div>
+  <% end %>
 
   <div class="page-section">
     <div class="card card-fluid">

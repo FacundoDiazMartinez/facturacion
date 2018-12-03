@@ -23,12 +23,15 @@
 //= require bootstrap-toggle
 //= require z.jquery.fileupload
 //= require activestorage
+//= require jquery.pjax
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require_tree .
 //= require autocomplete-rails
 
 $(document).ready(function() {
+
+  $(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]');
 
   $('btn').on('click', function() {
     var $this = $(this);
@@ -47,7 +50,9 @@ $(document).ready(function() {
   })
 
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+
   $('.toogle').bootstrapToggle();
+
   $('.datepicker').datepicker({
       language: "es",
       dateFormat: "dd/mm/yyyy",
@@ -59,6 +64,19 @@ $(document).ready(function() {
 function remoteSubmit(form_id){
   form = $(form_id);
   $.get(form.attr("action"), form.serialize(), null, "script");
+};
+
+function reloadLocality(province, dropdown){
+  $.ajax({
+      url: '/city/'+province+'/get_localities',
+      beforeSend: function() {
+         $("#"+dropdown).closest('.with-spinner').find('label').append(" <span class='fa fa-spinner fa-spin' id='spinner_icon' ></span>");
+      },
+      success:function(data) {
+        populateSelect(data, dropdown);
+        $("#spinner_icon").remove();
+      },
+  });
 };
 
 $(function() {
@@ -101,3 +119,14 @@ $(function() {
     });
   });
 });
+
+
+
+function populateSelect(data, dropdown){
+	select = $("#"+dropdown)
+	select.html("")
+  console.log(data);
+	$.each(data, function(id, d) {
+		select.append($("<option />").val(d[0]).text(d[1]));
+	});
+};

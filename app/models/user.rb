@@ -3,11 +3,14 @@ class User < ApplicationRecord
 	belongs_to :province, optional: true
 	belongs_to :locality, optional: true
 
+	has_many :user_roles
+	has_many :permissions, through: :user_roles
   has_many :arrival_notes
   has_many :purchase_invoices
   has_many :pull_notifications, foreign_key: "receiver_id", class_name: "Notification"
   has_many :push_notifications, foreign_key: "sender_id", class_name: "Notification"
   has_many :user_activities
+  has_many :client
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable, :trackable,
@@ -19,12 +22,7 @@ class User < ApplicationRecord
   after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && !company_id.nil?}
 
     def set_approved_activity
-     UserActivity.create(
-        user_id: id,
-        photo: "/images/log-in.png",
-        title: "El usuario fue aprobado. Ahora pertenece y tiene acceso a #{company.name}",
-        body: "El dia #{I18n.l(Date.today)} se le dio acceso a #{name} para hacer uso de las funciones del sistema de #{company.name}."
-      )
+     UserActivity.create_for_approved_user(self)
     end
 
     def cant_disapprove_if_has_management_role
@@ -41,8 +39,16 @@ class User < ApplicationRecord
   	end
 
     def has_management_role?
-      true #TODO - Completar cuandoe ste listo lo de permisos
+			return self.admin
     end
+
+		def role_label
+			if self.has_management_role?
+				"Administrador"
+			else
+				self.roles.nil? ? "Sin acceso" : self.roles.first.name
+			end
+		end
 
     def name
       "#{last_name}, #{first_name}"
@@ -60,11 +66,11 @@ class User < ApplicationRecord
       has_management_role? ? true : read_attribute("approved")
     end
 
-    def active_for_authentication? 
-      super && approved? 
-    end 
-    
-    def inactive_message 
+    def active_for_authentication?
+      super && approved?
+    end
+
+    def inactive_message
       approved? ? super : :not_approved
     end
 

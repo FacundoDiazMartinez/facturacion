@@ -1,5 +1,5 @@
 development:
-  server: "https://faye-conquerup.herokuapp.com/faye/development"
+  server: "https://faye-conquerup.herokuapp.com/faye/faye"
   secret_token: batkaro
 test:
   server: "https://faye-conquerup.herokuapp.com/faye/test"

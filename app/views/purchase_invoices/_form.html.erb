@@ -11,63 +11,79 @@
     </div>
   <% end %>
 
-  <div class="row">
-
-    <div class="col">
-
-      <div class="form-group">
-        <%= form.label :supplier_id %>
-        <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control'} %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :arrival_note_id %>
-        <%= autocomplete_field_tag :arrival_note_id, '', autocomplete_arrival_note_id_purchase_invoices_path, class: 'form-control', id_element: "#purchase_invoice_arrival_note_id", placeholder: "Número de remito" %>
-        <%= form.hidden_field :arrival_note_id %>
-      </div>
-
-      <div class="form-group">
-        <%= label_tag :document_number, "Comprobante" %>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <%= form.select :cbte_tipo, Afip::CBTE_TIPO.map{|tipo| [tipo.last, tipo.first]}, {prompt: "Seleccione..."}, {class: 'form-control input-group-text'} %>
+  <div class="card">
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= form.label :supplier_id %>
+          <div class="input-group">
+            <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', aria:{label: "Proveedor", describedby: "add-supplier"}} %>
+            <div class="input-group-append">
+              <%= link_to icon('fas', 'plus'), new_supplier_path(), data:{remote: true, toggle: 'modal', target: '#supplierModal'}, class: 'btn btn-success' %>
+            </div>
           </div>
-          <%= form.text_field :number, class: 'form-control', placeholder: "Número de comprobante" %>
+        </div>
+
+        <div class="form-group col-md-6">
+          <%= form.label :arrival_note_id %>
+          <%= autocomplete_field_tag :arrival_note_id, '', autocomplete_arrival_note_id_purchase_invoices_path, class: 'form-control', id_element: "#purchase_invoice_arrival_note_id", placeholder: "Número de remito" %>
+          <%= form.hidden_field :arrival_note_id %>
         </div>
       </div>
 
-      <div class="form-group">
-        <%= form.label :date %>
-        <%= form.text_field :date, class: 'form-control datepicker' %>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= label_tag :document_number, "Comprobante" %>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <%= form.select :cbte_tipo, Afip::CBTE_TIPO.map{|tipo| [tipo.last, tipo.first]}, {prompt: "Seleccione..."}, {class: 'form-control input-group-text'} %>
+            </div>
+            <%= form.text_field :number, class: 'form-control', placeholder: "Número de comprobante" %>
+          </div>
+        </div>
+
+        <div class="form-group col-md-6">
+          <%= form.label :date %>
+          <%= form.text_field :date, class: 'form-control datepicker' %>
+        </div>
       </div>
-      
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= form.label :net_amount %>
+          <%= form.number_field :net_amount, class: 'form-control' %>
+        </div>
+
+        <div class="form-group col-md-6">
+          <%= form.label :iva_amount %>
+          <%= form.number_field :iva_amount, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= form.label :imp_op_ex %>
+          <%= form.number_field :imp_op_ex, class: 'form-control' %>
+        </div>
+
+        <div class="form-group col-md-6">
+          <%= form.label :total %>
+          <%= form.number_field :total, class: 'form-control' %>
+        </div>
+      </div>
     </div>
-
-    <div class="col">
-      <div class="form-group">
-        <%= form.label :net_amount %>
-        <%= form.number_field :net_amount, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :iva_amount %>
-        <%= form.number_field :iva_amount, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :imp_op_ex %>
-        <%= form.number_field :imp_op_ex, class: 'form-control' %>
-      </div>
-
-      <div class="form-group">
-        <%= form.label :total %>
-        <%= form.number_field :total, class: 'form-control' %>
-      </div>
-    </div>
-
   </div>
-  <hr>
+
   <center>
     <%= save_button %>
   </center>
 <% end %>
+
+<div class="modal fade bd-example-modal-lg" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="supplier">
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,11 @@
 // Bootstrap classes overrides
+$light-dark-background: #e6e8ed;
+$light-background: #f6f6f9;
+$primary-color: #007bff;
+
+body {
+  background-color: $light-background !important;
+}
 
 /// BOTONES /////
 .btn-floated {
@@ -65,6 +72,32 @@ h6 small {
 
 .card {
   margin-bottom:20px;
+
+  .card-header {
+    background-color: $light-dark-background;
+  }
+
+  .card-div-img-top {
+    height: 10rem;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+  }
+  
+  .card-body {
+
+    a {
+      --color: inherit;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.card-shadow:hover {
+  box-shadow: 0px 0px 20px 1px #888888;
 }
 
 .card-horizontal {

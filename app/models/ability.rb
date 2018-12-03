@@ -10,6 +10,13 @@ class Ability
     #   else
     #     can :read, :all
     #   end
+    if user.has_management_role?
+      can :manage, :all
+    else
+      user.permissions.each do |permission|
+        can permission.action_name.to_sym, permission.friendly_name.subject_class.constantize
+      end
+    end
     #
     # The first argument to `can` is the action you are giving the user
     # permission to do.

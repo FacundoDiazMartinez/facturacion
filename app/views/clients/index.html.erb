@@ -1,8 +1,7 @@
 <div class="p-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-    <h1 class="h2">Clientes</h1>
-    <%= button_new_modal_helper(new_client_path(), 'clientModal') %>
-  </div>
+  <%= title_helper 'Clientes' %>
+
+  <%= button_new_modal_helper(new_client_path(), 'clientModal') %>
 
   <div class="page-section">
     <div class="card card-fluid">
@@ -16,7 +15,6 @@
       </div>
     </div>
   </div>
-
 </div>
 
 

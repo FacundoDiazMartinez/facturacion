@@ -32,6 +32,18 @@
     </div>
     <div class="input-group mb-2 mr-sm-2" id="pdf_file"></div>
     <!-- BUSCAR POR USUARIO -->
+
+    <!-- BUSCADOR POR TIPO -->
+      <div class="custom-control custom-radio custom-control-inline">
+        <%= radio_button_tag :iva_compras, true, true, class: 'custom-control-input', id: 'iva_compras_true', onchange: 'remoteSubmit("#search_form")' %>
+        <%= label_tag :iva_compras_true, "I.V.A. compras", class: 'custom-control-label' %>
+      </div>
+      <div class="custom-control custom-radio custom-control-inline">
+        <%= radio_button_tag :iva_compras, false, false, class: 'custom-control-input', id: 'iva_compras_false', onchange: 'remoteSubmit("#search_form")' %>
+        <%= label_tag :iva_compras_false, "I.V.A. ventas", class: 'custom-control-label' %>
+      </div>
+
+    <!-- BUSCADOR POR TIPO -->
   </div>
 <% end %>
 

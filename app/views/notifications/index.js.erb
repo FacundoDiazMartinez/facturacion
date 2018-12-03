@@ -1,7 +1,7 @@
 $("#notifications").html("<%= j render template: '/notifications/index.html.erb' %>");
 
-if($('#notifications').is(":hidden")) {
-  $("#notifications").show("slow");
+if ($("#notifications-preload").is(":hidden")) {
+	$("#notifications-preload").show("slow");
 }else{
-  $("#notifications").hide("slow");
-}
+	$("#notifications-preload").hide("slow");
+};

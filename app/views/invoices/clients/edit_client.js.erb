@@ -4,7 +4,6 @@
 	  	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
 	  	$("#invoice_client_id").val("<%= @client.id %>");
 	  	var options = <%= raw Invoice.available_cbte_type(current_user.company, @client).map{|t| {t.last => t.first}}.first.to_json %>
-	  	console.log(options)
 	  	$.each(options, function(val, text) {
 		    $('#invoice_cbte_tipo').html( new Option(text,val) );
 		});

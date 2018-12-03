@@ -1,7 +1,7 @@
 <%= nested_form_for @arrival_note do |form| %>
   <%= error_explanation @arrival_note %>
   <!-- HEADER -->
-    <div class="card shadow">
+    <div class="card">
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
@@ -34,22 +34,19 @@
       </div>
     </div>
   <!-- HEADER -->
-  <hr>
+
   <!-- DETALLES -->
-    <h3 class="d-flex mb-2">
-      <div class="p-2">
-        <%= icon('fas', 'boxes') %>
-        Productos
+    <p class="text-muted">
+      Conceptos asociados
+      <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :arrival_note_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
+    </p>
+
+    <div class="card" id="arrival_details">
+      <div class="card-body">
+        <%= render template: '/arrival_notes/details/index.html.erb', locals:{form: form} %>
       </div>
-      <div class="ml-auto p-2">
-        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :arrival_note_details, class: 'btn btn-success', data: {target: '#details'} %>
-      </div>
-    </h3>
-    <div class="card shadow" id="arrival_details">
-      <%= render template: '/arrival_notes/details/index.html.erb', locals:{form: form} %>
     </div>
   <!-- DETALLES -->
-    <hr>
     <center>
       <%= save_button %>
     </center>

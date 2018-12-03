@@ -9,12 +9,12 @@
       </div>
       <div class="form-group col-1">
         <a href="#" id="company_code_popover" data-toggle="popover" title="¿Donde puedo conseguir el código?" class="my-auto">
-          <%= icon('fas', 'question-circle',class: 'fa-2x') %>    
+          <%= icon('fas', 'question-circle',class: 'fa-2x') %>
         </a>
       </div>
     </div>
 
-    <div class="row">
+    <div class="form-row">
       <div class="form-group col-md-6">
         <%= f.text_field :first_name, autofocus: true, class:'form-control', placeholder: "Nombre", required: true %>
       </div>
@@ -22,26 +22,33 @@
       <div class="form-group col-md-6" id="container-date">
         <%= f.text_field :last_name, class:'form-control', placeholder: "Apellido", required: true %>
       </div>
-
     </div>
 
-    <div class="row">
+    <div class="form-group">
+      <%= f.email_field :email, class:'form-control', placeholder: "E-mail", required: true %>
+    </div>
+
+    <div class="form-row">
       <div class="form-group col-md-6">
         <%= f.text_field :dni, class:'form-control', placeholder: "D.N.I.", required: true %>
       </div>
 
-      <div class="form-group col-md-6" id="picker-containter">
+      <div class="form-group col-md-6">
         <%= f.text_field :birthday, class:'form-control datepicker', placeholder: "  Fecha de nacimiento", required: true, autocomplete: "off" %>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <%= f.select :province_id, options_from_collection_for_select(Province.all, :id, :name, f.object.province_id), {prompt: "Provincia"}, {:class => 'form-control', onchange: "reloadLocality($(this).val(), 'user_locality_id')", required: true} %>
+      </div>
+      <div class="form-group col-md-6 with-spinner">
+        <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id).order(:name), :id, :name, f.object.locality_id), {prompt: "Localidad"}, {:class => 'form-control', required: true} %>
       </div>
     </div>
 
     <div class="form-group">
       <%= f.text_field :address, class:'form-control', placeholder: "Domicilio" %>
-    </div>
-
-
-    <div class="form-group">
-      <%= f.email_field :email, class:'form-control', placeholder: "E-mail", required: true %>
     </div>
 
     <div class="row">

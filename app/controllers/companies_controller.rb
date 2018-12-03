@@ -2,6 +2,7 @@ class CompaniesController < ApplicationController
   before_action :set_company, only: [:show, :edit, :update, :destroy]
   before_action :set_s3_direct_post, only: [:new, :edit, :create, :update]
   before_action :check_if_company_exists, only: [:new, :create]
+  skip_before_action :redirect_to_company, only: [:new, :create]
 
   # GET /companies/1
   # GET /companies/1.json
