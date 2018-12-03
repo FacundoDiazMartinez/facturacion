@@ -159,7 +159,6 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 	});
 	var popup = $("#myPopup");
 	if (suma > total_venta) {
-		// popup.removeClass("popuptext");
     popup.addClass("show");
 	}
 	else {

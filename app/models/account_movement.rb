@@ -9,11 +9,10 @@ class AccountMovement < ApplicationRecord
   default_scope { where(active: true) }
 
   validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
-  validates_presence_of :days, message: "Falta definir el atributo 'días'."
   validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."
   validates_presence_of :total, message: "Debe definir un total."
   validates_presence_of :saldo, message: "Falta definir el saldo actual del cliente."
-  validates :check_debe_haber
+  validate :check_debe_haber
 
   #TABLA
     # create_table "account_movements", force: :cascade do |t|
@@ -37,7 +36,7 @@ class AccountMovement < ApplicationRecord
 
   #FUNCIONES
   	def days
-  		read_attribute("days") || (Date.today - created_at.to_date).to_i / 1.days 
+  		(Date.today - created_at.to_date).to_i / 1.days 
   	end
 
   	def self.sum_total_from_invoices_per_client client_id

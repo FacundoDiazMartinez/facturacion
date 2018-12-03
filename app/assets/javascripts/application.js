@@ -31,7 +31,7 @@
 
 $(document).ready(function() {
 
-  $(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]');
+  //$(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]');
 
   $('btn').on('click', function() {
     var $this = $(this);

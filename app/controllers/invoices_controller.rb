@@ -37,10 +37,11 @@ class InvoicesController < ApplicationController
 
   def create
     @invoice = current_user.company.invoices.new(invoice_params)
-    @invoice.user_id = current_user.id 
+    @invoice.user_id = current_user.id
+    @client = @invoice.client 
     respond_to do |format|
       if @invoice.save
-        format.html{redirect_to @invoice, notice: "El comprobante fue creado con éxito."}
+        format.html{redirect_to edit_invoice_path(@invoice), notice: "El comprobante fue creado con éxito."}
       else
         format.html {render :new}
       end

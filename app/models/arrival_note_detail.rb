@@ -20,9 +20,9 @@ class ArrivalNoteDetail < ApplicationRecord
     #   t.index ["product_id"], name: "index_arrival_note_details_on_product_id"
     # end
   # TABLA
-  
+
   #PROCESOS
-  	def check_product
+  	def check_product #Se ejecuta en caso de que el producto se este creando por medio del remito
       if new_record?
         product.company_id = arrival_note.company_id
         product.save
