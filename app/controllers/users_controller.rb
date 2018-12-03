@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = current_user.company.users.paginate(per_page: 10, page: params[:page])
+    @users = current_user.company.users.search_by_name(params[:name]).search_by_document(params[:document_number]).search_by_state(params[:state]).paginate(per_page: 10, page: params[:page])
   end
 
   # GET /users/1

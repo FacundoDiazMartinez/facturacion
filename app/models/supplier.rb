@@ -29,4 +29,22 @@ class Supplier < ApplicationRecord
   		UserActivity.create_for_updated_supplier self, current_user
   	end
   #PROCESOS
+
+  #FILTROS DE BUSQUEDA
+    def self.search_by_name name
+      if !name.nil?
+        where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
+      else
+        all 
+      end
+    end
+
+    def self.search_by_document document_number
+      if !document_number.blank?
+        where("document_number ILIKE ?", "#{document_number}%")
+      else
+        all 
+      end
+    end
+  #FILSTROS DE BUSQUEDA
 end
