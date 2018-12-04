@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :pull_notifications, foreign_key: "receiver_id", class_name: "Notification"
   has_many :push_notifications, foreign_key: "sender_id", class_name: "Notification"
   has_many :user_activities
+  has_many :client
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable, :trackable,

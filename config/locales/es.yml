@@ -144,6 +144,11 @@ es:
         total_pay: "Total a pagar"
         created_at: "Creado el"
         budget: "Presupuesto"
+      depot:
+        name:  "Nombre"
+        location: "Ubicación"
+        stock_count: "Stock actual"
+        
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"

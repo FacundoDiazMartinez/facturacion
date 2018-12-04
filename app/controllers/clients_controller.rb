@@ -24,15 +24,13 @@ class ClientsController < ApplicationController
   # POST /clients
   # POST /clients.json
   def create
-    @client = Client.new(client_params)
+    @client             = Client.new(client_params)
+    @client.user_id     = current_user.id
+    @client.company_id  = current_user.company_id
 
     respond_to do |format|
       if @client.save
-        format.html { redirect_to @client, notice: 'Client was successfully created.' }
-        format.json { render :show, status: :created, location: @client }
-      else
-        format.html { render :new }
-        format.json { render json: @client.errors, status: :unprocessable_entity }
+        index
       end
       format.js { render :set_client }
     end
@@ -43,11 +41,7 @@ class ClientsController < ApplicationController
   def update
     respond_to do |format|
       if @client.update(client_params)
-        format.html { redirect_to @client, notice: 'Client was successfully updated.' }
-        format.json { render :show, status: :ok, location: @client }
-      else
-        format.html { render :edit }
-        format.json { render json: @client.errors, status: :unprocessable_entity }
+        index
       end
       format.js { render :set_client }
     end

@@ -3,36 +3,37 @@
   <div class="modal-body">
     <div id="depot_errors"></div>
 
-    <div class="form-group row">
-      <%= form.label :name , class: 'col-sm-3 col-form-label col-form-label-sm' %>
-      <div class="col-md-9">
-        <%= form.text_field :name, class: 'form-control form-control-sm', required: true %>
-      </div>
+    <div class="form-group">
+      <%= form.label :name, "Nombre"  %>
+      <%= form.text_field :name, class: 'form-control form-control-sm', required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :location, "Ubicación"  %>
+      <%= form.text_field :location, class: 'form-control form-control-sm', required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :stock_count, "Stock_count"  %>
+      <%= form.number_field :stock_count, class: 'form-control form-control-sm', required: true %>
     </div>
 
     <div class="form-group row">
-      <%= form.label :location , class: 'col-sm-3 col-form-label col-form-label-sm' %>
+      <%= form.label :filled, "Disponibilidad" , class: 'col-sm-3 col-form-label col-form-label-sm' %>
       <div class="col-md-9">
-        <%= form.text_field :location, class: 'form-control form-control-sm', required: true %>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <%= form.label :stock_count , class: 'col-sm-3 col-form-label col-form-label-sm' %>
-      <div class="col-md-9">
-        <%= form.number_field :stock_count, class: 'form-control form-control-sm', required: true %>
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <%= form.label :stock_limit , class: 'col-sm-3 col-form-label col-form-label-sm' %>
-      <div class="col-md-9">
-        <%= form.number_field :stock_limit, class: 'form-control form-control-sm', required: true %>
+        <div class="custom-control custom-radio custom-control-inline">
+          <%= form.radio_button :filled, false, class: 'custom-control-input', id: 'filled_false' %>
+          <%= label_tag :filled_false, "Espacio disponible", class: 'custom-control-label' %>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <%= form.radio_button :filled, true, class: 'custom-control-input', id: 'filled_true' %>
+          <%= label_tag :filled_true, "Completo", class: 'custom-control-label' %>
+        </div>
       </div>
     </div>
 
   </div>
-  
+
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
     <%= save_button %>

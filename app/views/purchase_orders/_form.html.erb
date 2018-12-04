@@ -12,7 +12,8 @@
   <% end %>
 
   <!-- HEADER -->
-    <div class="card shadow">
+  <p class="text-muted">Datos del comprobante</p>
+    <div class="card card-shadow">
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
@@ -78,33 +79,28 @@
         </div>
 
         <!-- BOTONES DE ACCION -->
-            <center>
-              <% if not @purchase_order.new_record? %>
-                <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
-              <% end %>
-            </center>
+        <center>
+          <% if not @purchase_order.new_record? %>
+            <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
+          <% end %>
+        </center>
         <!-- BOTONES DE ACCION -->
       </div>
     </div>
   <!-- HEADER -->
 
-  <hr>
   <!-- DETALLE -->
-    <h3 class="d-flex mb-2">
-      <div class="p-2">
-        <%= icon('fas', 'boxes') %>
-        Productos
-      </div>
-      <div class="ml-auto p-2">
-        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-success', data: {target: '#details'} %>
-      </div>
-    </h3>
-    <div class="card shadow">
+  <p class="text-muted">
+    Conceptos asociados
+    <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
+  </p>
+  <div class="card card-shadow">
+    <div class="card-body">
       <%= render template: '/purchase_orders/details/index.html.erb', locals:{form: form} %>
     </div>
+  </div>
   <!-- DETALLE -->
 
-  <hr>
   <center>
     <%= save_button %>
   </center>

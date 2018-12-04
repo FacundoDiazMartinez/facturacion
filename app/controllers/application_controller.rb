@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
  before_action :configure_permitted_parameters, :authenticate_user!, if: :devise_controller?
- before_action :authenticate_user!
+ before_action :authenticate_user!, except: [:get_localities]
  before_action :redirect_to_company, except: [:get_localities]
 
 	def get_localities
@@ -8,11 +8,12 @@ class ApplicationController < ActionController::Base
 	end
 
 
-
   protected
   def redirect_to_company
-    if not current_user.has_company?
-      redirect_to root_path
+    if user_signed_in?
+      if not current_user.has_company?
+        redirect_to root_path
+      end
     end
   end
 
