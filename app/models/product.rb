@@ -76,7 +76,7 @@ class Product < ApplicationRecord
 	  	"96" => "packs",
 	  	"98" => "otras unidades"
 	}
-	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}
+	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}, allow_blank: true
 
 	#FILTROS DE BUSQUEDA
 		def self.search_by_name name 
@@ -130,7 +130,15 @@ class Product < ApplicationRecord
 		end
 
 		def iva
-			Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f * 100
+			Afip::ALIC_IVA.map{|ai| ai.last unless ai.first.to_i != iva_aliquot.to_i}.compact.join().to_f * 100
+		end
+
+		def full_measurement
+			"#{measurement} #{MEASUREMENT_UNITS[measurement_unit]}"
+		end
+
+		def measurement_unit_name
+			MEASUREMENT_UNITS[measurement_unit]
 		end
 	#ATRIBUTOS
 
@@ -170,7 +178,7 @@ class Product < ApplicationRecord
 	      	spreadsheet = open_spreadsheet(file)
         	header = self.permited_params
         	categories = current_user.company.product_categories.map{|pc| {pc.name => pc.id}}.first || {} 
-        	delay.load_products(spreadsheet, header, categories, current_user)
+        	load_products(spreadsheet, header, categories, current_user)
 		end
 
 		def self.load_products spreadsheet, header, categories, current_user
@@ -184,10 +192,12 @@ class Product < ApplicationRecord
           		else
           		 	product.product_category_id = categories["#{row[:product_category_name]}"]
           		end
-          		product.attributes = row.reject{|e| e == :product_category_name}.to_hash
-          		product.company_id = current_user.company_id
-          		product.created_by = current_user.id
-          		product.updated_by = current_user.id
+          		product.attributes 			= row.reject{|e| e == :product_category_name}.to_hash
+          		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
+          		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
+          		product.company_id 			= current_user.company_id
+          		product.created_by 			= current_user.id
+          		product.updated_by 			= current_user.id
           		if product.valid?
           			product.save!
           		else
@@ -217,7 +227,7 @@ class Product < ApplicationRecord
 		end
 
 		def self.permited_params
-		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price]
+		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
 		end
 
 		def self.open_spreadsheet(file)

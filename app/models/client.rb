@@ -11,11 +11,42 @@ class Client < ApplicationRecord
 
 	after_update :set_update_activity
 
+	IVA_COND = ["Responsable Inscripto", "Responsable Monotributo", "Consumidor Final", "Exento"]
+
 	validates_numericality_of :document_number, message: 'Ingrese un numero de documento valido.'
 	validates :document_number, length: { is: 11, message: 'Numero de documento inválido, verifique.' }, 		if: Proc.new{|c| ['CUIT', 'CUIL', 'CDI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
 	validates :document_number, length: { maximum: 11, message: 'Numero de documento inválido, verifique.' }, 	if: Proc.new{|c| ['LE', 'LC', 'CI Extranjera', 'Acta Nacimiento', 'Pasaporte'].include?(Afip::DOCUMENTOS.key(c.document_type))}
-	validates :document_number, length: {minimum: 6, message: 'Numero de documento inválido, verifique.' }, 	if: Proc.new{|c| ['en tramite', 'DNI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
+	validates :document_number, length: { minimum: 6, message: 'Numero de documento inválido, verifique.' }, 	if: Proc.new{|c| ['en tramite', 'DNI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
 	validates_uniqueness_of :document_number, scope: [:company_id, :document_type], message: 'Ya existe un cliente con ese documento.', if: Proc.new{|c| not c.default_client?}
+	validates_presence_of :name, message: "Debe especificar el nombre del cliente."
+	validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+	validates_inclusion_of :document_type, in: Afip::DOCUMENTOS.keys, message: "Tipo de documento inválido."
+	validates_inclusion_of :iva_cond, in: IVA_COND, message: "Condición frente a I.V.A. inválida."
+	validates_numericality_of :saldo, message: "Saldo inválido. Revise por favor."
+	validates_presence_of :saldo, message: "Saldo inválido. Revise por favor."
+
+
+	# TABLA
+	# create_table "clients", force: :cascade do |t|
+	#     t.string "name", null: false
+	#     t.string "phone"
+	#     t.string "mobile_phone"
+	#     t.string "email"
+	#     t.string "address"
+	#     t.string "document_type", default: "D.N.I.", null: false
+	#     t.string "document_number", null: false
+	#     t.string "birthday"
+	#     t.boolean "active", default: true, null: false
+	#     t.string "iva_cond", default: "Responsable Monotributo", null: false
+	#     t.bigint "company_id"
+	#     t.bigint "user_id"
+	#     t.datetime "created_at", null: false
+	#     t.datetime "updated_at", null: false
+	#     t.float "saldo", default: 0.0, null: false
+	#     t.index ["company_id"], name: "index_clients_on_company_id"
+	#     t.index ["user_id"], name: "index_clients_on_user_id"
+	#   end
+	# TABLA
 
 	#FILTROS DE BUSQUEDA
 		def self.find_by_full_document params={}

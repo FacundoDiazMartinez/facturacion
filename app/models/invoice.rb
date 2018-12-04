@@ -28,9 +28,50 @@ class Invoice < ApplicationRecord
 
     validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
     validates_presence_of :total, message: "El total no debe estar en blanco."
+    validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0."
     validates_presence_of :total_pay, message: "El total pagado no debe estar en blanco."
     validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
+    validate :cbte_tipo_inclusion
+    #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
+
+
+
+    # TABLA
+    #   create_table "invoices", force: :cascade do |t|
+    #     t.boolean "active"
+    #     t.bigint "client_id"
+    #     t.string "state", default: "Pendiente", null: false
+    #     t.float "total", default: 0.0, null: false
+    #     t.float "total_pay", default: 0.0, null: false
+    #     t.string "header_result"
+    #     t.string "authorized_on"
+    #     t.string "cae_due_date"
+    #     t.string "cae"
+    #     t.string "cbte_tipo"
+    #     t.bigint "sale_point_id"
+    #     t.string "concepto"
+    #     t.string "cbte_fch"
+    #     t.float "imp_tot_conc", default: 0.0, null: false
+    #     t.float "imp_op_ex", default: 0.0, null: false
+    #     t.float "imp_trib", default: 0.0, null: false
+    #     t.float "imp_neto", default: 0.0, null: false
+    #     t.float "imp_iva", default: 0.0, null: false
+    #     t.float "imp_total", default: 0.0, null: false
+    #     t.integer "cbte_hasta"
+    #     t.integer "cbte_desde"
+    #     t.string "iva_cond"
+    #     t.string "comp_number"
+    #     t.bigint "company_id"
+    #     t.bigint "user_id"
+    #     t.datetime "created_at", null: false
+    #     t.datetime "updated_at", null: false
+    #     t.index ["client_id"], name: "index_invoices_on_client_id"
+    #     t.index ["company_id"], name: "index_invoices_on_company_id"
+    #     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
+    #     t.index ["user_id"], name: "index_invoices_on_user_id"
+    #   end
+    # TABLA
 
 
   	#FILTROS DE BUSQUEDA
@@ -121,6 +162,10 @@ class Invoice < ApplicationRecord
         Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[company.iva_cond_sym][client.iva_cond_sym]}.map{|k,v| [v,k]}
       end
 
+      def available_cbte_type
+        Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[company.iva_cond_sym][client.iva_cond_sym]}.map{|k,v| k}
+      end
+
       def tipo
         Afip::CBTE_TIPO[cbte_tipo]
       end
@@ -133,6 +178,10 @@ class Invoice < ApplicationRecord
   	#FUNCIONES
 
     #PROCESOS
+
+      def cbte_tipo_inclusion
+        errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.include?(cbte_tipo)
+      end
 
       def create_iva_book
         IvaBook.add_from_invoice(self)
@@ -232,10 +281,11 @@ class Invoice < ApplicationRecord
         if self.company.environment == "production"
           #PRODUCCION
           Afip.pkey               = "#{Rails.root}/app/afip/facturacion.key"
-          Afip.cert               = "#{Rails.root}/app/afip/pedido.crt"
+          Afip.cert               = "#{Rails.root}/app/afip/produccion.crt"
           Afip.auth_url     = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
           Afip.service_url    = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
           Afip.cuit         = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
+          #http://ayuda.egafutura.com/topic/5225-error-certificado-digital-computador-no-autorizado-para-acceder-al-servicio/
         else
           #TEST
           Afip.cuit = "20368642682"

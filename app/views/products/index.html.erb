@@ -4,7 +4,7 @@
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group mr-2">
         <!-- Importar y exportar productos -->
-          <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(), class: 'btn btn-sm btn-outline-secondary', title: 'Exportar productos a una hoja de cálculo' %>
+          <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(format: :xlsx), class: 'btn btn-sm btn-outline-secondary', title: 'Exportar productos a una hoja de cálculo' %>
           <%= link_to "#{icon('fas','upload')} Importar".html_safe, "#", class: 'btn btn-sm btn-outline-secondary', title: 'Importar productos desde una hoja de cálculo', data:{toggle: 'modal', target: '#importModal'} %>
         <!-- Importar y exportar productos -->
       </div>
@@ -70,26 +70,4 @@
 
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Importar productos</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <%= form_tag import_products_path(), multipart: true  do %>
-        <div class="modal-body">
-          
-            <%= label_tag :file, "Seleccione archivo excel" %>
-            <%= file_field_tag :file , :class => 'form-control'%>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <%= save_button %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
+<%= render 'import' %>

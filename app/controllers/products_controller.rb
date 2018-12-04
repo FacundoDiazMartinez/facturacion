@@ -79,6 +79,13 @@ class ProductsController < ApplicationController
     end
   end
 
+  def export
+    @products = params[:empty] ? [] : current_user.company.products #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
+    respond_to do |format|
+      format.xlsx {response.headers['Content-Disposition'] = 'attachment; filename="productos.xlsx"'}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product
@@ -87,6 +94,6 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement_unit)
+      params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit)
     end
 end

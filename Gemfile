@@ -96,12 +96,12 @@ gem 'pjax_rails'
 gem 'activerecord-import'
 
 #Gemas para importar o trabajar con excel
-gem 'rubyzip'
-gem 'axlsx'
-gem 'axlsx_rails'
 gem 'roo'
-gem 'zip-zip' 
 gem 'roo-xls'
+gem 'rubyzip', '>= 1.2.1'
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'
+gem 'zip-zip'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
