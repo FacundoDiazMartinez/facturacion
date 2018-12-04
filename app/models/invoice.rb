@@ -330,7 +330,7 @@ class Invoice < ApplicationRecord
 
     def payment_array
       if !self.payments.nil?
-        self.payments.map{|p| "#{p.type_of_payment}"}.join(", ")
+        self.payments.map{|p| "#{p.payment_name_and_subtotal} "}.join(", ")
       end
     end
 end
