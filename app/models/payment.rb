@@ -27,8 +27,8 @@ class Payment < ApplicationRecord
       TYPES[type_of_payment]
     end
 
-    def payment_name_and_subtotal
-      TYPES[type_of_payment] + " " + "($ " + total.to_s + ")"
+    def payment_name
+      TYPES[type_of_payment]
     end
   #ATRIBUTOS
 

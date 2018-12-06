@@ -37,12 +37,19 @@
       <col width="600">
       <col width="100">
     <tr>
-      <td class="text_right"><b>Subtotal:</b></td>
+      <td class="text_right"><b>
+        <% if total_pages > 1 %>
+          Subtotal página:
+        <% else %>
+          Subtotal:
+        <% end %>
+      </b>
+      </td>
       <td class="text_right"><b>$ <%= total_of_page %></b></td>
     </tr>
 
     <tr>
-      <td class="text_right"><b>Importe Otros Tributos:</b></td>
+      <td class="text_right"><b>Otros Tributos:</b></td>
       <td class="text_right"><b>$ <%= @invoice.imp_op_ex %> </b></td>
     </tr>
 

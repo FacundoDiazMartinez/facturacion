@@ -5,20 +5,23 @@
     <tr>
       <td><%= wicked_pdf_image_tag '/images/afip.png',:width => "150"%></td>
       <td><b>Comprobante Autorizado</b></td>
-      <td>Pag. <%= page_number %>/<%= total_pages%> </td>
-      <td class="text_right"><b>CAE N°:</b> NUMERO DE CAE</td>
+      <td> </td>
+      <td class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
     </tr>
 
     <tr>
       <td></td>
       <td></td>
       <td></td>
-      <td class="text_right"><b>Fecha de Vto. de CAE: </b>VTO DE CAE</td>
+      <td class="text_right"><b>Fecha de Vto. de CAE: </b> <%= @invoice.cae_due_date %> </td>
     </tr>
   </table>
   </div>
 </div>
-Page <span class="page"></span> of <span class="topage"></span>
+<div class="text_center">
+  Página <%= page_number %> de <%= total_pages%>
+</div>
+
 <!-- FIN PIE DE PAGINA -->
 
 <div class="nobreak">
