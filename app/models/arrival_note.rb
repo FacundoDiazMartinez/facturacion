@@ -6,8 +6,7 @@ class ArrivalNote < ApplicationRecord
   has_many :arrival_note_details
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
  
-  before_validation :check_details
-  bafore_validation :set_number
+  before_validation :check_details, :set_number
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
