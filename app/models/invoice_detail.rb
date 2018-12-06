@@ -69,8 +69,10 @@ class InvoiceDetail < ApplicationRecord
 
     def product_attributes=(attributes)
       if !attributes['id'].blank?
-        self.product = Product.unscoped.find(attributes['id'])
-        self.measurement_unit = self.product.measurement_unit
+        self.product            = Product.unscoped.find(attributes['id'])
+        self.product.updated_by = self.user_id
+        self.product.created_by = self.user_id
+        self.measurement_unit   = self.product.measurement_unit
       end
       super
     end
