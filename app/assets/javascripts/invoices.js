@@ -17,12 +17,13 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	}
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
+	$(this).closest("tr.fields").find("input.name").prop('title', data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-		$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
+	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 
-		subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
-		subtotal.trigger("change");
+	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+	subtotal.trigger("change");
 });
 
 $(document).on("change", ".price, .quantity", function(){
@@ -165,3 +166,17 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 		popup.removeClass("show");
 	}
 }
+
+function setProduct(product, index){
+	$("#"+index).find("input.product_id").val(product["id"]);
+	$("#"+index).find("input.code").val(product["code"]);
+  	$("#"+index).find("input.name").val(product["name"]);
+	$("#"+index).find("input.name").prop('title', product["name"]);
+  	$("#"+index).find("input.price").val(product["price"]);
+  	$("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
+	$("#"+index).find("input.subtotal").val(product["price"]);
+
+	subtotal = $("#"+index).find("input.subtotal");
+	$("#search_product_modal").modal('hide')
+	subtotal.trigger("change");
+};

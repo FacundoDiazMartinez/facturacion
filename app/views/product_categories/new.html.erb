@@ -1,5 +1,8 @@
-<h1>New Product Category</h1>
+<div class="modal-header">
+  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Nueva categoría</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%= render 'form' %>
 
-<%= render 'form', product_category: @product_category %>
-
-<%= link_to 'Back', product_categories_path %>

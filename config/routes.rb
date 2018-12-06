@@ -34,6 +34,12 @@ Rails.application.routes.draw do
     post :import, on: :collection
   end
 
+  resources :services do
+    get :autocomplete_product_code, :on => :collection
+    get :export, on: :collection
+    post :import, on: :collection
+  end
+
   resources :users, only: [:index, :show] do
     get :autocomplete_company_code, :on => :collection
     patch :approve, on: :member
@@ -67,6 +73,7 @@ Rails.application.routes.draw do
     resources :invoice_details
     get :autocomplete_product_code, :on => :collection
     get :confirm, on: :member
+    get :search_product, on: :collection
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

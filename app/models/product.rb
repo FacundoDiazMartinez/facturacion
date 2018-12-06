@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
+	
   	belongs_to :product_category, optional: true
   	belongs_to :company
   	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
@@ -13,7 +14,6 @@ class Product < ApplicationRecord
   	has_many   :arrival_note, through: :arrival_note_details
   	has_many   :product_price_histories
 
-    default_scope { where(active: true) }
     scope :active, -> { where(active: true) }
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
@@ -103,6 +103,14 @@ class Product < ApplicationRecord
 			end
 		end
 
+		def self.search_by_supplier supplier 
+			if not supplier.blank?
+				joins(product_category: :supplier).where("suppliers.name ILIKE ? ", "%#{supplier}%")
+			else
+				all 
+			end
+		end
+
 		def self.search_with_stock stock 
 			if stock == "on"
 				joins(:stocks).where("stocks.state = 'Disponible'")
@@ -110,11 +118,13 @@ class Product < ApplicationRecord
 				all 
 			end
 		end
+
+
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
 	  	def full_name
-	  		"#{code} - #{name}"
+	  		"#{tipo}: #{code} - #{name}"
 	  	end
 
 	  	def photo
@@ -241,4 +251,7 @@ class Product < ApplicationRecord
 		#IMPORTAR EXCEL o CSV
 	    
 	#PROCESOS
+
+	private
+		default_scope { where(active: true, tipo: "Producto") }
 end

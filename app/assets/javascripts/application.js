@@ -23,7 +23,6 @@
 //= require bootstrap-toggle
 //= require z.jquery.fileupload
 //= require activestorage
-//= require jquery.pjax
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require_tree .

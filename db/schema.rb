@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_04_140245) do
+ActiveRecord::Schema.define(version: 2018_12_05_180020) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -174,8 +174,10 @@ ActiveRecord::Schema.define(version: 2018_12_04_140245) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
     t.index ["product_id"], name: "index_invoice_details_on_product_id"
+    t.index ["user_id"], name: "index_invoice_details_on_user_id"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -278,7 +280,9 @@ ActiveRecord::Schema.define(version: 2018_12_04_140245) do
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "supplier_id"
     t.index ["company_id"], name: "index_product_categories_on_company_id"
+    t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
   end
 
   create_table "product_price_histories", force: :cascade do |t|
@@ -309,6 +313,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_140245) do
     t.bigint "created_by"
     t.bigint "updated_by"
     t.string "measurement"
+    t.string "tipo", default: "Producto", null: false
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
   end
@@ -524,6 +529,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_140245) do
   add_foreign_key "depots", "companies"
   add_foreign_key "invoice_details", "invoices"
   add_foreign_key "invoice_details", "products"
+  add_foreign_key "invoice_details", "users"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "invoices", "sale_points"
@@ -535,6 +541,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_140245) do
   add_foreign_key "payments", "invoices"
   add_foreign_key "permissions", "friendly_names"
   add_foreign_key "product_categories", "companies"
+  add_foreign_key "product_categories", "suppliers"
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"

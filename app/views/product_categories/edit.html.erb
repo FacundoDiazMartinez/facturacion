@@ -1,6 +1,7 @@
-<h1>Editing Product Category</h1>
-
-<%= render 'form', product_category: @product_category %>
-
-<%= link_to 'Show', @product_category %> |
-<%= link_to 'Back', product_categories_path %>
+<div class="modal-header">
+  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'edit') %> Editar categoría</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%= render 'form' %>

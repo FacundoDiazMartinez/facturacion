@@ -10,7 +10,7 @@ class InvoiceDetail < ApplicationRecord
 
   default_scope {where(active: true)}
 
-  validates_presence_of :invoice_id, message: "El detalle debe estar vinculado a una factura."
+  #validates_presence_of :invoice_id, message: "El detalle debe estar vinculado a una factura."
   validates_presence_of :product, message: "El detalle debe estar vinculado a un producto."
   validates_presence_of :quantity, message: "El detalle debe especificar una cantidad."
   validates_numericality_of :quantity, greater_than: 0.0, message: "La cantidad debe ser mayor a 0."
@@ -69,7 +69,8 @@ class InvoiceDetail < ApplicationRecord
 
     def product_attributes=(attributes)
       if !attributes['id'].blank?
-        self.product = Product.find(attributes['id'])
+        self.product = Product.unscoped.find(attributes['id'])
+        self.measurement_unit = self.product.measurement_unit
       end
       super
     end

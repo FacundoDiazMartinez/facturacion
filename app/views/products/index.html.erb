@@ -3,6 +3,9 @@
     <h1 class="h2">Productos</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group mr-2">
+        <!-- Categorias -->
+          <%= link_to "#{icon('fas', 'list')} Categorías".html_safe, product_categories_path, class: 'btn btn-secondary', title: "Vea las categorías disponibles de los productos." %>
+        <!-- Categorias -->
         <!-- Importar y exportar productos -->
           <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(format: :xlsx), class: 'btn btn-sm btn-outline-secondary', title: 'Exportar productos a una hoja de cálculo' %>
           <%= link_to "#{icon('fas','upload')} Importar".html_safe, "#", class: 'btn btn-sm btn-outline-secondary', title: 'Importar productos desde una hoja de cálculo', data:{toggle: 'modal', target: '#importModal'} %>

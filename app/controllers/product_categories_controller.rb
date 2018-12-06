@@ -4,7 +4,7 @@ class ProductCategoriesController < ApplicationController
   # GET /product_categories
   # GET /product_categories.json
   def index
-    @product_categories = ProductCategory.all
+    @product_categories = current_user.company.product_categories.search_by_name(params[:name]).search_by_supplier(params[:supplier]).paginate(page: params[:page], per_page: 10)
   end
 
   # GET /product_categories/1
@@ -65,11 +65,11 @@ class ProductCategoriesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product_category
-      @product_category = ProductCategory.find(params[:id])
+      @product_category = current_user.company.product_categories.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_category_params
-      params.require(:product_category).permit(:name, :iva_aliquot, :active, :company_id, :products_count)
+      params.require(:product_category).permit(:name, :iva_aliquot, :supplier_id)
     end
 end

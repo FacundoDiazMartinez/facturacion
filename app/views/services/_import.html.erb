@@ -1,0 +1,37 @@
+<div class="modal fade bd-example-modal-lg" id="importModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Importar serviceos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_tag import_services_path(), multipart: true  do %>
+        <div class="modal-body">
+            <ol>
+              <h5>Para poder importar tus serviceos primero debes seguir estos pasos</h5>
+              <li>
+                Descargar este archivo excel que tiene el formato con el que debes trabajar. <%= link_to "#{icon('fas', 'download')} Descargar formato".html_safe, export_services_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday' %>
+              </li>
+              <li>
+                Rellenalo con tus servicios ordenando cada columna donde corresponda, siempre respetando los campos obligatorios.
+              </li>
+              <li>
+                Una vez listo tu archivo ya podes subirlo, te avisaremos cuando todos los servicios esten disponibles.
+              </li>
+            </ol>
+            <hr>
+            <center>
+              <%= button_tag "#{icon('fas', 'upload')} Seleccionar excel".html_safe, type: 'button', onclick: '$("#file").click();', class: 'btn btn-info' %>
+              <%= file_field_tag :file , :class => 'hidden'%>
+            </center>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          <%= save_button %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

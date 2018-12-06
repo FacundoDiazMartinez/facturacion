@@ -12,6 +12,8 @@ class Company < ApplicationRecord
 	has_many :purchase_invoices
 	has_many :arrival_notes
 	has_many :iva_books
+	has_many :roles
+	has_many :services
 
 	belongs_to :province
 	belongs_to :locality
@@ -104,4 +106,10 @@ class Company < ApplicationRecord
 			iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
 		end
 	#Fin atributos
+
+	#FUNCIONES
+		def grouped_users_by_role
+			roles.map{|r| [r.name, r.users.map{|u| [u.name, u.id]}]}
+		end
+	#FUNCIONES
 end

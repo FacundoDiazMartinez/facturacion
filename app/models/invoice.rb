@@ -23,6 +23,7 @@ class Invoice < ApplicationRecord
     after_save :touch_account_movement, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado"}
+    before_validation :check_if_confirmed
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -33,6 +34,7 @@ class Invoice < ApplicationRecord
     validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
     validate :cbte_tipo_inclusion
+
     #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
 
@@ -174,6 +176,12 @@ class Invoice < ApplicationRecord
         update_column(:active, false)
         run_callbacks :destroy
         freeze
+      end
+
+      def check_if_confirmed
+        if state_was == "Confirmado"
+          errors.add(:state, "No se puede actualizar una factura confirmada.")
+        end
       end
   	#FUNCIONES
 
@@ -380,7 +388,7 @@ class Invoice < ApplicationRecord
 
     def payment_array
       if !self.payments.nil?
-        self.payments.map{|p| "#{p.type_of_payment}"}.join(", ")
+        self.payments.map{|p| "#{p.payment_name_and_subtotal} "}.join(", ")
       end
     end
 end

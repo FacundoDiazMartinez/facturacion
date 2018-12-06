@@ -3,42 +3,11 @@
   <head>
     <meta charset='utf-8' />
     <%= wicked_pdf_stylesheet_link_tag "pdf.css" -%>
-    <!-- <%= wicked_pdf_stylesheet_link_tag "application" %> -->
-
-
-    <!-- <%= wicked_pdf_javascript_include_tag "number_pages" %>
-    <%= wicked_pdf_stylesheet_link_tag "bootstrap.css" %>
-    <%= wicked_pdf_stylesheet_link_tag "style.css" -%>
-    <%= wicked_pdf_stylesheet_link_tag "styleUmowa.css" -%>
-    <%= wicked_pdf_stylesheet_link_tag "animate.css" -%>
-    <%= wicked_pdf_javascript_include_tag "application" %> -->
-
-    <script>
-      function number_pages() {
-        var vars={};
-        var x=document.location.search.substring(1).split('&');
-        for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
-        var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
-        for(var i in x) {
-          var y = document.getElementsByClassName(x[i]);
-          for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
-        }
-      }
-    </script>
-
   </head>
   <body onload='number_pages()'>
     <div id="header">
       <!-- <%= wicked_pdf_image_tag '/images/afip.png' %> -->
-      <div class="container">
-        <div class="row">
-          <div class="border">
-                <center>
-                  <h2 class="text_size_25">ORIGINAL</h2>
-                </center>
-          </div>
-        </div>
-      </div>
+      
     </div>
 
     <div id="content">

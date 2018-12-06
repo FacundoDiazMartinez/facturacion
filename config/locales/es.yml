@@ -118,6 +118,7 @@ es:
         iva_aliquot: "Alicuota de I.V.A."
         price: "Precio final"
       product_category:
+        supplier_id: "Proveedor"
         name: "Nombre"
         iva_aliquot: "Alicuota de I.V.A."
       supplier:

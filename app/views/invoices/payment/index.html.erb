@@ -9,18 +9,21 @@
 		</tr>
 	</thead>
 	<tbody>
-		<%= form.fields_for :payments,@invoice.payments.set_payment, wrapper: false do |f| %>
+		<%= form.fields_for :payments, @invoice.payments.set_payment, wrapper: false do |f| %>
 	      <tr class="fields">
 	      	<th scope="row">#</th>
-	      	<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control'} %></td>
+	      	<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control', disabled: !@invoice.editable?} %></td>
 	      	<td>
 				<div class="popup">
-					<%= f.number_field :total, class: 'form-control amount', default: 0.0 %>
+					<%= f.number_field :total, class: 'form-control amount', default: 0.0, disabled: !@invoice.editable? %>
 			    <span class="popuptext" id="myPopup">Esta intentando cobrar un monto superior.</span>
 			  </div>
 			</td>
-	      	<td><%= f.text_field :payment_date, class: 'form-control datepicker' %></td>
-	      	<td><%= f.link_to_remove icon('fas', 'trash') %></td>
+	      	<td><%= f.text_field :payment_date, class: 'form-control datepicker', disabled: !@invoice.editable? %></td>
+	      	<td>
+	      		<% if @invoice.editable? %>
+	      			<%= f.link_to_remove icon('fas', 'trash') %></td>
+	      		<% end %>
 	      </tr>
 	    <% end %>
 	</tbody>

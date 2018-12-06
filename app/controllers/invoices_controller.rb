@@ -11,6 +11,11 @@ class InvoicesController < ApplicationController
   # GET /invoices/1
   # GET /invoices/1.json
   def show
+    # la siguiene variable la cree para el pdf:
+    Product.unscoped do
+      @group_details = @invoice.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
     respond_to do |format|
       format.html
       format.pdf do
@@ -38,7 +43,7 @@ class InvoicesController < ApplicationController
   def create
     @invoice = current_user.company.invoices.new(invoice_params)
     @invoice.user_id = current_user.id
-    @client = @invoice.client 
+    @client = @invoice.client
     respond_to do |format|
       if @invoice.save
         format.html{redirect_to edit_invoice_path(@invoice), notice: "El comprobante fue creado con éxito."}
@@ -51,6 +56,7 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
+    @client = @invoice.client
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Factura actualizada con éxito.' }
@@ -78,6 +84,11 @@ class InvoicesController < ApplicationController
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit} }
   end
 
+  def search_product
+    @products = current_user.company.products.search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
+    render '/invoices/detail/search_product'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_invoice
@@ -86,7 +97,7 @@ class InvoicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, payments_attributes: [:id, :type_of_payment, :total, :payment_date, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
+      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, payments_attributes: [:id, :type_of_payment, :total, :payment_date, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
     end
 
     def client_params

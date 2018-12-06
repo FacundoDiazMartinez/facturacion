@@ -15,7 +15,7 @@ class PurchaseOrder < ApplicationRecord
   after_save :set_sended_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state == "Enviado"}
   after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
 
-  before_validation :check_details
+
 
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
 
@@ -99,8 +99,5 @@ class PurchaseOrder < ApplicationRecord
       self.purchase_order_details.sum(:total)
     end
 
-    def check_details
-      errors.add(:details, "No puede guardar una solicitud de compra vacia.") unless purchase_order_details.count > 0
-    end
   #FUNCIONES
 end
