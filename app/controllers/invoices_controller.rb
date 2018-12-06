@@ -44,7 +44,7 @@ class InvoicesController < ApplicationController
     @client = @invoice.client
     respond_to do |format|
       if @invoice.save
-        format.html{redirect_to edit_invoice_path(@invoice), notice: "El comprobante fue creado con éxito."}
+        format.html{redirect_to invoice_path(@invoice.id, format: :pdf), notice: "El comprobante fue creado con éxito."}
       else
         format.html {render :new}
       end
@@ -56,7 +56,7 @@ class InvoicesController < ApplicationController
   def update
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
-        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Factura actualizada con éxito.' }
+        format.html { redirect_to invoice_path(@invoice.id, format: :pdf), notice: 'Factura actualizada con éxito.' }
         format.json { render :show, status: :ok, location: @invoice }
       else
         format.html { render :edit }
