@@ -46,7 +46,7 @@ class InvoicesController < ApplicationController
     @client = @invoice.client
     respond_to do |format|
       if @invoice.save
-        format.html{redirect_to invoice_path(@invoice.id, format: :pdf), notice: "El comprobante fue creado con éxito."}
+        format.html{redirect_to edit_invoice_path(@invoice.id), notice: "El comprobante fue creado con éxito."}
       else
         format.html {render :new}
       end
@@ -59,7 +59,7 @@ class InvoicesController < ApplicationController
     @client = @invoice.client
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
-        format.html { redirect_to invoice_path(@invoice.id, format: :pdf), notice: 'Factura actualizada con éxito.' }
+        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Factura actualizada con éxito.' }
         format.json { render :show, status: :ok, location: @invoice }
       else
         format.html { render :edit }
@@ -84,9 +84,40 @@ class InvoicesController < ApplicationController
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit} }
   end
 
+  def autocomplete_associated_invoice
+    term = params[:term]
+    invoices = current_user.company.invoices.where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%")
+    render :json => invoices.map{|i| {:id => i.id, :label => "Factura Nº: #{i.comp_number}", :value => i.comp_number}}
+  end
+
   def search_product
     @products = current_user.company.products.search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
     render '/invoices/detail/search_product'
+  end
+
+  def change_attributes
+    if not params[:id].blank?
+      set_invoice
+      @invoice.cbte_tipo  = params[:cbte_tipo]
+      @invoice.concepto   = params[:concepto]
+    else
+      @invoice = Invoice.new(cbte_tipo: params[:cbte_tipo], concepto: params[:concepto])
+    end
+  end
+
+  def set_associated_invoice
+    if params[:id].blank? 
+      @invoice = Invoice.new 
+    else
+      set_invoice
+    end
+    associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice]).first
+    associated_invoice.invoice_details.each do |id|
+      @invoice.invoice_details.build(id.attributes)
+    end
+    associated_invoice.payments.each do |payment|
+      @invoice.payments.build(payment.attributes)
+    end
   end
 
   private

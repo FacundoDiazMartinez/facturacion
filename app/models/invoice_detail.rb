@@ -14,8 +14,8 @@ class InvoiceDetail < ApplicationRecord
   validates_presence_of :product, message: "El detalle debe estar vinculado a un producto."
   validates_presence_of :quantity, message: "El detalle debe especificar una cantidad."
   validates_numericality_of :quantity, greater_than: 0.0, message: "La cantidad debe ser mayor a 0."
-  validates_inclusion_of :measurement_unit, in: Product::MEASUREMENT_UNITS.keys, message: "Unidad de medida inválida."
-  validates_presence_of :measurement_unit, message: "Debe especificar la unidad de medida en el detalle de la factura."
+  validates_inclusion_of :measurement_unit, in: Product::MEASUREMENT_UNITS.keys, message: "Unidad de medida inválida.", if: Proc.new{|id| not id.product.nil?}
+  validates_presence_of :measurement_unit, message: "Debe especificar la unidad de medida en el detalle de la factura.", if: Proc.new{|id| not id.product.nil?}
   validates_presence_of :price_per_unit, message: "Debe especificar la unidad de medida en el detalle de la factura."
   validates_numericality_of :price_per_unit, greater_than_or_equal_to: 0.0, message: "El precio por unidad debe ser igual o mayor a 0."
   validates_numericality_of :bonus_percentage, message: "El porcentage bonificado debe ser un número."
@@ -42,8 +42,10 @@ class InvoiceDetail < ApplicationRecord
   #     t.boolean "active", default: true, null: false
   #     t.datetime "created_at", null: false
   #     t.datetime "updated_at", null: false
+  #     t.bigint "user_id"
   #     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
   #     t.index ["product_id"], name: "index_invoice_details_on_product_id"
+  #     t.index ["user_id"], name: "index_invoice_details_on_user_id"
   #   end
   # TABLA
 
@@ -51,10 +53,13 @@ class InvoiceDetail < ApplicationRecord
     def check_product
       if new_record?
         product.company_id = invoice.company_id
+        product.updated_by = invoice.user_id
+        product.created_by = invoice.user_id
         product.save
         if not product.errors.any?
           self.price_per_unit   = product.price
-          self.measurement_unit = product.measurement_unit
+          pp self.measurement_unit = product.measurement_unit
+
         end
       end
     end
@@ -70,8 +75,6 @@ class InvoiceDetail < ApplicationRecord
     def product_attributes=(attributes)
       if !attributes['id'].blank?
         self.product            = Product.unscoped.find(attributes['id'])
-        self.product.updated_by = self.user_id
-        self.product.created_by = self.user_id
         self.measurement_unit   = self.product.measurement_unit
       end
       super

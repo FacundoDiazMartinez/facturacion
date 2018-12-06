@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_05_180020) do
+ActiveRecord::Schema.define(version: 2018_12_06_182443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2018_12_05_180020) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.integer "number", null: false
+    t.string "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -208,6 +208,9 @@ ActiveRecord::Schema.define(version: 2018_12_05_180020) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "associated_invoice"
+    t.date "fch_serv_desde"
+    t.date "fch_serv_hasta"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
@@ -280,7 +283,9 @@ ActiveRecord::Schema.define(version: 2018_12_05_180020) do
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "supplier_id"
     t.index ["company_id"], name: "index_product_categories_on_company_id"
+    t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
   end
 
   create_table "product_price_histories", force: :cascade do |t|
@@ -539,6 +544,7 @@ ActiveRecord::Schema.define(version: 2018_12_05_180020) do
   add_foreign_key "payments", "invoices"
   add_foreign_key "permissions", "friendly_names"
   add_foreign_key "product_categories", "companies"
+  add_foreign_key "product_categories", "suppliers"
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"

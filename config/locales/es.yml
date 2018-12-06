@@ -106,6 +106,7 @@ es:
         cbte_hasta: "Fin del servicio"
         iva_cond: "Condición ante I.V.A."
         comp_number: "Nº comprobante"
+        associated_invoice: "Factura asociada Nº"
       product:
         photo: "Imagen"
         product_category_id: "Categoría"
