@@ -64,7 +64,15 @@ class PurchaseInvoicesController < ApplicationController
   def autocomplete_arrival_note_id
     term = params[:term]
     arrival_notes = current_user.company.arrival_notes.where('number::text ILIKE ?', "%#{term}%").all
-    render :json => arrival_notes.map { |arr_note| {:id => arr_note.id, :label => arr_note.number, :value => product.id} }
+    render :json => arrival_notes.map { |arr_note| {:id => arr_note.id, :label => arr_note.number, :value => arr_note.id} }
+  end
+
+  def autocomplete_purchase_order
+    term = params[:term]
+    purchase_orders = current_user.company.purchase_orders.where("number::text ILIKE ? AND state = 'Aprobado'", "%#{term}%").all
+    render :json => purchase_orders.map { 
+      |po| {:id => po.id, :label => po.number, :value => po.number, supplier_id: po.supplier_id, total: po.total} 
+    }
   end
 
   private

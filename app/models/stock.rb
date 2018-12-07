@@ -7,6 +7,6 @@ class Stock < ApplicationRecord
   STATES = ["Disponible", "Reservado"]
 
   def set_stock_to_category
-  	product.product_category.update_column(:products_count, product.available_stock)
+  	product.product_category.update_column(:products_count, product.available_stock) unless product.product_category.nil?
   end
 end

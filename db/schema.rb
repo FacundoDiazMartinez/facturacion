@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_06_182443) do
+ActiveRecord::Schema.define(version: 2018_12_07_174734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -342,8 +342,10 @@ ActiveRecord::Schema.define(version: 2018_12_06_182443) do
     t.float "total", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "purchase_order_id"
     t.index ["arrival_note_id"], name: "index_purchase_invoices_on_arrival_note_id"
     t.index ["company_id"], name: "index_purchase_invoices_on_company_id"
+    t.index ["purchase_order_id"], name: "index_purchase_invoices_on_purchase_order_id"
     t.index ["supplier_id"], name: "index_purchase_invoices_on_supplier_id"
     t.index ["user_id"], name: "index_purchase_invoices_on_user_id"
   end
@@ -550,6 +552,7 @@ ActiveRecord::Schema.define(version: 2018_12_06_182443) do
   add_foreign_key "products", "product_categories"
   add_foreign_key "purchase_invoices", "arrival_notes"
   add_foreign_key "purchase_invoices", "companies"
+  add_foreign_key "purchase_invoices", "purchase_orders"
   add_foreign_key "purchase_invoices", "suppliers"
   add_foreign_key "purchase_invoices", "users"
   add_foreign_key "purchase_order_details", "products"

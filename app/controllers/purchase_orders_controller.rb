@@ -1,5 +1,5 @@
 class PurchaseOrdersController < ApplicationController
-  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :approve]
 
   # GET /purchase_orders
   # GET /purchase_orders.json
@@ -75,6 +75,17 @@ class PurchaseOrdersController < ApplicationController
     term = params[:term]
     products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
+  end
+
+  def approve
+    respond_to do |format|
+      if current_user.has_purchase_management_role?
+        @purchase_order.update_column(:state, "Aprobado")
+        format.html {redirect_to @purchase_order, notice: "La orden de compra fue aprobada."}
+      else
+        format.html {render :edit, notice: "No tiene los provilegios necesarios para aprobar la orden de compra."}
+      end
+    end
   end
 
   private

@@ -15,6 +15,13 @@
     <div class="card-body">
       <div class="form-row">
         <div class="form-group col-md-6">
+          <%= form.label :purchase_order_id %>
+          <%= autocomplete_field_tag :purchase_order_id, '', autocomplete_purchase_order_purchase_invoices_path, class: 'form-control purchase-order-autocomplete_field', id_element: "#purchase_invoice_purchase_order_id", placeholder: "Número de Orden de Compra" %>
+          <%= form.hidden_field :purchase_order_id %>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
           <%= form.label :supplier_id %>
           <div class="input-group">
             <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', aria:{label: "Proveedor", describedby: "add-supplier"}} %>
@@ -36,7 +43,7 @@
           <%= label_tag :document_number, "Comprobante" %>
           <div class="input-group">
             <div class="input-group-prepend">
-              <%= form.select :cbte_tipo, Afip::CBTE_TIPO.map{|tipo| [tipo.last, tipo.first]}, {prompt: "Seleccione..."}, {class: 'form-control input-group-text'} %>
+              <%= form.select :cbte_tipo, Afip::CBTE_TIPO.map{|tipo| [tipo.last, tipo.first]}, {prompt: "Tipo..."}, {class: 'form-control input-group-text'} %>
             </div>
             <%= form.text_field :number, class: 'form-control', placeholder: "Número de comprobante" %>
           </div>

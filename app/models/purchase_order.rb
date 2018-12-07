@@ -19,7 +19,7 @@ class PurchaseOrder < ApplicationRecord
 
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
 
-  STATES = ["Pendiente de aprobación", "Aprobado", "Enviado", "Anulado", "Finalizado"]
+  STATES = ["Pendiente de aprobación", "Aprobado", "Anulado"]
 
   #ATRIBUTOS
   	def total_left
@@ -78,7 +78,7 @@ class PurchaseOrder < ApplicationRecord
   #PROCESOS
     def set_number
       last_po = PurchaseOrder.where(company_id: company_id).last
-      self.number = last_po.nil? ? 1 : (last_po.number.to_i + 1)
+      self.number = last_po.nil? ? "00001" : (last_po.number.to_i + 1).to_s.rjust(5,padstr= '0')  
     end
 
     def set_sended_activity
@@ -91,8 +91,8 @@ class PurchaseOrder < ApplicationRecord
   #PROCESOS
 
   #FUNCIONES
-    def self.sended_orders
-      where(state: "Enviado").map{|s| [s.name, s.id]}
+    def self.approved_orders
+      where(state: "Aprobado").map{|po| [po.number, po.id]}
     end
 
     def sum_details
