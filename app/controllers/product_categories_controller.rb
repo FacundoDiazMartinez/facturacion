@@ -28,13 +28,14 @@ class ProductCategoriesController < ApplicationController
 
     respond_to do |format|
       if @product_category.save
-        format.html { redirect_to @product_category, notice: 'Product category was successfully created.' }
+        index
+        format.html { redirect_to product_categories_path, notice: 'Product category was successfully created.' }
         format.json { render :show, status: :created, location: @product_category }
-        format.js   { render template: '/products/edit.js.erb'}
       else
         format.html { render :new }
         format.json { render json: @product_category.errors, status: :unprocessable_entity }
       end
+      format.js     { render :set_product_category }
     end
   end
 
@@ -43,12 +44,14 @@ class ProductCategoriesController < ApplicationController
   def update
     respond_to do |format|
       if @product_category.update(product_category_params)
-        format.html { redirect_to @product_category, notice: 'Product category was successfully updated.' }
+        index
+        format.html { redirect_to product_categories_path, notice: 'Product category was successfully updated.' }
         format.json { render :show, status: :ok, location: @product_category }
       else
         format.html { render :edit }
         format.json { render json: @product_category.errors, status: :unprocessable_entity }
       end
+      format.js     { render :set_product_category }
     end
   end
 

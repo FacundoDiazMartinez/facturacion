@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_07_174734) do
+ActiveRecord::Schema.define(version: 2018_12_07_180324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -428,6 +428,8 @@ ActiveRecord::Schema.define(version: 2018_12_07_174734) do
     t.float "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "arrival_note_detail_id"
+    t.index ["arrival_note_detail_id"], name: "index_stocks_on_arrival_note_detail_id"
     t.index ["depot_id"], name: "index_stocks_on_depot_id"
     t.index ["product_id"], name: "index_stocks_on_product_id"
   end
@@ -566,6 +568,7 @@ ActiveRecord::Schema.define(version: 2018_12_07_174734) do
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "roles", "companies"
   add_foreign_key "sale_points", "companies"
+  add_foreign_key "stocks", "arrival_note_details"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"

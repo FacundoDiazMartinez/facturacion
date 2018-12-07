@@ -8,6 +8,7 @@ class ArrivalNote < ApplicationRecord
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
  
   before_validation :set_number
+  before_save :set_state, on: :create
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -67,6 +68,10 @@ class ArrivalNote < ApplicationRecord
   #PROCESOS
     def set_number
       self.number = self.number.to_s.rjust(8,padstr= '0') 
+    end
+
+    def set_state
+      self.state = "Finalizado"
     end
   #PROCESOS
 

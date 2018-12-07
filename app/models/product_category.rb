@@ -15,7 +15,7 @@ class ProductCategory < ApplicationRecord
 
   	def self.search_by_supplier supplier 
 		if not supplier.blank?
-			joins(:supplier).where("suppliers.name ILIKE ? ", "%#{supplier}%")
+			joins(:supplier).where("suppliers.id = ? ", supplier)
 		else
 			all 
 		end
@@ -25,6 +25,10 @@ class ProductCategory < ApplicationRecord
   #ATRIBUTOS
   	def iva
       Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f
+    end
+
+    def supplier_name
+      supplier.nil? ? "Sin proveedor" : supplier.name
     end
   #ATRIBUTOS
 end

@@ -1,0 +1,8 @@
+<% if not @product_category.errors.any? %>
+	$("#ProductCategoryModal").modal('hide');
+	$("#ProductCategoryModal").on('hidden.bs.modal', function (e) {
+		$("#product_categories_table").html("<%= j render 'product_categories_table' %>");
+	});
+<% else %>
+	$("#errors").html("<%= error_explanation @product_category %>");
+<% end %>
