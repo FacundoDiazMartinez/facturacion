@@ -105,7 +105,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_supplier supplier
 			if not supplier.blank?
-				joins(product_category: :supplier).where("suppliers.name ILIKE ? ", "%#{supplier}%")
+				joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
 			else
 				all
 			end
