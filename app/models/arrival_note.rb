@@ -9,6 +9,7 @@ class ArrivalNote < ApplicationRecord
  
   before_validation :set_number
   before_save :set_state, on: :create
+  after_save  :remove_stock, if: Proc.new{|an| an.saved_change_to_state? && state == "Anulado"}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -73,9 +74,17 @@ class ArrivalNote < ApplicationRecord
     def set_state
       self.state = "Finalizado"
     end
+
+    def remove_stock
+      arrival_note_details.each do |detail|
+        detail.remove_stock
+      end
+    end
   #PROCESOS
 
   #FUNCIONES
-    
+    def editable?
+      state == "Pendiente"
+    end
   #FUNCIONES
 end

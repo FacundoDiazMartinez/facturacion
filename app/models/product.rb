@@ -178,6 +178,12 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+		def remove_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			s.save
+		end
+
 	    def destroy
 	      update_column(:active,false)
 	    end

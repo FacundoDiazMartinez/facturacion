@@ -1,5 +1,5 @@
 class ArrivalNotesController < ApplicationController
-  before_action :set_arrival_note, only: [:show, :edit, :update, :destroy]
+  before_action :set_arrival_note, only: [:show, :edit, :update, :destroy, :cancel]
 
   # GET /arrival_notes
   # GET /arrival_notes.json
@@ -79,6 +79,17 @@ class ArrivalNotesController < ApplicationController
     term = params[:term]
     purchase_orders = current_user.company.purchase_orders.where("number::text ILIKE ? AND state = 'Aprobado'", "%#{term}%").order(:number).all
     render :json => purchase_orders.map { |po| {:id => po.id, :label => po.number, :value => po.number} }
+  end
+
+  def cancel
+    respond_to do |format|
+      if current_user.has_stock_management_role?
+        @arrival_note.update_column(:state, "Anulado")
+        format.html {redirect_to edit_arrival_note_path(@arrival_note.id), notice: "El remito fue anulado."}
+      else
+        format.html {render :edit, notice: "No tiene los provilegios necesarios para anular el remito."}
+      end
+    end
   end
 
   private

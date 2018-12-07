@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     get :set_purchase_order, on: :collection
     get :generate_pdf, on: :member
     get :autocomplete_purchase_order, on: :collection
+    patch :cancel, on: :member
   end
 
   resources :purchase_orders do
