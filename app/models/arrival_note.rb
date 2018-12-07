@@ -4,10 +4,10 @@ class ArrivalNote < ApplicationRecord
   belongs_to :user
   belongs_to :depot
   has_many :arrival_note_details
+
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
  
-  before_validation :check_details
-  bafore_validation :set_number
+  before_validation :set_number
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -66,13 +66,11 @@ class ArrivalNote < ApplicationRecord
 
   #PROCESOS
     def set_number
-      self.number = self.number.to_s.rjust(6,padstr= '0') 
+      self.number = self.number.to_s.rjust(8,padstr= '0') 
     end
   #PROCESOS
 
   #FUNCIONES
-    def check_details
-      errors.add(:details, "No puede guardar un remito vacio.") unless arrival_note_details.count > 0
-    end
+    
   #FUNCIONES
 end

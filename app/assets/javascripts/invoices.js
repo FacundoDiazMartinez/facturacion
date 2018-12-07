@@ -180,3 +180,16 @@ function setProduct(product, index){
 	$("#search_product_modal").modal('hide')
 	subtotal.trigger("change");
 };
+
+$(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
+	form = $(this).parents('form:first')
+	cbte_tipo = $("#invoice_cbte_tipo")
+	concepto = $("#invoice_concepto")
+  	$.get(form.attr("action")+'/change_attributes', {cbte_tipo: cbte_tipo.val(), concepto: concepto.val()}, null, "script");
+});
+
+
+$(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){
+	form = $(this).parents('form:first');
+	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");
+});

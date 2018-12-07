@@ -7,7 +7,7 @@ class ArrivalNoteDetail < ApplicationRecord
 
   accepts_nested_attributes_for :product, reject_if: :all_blank
 
-  validates_presence_of     :arrival_note_id, message: "El detalle debe estar vinculado a un remito."
+  #validates_presence_of     :arrival_note_id, message: "El detalle debe estar vinculado a un remito."
   validates_presence_of     :product_id, message: "El detalle debe estar vinculado a un producto."
   validates_presence_of     :quantity, message: "El detalle debe poseer una cantidad."
   validates_numericality_of :quantity, greater_than: 0.0, message: "El detalle posee una cantidad inválida. Debe ser mayor a 0."

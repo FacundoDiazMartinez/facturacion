@@ -14,11 +14,13 @@ Rails.application.routes.draw do
   end
   resources :purchase_invoices do
     get :autocomplete_arrival_note_id, on: :collection
+    get :autocomplete_purchase_order, on: :collection
   end
   resources :arrival_notes do
     resources :arrival_note_details, shallow: true
     get :set_purchase_order, on: :collection
     get :generate_pdf, on: :member
+    get :autocomplete_purchase_order, on: :collection
   end
 
   resources :purchase_orders do
@@ -26,6 +28,7 @@ Rails.application.routes.draw do
     get :autocomplete_product_code, :on => :collection
     get :set_supplier, on: :collection
     get :generate_pdf, on: :member
+    patch :approve, on: :member
   end
 
   resources :products do
@@ -74,6 +77,11 @@ Rails.application.routes.draw do
     get :autocomplete_product_code, :on => :collection
     get :confirm, on: :member
     get :search_product, on: :collection
+    get :autocomplete_associated_invoice, on: :collection
+    get :change_attributes, on: :collection
+    get :change_attributes, on: :member
+    get :set_associated_invoice, on: :collection
+    get :set_associated_invoice, on: :member
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

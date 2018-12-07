@@ -1,15 +1,5 @@
-// USAR POPUP:
-
-// <div class="popup">
-//   *** AQUI VA EL CAMPO EN DONDE VA APARECER EL POPUP ***
-//   <span class="popuptext" id="myPopup">Esta intentando cobrar un monto superior.</span>
-// </div>
-
-
 .popup {
   position: relative;
-  display: inline-block;
-  cursor: pointer;
 }
 
 /* The actual popup (appears on top) */

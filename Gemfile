@@ -52,14 +52,11 @@ gem 'bootstrap-toggle-rails'
 #Fontawesome
 gem 'font-awesome-sass', '~> 5.3.1'
 
-#CanCanCan
-gem 'cancancan', '~> 2.0'
-
 #Carrierwave
 gem 'aws-sdk', '~> 3'
 
 #Librerias de AFIP - wsfe - wspsr - wsctg
-gem 'Afip'
+gem 'Afip', '~> 0.7.3'
 
 # Paginación
 gem 'will_paginate', '~> 3.1.1'
