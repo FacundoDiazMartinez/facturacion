@@ -1,5 +1,10 @@
 <div class="container">
   <div class="row">
+    <% if !@invoice.check_authorized_invoice %>
+      <div class="text_center">
+        -- ATENCIÓN: COMPROBANTE NO AUTORIZADO --
+      </div>
+    <% end %>
     <div class="border">
           <center>
             <h2 class="text_size_25">ORIGINAL</h2>

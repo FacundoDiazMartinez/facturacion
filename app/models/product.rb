@@ -1,5 +1,5 @@
 class Product < ApplicationRecord
-	
+
   	belongs_to :product_category, optional: true
   	belongs_to :company
   	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
@@ -27,7 +27,7 @@ class Product < ApplicationRecord
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
   	after_create :create_price_history
-  	
+
 
   	MEASUREMENT_UNITS = {
 	  	"1" => "kilogramos",
@@ -79,43 +79,43 @@ class Product < ApplicationRecord
 	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}, allow_blank: true
 
 	#FILTROS DE BUSQUEDA
-		def self.search_by_name name 
+		def self.search_by_name name
 			if not name.blank?
 				where("products.name ILIKE ? ", "%#{name}%")
 			else
-				all 
+				all
 			end
 		end
 
-		def self.search_by_code code 
+		def self.search_by_code code
 			if not code.blank?
 				where("products.code ILIKE ? ", "%#{code}%")
 			else
-				all 
+				all
 			end
 		end
 
-		def self.search_by_category category 
+		def self.search_by_category category
 			if not category.blank?
 				joins(:product_category).where("product_categories.name ILIKE ? ", "%#{category}%")
 			else
-				all 
+				all
 			end
 		end
 
-		def self.search_by_supplier supplier 
+		def self.search_by_supplier supplier
 			if not supplier.blank?
 				joins(product_category: :supplier).where("suppliers.name ILIKE ? ", "%#{supplier}%")
 			else
-				all 
+				all
 			end
 		end
 
-		def self.search_with_stock stock 
+		def self.search_with_stock stock
 			if stock == "on"
 				joins(:stocks).where("stocks.state = 'Disponible'")
 			else
-				all 
+				all
 			end
 		end
 
@@ -187,7 +187,7 @@ class Product < ApplicationRecord
 	    	#TODO Añadir created_by y updated_by
 	      	spreadsheet = open_spreadsheet(file)
         	header = self.permited_params
-        	categories = current_user.company.product_categories.map{|pc| {pc.name => pc.id}}.first || {} 
+        	categories = current_user.company.product_categories.map{|pc| {pc.name => pc.id}}.first || {}
         	load_products(spreadsheet, header, categories, current_user)
 		end
 
@@ -249,7 +249,7 @@ class Product < ApplicationRecord
 		    end
 		end
 		#IMPORTAR EXCEL o CSV
-	    
+
 	#PROCESOS
 
 	private

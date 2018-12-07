@@ -23,6 +23,7 @@ class Payment < ApplicationRecord
   	def set_total_pay_to_invoice
   		invoice.update_attribute(:total_pay, invoice.sum_payments)
   	end
+    
     def payment_name
       TYPES[type_of_payment]
     end
