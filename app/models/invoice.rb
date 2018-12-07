@@ -129,6 +129,14 @@ class Invoice < ApplicationRecord
         return i
       end
 
+      def check_authorized_invoice
+        if (self.cae.length > 0) && (self.company.environment == "production")
+          return true
+        else
+          return false
+        end
+      end
+
       def self.applicable_iva_for_detail(aliquot)
         case aliquot
         when nil

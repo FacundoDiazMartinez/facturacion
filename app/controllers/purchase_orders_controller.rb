@@ -10,6 +10,21 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/1
   # GET /purchase_orders/1.json
   def show
+    Product.unscoped do
+      @group_details = @purchase_order.purchase_order_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@purchase_order.id}",
+        layout: 'pdf.html',
+        template: 'purchase_orders/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /purchase_orders/new

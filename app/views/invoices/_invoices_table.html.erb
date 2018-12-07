@@ -20,8 +20,8 @@
           <td><%= invoice.state %></td>
           <td><%= invoice.cbte_fch %></td>
           <td class="text-right">
-            <% if ! invoice.editable? %>
-              <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <%  if ! invoice.editable? %>
+              <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
             <% end %>
             <%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(invoice), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
             <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>

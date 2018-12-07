@@ -4,7 +4,13 @@
     <table class="width_100">
     <tr>
       <td><%= wicked_pdf_image_tag '/images/afip.png',:width => "150"%></td>
-      <td><b>Comprobante Autorizado</b></td>
+      <td><b>
+        <% if @invoice.check_authorized_invoice %>
+          Comprobante Autorizado
+        <% else %>
+          Comprobante NO Autorizado
+        <% end %>
+      </b></td>
       <td> </td>
       <td class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
     </tr>
@@ -23,7 +29,3 @@
 </div>
 
 <!-- FIN PIE DE PAGINA -->
-
-<div class="nobreak">
-
-</div>

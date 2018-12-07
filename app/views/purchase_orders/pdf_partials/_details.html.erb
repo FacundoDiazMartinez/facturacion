@@ -1,6 +1,6 @@
 <!-- DETALLE -->
 <div class="row">
-  <div class="container" style="height: 680px;">
+  <div class="container" style="height: 770px;">
     <table class="width_100">
     <tr>
       <th class="description_header">Codigo</th>
@@ -8,8 +8,6 @@
       <th class="description_header">Cantidad</th>
       <th class="description_header">U.Medida</th>
       <th class="description_header">Precio Unit.</th>
-      <th class="description_header">%Bonif</th>
-      <th class="description_header">Imp.Bonif</th>
       <th class="description_header">Subtotal</th>
     </tr>
     <% details.compact.each do |det| %>
@@ -19,9 +17,7 @@
           <td class="text_right"><%= det.quantity %></td>
           <td class="text_right"><%= det.product.measurement_unit_name %></td>
           <td class="text_right"><%= det.product.price %></td>
-          <td class="text_right"><%= det.bonus_percentage %></td>
-          <td class="text_right"><%= det.bonus_amount %></td>
-          <td class="text_right"><%= det.subtotal %></td>
+          <td class="text_right"><%= det.total %></td>
         </tr>
     <% end %>
   </table>
@@ -48,14 +44,11 @@
       <td class="text_right"><b>$ <%= total_of_page %></b></td>
     </tr>
 
-    <tr>
-      <td class="text_right"><b>Otros Tributos:</b></td>
-      <td class="text_right"><b>$ <%= @invoice.imp_op_ex %> </b></td>
-    </tr>
+
 
     <tr>
       <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%= @invoice.total %></b></td>
+      <td class="text_right"><b>$ <%= @purchase_order.total %></b></td>
     </tr>
   </table>
   </div>
