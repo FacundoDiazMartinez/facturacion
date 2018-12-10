@@ -7,7 +7,7 @@
           <td style="width: 50%;">
             <table class="width_100">
               <tr>
-                  <td class="text_right"><small>Original acompaña factura/Copia queda en Compras</small></td>
+                  <td class="text_right"><small>Original regresa a empresa/Copia para el cliente</small></td>
               </tr>
             </table>
           </td>
@@ -17,14 +17,14 @@
     <div class="border">
       <table class="width_100">
         <tr>
-          <td class="width_75"><h1 class="text_size_25 text_center">ORDEN DE COMPRA</h1></td>
+          <td class="width_75"><h1 class="text_size_25 text_center">REMITO</h1></td>
           <td class="width_25">
             <table class="width_100">
               <tr>
-                <td>N° <%= @purchase_order.number %></td>
+                <td>N° <%= @arrival_note.number %></td>
               </tr>
               <tr>
-                <td>Fecha: <%= @purchase_order.created_at %></td>
+                <td>Fecha: <%= @arrival_note.created_at %></td>
               </tr>
             </table>
           </td>
@@ -39,12 +39,12 @@
     <div class=" border">
       <div>
         <center>
-          <%= @purchase_order.company.province.name %>, <%=@purchase_order.company.address %> - Teléfono: <%=@purchase_order.company.contact_number %>
+          <%= @arrival_note.company.province.name %>, <%=@arrival_note.company.address %> - Teléfono: <%=@arrival_note.company.contact_number %>
         </center>
       </div>
       <div>
         <center>
-        E-mail: <%=@purchase_order.company.email %> - CUIT: <%=@purchase_order.company.cuit %>
+        E-mail: <%=@arrival_note.company.email %> - CUIT: <%=@arrival_note.company.cuit %>
         <center>
       </div>
 
