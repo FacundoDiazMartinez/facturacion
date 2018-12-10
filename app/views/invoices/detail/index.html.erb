@@ -6,11 +6,11 @@
 			<th scope="col">Producto/Servicio</th>
 			<th scope="col">Precio unitario</th>
 			<th scope="col">Medida</th>
+			<th scope="col" style="width: 12%;">Comisionante</th>
 			<th scope="col">Cantidad</th>
 			<th style="display: <%= @invoice.cbte_tipo != '12' ? 'block' : 'none'%>;" scope="col">Alicuota I.V.A. (%)</th>
 			<th scope="col">Monto Bonificado</th>
 			<th scope="col">Subtotal</th>
-			<th scope="col">Comisionante</th>
 			<th scope="col"></th>
 		</tr>
 	</thead>
@@ -28,6 +28,7 @@
 					<td><%= pf.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control measurement_unit', disabled: !@invoice.editable?} %></td>
 					<%= pf.hidden_field :company_id, value: current_user.company_id %>
 				<% end %>
+				<td><%= f.select :user_id, grouped_options_for_select(current_user.company.grouped_users_by_role), {include_blank: "Ninguno"}, {class: 'form-control', disabled: !@invoice.editable?} %></td>
 				<td><%= f.number_field :quantity, class: 'form-control quantity', min: 0, disabled: !@invoice.editable? %></td>
 				<% if @invoice.cbte_tipo == "12" %>
 					<td>
@@ -44,7 +45,6 @@
 					<%= f.number_field :bonus_amount, class: 'form-control bonus_amount', min: 0, disabled: !@invoice.editable? %></td>
 
 				<td><%= f.number_field :subtotal, class: 'form-control subtotal', readonly: true, disabled: !@invoice.editable? %></td>
-				<td><%= f.select :user_id, grouped_options_for_select(current_user.company.grouped_users_by_role), {include_blank: "Ninguno"}, {class: 'form-control', disabled: !@invoice.editable?} %></td>
 				<% if @invoice.editable? %>
 					<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
 				<% end %>

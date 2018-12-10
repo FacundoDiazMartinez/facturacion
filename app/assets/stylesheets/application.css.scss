@@ -26,6 +26,7 @@
 @import "users";
 @import "popup";
 @import "notifications";
+@import "sidebar";
 
 
 @font-face {
@@ -214,11 +215,11 @@ a:visited {
 }
 
 a.nav-link:visited{
-  color: black;
+  color: white;
 }
 
 a.nav-link:hover{
-  background-color: white;
+  background-color: rgba(0,0,0,.5);
 }
 
 .with-margin-top{
