@@ -41,7 +41,7 @@ class Company < ApplicationRecord
 	validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
 	validates_length_of :cbu, minimum: 22, maximum: 22, allow_blank: true, message: "C.B.U. inválido. Verifique por favor. Cantidad mínima de caracteres = 22."
 	validates_length_of :cuit, minimum: 11, maximum: 11, allow_blank: true, message: "C.U.I.T. inválido. Verifique por favor. Cantidad mínima de caracteres = 11."
-	validates_inclusion_of :concepto, in: CONCEPTOS, message: "Concepto inválido."
+	validates_inclusion_of :concepto, in: ::Afip::CONCEPTOS.values, message: "Concepto inválido."
 	
 
 	accepts_nested_attributes_for :sale_points, allow_destroy: true, reject_if: :all_blank

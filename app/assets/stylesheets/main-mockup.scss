@@ -15,8 +15,8 @@ $primary-color: #007bff;
 }
 
 #yield-wrapper {
-  width: 84%;
-  margin-left: 16%;
+  width: 97%;
+  margin-left: 3%;
 }
 
 .sidebar-left {
@@ -109,10 +109,6 @@ $primary-color: #007bff;
       a i{
         color: #FFF;
       }
-
-      span.only-desktop {
-        display: none;
-      }
     }
   }
 
@@ -183,11 +179,6 @@ $primary-color: #007bff;
 
       a {
         font-size: 26px;
-
-        span.only-desktop {
-          display: inline !important;
-          color: #fff !important;
-        }
       }
     }
   }
