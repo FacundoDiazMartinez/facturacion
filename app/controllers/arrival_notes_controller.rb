@@ -10,6 +10,21 @@ class ArrivalNotesController < ApplicationController
   # GET /arrival_notes/1
   # GET /arrival_notes/1.json
   def show
+    Product.unscoped do
+      @group_details = @arrival_note.arrival_note_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@arrival_note.id}",
+        layout: 'pdf.html',
+        template: 'arrival_notes/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /arrival_notes/new
