@@ -78,6 +78,6 @@ class DepotsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def depot_params
-      params.require(:depot).permit(:name, :active, :company_id, :stock_count, :stock_limit, :location)
+      params.require(:depot).permit(:name, :active, :company_id, :stock_count, :stock_limit, :location, :filled)
     end
 end
