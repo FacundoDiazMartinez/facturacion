@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2018_12_07_174734) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.string "number", null: false
+    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false

@@ -7,8 +7,6 @@
       <th class="description_header">Producto/Servicio</th>
       <th class="description_header">Cantidad</th>
       <th class="description_header">U.Medida</th>
-      <th class="description_header">Precio Unit.</th>
-      <th class="description_header">Subtotal</th>
     </tr>
     <% details.compact.each do |det| %>
         <tr>
@@ -16,8 +14,6 @@
           <td><%= det.product.name %></td>
           <td class="text_right"><%= det.quantity %></td>
           <td class="text_right"><%= det.product.measurement_unit_name %></td>
-          <td class="text_right"><%= det.product.price %></td>
-          <td class="text_right"><%= det.total %></td>
         </tr>
     <% end %>
   </table>

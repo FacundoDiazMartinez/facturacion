@@ -56,21 +56,9 @@
 
       <table class="width_100">
         <tr>
-          <td> <b>Departamento de Emisión: COMPRAS </b></td>
+          <td><b>Departamento de Emisión: DEPÓSITO </b></td>
 
-          <td><b>Proveedor N°:</b> <%=@purchase_order.supplier.id %></td>
-        </tr>
-
-        <tr>
-          <td><b>Proveedor Razón Social:</b> <%= @purchase_order.supplier.name %></td>
-
-          <td><b>Tel:</b> <%= @purchase_order.supplier.phone %></td>
-        </tr>
-
-        <tr>
-          <td><b>E-mail:</b> <%= @purchase_order.supplier.email %></td>
-
-          <td ><b>Dirección: </b><%= @purchase_order.supplier.address %></td>
+          <td><b>Órden de Compra asociada:</b> <%=@arrival_note.purchase_order.number %></td>
         </tr>
 
       </table>
