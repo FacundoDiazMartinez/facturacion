@@ -5,8 +5,8 @@ span.only-desktop {
 .sidebar-animate {
   color: white;
   background-color: theme-color("dark");
-  width: 10% !important;
-  left: -7% !important;
+  width: 13% !important;
+  left: -10% !important;
     -webkit-transition: -webkit-transform 400ms ease;
     -moz-transition: -moz-transform 400ms ease;
     -o-transition: transform 400ms ease;
@@ -31,4 +31,20 @@ span.only-desktop {
   span.only-desktop {
     display: inline-block;
   }
+  .dropdown-toggle::after{
+    display: inline-block;
+  }
+}
+
+.dropdown-menu{
+  background-color: theme-color("dark");
+}
+
+.dropdown-item{
+  color: white;
+  text-align: right;
+}
+
+.dropdown-item:hover{
+  background-color: rgba(0,0,0,.5);
 }
