@@ -28,13 +28,14 @@ class ProductCategoriesController < ApplicationController
 
     respond_to do |format|
       if @product_category.save
+        index
         format.html { redirect_to @product_category, notice: 'Product category was successfully created.' }
         format.json { render :show, status: :created, location: @product_category }
-        format.js   { render template: '/products/edit.js.erb'}
       else
         format.html { render :new }
         format.json { render json: @product_category.errors, status: :unprocessable_entity }
       end
+      format.js   { render template: '/products/edit.js.erb'}
     end
   end
 
