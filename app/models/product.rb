@@ -187,7 +187,8 @@ class Product < ApplicationRecord
 	    	#TODO Añadir created_by y updated_by
 	      	spreadsheet = open_spreadsheet(file)
         	header = self.permited_params
-        	categories = current_user.company.product_categories.map{|pc| {pc.name => pc.id}}.first || {}
+        	categories = {}
+        	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
         	load_products(spreadsheet, header, categories, current_user)
 		end
 
@@ -197,12 +198,21 @@ class Product < ApplicationRecord
 			(2..spreadsheet.last_row).each do |i|
           		row = Hash[[header, spreadsheet.row(i)].transpose]
           		product = new
-          		if not categories["#{row[:product_category_name]}"].nil?
-          		 	product.product_category.build(name: row[:product_category_name], company_id: current_user.company_id)
-          		else
-          		 	product.product_category_id = categories["#{row[:product_category_name]}"]
+          		if categories["#{row[:product_category_name]}"].nil?
+          			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
+          			if pc.save
+          				product_category_id = pc.id
+          				categories["#{row[:product_category_name]}"] = product_category_id
+          			else
+          				pp pc.errors
+          			end
           		end
-          		product.attributes 			= row.reject{|e| e == :product_category_name}.to_hash
+          		product.product_category_id = categories["#{row[:product_category_name]}"]
+          		product.code 				= row[:code]
+          		product.name 				= row[:name]
+          		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
+          		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
+          		product.price 				= row[:price].round(2) unless row[:price].nil?
           		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
           		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
           		product.company_id 			= current_user.company_id

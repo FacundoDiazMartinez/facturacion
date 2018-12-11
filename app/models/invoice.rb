@@ -206,7 +206,7 @@ class Invoice < ApplicationRecord
     #PROCESOS
 
       def cbte_tipo_inclusion
-        errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.include?(cbte_tipo)
+        errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.map{|t| t.last}.include?(cbte_tipo)
       end
 
       def create_iva_book

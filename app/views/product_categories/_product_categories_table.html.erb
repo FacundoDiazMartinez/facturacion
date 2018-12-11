@@ -14,6 +14,7 @@
         			<td><%= product_category.name %></td>
         			<td><%= product_category.iva %></td>
         			<td><%= product_category.products_count %></td>
+                    <td><%= link_to icon('fas', 'trash'), product_category, method: :delete, data: {confirm: '¿Estas seguro?'} %></td>
         		</tr>
         	<% end -%>
         </tbody>
