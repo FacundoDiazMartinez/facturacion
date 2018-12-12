@@ -98,7 +98,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.name ILIKE ? ", "%#{category}%")
+				joins(:product_category).where("product_categories.id = ? ", category)
 			else
 				all
 			end
@@ -106,7 +106,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_supplier supplier
 			if not supplier.blank?
-				joins(product_category: :supplier).where("suppliers.name ILIKE ? ", "%#{supplier}%")
+				joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
 			else
 				all
 			end
@@ -176,6 +176,12 @@ class Product < ApplicationRecord
 		def add_stock attrs={}
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
 			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
+			s.save
+		end
+
+		def remove_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save
 		end
 

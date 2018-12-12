@@ -48,5 +48,9 @@ class ArrivalNoteDetail < ApplicationRecord
     def change_product_stock
       self.product.add_stock(quantity: self.quantity, depot_id: self.arrival_note.depot_id)
     end
+
+    def remove_stock
+      self.product.remove_stock(quantity: self.quantity, depot_id: self.arrival_note.depot_id)
+    end
   #PROCESOS
 end
