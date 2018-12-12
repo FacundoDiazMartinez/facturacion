@@ -4,7 +4,7 @@ class ProductCategoriesController < ApplicationController
   # GET /product_categories
   # GET /product_categories.json
   def index
-    @product_categories = current_user.company.product_categories.search_by_name(params[:name]).search_by_supplier(params[:supplier]).paginate(page: params[:page], per_page: 10)
+    @product_categories = current_user.company.product_categories.search_by_name(params[:name]).search_by_supplier(params[:supplier]).paginate(page: params[:page], per_page: 5)
   end
 
   # GET /product_categories/1
@@ -35,7 +35,7 @@ class ProductCategoriesController < ApplicationController
         format.html { render :new }
         format.json { render json: @product_category.errors, status: :unprocessable_entity }
       end
-      format.js   { render template: '/products/edit.js.erb'}
+      format.js   { render template: '/product_categories/set_category.js.erb'}
     end
   end
 

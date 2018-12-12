@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Importar serviceos</h5>
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Importar servicios</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -12,13 +12,16 @@
             <ol>
               <h5>Para poder importar tus serviceos primero debes seguir estos pasos</h5>
               <li>
-                Descargar este archivo excel que tiene el formato con el que debes trabajar. <%= link_to "#{icon('fas', 'download')} Descargar formato".html_safe, export_services_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday' %>
+                Descargar este archivo excel que tiene el formato con el que debes trabajar.
+                <center>
+                  <%= link_to "#{icon('fas', 'download')} Descargar formato".html_safe, export_services_path(empty: true, format: :xlsx), class: 'btn btn-sm' %>
+                </center>
               </li>
               <li>
-                Rellenalo con tus servicios ordenando cada columna donde corresponda, siempre respetando los campos obligatorios.
+                Rellenalo con tus servicios ordenando cada columna donde corresponda, siempre respetando los campos obligatorios. Los podras reconocer porque tienen un * (asterisco) al final del nombre.
               </li>
               <li>
-                Una vez listo tu archivo ya podes subirlo, te avisaremos cuando todos los servicios esten disponibles.
+                Una vez listo tu archivo ya podes subirlo. Te avisaremos cuando todos los servicios esten disponibles.
               </li>
             </ol>
             <hr>

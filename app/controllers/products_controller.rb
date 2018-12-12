@@ -31,7 +31,7 @@ class ProductsController < ApplicationController
     @product.created_by = current_user.id
     respond_to do |format|
       if @product.save
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
+        format.html { redirect_to @product, notice: 'El producto fue creado con éxito.' }
         format.json { render :show, status: :created, location: @product }
       else
         format.html { render :new }
@@ -46,7 +46,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
       @product.updated_by = current_user.id
       if @product.update(product_params)
-        format.html { redirect_to @product, notice: 'Product was successfully created.' }
+        format.html { redirect_to @product, notice: 'El producto fue actualizado con éxito.' }
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit }
@@ -60,7 +60,7 @@ class ProductsController < ApplicationController
   def destroy
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_url, notice: 'Product was successfully destroyed.' }
+      format.html { redirect_to products_url, notice: 'Se elimino correctamente el producto.' }
       format.json { head :no_content }
     end
   end
@@ -72,7 +72,7 @@ class ProductsController < ApplicationController
   end
 
   def import
-    result = Product.save_excel(params[:file], current_user)
+    result = Product.save_excel(params[:file], params[:supplier_id], current_user)
     respond_to do |format|
         flash[:success] = 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'
         format.html {redirect_to products_path}

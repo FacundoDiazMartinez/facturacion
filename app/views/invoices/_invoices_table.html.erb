@@ -17,7 +17,7 @@
           <td><%= invoice.client.name %></td>
           <td><%= invoice.tipo %></td>
           <td><%= invoice.total %></td>
-          <td><%= invoice.state %></td>
+          <td><%= invoice_state(invoice.state) %></td>
           <td><%= invoice.cbte_fch %></td>
           <td class="text-right">
             <%  if ! invoice.editable? %>
