@@ -36,7 +36,7 @@ class ProductCategoriesController < ApplicationController
         format.html { render :new }
         format.json { render json: @product_category.errors, status: :unprocessable_entity }
       end
-      format.js     { render :set_product_category }
+      format.js     { render :set_category }
     end
   end
 
