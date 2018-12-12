@@ -15,80 +15,90 @@
     <div class="card shadow">
       <div class="card-body">
         <div class="row">
+
           <!-- PRIMERA COLUMNA -->
-          <div class="col-sm" id="client_form">
+          <div class="col-md-4" id="client_form">
             <%= render '/invoices/client_column' %>
+
+            <div class="form-group">
+              <%= form.label :cbte_fch %>
+              <%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
+            </div>
+
           </div>
           <%= form.hidden_field :client_id, value: @client.id %>
           <!-- PRIMERA COLUMNA -->
 
           <!-- SEGUNDA COLUMNA -->
-          <div class="col-sm">
+          <div class="col-md-4">
 
             <div class="form-group">
               <%= form.label :total %>
               <%= form.text_field :total, class: 'form-control', readonly: true %>
             </div>
 
-            <div class="form-group">
-              <%= form.label :total_pay %>
-              <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
+            <div class="row">
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <%= form.label :total_pay %>
+                  <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="form-group">
+                  <%= label_tag :total_left, "Monto faltante" %>
+                  <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
+                </div>
+              </div>
+
             </div>
 
             <div class="form-group">
-              <%= label_tag :total_left, "Monto faltante" %>
-              <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
+              <%= form.label :state %>
+              <%= form.text_field :state, class: 'form-control', readonly: true %>
             </div>
 
-        <!-- SEGUNDA COLUMNA -->
-        <!-- TERCERA COLUMNA -->
-        <div class="col-sm">
-          <div class="form-group">
-            <%= form.label :cbte_tipo %>
-              <%= form.select :cbte_tipo, options_for_select(Invoice.available_cbte_type(current_user.company, @client)), {},{ class: 'form-control', disabled: !@invoice.editable?, autofocus: 'true' } %>
           </div>
+          <!-- SEGUNDA COLUMNA -->
 
-          <div class="form-group">
-            <%= form.label :sale_point_id, "Punto de venta" %>
-            <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @invoice.sale_point_id), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
-          </div>
+          <!-- TERCERA COLUMNA -->
+          <div class="col-md-4">
 
-          <div class="form-group">
-            <%= form.label :concepto %>
-            <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
-          </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <%= form.label :cbte_tip, "Tipo" %>
+                    <%= form.select :cbte_tipo, options_for_select(Invoice.available_cbte_type(current_user.company, @client)), {},{ class: 'form-control', disabled: !@invoice.editable?, autofocus: 'true' } %>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <%= form.label :sale_point_id, "Punto de venta" %>
+                  <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @invoice.sale_point_id), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
+                </div>
+              </div>
+            </div>
 
-          <div class="form-group">
-            <%= form.label :sale_point_id, "Punto de venta" %>
-            <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @invoice.sale_point_id), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
-          </div>
 
-          <div class="form-group">
-            <%= form.label :concepto %>
-            <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
+            <div class="form-group">
+              <%= form.label :concepto %>
+              <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
+            </div>
+
+            <div class="form-group">
+              <%= form.label :cae %>
+              <%= form.text_field :cae, class: 'form-control', readonly: true %>
+            </div>
+
           </div>
+          <!-- TERCERA COLUMNA -->
+
         </div>
-        <!-- TERCERA COLUMNA -->
 
-        <!-- CUARTA COLUMNA -->
-        <div class="col-sm">
-          <div class="form-group">
-            <%= form.label :state %>
-            <%= form.text_field :state, class: 'form-control', readonly: true %>
-          </div>
+        <hr>
 
-          <div class="form-group">
-            <%= form.label :cbte_fch %>
-            <%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
-          </div>
-
-          <div class="form-group">
-            <%= form.label :cae %>
-            <%= form.text_field :cae, class: 'form-control', readonly: true %>
-          </div>
-        </div>
-        <!-- CUARTA COLUMNA -->
-      </div>
       <!-- BOTONES DE ACCION -->
           <center>
             <% if @invoice.state == "Pagado" %>
@@ -148,6 +158,8 @@
   </div>
 </div>
 
-<style media="screen">
-
-</style>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>

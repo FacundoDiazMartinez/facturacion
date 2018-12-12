@@ -20,6 +20,9 @@
   text-align: left;
 }
 
+.text_center {
+  text-align: center;
+}
 
 .right_border{
   border-right: solid 1px;
@@ -29,14 +32,19 @@
   background: lightgray;
   border: 1px solid black;
 }
-.header_width_50 {
-  width: 50%;
+.header_word_break {
+  width: 200px;
+  word-break: break-all;
 }
 .invoice_type {
   border: 1px solid;
   padding:20px;
   margin: 0px;
   outline-width: 0px;
+}
+
+.invoice_type_code{
+
 }
 
 .alwaysbreak {

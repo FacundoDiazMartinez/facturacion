@@ -7,10 +7,22 @@ class ArrivalNoteDetail < ApplicationRecord
 
   accepts_nested_attributes_for :product, reject_if: :all_blank
 
-  
+  # TABLA
+    # create_table "arrival_note_details", force: :cascade do |t|
+    #   t.bigint "arrival_note_id"
+    #   t.bigint "product_id"
+    #   t.string "quantity"
+    #   t.boolean "cumpliment"
+    #   t.string "observation"
+    #   t.datetime "created_at", null: false
+    #   t.datetime "updated_at", null: false
+    #   t.index ["arrival_note_id"], name: "index_arrival_note_details_on_arrival_note_id"
+    #   t.index ["product_id"], name: "index_arrival_note_details_on_product_id"
+    # end
+  # TABLA
 
   #PROCESOS
-  	def check_product
+  	def check_product #Se ejecuta en caso de que el producto se este creando por medio del remito
       if new_record?
         product.company_id = arrival_note.company_id
         product.save

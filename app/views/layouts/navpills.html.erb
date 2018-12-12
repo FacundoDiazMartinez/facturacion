@@ -21,6 +21,9 @@
 		    <%= link_to "#{icon('fas', 'hand-holding-usd')} <span class='only-desktop'>Ventas</span>".html_safe, invoices_path, class: 'nav-link', title: 'Ventas' %>
 		  </li>
 
+		  <li class="nav-item">
+		  	<%= link_to "#{icon('fas', 'file-invoice-dollar')} <span class='only-desktop'>Compras</span>".html_safe, purchase_invoices_path, class: 'nav-link', title: "Compras" %>
+		  </li>
 
 		  <li class="nav-item">
 		    <%= link_to "#{icon('fas', 'briefcase')} <span class='only-desktop'>Clientes</span>".html_safe, clients_path, class: 'nav-link', title: 'Clientes' %>
@@ -34,14 +37,16 @@
 		    <%= link_to "#{icon('fas', 'archive')} <span class='only-desktop'>Depósitos</span>".html_safe, depots_path, class: 'nav-link', title: 'Depósitos' %>
 		  </li>
 
-		  <li class="nav-item dropdown">
-		  	<%= link_to "#{icon('fas', 'shopping-cart')} <span class='only-desktop'>Compras</span>".html_safe, "#", role: 'button', class: 'nav-link dropdown-toggle', data:{ toggle:'dropdown' }, aria: {haspopup: true, expanded: 'false'}, title: 'Compras' %>
-		  	<div class="dropdown-menu">
-					<%= link_to 'Proveedores', suppliers_path, class: 'dropdown-item' %>
-		    	<%= link_to 'Solicitudes', purchase_orders_path, class: 'dropdown-item' %>
-		    	<%= link_to 'Comprobantes', purchase_invoices_path, class: 'dropdown-item' %>
-		    	<%= link_to "Remitos", arrival_notes_path, class: 'dropdown-item' %>
-		    </div>
+		  <li class="nav-item">
+		  	<%= link_to "#{icon('fas', 'plane')} <span class='only-desktop'>Proveedores</span>".html_safe, suppliers_path, class: 'nav-link', title: "Proveedores" %>
+		  </li>
+
+		  <li class="nav-item">
+		  	<%= link_to "#{icon('fas', 'shopping-cart')} <span class='only-desktop'>Ordenes de compra</span>".html_safe, purchase_orders_path, class: 'nav-link', title: "Ordenes de compra" %>
+		  </li>
+
+		  <li class="nav-item">
+		  	<%= link_to "#{icon('fas', 'file-alt')} <span class='only-desktop'>Remitos de compra</span>".html_safe, arrival_notes_path, class: 'nav-link', title: "Remitos" %>
 		  </li>
 
 		  <li class="nav-item">

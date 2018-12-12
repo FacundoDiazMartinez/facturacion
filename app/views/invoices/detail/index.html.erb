@@ -20,12 +20,12 @@
     		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 	  			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>
 	  			<td><%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control' , required: true %></td>
-					<td><%= pf.text_field :name, class: 'form-control name' %></td>
+					<td><%= pf.text_field :name, class: 'form-control name', data_toggle:"tooltip", title: "" %></td>
 					<td><%= pf.number_field :price, class: 'form-control price' %></td>
 					<td><%= pf.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control measurement_unit'} %></td>
 					<%= pf.hidden_field :company_id, value: current_user.company_id %>
 				<% end %>
-				<td><%= f.number_field :quantity, class: 'form-control quantity' %></td>
+				<td><%= f.number_field :quantity, class: 'form-control quantity', min: 0 %></td>
 				<% if @invoice.cbte_tipo == "12" %>
 					<td>
 						<%= f.hidden_field :iva_amount, value: 0.0 %>

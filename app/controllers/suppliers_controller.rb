@@ -25,7 +25,7 @@ class SuppliersController < ApplicationController
   # POST /suppliers.json
   def create
     @supplier = current_user.company.suppliers.new(supplier_params)
-
+    @supplier.current_user = current_user
     respond_to do |format|
       if @supplier.save
         set_suppliers
@@ -42,6 +42,7 @@ class SuppliersController < ApplicationController
   # PATCH/PUT /suppliers/1
   # PATCH/PUT /suppliers/1.json
   def update
+    @supplier.current_user = current_user
     respond_to do |format|
       if @supplier.update(supplier_params)
         set_suppliers
@@ -72,7 +73,7 @@ class SuppliersController < ApplicationController
     end
 
     def set_suppliers
-      @suppliers = current_user.company.suppliers.paginate(page: params[:page], per_page: 10)
+      @suppliers = current_user.company.suppliers.search_by_name(params[:name]).search_by_document(params[:document_number]).paginate(per_page: 10, page: params[:page])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

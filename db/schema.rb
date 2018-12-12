@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_27_150729) do
+ActiveRecord::Schema.define(version: 2018_11_29_150855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,9 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.boolean "active", null: false
+    t.bigint "depot_id"
+    t.string "number", null: false
+    t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -283,6 +286,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.float "percentage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by"
     t.index ["product_id"], name: "index_product_price_histories_on_product_id"
   end
 
@@ -301,6 +305,8 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.string "measurement_unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "created_by"
+    t.bigint "updated_by"
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
   end
@@ -460,7 +466,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.integer "company_id"
+    t.bigint "company_id"
     t.string "first_name"
     t.string "last_name"
     t.integer "dni"
@@ -487,7 +493,7 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
     t.datetime "updated_at", null: false
     t.bigint "province_id"
     t.bigint "locality_id"
-    t.index ["company_id"], name: "index_users_on_company_id", unique: true
+    t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["locality_id"], name: "index_users_on_locality_id"
@@ -547,4 +553,5 @@ ActiveRecord::Schema.define(version: 2018_11_27_150729) do
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
+  add_foreign_key "users", "companies"
 end

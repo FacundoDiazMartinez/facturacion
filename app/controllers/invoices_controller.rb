@@ -1,6 +1,6 @@
 class InvoicesController < ApplicationController
   load_and_authorize_resource
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :confirm]
+  before_action :set_invoice, only: [:show, :edit, :update, :destroy]
 
   # GET /invoices
   # GET /invoices.json
@@ -11,6 +11,9 @@ class InvoicesController < ApplicationController
   # GET /invoices/1
   # GET /invoices/1.json
   def show
+    # la siguiene variable la cree para el pdf:
+    @group_details = @invoice.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
+
     respond_to do |format|
       format.html
       format.pdf do
@@ -33,6 +36,19 @@ class InvoicesController < ApplicationController
   # GET /invoices/1/edit
   def edit
     @client = @invoice.client
+  end
+
+  def create
+    @invoice = current_user.company.invoices.new(invoice_params)
+    @invoice.user_id = current_user.id
+    @client = @invoice.client
+    respond_to do |format|
+      if @invoice.save
+        format.html{redirect_to edit_invoice_path(@invoice), notice: "El comprobante fue creado con éxito."}
+      else
+        format.html {render :new}
+      end
+    end
   end
 
   # PATCH/PUT /invoices/1

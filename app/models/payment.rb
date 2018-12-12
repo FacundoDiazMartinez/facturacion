@@ -11,18 +11,23 @@ class Payment < ApplicationRecord
   default_scope { where(active: true) }
 
   TYPES = {
-  	0 => "Contado",
-  	1 => "Tarjeta de crédito",
-  	2 => "Tarjeta de débito",
-  	3 => "Transferencia bancaria",
-  	4 => "Cheque",
-  	5 => "Retenciones"
+  	"0" => "Contado",
+  	"1" => "Tarjeta de crédito",
+  	"2" => "Tarjeta de débito",
+  	"3" => "Transferencia bancaria",
+  	"4" => "Cheque",
+  	"5" => "Retenciones"
   }
 
   #ATRIBUTOS
   	def set_total_pay_to_invoice
   		invoice.update_attribute(:total_pay, invoice.sum_payments)
   	end
+
+    def payment_name_and_subtotal
+      TYPES[type_of_payment] + " " + "($ " + total.to_s + ")"
+    end
+
   #ATRIBUTOS
 
   #PROCESOS

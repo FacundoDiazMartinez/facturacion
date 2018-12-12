@@ -1,11 +1,11 @@
 class ProductsController < ApplicationController
   load_and_authorize_resource except: :autocomplete_product_code
   before_action :set_product, only: [:show, :edit, :update, :destroy]
-  before_action :set_s3_direct_post, only: [:new, :edit, :create, :update]
+  before_action :set_s3_direct_post, only: [:new, :edit, :create, :update, :index]
   # GET /products
   # GET /products.json
   def index
-    @products = current_user.company.products.all.paginate(page: params[:page], per_page: 9)
+    @products = current_user.company.products.search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).paginate(page: params[:page], per_page: 9)
   end
 
   # GET /products/1
@@ -27,7 +27,8 @@ class ProductsController < ApplicationController
   # POST /products.json
   def create
     @product = current_user.company.products.new(product_params)
-
+    @product.updated_by = current_user.id
+    @product.created_by = current_user.id
     respond_to do |format|
       if @product.save
         format.html { redirect_to @product, notice: 'Product was successfully created.' }
@@ -43,6 +44,7 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     respond_to do |format|
+      @product.updated_by = current_user.id
       if @product.update(product_params)
         format.html { redirect_to @product, notice: 'Product was successfully created.' }
         format.json { render :show, status: :ok, location: @product }
@@ -67,6 +69,14 @@ class ProductsController < ApplicationController
     term = params[:term]
     products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
+  end
+
+  def import
+    result = Product.save_excel(params[:file], current_user)
+    respond_to do |format|
+        flash[:success] = 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'
+        format.html {redirect_to products_path}
+    end
   end
 
   private

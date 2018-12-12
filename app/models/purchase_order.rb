@@ -12,6 +12,10 @@ class PurchaseOrder < ApplicationRecord
   accepts_nested_attributes_for :purchase_order_details, reject_if: :all_blank, allow_destroy: true
 
   before_create :set_number
+  after_save :set_sended_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state == "Enviado"}
+  after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
+
+
 
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
 
@@ -60,7 +64,7 @@ class PurchaseOrder < ApplicationRecord
       else
         all
       end
-   end
+    end
 
     def self.search_by_state state
       if not state.blank?
@@ -76,6 +80,14 @@ class PurchaseOrder < ApplicationRecord
       last_po = PurchaseOrder.where(company_id: company_id).last
       self.number = last_po.nil? ? 1 : (last_po.number.to_i + 1)
     end
+
+    def set_sended_activity
+      UserActivity.create_for_sended_purchase_order self
+    end
+
+    def set_activity
+      UserActivity.create_for_purchase_order self
+    end
   #PROCESOS
 
   #FUNCIONES
@@ -86,5 +98,6 @@ class PurchaseOrder < ApplicationRecord
     def sum_details
       self.purchase_order_details.sum(:total)
     end
+
   #FUNCIONES
 end

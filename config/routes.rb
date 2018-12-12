@@ -31,7 +31,7 @@ Rails.application.routes.draw do
   resources :products do
     get :autocomplete_product_code, :on => :collection
     get :export, on: :collection
-    get :import, on: :collection
+    post :import, on: :collection
   end
 
   resources :users, only: [:index, :show] do

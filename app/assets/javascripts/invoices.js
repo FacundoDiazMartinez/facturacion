@@ -17,6 +17,7 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	}
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
+		$(this).closest("tr.fields").find("input.name").prop('title', data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 		$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
@@ -159,7 +160,6 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 	});
 	var popup = $("#myPopup");
 	if (suma > total_venta) {
-		// popup.removeClass("popuptext");
     popup.addClass("show");
 	}
 	else {
