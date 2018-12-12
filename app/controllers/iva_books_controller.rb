@@ -8,13 +8,24 @@ class IvaBooksController < ApplicationController
   end
 
   def generate_pdf
-    
+
   end
 
   # # GET /iva_books/1
   # # GET /iva_books/1.json
-  # def show
-  # end
+  def show
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@iva_book.id}",
+        layout: 'pdf.html',
+        template: 'iva_books/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
+  end
 
   # # GET /iva_books/new
   # def new
@@ -65,14 +76,14 @@ class IvaBooksController < ApplicationController
   #   end
   # end
 
-  # private
-  #   # Use callbacks to share common setup or constraints between actions.
-  #   def set_iva_book
-  #     @iva_book = IvaBook.find(params[:id])
-  #   end
+  private
+    # Use callbacks to share common setup or constraints between actions.
+    def set_iva_book
+      @iva_book = IvaBook.find(params[:id])
+    end
 
-  #   # Never trust parameters from the scary internet, only allow the white list through.
-  #   def iva_book_params
-  #     params.require(:iva_book).permit(:tipo, :invoice_id, :purchase_invoice_id, :date, :net_amount, :iva_amount, :total)
-  #   end
+    # Never trust parameters from the scary internet, only allow the white list through.
+    def iva_book_params
+      params.require(:iva_book).permit(:tipo, :invoice_id, :purchase_invoice_id, :date, :net_amount, :iva_amount, :total)
+    end
 end

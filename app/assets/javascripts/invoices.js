@@ -131,7 +131,7 @@ $(document).on('nested:fieldAdded', function(event){
 
 $(document).on('nested:fieldRemoved', function(event){
 	 var field = event.field;
-	 alert(field.find("input.amount").val(0)); //Ponemos en 0 el field que acabamos de eliminar (ya que no se elimina, se setea con display: none) para que funcione bien el complete_payments
+	 field.find("input.amount").val(0); //Ponemos en 0 el field que acabamos de eliminar (ya que no se elimina, se setea con display: none) para que funcione bien el complete_payments
 })
 
 
