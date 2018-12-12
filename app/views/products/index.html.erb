@@ -22,41 +22,50 @@
       <div class="card-header">
         <!-- Buscador de productos -->
           <%= form_tag products_path(), {class: 'form-inline', id: 'search_form'} do %>
+              
+              <div class="form-row">
               <!-- BUSCAR POR NOMBRE -->
-              <%= label_tag :name, "Nombre", class: 'sr-only' %>
-              <div class="input-group col">
-                <div class="input-group-prepend">
-                  <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
+                <div class="form-group col-md-4 col-xs-12">
+                  <%= label_tag :name, "Nombre", class: 'sr-only' %>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
+                    </div>
+                    <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
                 </div>
-                <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
-              </div>
-              <!-- BUSCAR POR NOMBRE -->
+                <!-- BUSCAR POR NOMBRE -->
 
-              <!-- BUSCAR POR CÓDIGO -->
-              <%= label_tag :code, "Código", class: 'sr-only' %>
-              <div class="input-group col">
-                <div class="input-group-prepend">
-                  <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
+                <!-- BUSCAR POR CÓDIGO -->
+                <div class="form-group col-md-4 col-xs-12">
+                  <%= label_tag :code, "Código", class: 'sr-only' %>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
+                    </div>
+                    <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
                 </div>
-                <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form")' %>
-              </div>
-              <!-- BUSCAR POR CÓDIGO -->
+                <!-- BUSCAR POR CÓDIGO -->
 
+                <!-- BUSCAR POR CATEGORÍA -->
+                <div class="form-group col-md-4 col-xs-12">
+                  <%= label_tag :category, "Categoría", class: 'sr-only' %>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
+                    </div>
+                    <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
               <!-- BUSCAR POR CATEGORÍA -->
-              <%= label_tag :category, "Categoría", class: 'sr-only' %>
-              <div class="input-group col">
-                <div class="input-group-prepend">
-                  <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
-                </div>
-                <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
-              </div>
-            <!-- BUSCAR POR CATEGORÍA -->
 
-            <!-- BUSCAR POR STOCK -->
-            <label>
-              <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'remoteSubmit("#search_form")'} %>
-              Sólo con disponibilidad en inventario
-            </label>
+              <!-- BUSCAR POR STOCK -->
+              <label>
+                <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'remoteSubmit("#search_form")'} %>
+                Sólo con disponibilidad en inventario
+              </label>
+            </div>
             <!-- BUSCAR POR STOCK -->
           <% end %>
         <!-- Buscador de productos -->
