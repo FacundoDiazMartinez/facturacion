@@ -325,8 +325,8 @@ class Invoice < ApplicationRecord
 
         Afip.default_concepto   = Afip::CONCEPTOS.key(self.company.concepto)
         Afip.default_documento  = "CUIT"
-        Afip.default_moneda   = self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
-        Afip.own_iva_cond     = self.company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
+        Afip.default_moneda     = self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
+        Afip.own_iva_cond       = self.company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
       end
 
       def set_bill

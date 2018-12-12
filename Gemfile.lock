@@ -19,7 +19,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    Afip (0.7.9)
+    Afip (0.8.1)
       httpi
       savon
     actioncable (5.2.2)
@@ -1014,7 +1014,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  Afip (~> 0.7.3)
+  Afip
   activerecord-import
   aws-sdk (~> 3)
   axlsx!
