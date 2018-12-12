@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="row">
+    <div class="border">
+      <table class="width_100">
+        <tr>
+          <td style="width: 50%;"><h2 class="text_size_25">IMÁGEN EMPRESA</h2></td>
+          <td style="width: 50%;">
+            <table class="width_100">
+              <tr>
+                  <td class="text_right"><small>Original regresa a empresa/Copia para el cliente</small></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="border">
+      <table class="width_100">
+        <tr>
+          <td class="width_75"><h1 class="text_size_25 text_center">REMITO</h1></td>
+          <td class="width_25">
+            <table class="width_100">
+              <tr>
+                <td>N° <%= @arrival_note.number %></td>
+              </tr>
+              <tr>
+                <td>Fecha: <%= @arrival_note.created_at %></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!--ENCABEZADO DATOS EMPRESA -->
+
+    <div class=" border">
+      <div>
+        <center>
+          <%= @arrival_note.company.province.name %>, <%=@arrival_note.company.address %> - Teléfono: <%=@arrival_note.company.contact_number %>
+        </center>
+      </div>
+      <div>
+        <center>
+        E-mail: <%=@arrival_note.company.email %> - CUIT: <%=@arrival_note.company.cuit %>
+        <center>
+      </div>
+
+    </div>
+
+<!--ENCABEZADO DATOS PROVEEDOR -->
+
+    <div class=" border">
+
+      <table class="width_100">
+        <tr>
+          <td><b>Departamento de Emisión: DEPÓSITO </b></td>
+
+          <td><b>Órden de Compra asociada:</b> <%=@arrival_note.purchase_order.number %></td>
+        </tr>
+
+      </table>
+
+    </div>
+  <!-- FIN DEL ENCABEZADO -->

@@ -1,0 +1,50 @@
+<!-- PIE DE PAGINA -->
+<div class="row footer_bottom">
+  <div class="container border">
+    <table class="width_100">
+      <tr>
+        <td><b>Estado: </b><%= @purchase_order.state %></td>
+        <td> </td>
+        <td> </td>
+      </tr>
+
+      <tr>
+        <td><b> Observación: </b>
+        <% if @purchase_order.observation == nil %>
+          -- Sin observaciones --
+        <% else
+          @purchase_order.observation
+        end %>
+      </td>
+        <td></td>
+        <td></td>
+        <td class="text_right"> </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="containter border">
+    <br>
+    <br>
+    <br>
+    <br>
+    <table class="width_100">
+      <tr>
+        <td class="width_50 text_center">
+          ________________________
+        </td>
+        <tdclass="width_50 "></td>
+      </tr>
+      <tr>
+        <td class="text_center">Firma y sello</td>
+        <td class="text_center"> <%= @purchase_order.company.name %> - <%= @purchase_order.company.address %> </td>
+      </tr>
+    </table>
+  </div>
+</div>
+<br>
+<div class="text_center">
+  Página <%= page_number %> de <%= total_pages%>
+</div>
+
+<!-- FIN PIE DE PAGINA -->

@@ -73,11 +73,11 @@ class SuppliersController < ApplicationController
     end
 
     def set_suppliers
-      @suppliers = current_user.company.suppliers.search_by_name(params[:name]).search_by_document(params[:document_number]).paginate(per_page: 10, page: params[:page])
+      @suppliers = current_user.company.suppliers.search_by_name(params[:name]).search_by_document(params[:document_number]).paginate(per_page: 5, page: params[:page])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def supplier_params
-      params.require(:supplier).permit(:name, :document_type, :document_number, :phone, :mobile_phone, :address, :email, :cbu)
+      params.require(:supplier).permit(:name, :document_type, :document_number, :phone, :mobile_phone, :address, :email, :cbu, :bank_name, :titular, :account_number)
     end
 end

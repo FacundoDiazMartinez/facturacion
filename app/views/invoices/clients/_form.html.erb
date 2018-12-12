@@ -15,7 +15,7 @@
 <div class="form-group row">
   <%= label_tag :iva_cond, "Condición I.V.A. *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Exento"]],{},{class:'form-control form-control-sm'} %>
+    <%= f.select :iva_cond, Client::IVA_COND ,{},{class:'form-control form-control-sm'} %>
   </div>
 </div>
 

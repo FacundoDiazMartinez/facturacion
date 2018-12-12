@@ -1,5 +1,5 @@
 class PurchaseOrdersController < ApplicationController
-  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :approve]
 
   # GET /purchase_orders
   # GET /purchase_orders.json
@@ -10,6 +10,21 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/1
   # GET /purchase_orders/1.json
   def show
+    Product.unscoped do
+      @group_details = @purchase_order.purchase_order_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@purchase_order.id}",
+        layout: 'pdf.html',
+        template: 'purchase_orders/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /purchase_orders/new
@@ -75,6 +90,17 @@ class PurchaseOrdersController < ApplicationController
     term = params[:term]
     products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
+  end
+
+  def approve
+    respond_to do |format|
+      if current_user.has_purchase_management_role?
+        @purchase_order.update_column(:state, "Aprobado")
+        format.html {redirect_to @purchase_order, notice: "La orden de compra fue aprobada."}
+      else
+        format.html {render :edit, notice: "No tiene los provilegios necesarios para aprobar la orden de compra."}
+      end
+    end
   end
 
   private

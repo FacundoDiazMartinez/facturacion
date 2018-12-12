@@ -1,5 +1,5 @@
 class ProductPriceHistory < ApplicationRecord
-  belongs_to :product
+  belongs_to :product, optional: true
   belongs_to :user, foreign_key: "created_by"
 
   after_create :set_create_activity, if: Proc.new{|pph| pph.percentage != 0}

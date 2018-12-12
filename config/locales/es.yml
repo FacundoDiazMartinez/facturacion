@@ -106,6 +106,7 @@ es:
         cbte_hasta: "Fin del servicio"
         iva_cond: "Condición ante I.V.A."
         comp_number: "Nº comprobante"
+        associated_invoice: "Factura asociada Nº"
       product:
         photo: "Imagen"
         product_category_id: "Categoría"
@@ -118,6 +119,7 @@ es:
         iva_aliquot: "Alicuota de I.V.A."
         price: "Precio final"
       product_category:
+        supplier_id: "Proveedor"
         name: "Nombre"
         iva_aliquot: "Alicuota de I.V.A."
       supplier:
@@ -129,16 +131,20 @@ es:
         address: "Dirección"
         email: "E-mail"
         cbu:  "C.B.U."
+        bank_name: "Banco"
+        titular: "Titular"
+        account_number: "Nº de cuenta"
       purchase_invoice:
         supplier_id: "Proveedor"
         arrival_note_id: "Remito asociado"
         number: "Número de comprobante"
         cbte_tipo: "Tipo de comprobante"
-        net_amount: "Monto Neto"
+        net_amount: "Monto neto"
         iva_amount: "Monto I.V.A."
-        imp_op_ex:  "monto exento"
+        imp_op_ex:  "Monto exento"
         total: "Total"
         date: "Fecha"
+        purchase_order_id: "Orden de compra vinculada"
       purchase_order:
         state: "Estado"
         total_pay: "Total a pagar"

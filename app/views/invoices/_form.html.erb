@@ -17,14 +17,10 @@
         <div class="row">
 
           <!-- PRIMERA COLUMNA -->
-          <div class="col-md-4" id="client_form">
-            <%= render '/invoices/client_column' %>
-
-            <div class="form-group">
-              <%= form.label :cbte_fch %>
-              <%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
+          <div class="col-md-4">
+            <div id="client_form">
+              <%= render '/invoices/client_column' %>
             </div>
-
           </div>
           <%= form.hidden_field :client_id, value: @client.id %>
           <!-- PRIMERA COLUMNA -->
@@ -55,11 +51,6 @@
 
             </div>
 
-            <div class="form-group">
-              <%= form.label :state %>
-              <%= form.text_field :state, class: 'form-control', readonly: true %>
-            </div>
-
           </div>
           <!-- SEGUNDA COLUMNA -->
 
@@ -69,8 +60,8 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="form-group">
-                  <%= form.label :cbte_tip, "Tipo" %>
-                    <%= form.select :cbte_tipo, options_for_select(Invoice.available_cbte_type(current_user.company, @client)), {},{ class: 'form-control', disabled: !@invoice.editable?, autofocus: 'true' } %>
+                  <%= form.label :concepto %>
+                  <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
                 </div>
               </div>
               <div class="col-md-6">
@@ -81,22 +72,20 @@
               </div>
             </div>
 
-
             <div class="form-group">
-              <%= form.label :concepto %>
-              <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
+              <%= form.label :cbte_tip, "Tipo" %>
+              <%= form.select :cbte_tipo, options_for_select(Invoice.available_cbte_type(current_user.company, @client)), {},{ class: 'form-control', disabled: !@invoice.editable?, autofocus: 'true'} %>
             </div>
-
-            <div class="form-group">
-              <%= form.label :cae %>
-              <%= form.text_field :cae, class: 'form-control', readonly: true %>
-            </div>
-
+            
+            
           </div>
           <!-- TERCERA COLUMNA -->
 
         </div>
 
+        <div class="row" id="dynamic_attributes">
+          <%= render '/invoices/dynamic_attributes', form: form %>
+        </div>
         <hr>
 
       <!-- BOTONES DE ACCION -->
@@ -117,10 +106,12 @@
       Conceptos
     </div>
     <div class="ml-auto p-2">
-      <%= form.link_to_add "#{icon('fas', 'plus')} Agregar concepto".html_safe, :invoice_details, class: 'btn btn-success', data: {target: '#details'} %>
+      <% if @invoice.editable? %>
+        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar concepto".html_safe, :invoice_details, class: 'btn btn-success', data: {target: '#details'} %>
+      <% end %>
     </div>
   </h3>
-  <div class="card shadow">
+  <div class="card shadow" id="idetails">
     <%= render template: '/invoices/detail/index.html.erb', locals:{form: form} %>
   </div>
   <!-- PRODUCTOS -->
@@ -132,10 +123,12 @@
       Pagos
     </div>
     <div class="ml-auto p-2">
-      <%= form.link_to_add "#{icon('fas', 'plus')} Agregar pago".html_safe, :payments, class: 'btn btn-success', data: {target: '#payments'}%>
+      <% if @invoice.editable? %>
+        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar pago".html_safe, :payments, class: 'btn btn-success', data: {target: '#payments'}%>
+      <% end %>
     </div>
   </h3>
-  <div class="card shadow">
+  <div class="card shadow" id="ipayments">
     <%= render template: '/invoices/payment/index.html.erb', locals:{form: form} %>
   </div>
   <!-- PAGOS -->
@@ -143,7 +136,9 @@
   <hr>
   <center>
     <div hidden><%= check_box_tag :send_to_afip, false %></div>
-    <%= save_button %>
+    <% if @invoice.editable? %>
+      <%= save_button %>
+    <% end %>
   </center>
 
 <% end %>
@@ -157,6 +152,8 @@
     </div>
   </div>
 </div>
+
+<%= render '/invoices/detail/search_product' %>
 
 <script>
 $(document).ready(function(){

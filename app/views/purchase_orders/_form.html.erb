@@ -1,15 +1,6 @@
 <%= nested_form_for @purchase_order do |form| %>
-  <% if @purchase_order.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@purchase_order.errors.count, "error") %> prohibited this @purchase_order from being saved:</h2>
 
-      <ul>
-      <% @purchase_order.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= error_explanation @purchase_order %>
 
   <!-- HEADER -->
   <p class="text-muted">Datos del comprobante</p>
@@ -82,6 +73,9 @@
         <center>
           <% if not @purchase_order.new_record? %>
             <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
+          <% end %>
+          <% if !@purchase_order.state == "Aprobado" && !@purchase_order.new_record?%>
+            <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-success' %>
           <% end %>
         </center>
         <!-- BOTONES DE ACCION -->

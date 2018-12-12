@@ -26,6 +26,8 @@
 @import "users";
 @import "popup";
 @import "notifications";
+@import "sidebar";
+@import "invoice";
 
 
 @font-face {
@@ -33,6 +35,10 @@
 	src:url('/fonts/montserrat-font/Montserrat-Regular.ttf');
 	font-weight: normal;
 	font-style: normal;
+}
+
+.hidden{
+  display: none;
 }
 
 * {
@@ -68,7 +74,7 @@ a.bg-secondary {
 }
 
 a.dropdown-item:visited {
-  color: black !important;
+  color: white !important;
 }
 
 li.nav-item > .dropdown-menu {
@@ -210,11 +216,11 @@ a:visited {
 }
 
 a.nav-link:visited{
-  color: black;
+  color: white;
 }
 
 a.nav-link:hover{
-  background-color: white;
+  background-color: rgba(0,0,0,.5);
 }
 
 .with-margin-top{

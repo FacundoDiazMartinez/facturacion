@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_29_150855) do
+ActiveRecord::Schema.define(version: 2018_12_11_193315) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,15 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
   end
 
+  create_table "client_contacts", force: :cascade do |t|
+    t.bigint "client_id"
+    t.string "name"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_client_contacts_on_client_id"
+  end
+
   create_table "clients", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
@@ -77,6 +86,9 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
+    t.float "recharge"
+    t.integer "payment_day"
+    t.string "observation"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end
@@ -173,8 +185,10 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
     t.index ["product_id"], name: "index_invoice_details_on_product_id"
+    t.index ["user_id"], name: "index_invoice_details_on_user_id"
   end
 
   create_table "invoices", force: :cascade do |t|
@@ -205,6 +219,9 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "associated_invoice"
+    t.date "fch_serv_desde"
+    t.date "fch_serv_hasta"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
@@ -272,12 +289,14 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
     t.integer "iva_aliquot"
-    t.boolean "active"
+    t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "supplier_id"
     t.index ["company_id"], name: "index_product_categories_on_company_id"
+    t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
   end
 
   create_table "product_price_histories", force: :cascade do |t|
@@ -307,8 +326,12 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
     t.datetime "updated_at", null: false
     t.bigint "created_by"
     t.bigint "updated_by"
+    t.string "measurement"
+    t.string "tipo", default: "Producto", null: false
+    t.bigint "supplier_id"
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
+    t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
   create_table "provinces", force: :cascade do |t|
@@ -332,8 +355,10 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
     t.float "total", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "purchase_order_id"
     t.index ["arrival_note_id"], name: "index_purchase_invoices_on_arrival_note_id"
     t.index ["company_id"], name: "index_purchase_invoices_on_company_id"
+    t.index ["purchase_order_id"], name: "index_purchase_invoices_on_purchase_order_id"
     t.index ["supplier_id"], name: "index_purchase_invoices_on_supplier_id"
     t.index ["user_id"], name: "index_purchase_invoices_on_user_id"
   end
@@ -432,6 +457,9 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
     t.bigint "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "titular"
+    t.string "account_number"
+    t.string "bank_name"
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
@@ -510,6 +538,7 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
   add_foreign_key "arrival_notes", "companies"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
+  add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
   add_foreign_key "clients", "users"
   add_foreign_key "delayed_jobs", "payments"
@@ -520,6 +549,7 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
   add_foreign_key "depots", "companies"
   add_foreign_key "invoice_details", "invoices"
   add_foreign_key "invoice_details", "products"
+  add_foreign_key "invoice_details", "users"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "invoices", "sale_points"
@@ -530,11 +560,14 @@ ActiveRecord::Schema.define(version: 2018_11_29_150855) do
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "invoices"
   add_foreign_key "product_categories", "companies"
+  add_foreign_key "product_categories", "suppliers"
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"
+  add_foreign_key "products", "suppliers"
   add_foreign_key "purchase_invoices", "arrival_notes"
   add_foreign_key "purchase_invoices", "companies"
+  add_foreign_key "purchase_invoices", "purchase_orders"
   add_foreign_key "purchase_invoices", "suppliers"
   add_foreign_key "purchase_invoices", "users"
   add_foreign_key "purchase_order_details", "products"

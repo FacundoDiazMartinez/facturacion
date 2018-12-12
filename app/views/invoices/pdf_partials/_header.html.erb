@@ -1,5 +1,10 @@
 <div class="container">
   <div class="row">
+    <% if !@invoice.check_authorized_invoice %>
+      <div class="text_center">
+        -- ATENCIÓN: COMPROBANTE NO AUTORIZADO --
+      </div>
+    <% end %>
     <div class="border">
           <center>
             <h2 class="text_size_25">ORIGINAL</h2>
@@ -84,7 +89,7 @@
     </tr>
 
     <tr>
-      <td><b>Tipo de pago: </b><%= @invoice.payment_array %></td>
+      <td><b>Medios de pago: </b><%= @invoice.all_payments_string %></td>
       <td></td>
       <td></td>
     </tr>

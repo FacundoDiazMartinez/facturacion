@@ -1,0 +1,46 @@
+span.only-desktop {
+  display: none;
+}
+
+.sidebar-animate {
+  color: white;
+  background-color: theme-color("dark");
+  width: auto;
+}
+
+.nav-item{
+  border-bottom: 1px solid grey;
+  text-align: right;
+}
+
+.nav-link{
+  color: white !important;
+}
+
+.dropdown-toggle::after{
+  display: none;
+}
+
+.sidebar-animate:hover{
+  span.only-desktop {
+    display: inline-block;
+  }
+  .dropdown-toggle::after{
+    display: inline-block;
+    float: left;
+    margin-top: 7px;
+  }
+}
+
+.dropdown-menu{
+  background-color: theme-color("dark");
+}
+
+.dropdown-item{
+  color: white;
+  text-align: right;
+}
+
+.dropdown-item:hover{
+  background-color: rgba(0,0,0,.5);
+}

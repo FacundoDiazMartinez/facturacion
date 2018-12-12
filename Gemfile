@@ -7,8 +7,7 @@ ruby '2.5.1'
 gem 'rails', '~> 5.2.1'
 # Use postgresql as the database for Active Record
 gem 'pg', '>= 0.18', '< 2.0'
-# Use Puma as the app server
-gem 'puma', '~> 3.11'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -52,14 +51,11 @@ gem 'bootstrap-toggle-rails'
 #Fontawesome
 gem 'font-awesome-sass', '~> 5.3.1'
 
-#CanCanCan
-gem 'cancancan', '~> 2.0'
-
 #Carrierwave
 gem 'aws-sdk', '~> 3'
 
 #Librerias de AFIP - wsfe - wspsr - wsctg
-gem 'Afip'
+gem 'Afip', '~> 0.7.3'
 
 # Paginación
 gem 'will_paginate', '~> 3.1.1'
@@ -96,12 +92,12 @@ gem 'pjax_rails'
 gem 'activerecord-import'
 
 #Gemas para importar o trabajar con excel
-gem 'rubyzip'
-gem 'axlsx'
-gem 'axlsx_rails'
 gem 'roo'
-gem 'zip-zip' 
 gem 'roo-xls'
+gem 'rubyzip', '>= 1.2.1'
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'
+gem 'zip-zip'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -118,6 +114,12 @@ group :development do
 
   #Performance
   gem 'ruby-prof'
+  gem 'thin'
+end
+
+group :production do
+  # Use Puma as the app server
+  gem 'puma', '~> 3.11'
 end
 
 group :test do

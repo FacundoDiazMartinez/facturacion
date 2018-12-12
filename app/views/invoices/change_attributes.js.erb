@@ -1,0 +1,3 @@
+'<%= nested_form_for @invoice do |form| %>'
+	$("#dynamic_attributes").html("<%= j render '/invoices/dynamic_attributes', form: form %>");
+'<% end %>'

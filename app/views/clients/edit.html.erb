@@ -4,7 +4,7 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<%= form_for @client, remote: true, format: :js  do |f| %>
+<%= nested_form_for @client, remote: true, format: :js  do |f| %>
 	<div class="modal-body">
 	  <%= render 'form', f: f %>
 	</div>

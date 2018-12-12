@@ -1,8 +1,10 @@
 class Product < ApplicationRecord
+
   	belongs_to :product_category, optional: true
   	belongs_to :company
   	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
   	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User"
+  	belongs_to :supplier, optional: true
   	has_many   :stocks
   	has_many   :depots, through: :stocks
   	has_many   :invoice_details
@@ -13,7 +15,6 @@ class Product < ApplicationRecord
   	has_many   :arrival_note, through: :arrival_note_details
   	has_many   :product_price_histories
 
-    default_scope { where(active: true) }
     scope :active, -> { where(active: true) }
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
@@ -27,7 +28,7 @@ class Product < ApplicationRecord
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
   	after_create :create_price_history
-  	
+
 
   	MEASUREMENT_UNITS = {
 	  	"1" => "kilogramos",
@@ -76,45 +77,55 @@ class Product < ApplicationRecord
 	  	"96" => "packs",
 	  	"98" => "otras unidades"
 	}
-	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}
+	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}, allow_blank: true
 
 	#FILTROS DE BUSQUEDA
-		def self.search_by_name name 
+		def self.search_by_name name
 			if not name.blank?
 				where("products.name ILIKE ? ", "%#{name}%")
 			else
-				all 
+				all
 			end
 		end
 
-		def self.search_by_code code 
+		def self.search_by_code code
 			if not code.blank?
 				where("products.code ILIKE ? ", "%#{code}%")
 			else
-				all 
+				all
 			end
 		end
 
-		def self.search_by_category category 
+		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.name ILIKE ? ", "%#{category}%")
+				joins(:product_category).where("product_categories.id = ? ", category)
 			else
-				all 
+				all
 			end
 		end
 
-		def self.search_with_stock stock 
+		def self.search_by_supplier supplier
+			if not supplier.blank?
+				joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
+			else
+				all
+			end
+		end
+
+		def self.search_with_stock stock
 			if stock == "on"
 				joins(:stocks).where("stocks.state = 'Disponible'")
 			else
-				all 
+				all
 			end
 		end
+
+
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
 	  	def full_name
-	  		"#{code} - #{name}"
+	  		"#{tipo}: #{code} - #{name}"
 	  	end
 
 	  	def photo
@@ -130,7 +141,15 @@ class Product < ApplicationRecord
 		end
 
 		def iva
-			Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f * 100
+			Afip::ALIC_IVA.map{|ai| ai.last unless ai.first.to_i != iva_aliquot.to_i}.compact.join().to_f * 100
+		end
+
+		def full_measurement
+			"#{measurement} #{MEASUREMENT_UNITS[measurement_unit]}"
+		end
+
+		def measurement_unit_name
+			MEASUREMENT_UNITS[measurement_unit]
 		end
 	#ATRIBUTOS
 
@@ -160,34 +179,53 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+		def remove_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			s.save
+		end
+
 	    def destroy
 	      update_column(:active,false)
 	    end
 
 	    #IMPORTAR EXCEL o CSV
-	    def self.save_excel file, current_user
+	    def self.save_excel file, supplier_id, current_user
 	    	#TODO Añadir created_by y updated_by
 	      	spreadsheet = open_spreadsheet(file)
         	header = self.permited_params
-        	categories = current_user.company.product_categories.map{|pc| {pc.name => pc.id}}.first || {} 
-        	delay.load_products(spreadsheet, header, categories, current_user)
+        	categories = {}
+        	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
+        	delay.load_products(spreadsheet, header, categories, current_user, supplier_id)
 		end
 
-		def self.load_products spreadsheet, header, categories, current_user
+		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
 	    	invalid 	= []
 			(2..spreadsheet.last_row).each do |i|
           		row = Hash[[header, spreadsheet.row(i)].transpose]
           		product = new
-          		if not categories["#{row[:product_category_name]}"].nil?
-          		 	product.product_category.build(name: row[:product_category_name], company_id: current_user.company_id)
-          		else
-          		 	product.product_category_id = categories["#{row[:product_category_name]}"]
+          		if categories["#{row[:product_category_name]}"].nil?
+          			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
+          			if pc.save
+          				product_category_id = pc.id
+          				categories["#{row[:product_category_name]}"] = product_category_id
+          			else
+          				pp pc.errors
+          			end
           		end
-          		product.attributes = row.reject{|e| e == :product_category_name}.to_hash
-          		product.company_id = current_user.company_id
-          		product.created_by = current_user.id
-          		product.updated_by = current_user.id
+          		product.supplier_id 		= supplier_id
+          		product.product_category_id = categories["#{row[:product_category_name]}"]
+          		product.code 				= row[:code]
+          		product.name 				= row[:name]
+          		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
+          		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
+          		product.price 				= row[:price].round(2) unless row[:price].nil?
+          		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
+          		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
+          		product.company_id 			= current_user.company_id
+          		product.created_by 			= current_user.id
+          		product.updated_by 			= current_user.id
           		if product.valid?
           			product.save!
           		else
@@ -217,7 +255,7 @@ class Product < ApplicationRecord
 		end
 
 		def self.permited_params
-		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price]
+		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
 		end
 
 		def self.open_spreadsheet(file)
@@ -229,6 +267,9 @@ class Product < ApplicationRecord
 		    end
 		end
 		#IMPORTAR EXCEL o CSV
-	    
+
 	#PROCESOS
+
+	private
+		default_scope { where(active: true, tipo: "Producto") }
 end

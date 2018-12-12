@@ -1,0 +1,29 @@
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Proveedor</th>
+                <th>Alicuota I.V.A.</th>
+                <th>Stock</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        	<% @product_categories.each do |product_category| %>
+        		<tr>
+        			<td><%= product_category.name %></td>
+                    <td><%= product_category.supplier_name %></td>
+        			<td><%= product_category.iva %></td>
+        			<td><%= product_category.products_count %></td>
+<<<<<<< HEAD
+                    <td><%= link_to icon('fas', 'trash'), product_category, method: :delete, data: {confirm: '¿Estas seguro?'} %></td>
+=======
+                    <td class="text-right"><%= link_to icon('fas', 'pencil-alt').html_safe, edit_product_category_path(product_category), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{target: '#ProductCategoryModal', toggle: 'modal', remote: true} %></td>
+>>>>>>> 6621509650323957ac6855589a8b4d2ab2f97539
+        		</tr>
+        	<% end -%>
+        </tbody>
+    </table>
+</div>
+<%= paginate @product_categories %>

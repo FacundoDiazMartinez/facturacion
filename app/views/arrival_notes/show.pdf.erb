@@ -1,0 +1,10 @@
+<% # total_page = 0 %>
+<!--  @group_details lo cree en el controlador de invoices (en el show) con un include de productos. Son los detalles de la factura en grupos de a 20 -->
+<% @group_details.each_with_index do |details_page, index| %>
+ <div class="alwaysbreak">
+   <% # total_page = details_page.map {|a| a.total unless a.nil?}.compact.reduce(:+).to_f %>
+   <%= render template: '/arrival_notes/pdf_partials/_header.html.erb' %>
+   <%= render template: '/arrival_notes/pdf_partials/_details.html.erb', :locals => { :details => details_page, :total_pages => @group_details.count} %>
+   <%= render template: '/arrival_notes/pdf_partials/_footer.html.erb', :locals => { :page_number => (index + 1), :total_pages => @group_details.count } %>
+ </div>
+<% end %>

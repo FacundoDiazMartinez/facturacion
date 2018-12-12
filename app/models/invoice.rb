@@ -3,6 +3,7 @@ class Invoice < ApplicationRecord
   	belongs_to :sale_point
   	belongs_to :company
   	belongs_to :user
+    belongs_to :invoice, foreign_key: :associated_invoice, optional: true
 
     default_scope { where(active: true) }
 
@@ -11,6 +12,7 @@ class Invoice < ApplicationRecord
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
     has_many :iva_books, dependent: :destroy
+    has_many :delivery_notes, dependent: :destroy
 
     has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
@@ -23,14 +25,61 @@ class Invoice < ApplicationRecord
     after_save :touch_account_movement, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado"}
+    before_validation :check_if_confirmed
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
     validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
+    validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un cliente.", if: Proc.new{ |i| not i.is_invoice?}
     validates_presence_of :total, message: "El total no debe estar en blanco."
+    validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0."
     validates_presence_of :total_pay, message: "El total pagado no debe estar en blanco."
     validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
+    validate :cbte_tipo_inclusion
+
+    #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
+
+
+
+    # TABLA
+    # create_table "invoices", force: :cascade do |t|
+    #   t.boolean "active"
+    #   t.bigint "client_id"
+    #   t.string "state", default: "Pendiente", null: false
+    #   t.float "total", default: 0.0, null: false
+    #   t.float "total_pay", default: 0.0, null: false
+    #   t.string "header_result"
+    #   t.string "authorized_on"
+    #   t.string "cae_due_date"
+    #   t.string "cae"
+    #   t.string "cbte_tipo"
+    #   t.bigint "sale_point_id"
+    #   t.string "concepto"
+    #   t.string "cbte_fch"
+    #   t.float "imp_tot_conc", default: 0.0, null: false
+    #   t.float "imp_op_ex", default: 0.0, null: false
+    #   t.float "imp_trib", default: 0.0, null: false
+    #   t.float "imp_neto", default: 0.0, null: false
+    #   t.float "imp_iva", default: 0.0, null: false
+    #   t.float "imp_total", default: 0.0, null: false
+    #   t.integer "cbte_hasta"
+    #   t.integer "cbte_desde"
+    #   t.string "iva_cond"
+    #   t.string "comp_number"
+    #   t.bigint "company_id"
+    #   t.bigint "user_id"
+    #   t.datetime "created_at", null: false
+    #   t.datetime "updated_at", null: false
+    #   t.bigint "associated_invoice"
+    #   t.date "fch_serv_desde"
+    #   t.date "fch_serv_hasta"
+    #   t.index ["client_id"], name: "index_invoices_on_client_id"
+    #   t.index ["company_id"], name: "index_invoices_on_company_id"
+    #   t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
+    #   t.index ["user_id"], name: "index_invoices_on_user_id"
+    # end
+    # TABLA
 
 
   	#FILTROS DE BUSQUEDA
@@ -86,6 +135,14 @@ class Invoice < ApplicationRecord
         return i
       end
 
+      def check_authorized_invoice
+        if (self.cae.length > 0) && (self.company.environment == "production")
+          return true
+        else
+          return false
+        end
+      end
+
       def self.applicable_iva_for_detail(aliquot)
         case aliquot
         when nil
@@ -118,7 +175,11 @@ class Invoice < ApplicationRecord
       end
 
       def self.available_cbte_type(company, client)
-        Afip::CBTE_TIPO.select{|k,v| k == Afip::BILL_TYPE[company.iva_cond_sym][client.iva_cond_sym]}.map{|k,v| [v,k]}
+        Afip::CBTE_TIPO.map{|k,v| [v, k] if Afip::AVAILABLE_TYPES[company.iva_cond_sym][client.iva_cond_sym].include?(k)}.compact
+      end
+
+      def available_cbte_type
+        Afip::CBTE_TIPO.map{|k,v| [v, k] if Afip::AVAILABLE_TYPES[company.iva_cond_sym][client.iva_cond_sym].include?(k)}.compact
       end
 
       def tipo
@@ -130,9 +191,23 @@ class Invoice < ApplicationRecord
         run_callbacks :destroy
         freeze
       end
+
+      def check_if_confirmed
+        if state_was == "Confirmado"
+          errors.add(:state, "No se puede actualizar una factura confirmada.")
+        end
+      end
+
+      def is_invoice?
+        ["01", "06", "11"].include?(cbte_tipo) || cbte_tipo.nil?
+      end
   	#FUNCIONES
 
     #PROCESOS
+
+      def cbte_tipo_inclusion
+        errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.map{|k,v| v}.include?(cbte_tipo)
+      end
 
       def create_iva_book
         IvaBook.add_from_invoice(self)
@@ -232,10 +307,12 @@ class Invoice < ApplicationRecord
         if self.company.environment == "production"
           #PRODUCCION
           Afip.pkey               = "#{Rails.root}/app/afip/facturacion.key"
-          Afip.cert               = "#{Rails.root}/app/afip/pedido.crt"
+          Afip.cert               = "#{Rails.root}/app/afip/produccion.crt"
           Afip.auth_url     = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
           Afip.service_url    = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
           Afip.cuit         = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
+          Afip::AuthData.environment = :production
+          #http://ayuda.egafutura.com/topic/5225-error-certificado-digital-computador-no-autorizado-para-acceder-al-servicio/
         else
           #TEST
           Afip.cuit = "20368642682"
@@ -328,9 +405,22 @@ class Invoice < ApplicationRecord
     end
     #FILL_COMP_NUMBER
 
-    def payment_array
+    def all_payments_string
       if !self.payments.nil?
-        self.payments.map{|p| "#{p.payment_name_and_subtotal} "}.join(", ")
+        array_pagos = self.payments.map{|p| {type: p.type_of_payment, name: p.payment_name, total: p.total}}
+        pagos_reduced = []
+
+        # agrupamos pagos segun tipo de pago y a continuación se suman los "totales" de cada grupo
+        pagos_reduced << array_pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
+
+        showed_payment = ""
+        pagos_reduced.first.each_with_index do |arr,i|
+          showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
+          if ((i+1) < pagos_reduced.first.count)
+            showed_payment = showed_payment + " - "
+          end
+        end
+        return showed_payment
       end
     end
 end
