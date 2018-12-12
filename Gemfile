@@ -55,7 +55,7 @@ gem 'font-awesome-sass', '~> 5.3.1'
 gem 'aws-sdk', '~> 3'
 
 #Librerias de AFIP - wsfe - wspsr - wsctg
-gem 'Afip', '~> 0.7.3'
+gem 'Afip'
 
 # Paginación
 gem 'will_paginate', '~> 3.1.1'
