@@ -71,7 +71,7 @@ class InvoicesController < ApplicationController
   # DELETE /invoices/1
   # DELETE /invoices/1.json
   def destroy
-    @invoice.destroy
+    @invoice.destroy #TODO - solo si no esta confirmada
     respond_to do |format|
       format.html { redirect_to invoices_url, notice: 'Factura eliminada. Tambien se eliminaron todos sus documentos asociados.' }
       format.json { head :no_content }

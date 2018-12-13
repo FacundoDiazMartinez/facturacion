@@ -198,3 +198,8 @@ $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_fie
 	form = $(this).parents('form:first');
 	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");
 });
+
+function changeView(tipo){
+	$("#view").val(tipo).trigger("change");
+
+}

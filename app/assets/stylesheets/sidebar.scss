@@ -1,4 +1,4 @@
-span.only-desktop {
+span.nav-span {
   display: none;
 }
 
@@ -23,7 +23,7 @@ ul.navpills > .nav-item{
 
 .sidebar-animate:hover{
   
-  span.only-desktop {
+  span.nav-span {
     display: inline-block;
   }
   .dropdown-toggle::after{
@@ -45,3 +45,8 @@ ul.navpills > .nav-item{
 .dropdown-item:hover{
   background-color: rgba(0,0,0,.5);
 }
+
+#navpills{
+  align-items: initial !important;
+}
+

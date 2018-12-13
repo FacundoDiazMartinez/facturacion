@@ -103,6 +103,17 @@ class PurchaseOrdersController < ApplicationController
     end
   end
 
+  def disapprove
+    respond_to do |format|
+      if current_user.has_purchase_management_role?
+        @purchase_order.update_column(:state, "Desaprobado")
+        format.html {redirect_to @purchase_order, notice: "La orden de compra fue aprobada."}
+      else
+        format.html {render :edit, notice: "No tiene los provilegios necesarios para aprobar la orden de compra."}
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_purchase_order
