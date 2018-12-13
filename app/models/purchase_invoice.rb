@@ -5,7 +5,7 @@ class PurchaseInvoice < ApplicationRecord
   belongs_to :supplier, optional: true
   belongs_to :purchase_order, optional: true
 
-  has_many   :iva_books
+  has_many   :iva_books, dependent: :destroy
 
   default_scope{where(active:true)}
 

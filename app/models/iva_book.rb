@@ -40,12 +40,12 @@ class IvaBook < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   #FUNCIONES
-    def is_credit?
-      not invoice_id.nil?
+    def is_credit? #es credito cuando tiene un purchase invoice id
+      not purchase_invoice_id.nil?
     end
 
-    def is_debit?
-      not purchase_invoice_id.nil?
+    def is_debit? #es debito cuando tiene un invoice id
+      not invoice_id.nil?
     end
 
     def destroy
@@ -61,7 +61,7 @@ class IvaBook < ApplicationRecord
     end
 
     def full_invoice
-      if is_credit?
+      if is_debit?
         Invoice.unscoped do
           "#{CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
         end
