@@ -1,7 +1,7 @@
 <% if not @products.empty? %>
 	<div class="row d-flex align-items-stretch">
 		<% @products.each do |product|%>
-		<div class="col-xs-12 col-md-6 col-lg-4 mb-4">
+		<div class="col-12 col-md-6 col-lg-4 mb-4">
 			<div class="card card-shadow" style="height:100%;">
 				<%= link_to product_path(product.id) do %>
 				<div class="card-div-img-top" style="background: url('<%= product.photo %>')">
