@@ -14,9 +14,10 @@
     </div>
   </div>
 
-
-  <%= button_new_helper(new_service_path()) %>
-
+  <% if can? :create, Service %>
+    <%= button_new_helper(new_service_path()) %>
+  <% end %>
+  
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">

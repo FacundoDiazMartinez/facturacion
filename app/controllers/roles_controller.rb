@@ -4,7 +4,10 @@ class RolesController < ApplicationController
   # GET /roles
   # GET /roles.json
   def index
-    @roles = Role.all
+    @roles = Role.all.paginate(per_page: 10, page: params[:page])
+  
+    ####asdasd@gmail.com
+    ##admin123
   end
 
   # GET /roles/1
@@ -25,7 +28,7 @@ class RolesController < ApplicationController
   # POST /roles.json
   def create
     @role = Role.new(role_params)
-
+    @role.company_id = current_user.company_id
     respond_to do |format|
       if @role.save
         format.html { redirect_to @role, notice: 'Role was successfully created.' }

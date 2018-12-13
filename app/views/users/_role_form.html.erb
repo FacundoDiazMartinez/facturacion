@@ -1,0 +1,31 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="clientModalTitle">Editar rol de usuario</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%= nested_form_for @user  do |f| %>
+    <div class="modal-body">
+    
+    <%= f.fields_for :user_roles, @user.user_roles do |fr| %>
+      
+      <div class="form-group">
+      <%= fr.label :role_id, 'Rol: ' %>
+        <div class="row">
+          <div class="col"> 
+          <%= fr.select :role_id, current_user.company.roles.map{|a| [a.name, a.id]} ,{ prompt: "Seleccione..." }, {required:true, class: 'form-control form-control-sm input-group-text'}%>
+          </div>
+          <div class="col"> 
+            <%= fr.link_to_remove "#{icon('fas', 'times')}".html_safe %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+    <%= f.link_to_add "#{icon('fas', 'plus')}".html_safe ,:user_roles %>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    <%= save_button %>
+  </div>
+<% end %>

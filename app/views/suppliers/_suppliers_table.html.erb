@@ -18,8 +18,8 @@
         <td><%= supplier.phone %></td>
         <td><%= supplier.email %></td>
         <td class="text-right">
-        <%= link_to icon('fas', 'edit'), edit_supplier_path(supplier), data: { toggle: 'modal', target: '#supplierModal'}, remote: true, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-        <%= link_to icon('fas', 'trash'), supplier, method: :delete, data: { confirm: '¿Estás seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+        <%= link_to icon('fas', 'edit'), edit_supplier_path(supplier), data: { toggle: 'modal', target: '#supplierModal'}, remote: true, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, Supplier %>
+        <%= link_to icon('fas', 'trash'), supplier, method: :delete, data: { confirm: '¿Estás seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, Supplier %></td>
       </tr>
       <% end %>
     </tbody>

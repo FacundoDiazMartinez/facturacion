@@ -1,7 +1,9 @@
 <div class="p-4">
 	<!-- TITULO -->
 	<%= title_helper "#{@product.name}" %>
-	<%= button_edit_helper(edit_product_path) %>
+	<% if can? :update, Product %>
+		<%= button_edit_helper(edit_product_path) %>
+	<% end %>
 	<!-- TITULO -->
 
 	<div class="row">
