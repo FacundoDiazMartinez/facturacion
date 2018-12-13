@@ -296,7 +296,7 @@ class Invoice < ApplicationRecord
 
       def cbte_fch
         fecha = read_attribute("cbte_fch")
-        fecha.blank? ? "Aún no se confirmó" : I18n.l(fecha.to_date)
+        fecha.blank? ? nil : I18n.l(fecha.to_date)
       end
   	#ATRIBUTOS
 
