@@ -10,8 +10,8 @@ class RolePermissionsController < ApplicationController
   def index
     @friendly_names = Permission.joins(:friendly_name).includes(:friendly_name).order("friendly_names.name").all.map{ |p| [p.friendly_name.name]}.uniq.reduce(:+).compact
 
-    @role_permissions = @role.permissions.all
-    @permissions = Permission.all.map{ |p| p unless @role_permissions.map{ |rp| rp.id}.include?(p.id)}.compact
+    @role_permissions = @role.permissions.all.includes(:permission)
+    @permissions = Permission.all.includes(:friendly_name).map{ |p| p unless @role_permissions.map{ |rp| rp.id}.include?(p.id)}.compact
   end
 
   def autocomplete_permission_description

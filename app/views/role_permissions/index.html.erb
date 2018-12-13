@@ -5,11 +5,11 @@
 	    <div class="card card-fluid">
 			<div class="card-header">
 				<ul class="nav nav-tabs">
-				  <li class="nav-item role_permissions">
-				    <%= link_to "Asignados", role_role_permissions_path(view: 'role_permissions'), onclick: "changeTabPanel('role_permissions')", remote: true, class: 'permission_tab nav-link active' %>
+				  <li class="nav-item">
+				    <%= link_to "Asignados", role_role_permissions_path(view: 'role_permissions'), onclick: "changeActive('#role_permissions')", id: "role_permissions", remote: true, class: 'nav-link active' %>
 				  </li>
-				  <li class="nav-item permission_tab permissions">
-				    <%= link_to "Lista de permisos", role_role_permissions_path(view: 'permissions'), onclick: "changeTabPanel('permissions')", remote: true, class: 'permission_tab nav-link' %>
+				  <li class="nav-item" >
+				    <%= link_to "Lista de permisos", role_role_permissions_path(view: 'permissions'), onclick: "changeActive('#permissions')", remote: true, id: "permissions", class: 'nav-link' %>
 				  </li>
 				</ul>
 
@@ -67,7 +67,17 @@
 
 <script type="text/javascript">
   function changeTabPanel(klass){
-    $('a.permission_tab').removeClass('active');
-    $('a.permission_tab.' + klass).addClass('active');
+    $('a.permission_tab.').removeClass('active');
+    $('a.permission_tab. ' + klass).addClass('active');
   }
+
+  function changeActive(id) {
+  	  current_active = $(".active");
+  	  console.log(current_active);
+	  a = $(id);
+	  console.log(a);
+	  current_active.removeClass("active");
+	  a.addClass("active ");
+  }
+
 </script>
