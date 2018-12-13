@@ -19,8 +19,9 @@
         <td><%= l(user.birthday.to_date) %></td>
         <td><%= change_state_to_user(user) %></td>
         <td>
-          <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, User %>
+          <%= link_to icon('fas', 'user-tie'), roles_user_path(user), class: 'btn btn-sm btn-icon btn-outline-secondary', data: {toggle: 'modal', target: '#roleModal'}, remote: true if can? :manage, UserRole %>
+          <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, User %>
         </td>
       </tr>
       <% end %>
@@ -29,3 +30,13 @@
 </div>
 
 <%= paginate @users %>
+
+
+<div class="modal fade bd-example-modal-lg" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="role_edit_modal">
+      </div>
+    </div>
+  </div>
+</div>

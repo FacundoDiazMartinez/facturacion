@@ -21,9 +21,9 @@
         <td><%= purchase_order.state %></td>
         <td><%= purchase_order.created_at %></td>
         <td class="text-right">
-          <%= link_to icon('fas', 'eye').html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'edit').html_safe, edit_purchase_order_path(purchase_order.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'trash').html_safe, purchase_order, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'eye').html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, PurchaseOrder %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_purchase_order_path(purchase_order.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, PurchaseOrder %>
+          <%= link_to icon('fas', 'trash').html_safe, purchase_order, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, PurchaseOrder %>
         </td>
       </tr>
     <% end %>

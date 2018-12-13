@@ -26,9 +26,9 @@
         <td>$<%= purchase_invoice.imp_op_ex %></td>
         <td><%= purchase_invoice.total %></td>
         <td>
-          <%= link_to icon('fas', 'eye').html_safe, purchase_invoice, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'edit').html_safe, edit_purchase_invoice_path(purchase_invoice.id, class: 'btn btn-sm btn-icon btn-outline-secondary') %>
-          <%= link_to icon('fas', 'trash').html_safe, purchase_invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'eye').html_safe, purchase_invoice, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, PurchaseInvoice %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_purchase_invoice_path(purchase_invoice.id, class: 'btn btn-sm btn-icon btn-outline-secondary') if can? :update, PurchaseInvoice %>
+          <%= link_to icon('fas', 'trash').html_safe, purchase_invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, PurchaseInvoice %>
         </td>
       </tr>
       <% end %>

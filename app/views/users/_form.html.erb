@@ -1,17 +1,21 @@
-<%= form_with(model: user, local: true) do |form| %>
-  <% if user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
-
-      <ul>
-      <% user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+<div class="modal-body">
+    
+  <%= f.fields_for :user_roles, @user.user_roles do |fr| %>
+    
+    <div class="form-group">
+    <%= fr.label :role_id, 'Rol: ', class: 'col' %>
+      <div class="col">
+        <%= fr.select :role_id, options_for_select(current_user.company.roles, :id, :name),{ prompt: "Seleccione..." }, {required:true, class: 'form-control'}%>
+      </div>
+      <div class="col">
+        <%= fr.link_to_remove "#{icon('fas', 'times')}".html_safe %>
+      </div>
     </div>
   <% end %>
+  <%= f.link_to_add "#{icon('fas', 'plus')}".html_safe ,:user_roles %>
 
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+  <%= save_button %>
+</div>

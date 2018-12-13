@@ -1,0 +1,73 @@
+<div class="p-4">
+  <%= title_helper "Permisos del rol #{@role.name}" %>
+		
+	<div class="page-section">
+	    <div class="card card-fluid">
+			<div class="card-header">
+				<ul class="nav nav-tabs">
+				  <li class="nav-item role_permissions">
+				    <%= link_to "Asignados", role_role_permissions_path(view: 'role_permissions'), onclick: "changeTabPanel('role_permissions')", remote: true, class: 'permission_tab nav-link active' %>
+				  </li>
+				  <li class="nav-item permission_tab permissions">
+				    <%= link_to "Lista de permisos", role_role_permissions_path(view: 'permissions'), onclick: "changeTabPanel('permissions')", remote: true, class: 'permission_tab nav-link' %>
+				  </li>
+				</ul>
+
+			</div>
+			<div class="card-body">
+				<div id="permissions_wrapper">
+					<%= render 'role_permissions' %>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+<div class="modal fade bd-example-modal-lg" id="newRolePermissionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="new_permission">
+      </div>
+    </div>
+  </div>
+</div>
+
+<style media="screen">
+  .nav-tabs.nav-justified {
+    margin-bottom: 0px !important;
+  }
+	ul {
+		text-align:left;
+		list-style: none;
+		padding-left: 0px;
+	}
+
+	#accordion-list .panel-collapse li {
+		padding: 10px 20px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	li.panel-heading {
+		border-bottom: 1px solid #ddd !important;
+	}
+
+	.panel {
+		border-radius: 0px !important;
+	}
+	.panel-group {
+		margin-bottom: 0px;
+	}
+
+	#permissions_wrapper {
+		border: 1px solid #ddd;
+		border-top: none;
+		box-sizing: border-box;
+	}
+</style>
+
+<script type="text/javascript">
+  function changeTabPanel(klass){
+    $('a.permission_tab').removeClass('active');
+    $('a.permission_tab.' + klass).addClass('active');
+  }
+</script>

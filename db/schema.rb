@@ -272,7 +272,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_193315) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
@@ -290,12 +290,12 @@ ActiveRecord::Schema.define(version: 2018_12_11_193315) do
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
     t.integer "iva_aliquot"
-    t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
+    t.boolean "active", default: true, null: false
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
   end
