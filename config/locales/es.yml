@@ -131,26 +131,30 @@ es:
         address: "Dirección"
         email: "E-mail"
         cbu:  "C.B.U."
+        bank_name: "Banco"
+        titular: "Titular"
+        account_number: "Nº de cuenta"
       purchase_invoice:
         supplier_id: "Proveedor"
         arrival_note_id: "Remito asociado"
         number: "Número de comprobante"
         cbte_tipo: "Tipo de comprobante"
-        net_amount: "Monto Neto"
-        iva_amount: "Monto I.V.A."
-        imp_op_ex:  "monto exento"
+        net_amount: "Monto neto"
+        iva_amount: "I.V.A."
+        imp_op_ex:  "Monto exento"
         total: "Total"
         date: "Fecha"
+        purchase_order_id: "Orden de compra vinculada"
       purchase_order:
         state: "Estado"
         total_pay: "Total a pagar"
-        created_at: "Creado el"
+        created_at: "Fecha"
         budget: "Presupuesto"
       depot:
         name:  "Nombre"
         location: "Ubicación"
         stock_count: "Stock actual"
-        
+
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"

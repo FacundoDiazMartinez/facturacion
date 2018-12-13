@@ -4,6 +4,7 @@ class Product < ApplicationRecord
   	belongs_to :company
   	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
   	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User"
+  	belongs_to :supplier, optional: true
   	has_many   :stocks
   	has_many   :depots, through: :stocks
   	has_many   :invoice_details
@@ -97,7 +98,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.name ILIKE ? ", "%#{category}%")
+				joins(:product_category).where("product_categories.id = ? ", category)
 			else
 				all
 			end
@@ -105,7 +106,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_supplier supplier
 			if not supplier.blank?
-				joins(product_category: :supplier).where("suppliers.name ILIKE ? ", "%#{supplier}%")
+				joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
 			else
 				all
 			end
@@ -178,21 +179,27 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+		def remove_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			s.save
+		end
+
 	    def destroy
 	      update_column(:active,false)
 	    end
 
 	    #IMPORTAR EXCEL o CSV
-	    def self.save_excel file, current_user
+	    def self.save_excel file, supplier_id, current_user
 	    	#TODO Añadir created_by y updated_by
 	      	spreadsheet = open_spreadsheet(file)
         	header = self.permited_params
         	categories = {}
         	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-        	load_products(spreadsheet, header, categories, current_user)
+        	delay.load_products(spreadsheet, header, categories, current_user, supplier_id)
 		end
 
-		def self.load_products spreadsheet, header, categories, current_user
+		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
 	    	invalid 	= []
 			(2..spreadsheet.last_row).each do |i|
@@ -207,6 +214,7 @@ class Product < ApplicationRecord
           				pp pc.errors
           			end
           		end
+          		product.supplier_id 		= supplier_id
           		product.product_category_id = categories["#{row[:product_category_name]}"]
           		product.code 				= row[:code]
           		product.name 				= row[:name]

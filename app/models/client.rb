@@ -2,6 +2,7 @@ class Client < ApplicationRecord
 	has_many :invoices
 	has_many :receipts, through: :invoices
 	has_many :account_movements
+	has_many :client_contacts
 	belongs_to :company
 	belongs_to :user, optional: true
 
@@ -24,6 +25,8 @@ class Client < ApplicationRecord
 	validates_inclusion_of :iva_cond, in: IVA_COND, message: "Condición frente a I.V.A. inválida."
 	validates_numericality_of :saldo, message: "Saldo inválido. Revise por favor."
 	validates_presence_of :saldo, message: "Saldo inválido. Revise por favor."
+
+	accepts_nested_attributes_for :client_contacts, reject_if: :all_blank, allow_destroy: true
 
 
 	# TABLA

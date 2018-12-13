@@ -5,12 +5,7 @@ span.only-desktop {
 .sidebar-animate {
   color: white;
   background-color: theme-color("dark");
-  width: 15% !important;
-  left: -11.5% !important;
-    -webkit-transition: -webkit-transform 400ms ease;
-    -moz-transition: -moz-transform 400ms ease;
-    -o-transition: transform 400ms ease;
-  transition: left 400ms ease-in-out;
+  width: auto;
 }
 
 .nav-item{
@@ -27,12 +22,13 @@ span.only-desktop {
 }
 
 .sidebar-animate:hover{
-  left: 0px !important;
   span.only-desktop {
     display: inline-block;
   }
   .dropdown-toggle::after{
     display: inline-block;
+    float: left;
+    margin-top: 7px;
   }
 }
 

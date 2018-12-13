@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_11_144226) do
+ActiveRecord::Schema.define(version: 2018_12_13_140431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,15 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
   end
 
+  create_table "client_contacts", force: :cascade do |t|
+    t.bigint "client_id"
+    t.string "name"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_client_contacts_on_client_id"
+  end
+
   create_table "clients", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
@@ -77,6 +86,9 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
+    t.float "recharge"
+    t.integer "payment_day"
+    t.string "observation"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end
@@ -317,8 +329,10 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
     t.bigint "updated_by"
     t.string "measurement"
     t.string "tipo", default: "Producto", null: false
+    t.bigint "supplier_id"
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
+    t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
   create_table "provinces", force: :cascade do |t|
@@ -343,6 +357,8 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "purchase_order_id"
+    t.boolean "active", default: true
+    t.string "iva_aliquot"
     t.index ["arrival_note_id"], name: "index_purchase_invoices_on_arrival_note_id"
     t.index ["company_id"], name: "index_purchase_invoices_on_company_id"
     t.index ["purchase_order_id"], name: "index_purchase_invoices_on_purchase_order_id"
@@ -368,7 +384,6 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
     t.bigint "supplier_id"
     t.text "observation"
     t.float "total", default: 0.0, null: false
-    t.float "total_pay", default: 0.0, null: false
     t.bigint "user_id"
     t.boolean "shipping", default: false, null: false
     t.float "shipping_cost", default: 0.0, null: false
@@ -376,6 +391,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
     t.bigint "budget_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true
     t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
     t.index ["company_id"], name: "index_purchase_orders_on_company_id"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
@@ -445,6 +461,9 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
     t.bigint "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "titular"
+    t.string "account_number"
+    t.string "bank_name"
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
@@ -524,6 +543,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
   add_foreign_key "arrival_notes", "depots"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
+  add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
   add_foreign_key "clients", "users"
   add_foreign_key "delayed_jobs", "payments"
@@ -550,6 +570,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_144226) do
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"
+  add_foreign_key "products", "suppliers"
   add_foreign_key "purchase_invoices", "arrival_notes"
   add_foreign_key "purchase_invoices", "companies"
   add_foreign_key "purchase_invoices", "purchase_orders"

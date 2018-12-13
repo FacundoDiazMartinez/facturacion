@@ -4,102 +4,111 @@
 	<%= button_edit_helper(edit_product_path) %>
 	<!-- TITULO -->
 
-	<div class="card card-shadow mb-4" style="width:30%;margin:auto;">
-    <img class="card-img-top" src="<%= @product.photo %>" alt="Añadir foto" id="image">
-  </div>
+	<div class="row">
+		<div class="col-md-4 col-xs-12">
+			<div class="card card-shadow mb-4">
+		    	<img class="card-img-top" src="<%= @product.photo %>" alt="Añadir foto" id="image">
+		  	</div>
+		</div>
 
-	<div class="container-fluid">
-	  <div class="row">
+		<div class="col-md-8 col-xs-12">
+			<div class="container-fluid">
+			  	<div class="row">
+			    	<div class="col-md-12">
+			    		<p class="text-muted">Información basica</p>
+			      		<div class="card card-fluid card-shadow">
+			        		<ul class="list-group">
+					          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Nombre
+					              		</strong>
+					            	</div>
+					            	<span><%= @product.name %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Medida
+					              		</strong>
+					            	</div>
+					            	<span><%= @product.full_measurement %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Categoría
+					              		</strong>
+					            		</div>
+					            		<span><%= @product.category_name %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Código
+					              		</strong>
+					            	</div>
+					            	<span><%= @product.code %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Stock
+					              		</strong>
+					           		</div>
+					            	<span><%= @product.available_stock %></span>
+					          	</li>
+							</ul>
+						</div>
+					</div>
 
-	    <div class="col-md-6">
-	      <div class="card card-fluid card-shadow">
-	        <ul class="list-group">
-	          <li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Nombre
-	              </small>
-	            </div>
-	            <span><%= @product.name %></span>
-	          </li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Medida
-	              </small>
-	            </div>
-	            <span><%= @product.full_measurement %></span>
-	          </li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Categoría
-	              </small>
-	            </div>
-	            <span><%= @product.category_name %></span>
-	          </li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Código
-	              </small>
-	            </div>
-	            <span><%= @product.code %></span>
-	          </li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Stock
-	              </small>
-	            </div>
-	            <span><%= @product.available_stock %></span>
-	          </li>
-					</ul>
-				</div>
-			</div>
-
-			<div class="col-md-6">
-				<div class="card card-fluid card-shadow">
-	        <ul class="list-group">
-	          <li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Precio de costo
-	              </small>
-	            </div>
-	            <span>$<%= @product.cost_price %></span>
-	          </li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-							<div>
-								<small class="my-0">
-									Ganancia
-								</small>
-							</div>
-							<span><%= @product.gain_margin %>%</span>
-						</li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Precio neto
-	              </small>
-	            </div>
-	            <span>$<%= @product.net_price %></span>
-	          </li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-	              <small class="my-0">
-	                Alícuota IVA
-	              </small>
-	            </div>
-	            <span><%= @product.iva %>%</span>
-	          </li>
-						<li class="list-group-item d-flex justify-content-between lh-condensed">
-	            <div>
-                Precio final
-	            </div>
-	            <span>$<%= @product.price %></span>
-	          </li>
-					</ul>
+					<div class="col-md-12">
+						<p class="text-muted">Información sobre el precio</p>
+						<div class="card card-fluid card-shadow">
+					        <ul class="list-group">
+					          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Precio de costo
+					              		</strong>
+					            	</div>
+					            	<span>$<%= @product.cost_price %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+									<div>
+										<strong class="my-0">
+											Ganancia
+										</strong>
+									</div>
+									<span><%= @product.gain_margin %>%</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Precio neto
+					              		</strong>
+					            	</div>
+					            	<span>$<%= @product.net_price %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Alícuota IVA
+					              		</strong>
+					            	</div>
+					            	<span><%= @product.iva %>%</span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+				                		<strong class="my-0">
+					                		Precio final
+					              		</strong>
+					            	</div>
+					            	<span>$<%= @product.price %></span>
+					          	</li>
+							</ul>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

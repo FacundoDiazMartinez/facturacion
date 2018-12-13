@@ -1,5 +1,5 @@
 class ArrivalNotesController < ApplicationController
-  before_action :set_arrival_note, only: [:show, :edit, :update, :destroy]
+  before_action :set_arrival_note, only: [:show, :edit, :update, :destroy, :cancel]
 
   # GET /arrival_notes
   # GET /arrival_notes.json
@@ -96,6 +96,17 @@ class ArrivalNotesController < ApplicationController
     render :json => purchase_orders.map { |po| {:id => po.id, :label => po.number, :value => po.number} }
   end
 
+  def cancel
+    respond_to do |format|
+      if current_user.has_stock_management_role?
+        @arrival_note.update_column(:state, "Anulado")
+        format.html {redirect_to edit_arrival_note_path(@arrival_note.id), notice: "El remito fue anulado."}
+      else
+        format.html {render :edit, notice: "No tiene los provilegios necesarios para anular el remito."}
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_arrival_note
@@ -104,6 +115,6 @@ class ArrivalNotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def arrival_note_params
-      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :state, arrival_note_details_attributes: [:id, :quantity, :observation, :_destroy, product_attributes: [:id, :code, :name, :price]])
+      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number, arrival_note_details_attributes: [:id, :quantity, :observation, :_destroy, product_attributes: [:id, :code, :name, :price]])
     end
 end

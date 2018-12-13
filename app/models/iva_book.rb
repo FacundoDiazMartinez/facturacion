@@ -22,7 +22,7 @@ class IvaBook < ApplicationRecord
   		if from && to
   			where(date: from...to)
   		else
-  			all 
+  			all
   		end
   	end
 
@@ -45,7 +45,7 @@ class IvaBook < ApplicationRecord
     end
 
     def is_debit?
-      invoice_id.nil?
+      not purchase_invoice_id.nil?
     end
 
     def destroy
@@ -62,9 +62,13 @@ class IvaBook < ApplicationRecord
 
     def full_invoice
       if is_credit?
-        "#{CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
+        Invoice.unscoped do
+          "#{CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
+        end
       else
-        "#{CBTE_TIPO[purchase_invoice.cbte_tipo]} - #{purchase_invoice.number}"
+        PurchaseInvoice.unscoped do
+          "#{CBTE_TIPO[purchase_invoice.cbte_tipo]} - #{purchase_invoice.number}"
+        end
       end
     end
   #ATRIBUTOS
@@ -91,5 +95,5 @@ class IvaBook < ApplicationRecord
       ib.total      = ib.net_amount + ib.iva_amount
       ib.save
     end
-  #PROCESOS  
+  #PROCESOS
 end

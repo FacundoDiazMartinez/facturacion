@@ -73,6 +73,10 @@ class User < ApplicationRecord
       return true
     end
 
+    def has_stock_management_role?
+      return true
+    end
+
 		def role_label
 			if self.has_management_role?
 				"Administrador"

@@ -12,10 +12,16 @@
             <ol>
               <h5>Para poder importar tus productos primero debes seguir estos pasos</h5>
               <li>
+                Selecciona a que proveedor pertenecen los productos que estas por importar. En caso de que no pertenezcan a ninguno debes dejar vacio este campo.
+                <center>
+                  <%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}), {class: 'form-control col-4', prompt: "Ninguno..."} %>
+                </center>
+              </li>
+              <li>
                 Descargar este archivo excel que tiene el formato con el que debes trabajar. <%= link_to "#{icon('fas', 'download')} Descargar formato".html_safe, export_products_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday' %>
               </li>
               <li>
-                Rellenalo con tus productos ordenando cada columna donde corresponda, siempre respetando los campos obligatorios.
+                Rellenalo con tus productos ordenando cada columna donde corresponda, siempre respetando los campos obligatorios. Los podras reconocer porque tienen un "*" al final del nombre.
               </li>
               <li>
                 Una vez listo tu archivo ya podes subirlo, te avisaremos cuando todos los productos esten disponibles.

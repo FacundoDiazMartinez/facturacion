@@ -1,0 +1,15 @@
+<% if @product_category.errors.any? %>
+		$("#errors").html("<%= j error_explanation(@product_category) %>");
+<% else %>
+	if ($("#category").length != 0){
+		'<%= form_for Product.new do |f| %> '
+			$("#category").find("select").replaceWith("<%= j f.select :product_category_id, options_for_select(current_user.company.product_categories.all.map{|pc| [pc.name, pc.id]}, @product_category.id), {include_blank: "Sin categoría"}, {:class => 'form-control'} %>");
+		'<% end %>'
+	}
+	$("#product_category_modal").modal('hide');
+	$('#product_category_modal').on('hidden.bs.modal', function (e) {
+		if ($("#product_categories_table").length != 0){
+			$("#product_categories_table").html("<%= j render '/product_categories/product_categories_table' %>")
+		}
+	});
+<% end %>

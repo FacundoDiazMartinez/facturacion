@@ -3,6 +3,7 @@ class Supplier < ApplicationRecord
   has_many 	 :purchase_orders
   has_many 	 :purchase_invoices
   has_many   :product_categories
+  has_many   :products
 
   after_create :set_create_activity
   after_save   :set_update_activity
