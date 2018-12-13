@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_11_193315) do
+ActiveRecord::Schema.define(version: 2018_12_13_140431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_193315) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.string "number", null: false
+    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -290,12 +290,12 @@ ActiveRecord::Schema.define(version: 2018_12_11_193315) do
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
     t.integer "iva_aliquot"
-    t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
+    t.boolean "active", default: true, null: false
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
   end
@@ -357,6 +357,8 @@ ActiveRecord::Schema.define(version: 2018_12_11_193315) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "purchase_order_id"
+    t.boolean "active", default: true
+    t.string "iva_aliquot"
     t.index ["arrival_note_id"], name: "index_purchase_invoices_on_arrival_note_id"
     t.index ["company_id"], name: "index_purchase_invoices_on_company_id"
     t.index ["purchase_order_id"], name: "index_purchase_invoices_on_purchase_order_id"
@@ -382,7 +384,6 @@ ActiveRecord::Schema.define(version: 2018_12_11_193315) do
     t.bigint "supplier_id"
     t.text "observation"
     t.float "total", default: 0.0, null: false
-    t.float "total_pay", default: 0.0, null: false
     t.bigint "user_id"
     t.boolean "shipping", default: false, null: false
     t.float "shipping_cost", default: 0.0, null: false
@@ -390,6 +391,7 @@ ActiveRecord::Schema.define(version: 2018_12_11_193315) do
     t.bigint "budget_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true
     t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
     t.index ["company_id"], name: "index_purchase_orders_on_company_id"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"

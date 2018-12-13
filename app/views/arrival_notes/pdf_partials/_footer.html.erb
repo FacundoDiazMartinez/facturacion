@@ -3,22 +3,9 @@
   <div class="container border">
     <table class="width_100">
       <tr>
-        <td><b>Estado: </b><%= @purchase_order.state %></td>
+        <td><b>Estado: </b><%= @arrival_note.state %></td>
         <td> </td>
         <td> </td>
-      </tr>
-
-      <tr>
-        <td><b> Observación: </b>
-        <% if @purchase_order.observation == nil %>
-          -- Sin observaciones --
-        <% else
-          @purchase_order.observation
-        end %>
-      </td>
-        <td></td>
-        <td></td>
-        <td class="text_right"> </td>
       </tr>
     </table>
   </div>
@@ -37,7 +24,7 @@
       </tr>
       <tr>
         <td class="text_center">Firma y sello</td>
-        <td class="text_center"> <%= @purchase_order.company.name %> - <%= @purchase_order.company.address %> </td>
+        <td class="text_center"> <%= @arrival_note.company.name %> - <%= @arrival_note.company.address %> </td>
       </tr>
     </table>
   </div>

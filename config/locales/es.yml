@@ -140,7 +140,7 @@ es:
         number: "Número de comprobante"
         cbte_tipo: "Tipo de comprobante"
         net_amount: "Monto neto"
-        iva_amount: "Monto I.V.A."
+        iva_amount: "I.V.A."
         imp_op_ex:  "Monto exento"
         total: "Total"
         date: "Fecha"
@@ -148,13 +148,13 @@ es:
       purchase_order:
         state: "Estado"
         total_pay: "Total a pagar"
-        created_at: "Creado el"
+        created_at: "Fecha"
         budget: "Presupuesto"
       depot:
         name:  "Nombre"
         location: "Ubicación"
         stock_count: "Stock actual"
-        
+
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"
