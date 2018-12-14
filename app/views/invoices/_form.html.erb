@@ -82,16 +82,6 @@
 
   <hr>
   <!-- PRODUCTOS -->
-  <h3 class="d-flex mb-2">
-    <div class="p-2">
-      Conceptos
-    </div>
-    <div class="ml-auto p-2">
-      <% if @invoice.editable? %>
-        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar concepto".html_safe, :invoice_details, class: 'btn btn-success', data: {target: '#details'} %>
-      <% end %>
-    </div>
-  </h3>
   <div class="card shadow" id="idetails">
     <%= render template: '/invoices/detail/index.html.erb', locals:{form: form} %>
   </div>
@@ -99,16 +89,6 @@
 
   <hr>
   <!-- PAGOS -->
-  <h3 class="d-flex mb-2">
-    <div class="p-2">
-      Pagos
-    </div>
-    <div class="ml-auto p-2">
-      <% if @invoice.editable? %>
-        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar pago".html_safe, :payments, class: 'btn btn-success', data: {target: '#payments'}%>
-      <% end %>
-    </div>
-  </h3>
   <div class="card shadow" id="ipayments">
     <%= render template: '/invoices/payment/index.html.erb', locals:{form: form} %>
   </div>
