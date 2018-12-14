@@ -1,12 +1,15 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="d-flex flex-grow-1">
+      <% if user_signed_in? %>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navpills">
             <span class="navbar-toggler-icon"></span>
         </button>
+      <% end -%>
         <span class="w-100 d-lg-none d-block"><!-- hidden spacer to center brand on mobile --></span>
         <a class="navbar-brand-two mx-auto d-inline-block" href="/">
              <%= image_tag '/images/logo_blanco2.png', alt: "desideral.com - Sistema de facturación online", width: '175px;' %>
         </a>
+        <span class="w-100 d-lg-none d-block"><!-- hidden spacer to center brand on mobile --></span>
         <div class="w-100 text-right">
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar">
                 <span class="navbar-toggler-icon"></span>
