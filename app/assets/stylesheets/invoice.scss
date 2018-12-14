@@ -15,3 +15,5 @@ table.invoice-table > tbody > tr > td{
 	flex-flow: row nowrap;
 	justify-content: flex-start;
 }
+
+td > input.form-control {width: auto;}

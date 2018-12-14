@@ -1,33 +1,38 @@
 <div class="col-md-4">
-	<div class="form-group">
-      	<%= form.label :state %>
-      	<%= form.text_field :state, class: 'form-control', readonly: true %>
-    </div>
+	<div class="form-group row">
+	  	<%= form.label :state, class:'col-4 col-form-label col-form-label-sm' %>
+	  	<div class="col-8">
+	  		<%= form.text_field :state, class: 'form-control', readonly: true %>
+	  	</div>
+	</div>
 </div>
 <div class="col-md-4">
 	<% if @invoice.concepto != "Productos" && !@invoice.concepto.nil? %>
-		<div class="row">
-			<div class="col">
-		      	<%= form.label :fch_serv_desde %>
-		      	<%= form.text_field :fch_serv_desde, class: 'form-control datepicker', disabled: !@invoice.editable? %>
+		<div class="form-group row">
+			<%= label_tag :fecha, "Fecha", class:'col-4 col-form-label col-form-label-sm' %>
+		    <div class="col-4">
+		      	<%= form.text_field :fch_serv_desde, class: 'form-control datepicker', placeholder: "Desde", disabled: !@invoice.editable? %>
 		    </div>
-		    <div class="col">
-		      	<%= form.label :fch_serv_hasta %>
-		      	<%= form.text_field :fch_serv_hasta, class: 'form-control datepicker', disabled: !@invoice.editable? %>
+		    <div class="col-4">
+		      	<%= form.text_field :fch_serv_hasta, class: 'form-control datepicker', placeholder: "Hasta", disabled: !@invoice.editable? %>
 		    </div>
 	    </div>
 	<% else %>
-		<div class="form-group">
-	      	<%= form.label :cbte_fch %>
-	      	<%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
+		<div class="form-group row">
+	      	<%= form.label :cbte_fch, "Fecha", class:'col-4 col-form-label col-form-label-sm' %>
+	      	<div class="col-8">
+	      		<%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
+	      	</div>
 	    </div>
 	<% end %>
 </div>
 <div class="col-md-4">
-	<div class="form-group">
-		<%= form.label :associated_invoice %>
-		<%= form.hidden_field :associated_invoice %>
-		<%= form.autocomplete_field :associated_invoice, autocomplete_associated_invoice_invoices_path, class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: @invoice.is_invoice?, autofocus: true %>
+	<div class="form-group row">
+		<%= form.label :associated_invoice, "Factura asociada", class:'col-4 col-form-label col-form-label-sm' %>
+		<div class="col-8">
+			<%= form.autocomplete_field :associated_invoice, autocomplete_associated_invoice_invoices_path, class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: @invoice.is_invoice?, autofocus: true %>
+			<%= form.hidden_field :associated_invoice %>
+		</div>
 	</div>
 </div>
 
