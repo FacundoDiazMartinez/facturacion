@@ -4,8 +4,9 @@ class IvaBooksController < ApplicationController
   # GET /iva_books
   # GET /iva_books.json
   def index
-    @iva_books = current_user.company.iva_books.find_by_period(params[:from], params[:to]).find_by_tipo(params[:iva_compras]).paginate(page: params[:page], per_page: 15)
+    @iva_books = current_user.company.iva_books.find_by_period(params[:from], params[:to]).search_by_tipo(params[:iva_compras]).paginate(page: params[:page], per_page: 15)
   end
+
 
   def generate_pdf
 
@@ -14,6 +15,10 @@ class IvaBooksController < ApplicationController
   # # GET /iva_books/1
   # # GET /iva_books/1.json
   def show
+    Product.unscoped do
+      @group_details = @iva_books.purchase_order_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
     respond_to do |format|
       format.html
       format.pdf do
