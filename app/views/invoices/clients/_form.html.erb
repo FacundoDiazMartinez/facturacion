@@ -7,7 +7,7 @@
       <div class="input-group-prepend">
         <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text'} %>
       </div>
-      <%= f.autocomplete_field :document_number, autocomplete_document_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field', placeholder: "Ingrese documento de cliente", required: true, value: "" %>
+      <%= f.autocomplete_field :document_number, autocomplete_document_invoices_clients_path,class: 'form-control form-control-sm client-autocomplete_field', placeholder: "Ingrese documento de cliente", required: true %>
     </div>
   </div>
 </div>
@@ -63,3 +63,13 @@
 </div>
 
 <center><i>* Campos obligatorios</i></center>
+
+<script type="text/javascript">
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoclose: true,
+      startView: 2
+  });
+</script>

@@ -23,7 +23,7 @@
         <% if iva_book.is_credit?  %>
           <td><%= link_to icon('fas', 'eye').html_safe, iva_book.purchase_invoice, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
         <% else %>
-          <td><%= link_to icon('fas', 'eye').html_safe, iva_book.invoice, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+          <td><%= link_to icon('fas', 'eye').html_safe, invoice_path(iva_book.invoice.id, format: "pdf"), target: "_blank" , class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
         <% end %>
       </tr>
     <% end %>

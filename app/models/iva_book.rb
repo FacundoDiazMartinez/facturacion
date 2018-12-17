@@ -19,16 +19,16 @@ class IvaBook < ApplicationRecord
 
   #FILTROS DE BUSQUEDA
   	def self.find_by_period from, to
-  		if from && to
+  		if !from.blank? && !to.blank?
   			where(date: from...to)
   		else
   			all
   		end
   	end
 
-    def self.find_by_tipo iva_compra
-      if not iva_compra.blank?
-        if iva_compra
+    def self.search_by_tipo iva_compras
+      if not iva_compras.blank?
+        if iva_compras == "true"
           where(tipo: "Crédito Fiscal")
         else
           where(tipo: "Débito Fiscal")

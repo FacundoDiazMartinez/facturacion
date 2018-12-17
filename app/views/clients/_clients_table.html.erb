@@ -16,7 +16,9 @@
         <td><%= client.full_document %></td>
         <td><%= client.email %></td>
         <td class="text-right">
-          <%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <% if client.valid_for_account %>
+            <%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <% end -%>
           <%= link_to icon('fas', 'eye'), client, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, Client %>
 
           <% if can? :manage, Client %>
