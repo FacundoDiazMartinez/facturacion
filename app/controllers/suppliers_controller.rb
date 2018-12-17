@@ -78,6 +78,6 @@ class SuppliersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def supplier_params
-      params.require(:supplier).permit(:name, :document_type, :document_number, :phone, :mobile_phone, :address, :email, :cbu, :bank_name, :titular, :account_number)
+      params.require(:supplier).permit(:name, :document_type, :document_number, :phone, :mobile_phone, :address, :email, :cbu, :bank_name, :titular, :account_number, :iva_cond)
     end
 end

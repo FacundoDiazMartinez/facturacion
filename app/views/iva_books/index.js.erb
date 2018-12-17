@@ -1,5 +1,5 @@
 '<% if !params[:from].blank? && !params[:to].blank? %>'
-	$("#pdf_file").html("<%= j link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_iva_books_path(from: params[:from], to: params[:to], iva_compras: params[:iva_compras]), class: 'btn btn-primary ' %>");
+	$("#pdf_file").html("<%= j link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_iva_books_path(from: params[:from], to: params[:to], iva_compras: params[:iva_compras], format: :pdf), class: 'btn btn-primary ' %>");
 '<% end %>'
 
 $("#iva_books_table").html("<%= j render 'iva_books_table' %>");
