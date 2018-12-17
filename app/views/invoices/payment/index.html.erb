@@ -8,31 +8,32 @@
       	<% end %>
     </div>
 </h3>
-<table class="table table-striped table-responsive invoice-table" id="payments">
-	<thead>
-		<tr>
-			<th>#</th>
-			<th scope="col">Tipo de pago</th>
-			<th scope="col">Monto</th>
-			<th scope="col">Fecha de pago</th>
-			<th scope="col"></th>
-		</tr>
-	</thead>
-	<tbody>
-		<%= form.fields_for :payments, wrapper: false do |f| %>
-	      <tr class="fields">
-	      	<th scope="row">#</th>
-	      	<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm', style: 'width: 100px;', disabled: !@invoice.editable?} %></td>
-	      	<td class="popup">
-				<%= f.number_field :total, class: 'form-control form-control-sm amount', default: 0.0, disabled: !@invoice.editable? %>
-			    <span class="popuptext" id="myPopup">Esta intentando cobrar un monto superior.</span>
-			</td>
-	      	<td><%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker', disabled: !@invoice.editable? %></td>
-	      	<td>
-	      		<% if @invoice.editable? %>
-	      			<%= f.link_to_remove icon('fas', 'trash') %></td>
-	      		<% end %>
-	      </tr>
-	    <% end %>
-	</tbody>
-</table>
+<div class="table-responsive-sm">
+	<table class="table table-striped invoice-table" id="payments" style="width: 100%;">
+		<thead>
+			<tr>
+				<th scope="col">Tipo de pago</th>
+				<th scope="col">Monto</th>
+				<th scope="col">Fecha de pago</th>
+				<th scope="col"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<%= form.fields_for :payments, wrapper: false do |f| %>
+		      	<tr class="fields">
+		      		<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm', style: 'min-width: 100px;', disabled: !@invoice.editable?} %></td>
+		      		<td class="popup">
+						<%= f.number_field :total, class: 'form-control form-control-sm amount', default: 0.0, disabled: !@invoice.editable? %>
+				    	<span class="popuptext" id="myPopup">Esta intentando cobrar un monto superior.</span>
+					</td>
+		      		<td><%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker', disabled: !@invoice.editable? %></td>
+		      		<td>
+		      			<% if @invoice.editable? %>
+		      				<%= f.link_to_remove icon('fas', 'trash') %>
+		      			<% end %>
+		      		</td>
+		     	</tr>
+		    <% end %>
+		</tbody>
+	</table>
+</div>
