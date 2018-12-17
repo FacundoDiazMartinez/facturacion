@@ -20,7 +20,7 @@ class IvaBook < ApplicationRecord
   #FILTROS DE BUSQUEDA
   	def self.find_by_period from, to
   		if !from.blank? && !to.blank?
-  			where(date: from...to)
+  			where(date: from..to)
   		else
   			all
   		end

@@ -385,12 +385,19 @@ class Invoice < ApplicationRecord
 
       #PROCESOS
         def set_cae bill
+          pp bill
           self.update(
             cae: bill.response.cae,
             cae_due_date: bill.response.cae_due_date,
             cbte_fch: bill.response.cbte_fch.to_date,
             authorized_on: bill.response.authorized_on.to_time,
             comp_number: bill.response.cbte_hasta.to_s.rjust(8,padstr= '0'),
+            imp_tot_conc: bill.response.imp_tot_conc,
+            imp_op_ex: bill.response.imp_op_ex,
+            imp_trib: bill.response.imp_trib,
+            imp_neto: bill.response.imp_neto,
+            imp_iva: bill.response.imp_iva,
+            imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
         end

@@ -194,6 +194,8 @@ $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_fie
 
 function changeView(tipo){
 	$("#view").val(tipo).trigger("change");
-
 }
 
+$(document).on("click","#client_name", function(){
+	$(this).val("");
+})
