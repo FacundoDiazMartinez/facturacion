@@ -1,14 +1,12 @@
-<p id="notice"><%= notice %></p>
+<div class="modal-header">
+  <h3>Usuarios pertenecientes al Rol: <%= @role.name %></h3>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+</div>
+<div class="modal-body">
+	<%= render '/roles/users_table' %>
+</div>
 
-<p>
-  <strong>Company:</strong>
-  <%= @role.company %>
-</p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @role.name %>
-</p>
-
-<%= link_to 'Edit', edit_role_path(@role) %> |
-<%= link_to 'Back', roles_path %>
+<div class="modal-footer">
+  	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+</div>

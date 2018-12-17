@@ -59,12 +59,20 @@
       <%= f.label :payment_day, "Día de pago" %>
       <%= f.text_field :payment_day,class: 'form-control form-control-sm' %>
     </div>
+  </div>
+</div>
+
+<div class="form-group">
+  <%= f.label :recharge, "Recargos (%)" %>
+  <%= f.number_field :recharge, class: 'form-control form-control-sm', placeholder: "Serán aplicados a las facturas." %>
 </div>
 
 <div class="form-group">
   <%= f.label :observation, "Observación" %>
   <%= f.text_area :observation, class: 'form-control form-control-sm' %>
 </div>
+
+
 
 <hr>
 <h5>Contactos</h5>
@@ -97,3 +105,13 @@
   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
   <%= save_button %>
 </center>
+
+<script type="text/javascript">
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoclose: true,
+      startView: 2
+  });
+</script>

@@ -57,6 +57,7 @@ $(document).ready(function() {
       dateFormat: "dd/mm/yyyy",
       todayHighlight: true,
       autoclose: true,
+      startView: 2
   });
 });
 

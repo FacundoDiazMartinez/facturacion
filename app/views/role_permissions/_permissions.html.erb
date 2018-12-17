@@ -1,0 +1,54 @@
+<div class="card-group" id="accordion-list" role="tablist" aria-multiselectable="false">
+  <ul class="card card-fluid">
+    <% @friendly_names.each_with_index do |fn, i| %>
+      <li role="presentation" class="card-header" role="tab">
+        <a role="button" class="collapsible" data-toggle="collapse" href="#collapse_<%= i %>" data-parent="#accordion-list" aria-expanded="false" aria-controls="collapse_<%= i %>">
+          <%= fn %>
+        </a>
+      </li>
+      <div id="collapse_<%= i %>" class="card-collapse collapse" role="tabpanel">
+        <ul class="card-body">
+          <% @permissions.map{ |p| p if p.friendly_name.name == fn }.compact.sort_by{ |p| p[:description] }.each_with_index do |permission, j| %>
+
+              <li id="permission_id_<%= permission[:id] %>">
+                <%= permission[:description] %>
+                <div class="float-right">
+                  <% if can? :create, RolePermission %>
+                    <a href="#" onclick="toggleAssociation(<%= "#{@role.id}, #{permission[:id]}" %>)">Asignar</a>
+                  <% end -%>
+                </div>
+                <hr>
+              </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </ul>
+</div>
+
+<script type="text/javascript">
+function toggleAssociation(role_id, permission_id) {
+  $.ajax({
+          url: "/roles/" + role_id + "/role_permissions/toggle_association",
+          type: "POST",
+          data: {
+            role_id: role_id,
+            permission_id: permission_id
+          },
+          cache: false,
+          success: function(data) {
+            $([document.documentElement, document.body]).animate({
+                scrollTop: $('li#permission_id_' + permission_id).offset().top -100
+            }, 'fast');
+            $('li#permission_id_' + permission_id).hide();
+          },
+          error: function(data){
+              if (data.status == 401 ){
+                  alert("---");
+              } else {
+                  alert("Error")
+              }
+          }
+      });
+}
+</script>

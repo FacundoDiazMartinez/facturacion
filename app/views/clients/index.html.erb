@@ -1,8 +1,8 @@
 <div class="p-4">
   <%= title_helper 'Clientes' %>
-
-  <%= button_new_modal_helper(new_client_path(), 'clientModal') %>
-
+  <% if can? :create, Client %>
+    <%= button_new_modal_helper(new_client_path(), 'clientModal') %>
+  <% end %>
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">

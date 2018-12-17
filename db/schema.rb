@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_17_142136) do
+ActiveRecord::Schema.define(version: 2018_12_17_171124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 2018_12_17_142136) do
     t.float "recharge"
     t.integer "payment_day"
     t.string "observation"
+    t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end

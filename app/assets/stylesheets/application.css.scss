@@ -30,6 +30,7 @@
 @import "invoice";
 
 
+
 @font-face {
 	font-family: 'Montserrat Regular';
 	src:url('/fonts/montserrat-font/Montserrat-Regular.ttf');
@@ -251,6 +252,14 @@ td > a:visited{
   color: black;
 }
 
+.display-menu > li > a:visited, .display-menu > li > a{
+    color: black !important;
+}
+
+.display-menu > li > a:hover{
+    color: white !important;
+}
+
 @media (max-width: 992px) {
 
   span.nav-span {
@@ -290,4 +299,7 @@ td > a:visited{
     background-color: transparent;
     border-color: #6c757d;
   }
+
 } 
+
+

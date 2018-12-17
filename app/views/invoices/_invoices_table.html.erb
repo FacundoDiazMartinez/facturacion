@@ -37,23 +37,21 @@
   <div class="row">
     <% @invoices.each do |invoice| %>
       <div class="col-md-6 col-lg-4 col-sm-12">
-        <ul class="list-unstyled rounded border-right-0 border-left-0">
+        <ul class="list-unstyled rounded border-top border-bottom">
           <li class="media">
             <img class="mr-3" src="/images/invoice.png" alt="Factura">
-            <div class="media-body row">
-              <div class="col-10">
-                <h5 class="mt-0 mb-1">Factura a <%= invoice.client_name %></h5>
-                <strong>Tipo:</strong> <%= invoice.tipo %><br>
-                <strong>Estado:</strong> <%= invoice_state(invoice.state) %><br>
-                <i><%= icon('fas', 'clock') %> <%= invoice.cbte_fch %></i><br>
-                <h5>Total: <span class="text-info">$<%= invoice.total %></span></h5>
-              </div>
-              <div class="col-2">
+            <div class="media-body">
+              <h5 class="mt-0 mb-1">Factura a <%= invoice.client_name %></h5>
+              <strong>Tipo:</strong> <%= invoice.tipo %><br>
+              <strong>Estado:</strong> <%= invoice_state(invoice.state) %><br>
+              <i><%= icon('fas', 'clock') %> <%= invoice.cbte_fch %></i><br>
+              <h5>Total: <span class="text-info">$<%= invoice.total %></span></h5>
+              <div class="float-right">
                 <%  if ! invoice.editable? %>
-                  <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+                  <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
                 <% end %>
-                <%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(invoice), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-                <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+                <%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(invoice), class: 'btn btn-link' %>
+                <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-link' %>
               </div>
             </div>
           </li>

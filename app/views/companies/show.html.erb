@@ -14,22 +14,22 @@
       </h6>
     </center>
   </div>
-
 </div>
 
+<% if can? :edit, Company %>
+  <%= button_edit_helper(edit_company_path(@company.id)) %>
+<% end %>
+
 <div style="padding-top:10px">
-  <ul class="nav nav-border justify-content-center">
-    <li class="nav-item overview">
-      <%= link_to "General", company_path(@company, company_view: 'overview'), id: 'overview-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+  <ul class="nav nav-border justify-content-center display-menu">
+    <li class="nav-item info">
+      <%= link_to "General", company_path(@company, company_view: 'info'), id: 'info-tab', remote: true, class: 'nav-link active', data: { toggle: 'tab' } %>
     </li>
     <li class="nav-item users">
       <%= link_to "Personal", company_path(@company, company_view: 'users'), id: 'users-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
     </li>
     <li class="nav-item activities">
       <%= link_to "Actividades", company_path(@company, company_view: 'activities'), id: 'activities-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
-    </li>
-    <li class="nav-item info">
-      <%= link_to "Información", company_path(@company, company_view: 'info'), id: 'info-tab', remote: true, class: 'nav-link active', data: { toggle: 'tab' } %>
     </li>
     <li class="nav-item settings">
       <%= link_to "Configuraciones", company_path(@company, company_view: 'settings'), id: 'settings-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>

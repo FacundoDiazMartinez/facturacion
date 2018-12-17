@@ -1,7 +1,8 @@
 <div class="p-4">
   <%= title_helper 'Comprobantes de Compras' %>
-  <%= button_new_helper new_purchase_invoice_path %>
-
+  <% if can? :create, PurchaseInvoice %>
+    <%= button_new_helper new_purchase_invoice_path %>
+  <% end %>
   <div class="page-section">
     <div class="card">
       <div class="card-header">
