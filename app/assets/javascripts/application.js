@@ -61,6 +61,7 @@ $(document).ready(function() {
   });
 });
 
+
 function remoteSubmit(form_id){
   form = $(form_id);
   $.get(form.attr("action"), form.serialize(), null , "script");

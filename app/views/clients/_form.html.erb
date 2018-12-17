@@ -52,6 +52,21 @@
 <div class="form-group">
   <div class="row">
     <div class="col">
+      <%= f.label :valid_for_account, "¿Cuenta Corriente?" %><br>
+      <center>
+        <%= f.check_box :valid_for_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle' %>
+      </center>
+    </div>
+    <div class="col">
+      <%= f.label :recharge, "Recargos (%)" %>
+      <%= f.number_field :recharge, class: 'form-control form-control-sm', placeholder: "Serán aplicados a las facturas." %>
+    </div>
+  </div>
+</div>
+
+<div class="form-group">
+  <div class="row">
+    <div class="col">
       <%= f.label :address, "Dirección" %>
       <%= f.text_field :address,class: 'form-control form-control-sm' %>
     </div>
@@ -60,11 +75,6 @@
       <%= f.text_field :payment_day,class: 'form-control form-control-sm' %>
     </div>
   </div>
-</div>
-
-<div class="form-group">
-  <%= f.label :recharge, "Recargos (%)" %>
-  <%= f.number_field :recharge, class: 'form-control form-control-sm', placeholder: "Serán aplicados a las facturas." %>
 </div>
 
 <div class="form-group">
@@ -113,5 +123,10 @@
       todayHighlight: true,
       autoclose: true,
       startView: 2
+  });
+
+  $('.toggle').bootstrapToggle({
+    onstyle: "sm btn-primary",
+    offstyle: "sm btn-secondary"
   });
 </script>
