@@ -308,9 +308,9 @@ class Invoice < ApplicationRecord
           #PRODUCCION
           Afip.pkey               = "#{Rails.root}/app/afip/facturacion.key"
           Afip.cert               = "#{Rails.root}/app/afip/produccion.crt"
-          Afip.auth_url     = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
-          Afip.service_url    = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
-          Afip.cuit         = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
+          Afip.auth_url           = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
+          Afip.service_url        = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
+          Afip.cuit               = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
           Afip::AuthData.environment = :production
           #http://ayuda.egafutura.com/topic/5225-error-certificado-digital-computador-no-autorizado-para-acceder-al-servicio/
         else
@@ -385,7 +385,6 @@ class Invoice < ApplicationRecord
 
       #PROCESOS
         def set_cae bill
-          pp bill
           self.update(
             cae: bill.response.cae,
             cae_due_date: bill.response.cae_due_date,
