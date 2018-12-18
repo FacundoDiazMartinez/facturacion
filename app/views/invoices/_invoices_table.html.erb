@@ -41,7 +41,7 @@
           <li class="media">
             <img class="mr-3" src="/images/invoice.png" alt="Factura">
             <div class="media-body">
-              <h5 class="mt-0 mb-1">Factura a <%= invoice.client_name %></h5>
+              <h5 class="mt-0 mb-1"><%= invoice.nombre_comprobante %> a <%= invoice.client_name %></h5>
               <strong>Tipo:</strong> <%= invoice.tipo %><br>
               <strong>Estado:</strong> <%= invoice_state(invoice.state) %><br>
               <i><%= icon('fas', 'clock') %> <%= invoice.cbte_fch %></i><br>

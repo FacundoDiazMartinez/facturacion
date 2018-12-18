@@ -7,6 +7,7 @@ class Receipt < ApplicationRecord
   has_many :payments, through: :invoice
 
   after_save :touch_account_movement, if: Proc.new{|r| r.saved_change_to_total?}
+  before_save :set_number, on: :create
 
   default_scope {where(active: true)}
 
@@ -30,6 +31,11 @@ class Receipt < ApplicationRecord
   		am.saldo       = invoice.client.saldo.to_f - total.to_f unless !am.new_record?
   		am.save
   	end
+
+    def set_number
+      last_r = Receipt.where(company_id: company_id).last
+      self.number = last_r.nil? ? "00001" : (last_r.number.to_i + 1).to_s.rjust(5,padstr= '0') unless not self.number.blank?
+    end
   #PROCESOS
 
   #FUNCIONES

@@ -201,6 +201,14 @@ class Invoice < ApplicationRecord
       def is_invoice?
         ["01", "06", "11"].include?(cbte_tipo) || cbte_tipo.nil?
       end
+
+      def is_credit_note?
+        ["03", "08", "13"].include?(cbte_tipo)
+      end
+
+      def is_debit_note?
+        ["02", "07", "12"].include?(cbte_tipo)
+      end
   	#FUNCIONES
 
     #PROCESOS
@@ -260,10 +268,17 @@ class Invoice < ApplicationRecord
           am.client_id    = client_id
           am.invoice_id   = id
           am.cbte_tipo    = Afip::CBTE_TIPO[cbte_tipo]
-          am.debe         = true
-          am.haber        = false
-          am.total        = total.to_f
-          am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
+          if is_credit_note?
+            am.debe         = false
+            am.haber        = true
+            am.total        = total.to_f
+            am.saldo        = (client.saldo.to_f - am.total) unless !am.new_record?
+          else
+            am.debe         = true
+            am.haber        = false
+            am.total        = total.to_f
+            am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
+          end
           am.save
         end
       end
@@ -297,6 +312,21 @@ class Invoice < ApplicationRecord
       def cbte_fch
         fecha = read_attribute("cbte_fch")
         fecha.blank? ? nil : I18n.l(fecha.to_date)
+      end
+
+      def invoice_comp_number
+        invoice.nil? ? "" : invoice.comp_number
+      end
+
+      def nombre_comprobante
+        case cbte_tipo
+        when "01", "06", "11"
+          "Factura"
+        when "02", "07", "12"
+          "Nota de Débito"
+        when "03", "08", "13"
+          "Nota de Crédito"
+        end
       end
   	#ATRIBUTOS
 
@@ -358,11 +388,7 @@ class Invoice < ApplicationRecord
       end
 
       def get_cae
-        if state == "Pagado"
-          auth_bill(set_bill)
-        else
-          errors.add(:state, "La factura debe estar pagada antes de enviarse a A.F.I.P.")
-        end
+        auth_bill(set_bill)
       end
 
       def afip_errors(bill)
