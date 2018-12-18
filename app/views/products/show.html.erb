@@ -2,7 +2,7 @@
 	<!-- TITULO -->
 	<%= title_helper "#{@product.name}" %>
 	<% if can? :update, Product %>
-		<%= button_edit_helper(edit_product_path) %>
+		<%= button_edit_helper(edit_product_path(@product.id)) %>
 	<% end %>
 	<!-- TITULO -->
 
