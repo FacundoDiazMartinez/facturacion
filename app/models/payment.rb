@@ -5,6 +5,7 @@ class Payment < ApplicationRecord
   after_save :set_total_pay_to_invoice
   after_save :set_notification
   after_save :check_receipt
+  before_save :set_number, on: :create
 
   after_initialize :set_payment_date
 
@@ -36,6 +37,11 @@ class Payment < ApplicationRecord
   #PROCESOS
     def set_notification
       Notification.create_from_payment(self)
+    end
+
+    def set_number
+      last_r = Receipt.where(company_id: company_id).last
+      self.number = last_r.nil? ? "00001" : (last_r.number.to_i + 1).to_s.rjust(5,padstr= '0') unless not self.number.blank?
     end
 
     def set_payment_date

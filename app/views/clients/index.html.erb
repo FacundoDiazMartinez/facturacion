@@ -6,7 +6,7 @@
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">
-        <%= form_tag clients_path(), {class: 'form-inline', id: 'search_form'} do %>
+        <%= form_tag client_account_movements_path(@client.id), {class: 'form-inline', id: 'search_form'} do %>
           <!-- BUSCAR POR CLIENTE -->
           <%= label_tag :name, "Nombre", class: 'sr-only' %>
           <div class="input-group col">

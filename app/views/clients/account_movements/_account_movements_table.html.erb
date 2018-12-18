@@ -2,8 +2,8 @@
 	<thead>
 		<tr>
 			<th>Fecha</th>
+			<th>Comprobante</th>
 			<th>Días</th>
-			<th>Tipo</th>
 			<th>Debe</th>
 			<th>Haber</th>
 			<th>Saldo</th>
@@ -12,15 +12,15 @@
 	<tbody>
 	<% @account_movements.each do |am| %>
 	    <tr>
-	    	<td><%= am.created_at %></td>
+	    	<td><%= l(am.created_at, format: :only_date) %></td>
+	    	<td><%= am.comprobante %></td>
 	    	<td><%= am.days %></td>
-	    	<td><%= am.cbte_tipo %></td>
-	    	<td><%= am.invoice.total unless !am.debe %></td>
-	    	<td><%= am.receipt.total unless !am.haber %></td>
-	    	<td><%= am.saldo %></td>
+	    	<td><%= "$#{am.invoice.total}" unless !am.debe %></td>
+	    	<td><%= "$#{am.receipt.total}" unless !am.haber %></td>
+	    	<td>$<%= am.saldo %></td>
 	    </tr>
 	<% end %>
 	</tbody>
 </table>
 
-<!-- HAY QUE CREAR EL ACCOUNT MOVEMENT PARA OBTENER EL SALDO.  NO SE PUEDE DE LA MANERA QUE LO VENIA HACIENDO -->
+<%= paginate @account_movements %>

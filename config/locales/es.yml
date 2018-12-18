@@ -369,4 +369,5 @@ es:
       default: "%d/%m/%Y a las %H:%M:%S %Z"
       long: "%A, %d de %B de %Y a las %I:%M %p"
       short: "%d de %b a las %H:%M hrs"
+      only_date: "%d/%m/%Y"
     pm: pm
