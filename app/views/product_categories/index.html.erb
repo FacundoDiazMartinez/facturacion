@@ -6,9 +6,11 @@
       </div>
     </div>
   </div>
-
-  <%= button_new_modal_helper(new_product_category_path(), "product_category_modal") %>
-
+  
+  <% if can? :create, ProductCategory %>
+    <%= button_new_modal_helper(new_product_category_path(), "product_category_modal") %>
+  <% end %>
+  
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">

@@ -32,3 +32,9 @@ $(document).ready(function(){
     content: "Para conseguir el código de la compañía debes solicitarselo al gerente de la misma. El lo puede encontrar los datos básicos de la compañía."
   });
 });
+
+
+$(document).on("click", ".activity-card", function(){
+  url = $(this).data('link');
+  $.get(url, {}, null, "script")
+})

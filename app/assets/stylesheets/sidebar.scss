@@ -1,4 +1,4 @@
-span.only-desktop {
+span.nav-span {
   display: none;
 }
 
@@ -8,7 +8,7 @@ span.only-desktop {
   width: auto;
 }
 
-.nav-item{
+ul.navpills > .nav-item{
   border-bottom: 1px solid grey;
   text-align: right;
 }
@@ -23,7 +23,7 @@ span.only-desktop {
 
 .sidebar-animate:hover{
   
-  span.only-desktop {
+  span.nav-span {
     display: inline-block;
   }
   .dropdown-toggle::after{
@@ -33,7 +33,7 @@ span.only-desktop {
   }
 }
 
-.dropdown-menu{
+li.nav-item > div.dropdown-menu{
   background-color: theme-color("dark");
 }
 
@@ -45,3 +45,8 @@ span.only-desktop {
 .dropdown-item:hover{
   background-color: rgba(0,0,0,.5);
 }
+
+#navpills{
+  align-items: initial !important;
+}
+

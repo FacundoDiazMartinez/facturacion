@@ -1,0 +1,19 @@
+<%= form_for [@role, @role_permission], class:'form-horizontal' do |f| %>
+<div class="modal-body">
+  <div class="row">
+    <div class="col">
+      <%= f.label :description, 'Permiso'%>
+      <div class="input-group">
+        <div class="input-group-prepend">  
+        <%= autocomplete_field :description, "", autocomplete_permission_description_role_role_permissions_path, id_element: "#role_permission_permission_id", value: @role_permission.permission_description_autocomplete, required: true, class:'form-control' %>
+        <%= f.hidden_field :permission_id %>
+        <%= f.hidden_field :role_id %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <%= save_button %>
+</div>
+<% end %>

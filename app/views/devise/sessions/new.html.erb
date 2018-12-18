@@ -1,5 +1,4 @@
-<div id="bg">
-</div>
+<div id="bg"></div>
 <table class="full-table">
     <tbody>
       <td class="align-middle">
@@ -14,7 +13,8 @@
               <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
                 <%= error_explanation resource %>
                 <center>
-                <%= flash_error%> 
+
+                <%= flash_error unless flash.nil? %> 
                   <div class="form-group">
                     <%= f.email_field :email, autofocus: true, class:'form-control', placeholder: "E-mail", required: true %>
                   </div>

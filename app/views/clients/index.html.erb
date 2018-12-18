@@ -1,12 +1,12 @@
 <div class="p-4">
   <%= title_helper 'Clientes' %>
-
-  <%= button_new_modal_helper(new_client_path(), 'clientModal') %>
-
+  <% if can? :create, Client %>
+    <%= button_new_modal_helper(new_client_path(), 'clientModal') %>
+  <% end %>
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">
-        <%= form_tag clients_path(), {class: 'form-inline', id: 'search_form'} do %>
+        <%= form_tag client_account_movements_path(@client.id), {class: 'form-inline', id: 'search_form'} do %>
           <!-- BUSCAR POR CLIENTE -->
           <%= label_tag :name, "Nombre", class: 'sr-only' %>
           <div class="input-group col">

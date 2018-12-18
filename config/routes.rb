@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
 
 
-  resources :roles
+  resources :roles do
+    resources :role_permissions do
+      post :toggle_association, on: :collection
+    end
+  end
   namespace :invoices do
     resources :clients do
       get :autocomplete_document, on: :collection
@@ -44,10 +48,11 @@ Rails.application.routes.draw do
     post :import, on: :collection
   end
 
-  resources :users, only: [:index, :show] do
+  resources :users, only: [:index, :show, :update] do
     get :autocomplete_company_code, :on => :collection
     patch :approve, on: :member
     patch :disapprove, on: :member
+    get :roles, on: :member
   end
   resources :suppliers
   resources :depots

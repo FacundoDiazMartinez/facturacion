@@ -1,6 +1,8 @@
 <div class="p-4">
   <%= title_helper 'Órdenes de Compra' %>
-  <%= button_new_helper (new_purchase_order_path()) %>
+  <% if can? :create, PurchaseOrder %>
+    <%= button_new_helper (new_purchase_order_path()) %>
+  <% end %>
 
   <div class="page-section">
     <div class="card card-shadow">

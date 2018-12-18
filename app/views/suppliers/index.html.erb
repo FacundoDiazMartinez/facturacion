@@ -1,6 +1,8 @@
 <div class="p-4">
   <%= title_helper 'Proveedores' %>
-  <%= button_new_modal_helper(new_supplier_path(), 'supplier_modal') %>
+  <% if can? :create, Supplier %>
+    <%= button_new_modal_helper(new_supplier_path(), 'supplier_modal') %>
+  <% end -%>
 
   <div class="page-section">
     <div class="card">

@@ -1,43 +1,47 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-
-  <button type="button" class="navbar-toggler collapsed " data-toggle="collapse" data-target="#navbar" aria-expanded="false" onclick="toggleNav()">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <%= image_tag '/images/logo_blanco2.png', alt: "desideral.com - Sistema de facturación online", class: 'img-fluid', width: '175px;' %>
-
-  <button type="button" class="navbar-toggler navbar-toggle-left collapsed" onclick="toggleSidebar()">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <ul id="navbar" class="navbar-nav ml-auto">
-    <% if user_signed_in? %>
-      <%= subscribe_to "/facturacion/notifications/#{current_user.id}" %>
-      <li>
-        <a href="<%= notifications_path() %>" data-remote="true" id="notifications-link">
-          <%= icon('fas', 'bell') %> <span class='badge notifications' id="span_notify"><%= current_user.count_notifications %></span>
+    <div class="d-flex flex-grow-1">
+      <% if user_signed_in? %>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navpills">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+      <% end -%>
+        <span class="w-100 d-lg-none d-block"><!-- hidden spacer to center brand on mobile --></span>
+        <a class="navbar-brand-two mx-auto d-inline-block" href="/">
+             <%= image_tag '/images/logo_blanco2.png', alt: "desideral.com - Sistema de facturación online", width: '175px;' %>
         </a>
-        <%= render '/notifications/notification-container' %>
-      </li> | 
-      <li class="dropdown">
-        <a href="" id="navbarDropdownMenuMiCuenta" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Mi cuenta</a>
-        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuMiCuenta">
-          <li>
-            <%= link_to "Editar perfil", edit_user_registration_path %>
-          </li>
-          <li role="separator" class="divider"></li>
-          <li>
-            <%= link_to('Salir', destroy_user_session_path, :method => :delete) %>
-          </li>
+        <span class="w-100 d-lg-none d-block"><!-- hidden spacer to center brand on mobile --></span>
+        <div class="w-100 text-right">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#myNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+    <div class="collapse navbar-collapse flex-grow-1 text-right" id="myNavbar">
+        <ul class="navbar-nav ml-auto flex-nowrap text-center">
+            <% if user_signed_in? %>
+              <%= subscribe_to "/facturacion/notifications/#{current_user.id}" %>
+              <li class="nav-item">
+                <a href="<%= notifications_path() %>" data-remote="true" id="notifications-link" class="nav-link m-2 menu-item">
+                  <%= icon('fas', 'bell') %> <span class='badge notifications' id="span_notify"><%= current_user.count_notifications %></span>
+                </a>
+                <%= render '/notifications/notification-container' %>
+              </li>
+              <li class="nav-item dropdown">
+                <a href="" id="navbarDropdownMenuMiCuenta" role="button" class="dropdown-toggle nav-link m-2 menu-item" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Mi cuenta</a>
+                <div class="dropdown-menu text-center right-nav" aria-labelledby="navbarDropdown">
+                    <%= link_to "Editar perfil", edit_user_registration_path, class: 'dropdown-item' %>
+                    <div class="dropdown-divider only-desktop"></div>
+                    <%= link_to 'Salir', destroy_user_session_path, :method => :delete, class: 'dropdown-item' %>
+                </div>
+              </li>
+            <% else %>
+            <li class="nav-item">
+              <%= link_to "Registrarse", new_user_registration_path, class:'nav-link m-2 menu-item' %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Ingresar", new_user_session_path, class:'nav-link m-2 menu-item' %>
+            </li>
+            <% end %>
         </ul>
-      </li>
-    <% else %>
-    <li>
-      <%= link_to("Registrarse", new_user_registration_path) %>
-    </li>
-    <li>
-      <%= link_to("Ingresar", new_user_session_path) %>
-    </li>
-    <% end %>
-  </ul>
+    </div>
 </nav>

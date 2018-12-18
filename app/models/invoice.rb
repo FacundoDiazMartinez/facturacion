@@ -248,7 +248,7 @@ class Invoice < ApplicationRecord
 
       def update params, send_to_afip = false
           response = super(params)
-          if response && send_to_afip
+          if response && send_to_afip == "true"
             get_cae
           end
           return response && !self.errors.any?
@@ -308,9 +308,9 @@ class Invoice < ApplicationRecord
           #PRODUCCION
           Afip.pkey               = "#{Rails.root}/app/afip/facturacion.key"
           Afip.cert               = "#{Rails.root}/app/afip/produccion.crt"
-          Afip.auth_url     = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
-          Afip.service_url    = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
-          Afip.cuit         = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
+          Afip.auth_url           = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
+          Afip.service_url        = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
+          Afip.cuit               = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
           Afip::AuthData.environment = :production
           #http://ayuda.egafutura.com/topic/5225-error-certificado-digital-computador-no-autorizado-para-acceder-al-servicio/
         else
@@ -391,6 +391,12 @@ class Invoice < ApplicationRecord
             cbte_fch: bill.response.cbte_fch.to_date,
             authorized_on: bill.response.authorized_on.to_time,
             comp_number: bill.response.cbte_hasta.to_s.rjust(8,padstr= '0'),
+            imp_tot_conc: bill.response.imp_tot_conc,
+            imp_op_ex: bill.response.imp_op_ex,
+            imp_trib: bill.response.imp_trib,
+            imp_neto: bill.response.imp_neto,
+            imp_iva: bill.response.imp_iva,
+            imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
         end

@@ -7,7 +7,7 @@
       <th>Monto neto</th>
       <th>Monto I.V.A.</th>
       <th>Total</th>
-      <th colspan="3"></th>
+      <th colspan="1"></th>
     </tr>
   </thead>
 
@@ -20,9 +20,11 @@
         <td><%= iva_book.net_amount %></td>
         <td><%= iva_book.iva_amount %></td>
         <td><%= iva_book.total %></td>
-        <td><%= link_to 'Show', iva_book %></td>
-        <td><%= link_to 'Edit', edit_iva_book_path(iva_book) %></td>
-        <td><%= link_to 'Destroy', iva_book, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% if iva_book.is_credit?  %>
+          <td><%= link_to icon('fas', 'eye').html_safe, iva_book.purchase_invoice, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+        <% else %>
+          <td><%= link_to icon('fas', 'eye').html_safe, invoice_path(iva_book.invoice.id, format: "pdf"), target: "_blank" , class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>

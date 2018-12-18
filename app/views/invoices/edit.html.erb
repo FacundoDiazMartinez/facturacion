@@ -1,8 +1,10 @@
-<% if @invoice.editable? %>
-	<h1><%= icon('fas', 'hand-holding-usd') %> Generar Factura</h1>
-<% else %>
-	<h1><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
-<% end %>
-<div id="invoice_form">
-	<%= render 'form' %>
+<div class="p-4">
+	<% if @invoice.editable? %>
+		<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Generar Factura</h1>
+	<% else %>
+		<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
+	<% end %>
+	<div id="invoice_form">
+		<%= render 'form' %>
+	</div>
 </div>

@@ -4,6 +4,7 @@ class User < ApplicationRecord
 	belongs_to :locality, optional: true
 
 	has_many :user_roles
+  has_many :roles, through: :user_roles
 	has_many :permissions, through: :user_roles
   has_many :arrival_notes
   has_many :purchase_invoices
@@ -17,6 +18,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validate :cant_disapprove_if_has_management_role
+
+  accepts_nested_attributes_for :user_roles, reject_if: :all_blank, allow_destroy: true
 
   after_create :send_admin_mail, if: Proc.new{ |u| !u.company_id.nil?}
   after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && !company_id.nil?}
