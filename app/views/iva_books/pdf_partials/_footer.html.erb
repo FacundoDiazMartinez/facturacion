@@ -2,25 +2,17 @@
 <div class="row footer_bottom">
   <div class="container">
     <table class="width_100">
+    <tr class="width_100">
+      <td style="width:33%;font-size: 12px;"><center>Powered by</center></td>
+      <td style="width:34%;"></td>
+      <td style="width:33%;"></td>
+    </tr>
     <tr>
-      <td><%= wicked_pdf_image_tag '/images/afip.png',:width => "150"%></td>
-      <td><b>
-        <% if @invoice.check_authorized_invoice %>
-          Comprobante Autorizado
-        <% else %>
-          Comprobante NO Autorizado
-        <% end %>
-      </b></td>
-      <td> </td>
-      <td class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
+      <td><center><%= wicked_pdf_image_tag '/images/logo_lite_code.png',width: "100", float: "left" %></center></td>
+      <td></td>
+      <td></td>
     </tr>
 
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td class="text_right"><b>Fecha de Vto. de CAE: </b> <%= @invoice.cae_due_date %> </td>
-    </tr>
   </table>
   </div>
 </div>

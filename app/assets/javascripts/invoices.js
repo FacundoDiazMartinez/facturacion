@@ -8,6 +8,10 @@ $( document ).ready(function() {
 	}
 });
 
+function setConfirmParam() {
+	$("#send_to_afip").prop('checked', true);
+	$("#send_to_afip").closest('form').submit();
+}
 
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){

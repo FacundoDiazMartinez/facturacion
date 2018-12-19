@@ -1,7 +1,7 @@
 <!-- DETALLE -->
 <div class="row">
-  <div class="container" style="height: 680px;">
-    <table class="width_100">
+  <div class="container" style="height: 950px;">
+    <table class="TFtable" style="font-size: 13px;">
     <tr>
       <th class="description_header">Fecha</th>
 
@@ -16,7 +16,7 @@
       <th class="description_header">Condición I.V.A.</th>
       <th class="description_header">Comprobante N°</th>
       <th class="description_header">Imp. Total</th>
-      <th class="description_header">Imp. Exentos</th>
+      <th class="description_header">Imp. Ex.</th>
       <th class="description_header">Imp. Gravados</th>
       <th class="description_header">I.V.A.</th>
     </tr>
@@ -25,37 +25,34 @@
     <% case @type
       when "Crédito Fiscal"
         details.compact.each do |det| %>
-            <tr>
+            <tr style="height: 30px;">
               <td class="text_right"><%= det.date %></td>
-              <td class="text_right"><%= det.purchase_invoice.supplier.name %></td>
+              <td class="text_left"><%= det.purchase_invoice.supplier.name %></td>
               <td class="text_right"><%= det.purchase_invoice.supplier.document_number %></td>
               <td class="text_right"><%= det.purchase_invoice.supplier.iva_cond %></td>
-              <td class="text_right"><%= det.purchase_invoice.number %></td>
-              <td class="text_right"><%= det.purchase_invoice.total %></td>
-              <td class="text_right"><%= det.purchase_invoice.imp_op_ex %></td>
-              <td class="text_right"><%= det.purchase_invoice.net_amount %></td>
-              <td class="text_right"><%= det.purchase_invoice.iva_amount %></td>
+              <td class="text_right"><%= det.full_invoice %></td>
+              <td class="text_right"><%="$ " + det.purchase_invoice.total.to_s %></td>
+              <td class="text_right"><%="$ " + det.purchase_invoice.imp_op_ex.to_s %></td>
+              <td class="text_right"><%="$ " + det.purchase_invoice.net_amount.to_s %></td>
+              <td class="text_right"> <b> <%="$ " + det.purchase_invoice.iva_amount.to_s %> </b></td>
             </tr>
         <% end
       when "Débito Fiscal"
         details.compact.each do |det| %>
-          <tr>
+          <tr style="height: 30px;">
             <td class="text_right"><%= det.date %></td>
-            <td class="text_right"><%= det.invoice.client.name %></td>
+            <td class="text_left"><%= det.invoice.client.name %></td>
             <td class="text_right"><%= det.invoice.client.document_number %></td>
             <td class="text_right"><%= det.invoice.client.iva_cond %></td>
-            <td class="text_right"><%= det.invoice.comp_number %></td>
-            <td class="text_right"><%= det.invoice.total %></td>
-            <td class="text_right"><%= det.invoice.imp_op_ex %></td>
+            <td class="text_right"><%= det.full_invoice %></td>
+            <td class="text_right"><%="$ " + det.invoice.total.to_s %></td>
+            <td class="text_right"><%="$ " + det.invoice.imp_op_ex.to_s %></td>
+            <td class="text_right"><%="$ " + det.invoice.imp_neto.to_s %></td>
             <!-- Factura, deb o cred "A" ? -->
-            <% if ((det.invoice.cbte_tipo == "01") || (det.invoice.cbte_tipo == "02") || (det.invoice.cbte_tipo == "03"))
-              pp "aquiiiiiiiiiiiiiiiiiiiiiiiiiii" %>
-              <td class="text_right"><%= det.invoice.imp_neto %></td>
-              <td class="text_right"><%= det.invoice.imp_iva %></td>
-            <% else
-              pp "acaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"%>
-              <td class="text_right"><%= det.invoice.imp_neto %></td>
-              <td class="text_right"><%= det.invoice.iva_amount_sum %></td>
+            <% if ((det.invoice.cbte_tipo == "01") || (det.invoice.cbte_tipo == "02") || (det.invoice.cbte_tipo == "03")) %>
+              <td class="text_right"> <b> <%="$ " +  det.invoice.imp_iva.to_s %> </b> </td>
+            <% else %>
+              <td class="text_right"> <b> <%="$ " +  det.invoice.iva_amount_sum.to_s %> </b> </td>
             <% end %>
 
           </tr>
@@ -77,23 +74,25 @@
     <table class="width_100">
       <col width="600">
       <col width="100">
-    <tr>
-      <td class="text_right"><b>
-          Subtotal página:
-      </b>
-      </td>
-      <td class="text_right"><b>$ <%= total_of_page %></b></td>
-    </tr>
 
-    <tr>
-      <td class="text_right"><b>Otros Tributos:</b></td>
-      <td class="text_right"><b>$ <%# @invoice.imp_op_ex %> </b></td>
-    </tr>
+      <% if total_pages > 1 %>
+        <tr>
+          <b>
+            <td class="text_right">
+              Subtotal IVA página:
+            </td>
+            <td class="text_right">
+              $ <%= total_iva_of_page %>
+            </td>
+          </b>
+        </tr>
+      <% end %>
 
-    <tr>
-      <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%# @invoice.total %></b></td>
-    </tr>
+      <tr>
+        <td class="text_right"><b>TOTAL IVA:</b></td>
+        <td class="text_right"><b>$ <%= total_iva %> </b></td>
+      </tr>
+
   </table>
   </div>
 </div>

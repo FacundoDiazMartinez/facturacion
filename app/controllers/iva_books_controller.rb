@@ -5,6 +5,7 @@ class IvaBooksController < ApplicationController
   # GET /iva_books
   # GET /iva_books.json
   def index
+    #se establecio: before_action :set_iva_books
   end
 
 
@@ -12,6 +13,7 @@ class IvaBooksController < ApplicationController
     @group_details = @iva_books.in_groups_of(20, fill_with= nil)
     @from = params[:from]
     @to = params[:to]
+
     if params[:iva_compras] == "true"
       @type = "Crédito Fiscal"
     else

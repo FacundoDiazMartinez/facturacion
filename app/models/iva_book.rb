@@ -60,6 +60,14 @@ class IvaBook < ApplicationRecord
       invoice_id.nil? ? "Crédito Fiscal" : "Débito Fiscal"
     end
 
+    def iva
+      if is_debit?
+        self.invoice.imp_iva
+      else
+        self.purchase_invoice.iva_amount
+      end
+    end
+
     def full_invoice
       if is_debit?
         Invoice.unscoped do
