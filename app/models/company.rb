@@ -20,6 +20,7 @@ class Company < ApplicationRecord
 
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
+	after_validation :set_admin_role, on: :create
 
 	CONCEPTOS = ["Productos", "Servicios", "Productos y Servicios"]
 
@@ -89,6 +90,12 @@ class Company < ApplicationRecord
 
 		def date_less_than_today
 			errors.add(:activity_init_date, "La fecha de inicio de actividad no puede ser mayor que hoy.") unless activity_init_date <= Date.today
+		end
+
+		def set_admin_role
+			if self.roles.nil?
+				self.roles.where(name: "Administrador").first_or_initialize.save
+			end
 		end
 	#Fin validaciones
 
