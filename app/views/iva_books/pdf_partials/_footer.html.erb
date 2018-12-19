@@ -9,15 +9,17 @@
     </tr>
     <tr>
       <td><center><%= wicked_pdf_image_tag '/images/logo_lite_code.png',width: "100", float: "left" %></center></td>
-      <td></td>
+      <td>
+        <div class="text_center">
+          Página <%= page_number %> de <%= total_pages%>
+        </div>
+      </td>
       <td></td>
     </tr>
 
   </table>
   </div>
 </div>
-<div class="text_center">
-  Página <%= page_number %> de <%= total_pages%>
-</div>
+
 
 <!-- FIN PIE DE PAGINA -->

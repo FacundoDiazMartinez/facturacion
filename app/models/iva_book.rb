@@ -1,6 +1,7 @@
 class IvaBook < ApplicationRecord
   belongs_to :invoice, optional: true
   belongs_to :purchase_invoice, optional: true
+  belongs_to :company
 
   default_scope { where(active: true) }
 
