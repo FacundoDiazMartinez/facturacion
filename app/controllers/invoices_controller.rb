@@ -80,7 +80,7 @@ class InvoicesController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
-    products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
+    products = current_user.company.products.unscoped.where(active: true).where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit} }
   end
 
@@ -91,7 +91,7 @@ class InvoicesController < ApplicationController
   end
 
   def search_product
-    @products = current_user.company.products.search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
+    @products = current_user.company.products.unscoped.where(active: true).search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
     render '/invoices/detail/search_product'
   end
 

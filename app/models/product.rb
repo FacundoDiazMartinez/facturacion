@@ -119,8 +119,6 @@ class Product < ApplicationRecord
 				all
 			end
 		end
-
-
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
@@ -150,6 +148,10 @@ class Product < ApplicationRecord
 
 		def measurement_unit_name
 			MEASUREMENT_UNITS[measurement_unit]
+		end
+
+		def supplier_name
+			supplier_id.nil? ? "Sin proveedor" : supplier.name
 		end
 	#ATRIBUTOS
 

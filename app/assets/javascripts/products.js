@@ -56,5 +56,5 @@ function setCostPrice(){
 
 function fillProductIva(data){
 	var response = jQuery.parseJSON(data);
-	$("#product_iva_aliquot").val(response[0].iva)
+	$("#product_iva_aliquot").val(response[0].iva).trigger("change")
 };

@@ -18,6 +18,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validate :cant_disapprove_if_has_management_role
+  before_validation :set_admin_if_owner
 
   accepts_nested_attributes_for :user_roles, reject_if: :all_blank, allow_destroy: true
 
@@ -126,6 +127,12 @@ class User < ApplicationRecord
 
     def send_admin_mail
       AdminMailer.new_user_waiting_for_approval(email).deliver
+    end
+
+    def set_admin_if_owner
+      if self.company_id.nil? 
+        self.admin = true
+      end
     end
 
 		def birthday
