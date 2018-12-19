@@ -44,7 +44,11 @@ class Payment < ApplicationRecord
 
     def check_receipt
       r = Receipt.where(invoice_id: invoice.id).first_or_initialize
-      r.total       = invoice.total_pay
+      if invoice.is_credit_note?
+        r.total     = - invoice.total_pay
+      else
+        r.total     = invoice.total_pay
+      end
       r.date        = invoice.created_at
       r.company_id  = invoice.company_id
       r.save

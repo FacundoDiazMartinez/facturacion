@@ -22,7 +22,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
-    after_save :touch_account_movement, if: Proc.new{|i| i.saved_change_to_total?}
+    after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado"}
     before_validation :check_if_confirmed
@@ -97,15 +97,23 @@ class Invoice < ApplicationRecord
 	  		else
 	  			all
 	  		end
-	 	 end
+	 	  end
 
-	  	def self.search_by_state state
-	  		if not state.blank?
-	  			where(state: state)
-	  		else
-	  			all
-	  		end
-	  	end
+    	def self.search_by_state state
+    		if not state.blank?
+    			where(state: state)
+    		else
+    			all
+    		end
+    	end
+
+      def self.search_by_number comp_number
+        if not comp_number.blank?
+          where("comp_number ILIKE ?", "%#{comp_number}%")
+        else
+          all
+        end
+      end
   	#FILTROS DE BUSQUEDA
 
 
@@ -263,7 +271,7 @@ class Invoice < ApplicationRecord
       end
 
       def touch_account_movement
-        if cbte_tipo != nil
+        if state == "Confirmado"
           am              = AccountMovement.where(invoice_id: id).first_or_initialize
           am.client_id    = client_id
           am.invoice_id   = id
@@ -328,6 +336,10 @@ class Invoice < ApplicationRecord
           "Nota de Crédito"
         end
       end
+
+      def full_number
+        "#{sale_point.name} - #{comp_number}" unless not(state == "Confirmado" || state == "Anulado")
+      end
   	#ATRIBUTOS
 
 
@@ -383,7 +395,6 @@ class Invoice < ApplicationRecord
         else
           set_cae(bill)
         end
-        pp bill.response
         return bill
       end
 
@@ -411,7 +422,7 @@ class Invoice < ApplicationRecord
 
       #PROCESOS
         def set_cae bill
-          self.update(
+          response = self.update(
             cae: bill.response.cae,
             cae_due_date: bill.response.cae_due_date,
             cbte_fch: bill.response.cbte_fch.to_date,
@@ -425,6 +436,9 @@ class Invoice < ApplicationRecord
             imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
+          if response && !self.associated_invoice.nil?
+            self.invoice.update_column(:state, "Anulado")
+          end
         end
       #PROCESOS
     #AFIP

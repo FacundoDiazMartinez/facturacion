@@ -1,6 +1,5 @@
 <div class="p-4">
 	<%= title_helper "Cuenta corriente de #{@client.name}" %>
-
 	<div class="page-section">
 	    <div class="card card-fluid">
 	      	<div class="card-header">
@@ -28,6 +27,7 @@
 	        	<% end %>
 	      	</div>
 	      	<div class="card-body">
+	      		<h5><strong>Saldo:</strong> $<%= @client.saldo %></h5>
 	        	<div id="account_movements_table">
 					<%= render 'account_movements_table' %>
 				</div>

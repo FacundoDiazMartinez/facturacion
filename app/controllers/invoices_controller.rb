@@ -5,7 +5,7 @@ class InvoicesController < ApplicationController
   # GET /invoices
   # GET /invoices.json
   def index
-    @invoices = current_user.company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 10)
+    @invoices = current_user.company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_number(params[:comp_number]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 9)
   end
 
   # GET /invoices/1
@@ -111,7 +111,7 @@ class InvoicesController < ApplicationController
     else
       set_invoice
     end
-    associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice]).first
+    associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice], state: "Confirmado").first
     associated_invoice.invoice_details.each do |id|
       @invoice.invoice_details.build(id.attributes)
     end

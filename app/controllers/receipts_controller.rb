@@ -4,7 +4,7 @@ class ReceiptsController < ApplicationController
   # GET /receipts
   # GET /receipts.json
   def index
-    @receipts = Receipt.all
+    @receipts = current_user.company.receipts.paginate(page: params[:page], per_page: 10)
   end
 
   # GET /receipts/1
