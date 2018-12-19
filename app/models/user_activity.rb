@@ -5,7 +5,7 @@ class UserActivity < ApplicationRecord
   	UserActivity.create(
         user_id: invoice.user.id,
         photo: "/images/invoice.png",
-        title: "Emitió un comprobante",
+        title: "El usuario #{invoice.user.name} emitió un comprobante",
         body: "El dia #{I18n.l(Date.today)} generó y confirmó un comprobante tipo #{invoice.tipo} destinado al cliente #{invoice.client.name}, por un monto de $#{invoice.total.round(2)}."
     )
   end

@@ -24,7 +24,7 @@ class Invoice < ApplicationRecord
     after_save :set_state
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
-    after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado"}
+    after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado" || i.state == "Anulado"}
     before_validation :check_if_confirmed
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
@@ -264,6 +264,14 @@ class Invoice < ApplicationRecord
 
       def update params, send_to_afip = false
           response = super(params)
+          if response && send_to_afip == "true"
+            get_cae
+          end
+          return response && !self.errors.any?
+      end
+
+      def custom_save send_to_afip = false
+          response = save
           if response && send_to_afip == "true"
             get_cae
           end

@@ -18,6 +18,10 @@ $(document).ready(function(){
 	$("#product_price").on("change", function(){
 		setCostPrice();
 	});
+
+	$(document).on('change', '#product_product_category_id', function(){
+		$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIva(data)}, "script")
+	})
 });
 	
 function setPrecioNeto(){
@@ -48,4 +52,9 @@ function setCostPrice(){
 
 	var neto 		= parseFloat($("#product_net_price").val());
 	ganancia.val((neto / costo * 100 - 100).toFixed(2))
+};
+
+function fillProductIva(data){
+	var response = jQuery.parseJSON(data);
+	$("#product_iva_aliquot").val(response[0].iva)
 };

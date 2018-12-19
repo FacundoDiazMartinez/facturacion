@@ -71,7 +71,9 @@
 
       <!-- BOTONES DE ACCION -->
           <center>
-            <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
+            <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
+              <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
+            <% end %>
           </center>
       <!-- BOTONES DE ACCION -->
     </div>

@@ -26,7 +26,7 @@ class Receipt < ApplicationRecord
   		am 				     = AccountMovement.where(receipt_id: id).first_or_initialize
   		am.client_id 	 = invoice.client_id
   		am.receipt_id  = id
-  		am.cbte_tipo	 = total < 0 ? "Recibo de Devolución" : "Recibo X"
+  		am.cbte_tipo	 = total < 0 ? "Devolución" : "Recibo X"
   		am.debe 		   = false
   		am.haber 		   = true
   		am.total 		   = total.to_f

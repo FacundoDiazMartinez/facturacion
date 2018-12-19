@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_18_155835) do
+ActiveRecord::Schema.define(version: 2018_12_19_171655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -290,13 +290,13 @@ ActiveRecord::Schema.define(version: 2018_12_18_155835) do
 
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
-    t.integer "iva_aliquot"
     t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
+    t.string "iva_aliquot", default: "05", null: false
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
   end
@@ -522,12 +522,12 @@ ActiveRecord::Schema.define(version: 2018_12_18_155835) do
     t.string "provider"
     t.string "uid"
     t.integer "postal_code"
-    t.boolean "admin", default: true, null: false
     t.string "authentication_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "province_id"
     t.bigint "locality_id"
+    t.boolean "admin", default: false, null: false
     t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true

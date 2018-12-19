@@ -44,7 +44,9 @@ class User < ApplicationRecord
 
     def self.search_by_state state
       if state == "Aprobados"
-        where("approved = 'true'")
+        where(approved: true)
+      elsif state == "No aprobados"
+        where(approved: false)
       else
         all 
       end
@@ -61,7 +63,7 @@ class User < ApplicationRecord
 
 
   	def set_company company_id
-  		update_attribute(:company_id, company_id)
+  		update_columns(company_id: company_id, admin: true)
   	end
 
   	def has_company?
