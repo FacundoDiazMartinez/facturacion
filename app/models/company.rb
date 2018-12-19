@@ -97,7 +97,7 @@ class Company < ApplicationRecord
 			if self.roles.blank?
 				admin_role = Role.where(company_id: self.id, name: "Administrador").first_or_initialize
 				if admin_role.save
-					UserRole.create(role_id: admin_role, user_id: self.users.first.id)
+					UserRole.create(role_id: admin_role.id, user_id: self.users.first.id)
 				end
 			end
 		end
