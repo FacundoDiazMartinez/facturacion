@@ -22,9 +22,9 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
-    after_save :touch_account_movement, if: Proc.new{|i| i.saved_change_to_total?}
+    after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
-    after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado"}
+    after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado" || i.state == "Anulado"}
     before_validation :check_if_confirmed
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
@@ -97,15 +97,23 @@ class Invoice < ApplicationRecord
 	  		else
 	  			all
 	  		end
-	 	 end
+	 	  end
 
-	  	def self.search_by_state state
-	  		if not state.blank?
-	  			where(state: state)
-	  		else
-	  			all
-	  		end
-	  	end
+    	def self.search_by_state state
+    		if not state.blank?
+    			where(state: state)
+    		else
+    			all
+    		end
+    	end
+
+      def self.search_by_number comp_number
+        if not comp_number.blank?
+          where("comp_number ILIKE ?", "%#{comp_number}%")
+        else
+          all
+        end
+      end
   	#FILTROS DE BUSQUEDA
 
 
@@ -201,6 +209,14 @@ class Invoice < ApplicationRecord
       def is_invoice?
         ["01", "06", "11"].include?(cbte_tipo) || cbte_tipo.nil?
       end
+
+      def is_credit_note?
+        ["03", "08", "13"].include?(cbte_tipo)
+      end
+
+      def is_debit_note?
+        ["02", "07", "12"].include?(cbte_tipo)
+      end
   	#FUNCIONES
 
     #PROCESOS
@@ -248,22 +264,37 @@ class Invoice < ApplicationRecord
 
       def update params, send_to_afip = false
           response = super(params)
-          if response && send_to_afip
+          if response && send_to_afip == "true"
+            get_cae
+          end
+          return response && !self.errors.any?
+      end
+
+      def custom_save send_to_afip = false
+          response = save
+          if response && send_to_afip == "true"
             get_cae
           end
           return response && !self.errors.any?
       end
 
       def touch_account_movement
-        if cbte_tipo != nil
+        if state == "Confirmado"
           am              = AccountMovement.where(invoice_id: id).first_or_initialize
           am.client_id    = client_id
           am.invoice_id   = id
           am.cbte_tipo    = Afip::CBTE_TIPO[cbte_tipo]
-          am.debe         = true
-          am.haber        = false
-          am.total        = total.to_f
-          am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
+          if is_credit_note?
+            am.debe         = false
+            am.haber        = true
+            am.total        = total.to_f
+            am.saldo        = (client.saldo.to_f - am.total) unless !am.new_record?
+          else
+            am.debe         = true
+            am.haber        = false
+            am.total        = total.to_f
+            am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
+          end
           am.save
         end
       end
@@ -298,6 +329,25 @@ class Invoice < ApplicationRecord
         fecha = read_attribute("cbte_fch")
         fecha.blank? ? nil : I18n.l(fecha.to_date)
       end
+
+      def invoice_comp_number
+        invoice.nil? ? "" : invoice.comp_number
+      end
+
+      def nombre_comprobante
+        case cbte_tipo
+        when "01", "06", "11"
+          "Factura"
+        when "02", "07", "12"
+          "Nota de Débito"
+        when "03", "08", "13"
+          "Nota de Crédito"
+        end
+      end
+
+      def full_number
+        "#{sale_point.name} - #{comp_number}" unless not(state == "Confirmado" || state == "Anulado")
+      end
   	#ATRIBUTOS
 
 
@@ -308,9 +358,9 @@ class Invoice < ApplicationRecord
           #PRODUCCION
           Afip.pkey               = "#{Rails.root}/app/afip/facturacion.key"
           Afip.cert               = "#{Rails.root}/app/afip/produccion.crt"
-          Afip.auth_url     = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
-          Afip.service_url    = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
-          Afip.cuit         = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
+          Afip.auth_url           = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
+          Afip.service_url        = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
+          Afip.cuit               = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
           Afip::AuthData.environment = :production
           #http://ayuda.egafutura.com/topic/5225-error-certificado-digital-computador-no-autorizado-para-acceder-al-servicio/
         else
@@ -353,16 +403,11 @@ class Invoice < ApplicationRecord
         else
           set_cae(bill)
         end
-        pp bill.response
         return bill
       end
 
       def get_cae
-        if state == "Pagado"
-          auth_bill(set_bill)
-        else
-          errors.add(:state, "La factura debe estar pagada antes de enviarse a A.F.I.P.")
-        end
+        auth_bill(set_bill)
       end
 
       def afip_errors(bill)
@@ -385,14 +430,23 @@ class Invoice < ApplicationRecord
 
       #PROCESOS
         def set_cae bill
-          self.update(
+          response = self.update(
             cae: bill.response.cae,
             cae_due_date: bill.response.cae_due_date,
             cbte_fch: bill.response.cbte_fch.to_date,
             authorized_on: bill.response.authorized_on.to_time,
             comp_number: bill.response.cbte_hasta.to_s.rjust(8,padstr= '0'),
+            imp_tot_conc: bill.response.imp_tot_conc,
+            imp_op_ex: bill.response.imp_op_ex,
+            imp_trib: bill.response.imp_trib,
+            imp_neto: bill.response.imp_neto,
+            imp_iva: bill.response.imp_iva,
+            imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
+          if response && !self.associated_invoice.nil?
+            self.invoice.update_column(:state, "Anulado")
+          end
         end
       #PROCESOS
     #AFIP

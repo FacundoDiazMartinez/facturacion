@@ -2,7 +2,7 @@
 	<!-- TITULO -->
 	<%= title_helper "#{@product.name}" %>
 	<% if can? :update, Product %>
-		<%= button_edit_helper(edit_product_path) %>
+		<%= button_edit_helper(edit_product_path(@product.id)) %>
 	<% end %>
 	<!-- TITULO -->
 
@@ -43,6 +43,14 @@
 					              		</strong>
 					            		</div>
 					            		<span><%= @product.category_name %></span>
+					          	</li>
+					          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Proveedor
+					              		</strong>
+					            		</div>
+					            		<span><%= @product.supplier_name %></span>
 					          	</li>
 								<li class="list-group-item d-flex justify-content-between lh-condensed">
 					            	<div>

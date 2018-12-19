@@ -24,7 +24,7 @@
                 <td>N° <%= @arrival_note.number %></td>
               </tr>
               <tr>
-                <td>Fecha: <%= @arrival_note.created_at %></td>
+                <td>Fecha: <%= @arrival_note.created_at.strftime("%d/%m/%Y") %></td>
               </tr>
             </table>
           </td>

@@ -86,6 +86,11 @@ class ProductsController < ApplicationController
     end
   end
 
+  def product_category
+    category = current_user.company.product_categories.find(params[:category_id])
+    render :json => [{iva: category.iva_aliquot}]
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product

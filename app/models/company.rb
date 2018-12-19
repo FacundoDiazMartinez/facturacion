@@ -14,6 +14,7 @@ class Company < ApplicationRecord
 	has_many :iva_books
 	has_many :roles
 	has_many :services
+	has_many :user_activities, through: :users
 
 	belongs_to :province
 	belongs_to :locality

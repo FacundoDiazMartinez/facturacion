@@ -43,7 +43,7 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order.user_id = current_user.id
     respond_to do |format|
       if @purchase_order.save
-        format.html { redirect_to @purchase_order, notice: 'Purchase order was successfully created.' }
+        format.html { redirect_to @purchase_order, notice: 'La órden de compra fue creada exitosamente.' }
         format.json { render :show, status: :created, location: @purchase_order }
       else
         format.html { render :new }
@@ -57,7 +57,7 @@ class PurchaseOrdersController < ApplicationController
   def update
     respond_to do |format|
       if @purchase_order.update(purchase_order_params)
-        format.html { redirect_to @purchase_order, notice: 'Purchase order was successfully updated.' }
+        format.html { redirect_to @purchase_order, notice: 'La órden de compra fue actualizada exitosamente.' }
         format.json { render :show, status: :ok, location: @purchase_order }
       else
         format.html { render :edit }
@@ -71,7 +71,7 @@ class PurchaseOrdersController < ApplicationController
   def destroy
     @purchase_order.destroy
     respond_to do |format|
-      format.html { redirect_to purchase_orders_url, notice: 'Purchase order was successfully destroyed.' }
+      format.html { redirect_to purchase_orders_url, notice: 'La órden de compra fue eliminada exitosamente.' }
       format.json { head :no_content }
     end
   end
@@ -103,6 +103,17 @@ class PurchaseOrdersController < ApplicationController
     end
   end
 
+  def disapprove
+    respond_to do |format|
+      if current_user.has_purchase_management_role?
+        @purchase_order.update_column(:state, "Desaprobado")
+        format.html {redirect_to @purchase_order, notice: "La orden de compra fue aprobada."}
+      else
+        format.html {render :edit, notice: "No tiene los provilegios necesarios para aprobar la orden de compra."}
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_purchase_order
@@ -111,6 +122,6 @@ class PurchaseOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_order_params
-      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :total_pay, :user_id, :shipping, :shipping_cost, :company_id, purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :name, :price]])
+      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :user_id, :shipping, :shipping_cost, :company_id, purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :name, :price]])
     end
 end

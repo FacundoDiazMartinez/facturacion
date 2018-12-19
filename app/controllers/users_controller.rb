@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
-    @activities = @user.user_activities.paginate(page: params[:page], per_page: 5)
+    @activities = @user.user_activities.order("updated_at DESC").paginate(page: params[:page], per_page: 5)
   end
 
   def edit

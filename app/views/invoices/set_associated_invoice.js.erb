@@ -1,4 +1,8 @@
-'<%= nested_form_for @invoice do |form| %>'
-	$("#idetails").html("<%= j render template: '/invoices/detail/index.html.erb', locals:{form: form} %>");
-	$("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb', locals:{form: form} %>");
-'<% end %>'
+<%
+  nested_form_for @invoice do |f| 
+    @builder = f
+  end
+%>
+
+$("#idetails").html("<%= j render template: '/invoices/detail/index.html.erb', locals:{form: @builder} %>");
+$("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb', locals:{form: @builder} %>");

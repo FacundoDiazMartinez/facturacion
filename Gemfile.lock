@@ -252,7 +252,7 @@ GEM
     aws-sdk-efs (1.7.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
-    aws-sdk-eks (1.8.0)
+    aws-sdk-eks (1.9.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
     aws-sdk-elasticache (1.10.0)
@@ -294,7 +294,7 @@ GEM
     aws-sdk-globalaccelerator (1.0.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
-    aws-sdk-glue (1.21.0)
+    aws-sdk-glue (1.22.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
     aws-sdk-greengrass (1.12.0)
@@ -647,7 +647,7 @@ GEM
     aws-sdk-robomaker (1.0.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
-    aws-sdk-route53 (1.16.0)
+    aws-sdk-route53 (1.17.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
     aws-sdk-route53domains (1.8.0)
@@ -663,7 +663,7 @@ GEM
     aws-sdk-s3control (1.1.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
-    aws-sdk-sagemaker (1.25.0)
+    aws-sdk-sagemaker (1.26.0)
       aws-sdk-core (~> 3, >= 3.39.0)
       aws-sigv4 (~> 1.0)
     aws-sdk-sagemakerruntime (1.7.0)
@@ -1063,6 +1063,9 @@ DEPENDENCIES
   will_paginate-bootstrap4
   wkhtmltopdf-binary
   zip-zip
+
+RUBY VERSION
+   ruby 2.5.1p57
 
 BUNDLED WITH
    1.17.1

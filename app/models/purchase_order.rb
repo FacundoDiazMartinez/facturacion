@@ -8,6 +8,8 @@ class PurchaseOrder < ApplicationRecord
 
   has_one :product
 
+  default_scope { where(active: true) }
+
   accepts_nested_attributes_for :payments, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :purchase_order_details, reject_if: :all_blank, allow_destroy: true
 
@@ -78,7 +80,7 @@ class PurchaseOrder < ApplicationRecord
   #PROCESOS
     def set_number
       last_po = PurchaseOrder.where(company_id: company_id).last
-      self.number = last_po.nil? ? "00001" : (last_po.number.to_i + 1).to_s.rjust(5,padstr= '0')  
+      self.number = last_po.nil? ? "00001" : (last_po.number.to_i + 1).to_s.rjust(5,padstr= '0')
     end
 
     def set_sended_activity
@@ -87,6 +89,14 @@ class PurchaseOrder < ApplicationRecord
 
     def set_activity
       UserActivity.create_for_purchase_order self
+    end
+
+    def destroy
+      if self.state == "Aprobado"
+        update_column(:active, false)
+        run_callbacks :destroy
+        freeze
+      end
     end
   #PROCESOS
 

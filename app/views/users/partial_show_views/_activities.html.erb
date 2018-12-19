@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-12">
       <% @activities.each do |activity| %>
-      <div class="card card-horizontal">
+      <div class="card card-horizontal activity-card" data-link="<%= activity.link%>">
         <div class="image-left">
           <%= image_tag activity.photo, class: 'activity-img' %>
         </div>

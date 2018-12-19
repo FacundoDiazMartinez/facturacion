@@ -130,16 +130,8 @@ $(document).on('nested:fieldAdded', function(event){
 });
 
 $(document).on('nested:fieldRemoved', function(event){
-	payment_fields = parseInt(0);
-	$(".amount").each(function(){ /// dejamos todo en 0 y colocamos el total de venta en el primer tipo de pago
-		payment_fields = payment_fields + 1;
-		if (payment_fields == 1) {
-			$(this).val(total_venta);
-		}
-		else {
-			$(this).val(0);
-		}
-	});
+	 var field = event.field;
+	 field.find("input.amount").val(0); //Ponemos en 0 el field que acabamos de eliminar (ya que no se elimina, se setea con display: none) para que funcione bien el complete_payments
 })
 
 
@@ -198,3 +190,12 @@ $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_fie
 	form = $(this).parents('form:first');
 	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");
 });
+
+
+function changeView(tipo){
+	$("#view").val(tipo).trigger("change");
+}
+
+$(document).on("click","#client_name", function(){
+	$(this).val("");
+})

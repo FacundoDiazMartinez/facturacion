@@ -57,12 +57,14 @@ $(document).ready(function() {
       dateFormat: "dd/mm/yyyy",
       todayHighlight: true,
       autoclose: true,
+      startView: 2
   });
 });
 
+
 function remoteSubmit(form_id){
   form = $(form_id);
-  $.get(form.attr("action"), form.serialize(), null, "script");
+  $.get(form.attr("action"), form.serialize(), null , "script");
 };
 
 function reloadLocality(province, dropdown){

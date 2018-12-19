@@ -1,4 +1,118 @@
-<p id="notice"><%= notice %></p>
+<div class="p-4">
+	<!-- TITULO -->
+	<%= title_helper "#{@service.name}" %>
+	<% if can? :update, Product %>
+		<%= button_edit_helper(edit_service_path(@service.id)) %>
+	<% end %>
+	<!-- TITULO -->
 
-<%= link_to 'Edit', edit_service_path(@service) %> |
-<%= link_to 'Back', services_path %>
+	<div class="row">
+		<div class="col-md-4 col-xs-12">
+			<div class="card card-shadow mb-4">
+		    	<img class="card-img-top" src="<%= @service.photo %>" alt="Añadir foto" id="image">
+		  	</div>
+		</div>
+
+		<div class="col-md-8 col-xs-12">
+			<div class="container-fluid">
+			  	<div class="row">
+			    	<div class="col-md-12">
+			    		<p class="text-muted">Información basica</p>
+			      		<div class="card card-fluid card-shadow">
+			        		<ul class="list-group">
+					          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Nombre
+					              		</strong>
+					            	</div>
+					            	<span><%= @service.name %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Medida
+					              		</strong>
+					            	</div>
+					            	<span><%= @service.full_measurement %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Categoría
+					              		</strong>
+					            		</div>
+					            		<span><%= @service.category_name %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Código
+					              		</strong>
+					            	</div>
+					            	<span><%= @service.code %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Stock
+					              		</strong>
+					           		</div>
+					            	<span><%= @service.available_stock %></span>
+					          	</li>
+							</ul>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+						<p class="text-muted">Información sobre el precio</p>
+						<div class="card card-fluid card-shadow">
+					        <ul class="list-group">
+					          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Precio de costo
+					              		</strong>
+					            	</div>
+					            	<span>$<%= @service.cost_price %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+									<div>
+										<strong class="my-0">
+											Ganancia
+										</strong>
+									</div>
+									<span><%= @service.gain_margin %>%</span>
+								</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Precio neto
+					              		</strong>
+					            	</div>
+					            	<span>$<%= @service.net_price %></span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Alícuota IVA
+					              		</strong>
+					            	</div>
+					            	<span><%= @service.iva %>%</span>
+					          	</li>
+								<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+				                		<strong class="my-0">
+					                		Precio final
+					              		</strong>
+					            	</div>
+					            	<span>$<%= @service.price %></span>
+					          	</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

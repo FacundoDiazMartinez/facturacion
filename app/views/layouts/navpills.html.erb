@@ -1,57 +1,61 @@
 <% if user_signed_in? %>
-	<div class="sidebar sidebar-animate">
+	<div class="sidebar sidebar-animate collapse navbar-collapse" id="navpills">
 		<ul class="nav flex-column navpills">
 		  	<li class="nav-item">
-		    	<%= link_to "<span class='only-desktop'>Inicio</span> #{icon('fas', 'home')}".html_safe, root_path, class: 'nav-link', title: 'Inicio' %>
+		    	<%= link_to "<span class='nav-span'>Inicio</span> #{icon('fas', 'home')}".html_safe, root_path, class: 'nav-link', title: 'Inicio' %>
 		  	</li>
 
 		  	<li class="nav-item">
 		  		<% if current_user.has_company? %>
-		    		<%= link_to "<span class='only-desktop'>Compañía</span> #{icon('fas', 'building')}".html_safe, company_path(current_user.company_id), class: 'nav-link', title: 'Compañía' %>
+		    		<%= link_to "<span class='nav-span'>Compañía</span> #{icon('fas', 'building')}".html_safe, company_path(current_user.company_id), class: 'nav-link', title: 'Compañía' %>
 		    	<% else %>
-		    		<%= link_to "<span class='only-desktop'>Compañía</span> #{icon('fas', 'building')}".html_safe, new_company_path(), class: 'nav-link', title: 'Compañía' %>
+		    		<%= link_to "<span class='nav-span'>Compañía</span> #{icon('fas', 'building')}".html_safe, new_company_path(), class: 'nav-link', title: 'Compañía' %>
 		    	<% end %>
 		  	</li>
 
 			<li class="nav-item">
-				<%= link_to "<span class='only-desktop'> Personal</span> #{icon('fas', 'users')}".html_safe, users_path, class: 'nav-link' if can? :read, User %>
+				<%= link_to "<span class='nav-span'> Personal</span> #{icon('fas', 'users')}".html_safe, users_path, class: 'nav-link' if can? :read, User %>
 			</li>
 
 		  	<li class="nav-item">
-		    	<%= link_to "<span class='only-desktop'>Ventas</span> #{icon('fas', 'hand-holding-usd')}".html_safe, invoices_path, class: 'nav-link', title: 'Ventas' if can? :read, Invoice  %>
+		    	<%= link_to "<span class='nav-span'>Ventas</span> #{icon('fas', 'hand-holding-usd')}".html_safe, invoices_path, class: 'nav-link', title: 'Ventas' if can? :read, Invoice  %>
 		  	</li>
 
 		  	<li class="nav-item dropdown">
-    			<%= link_to "<span class='only-desktop'>Compras</span> #{icon('fas', 'shopping-cart')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
+    			<%= link_to "<span class='nav-span'>Compras</span> #{icon('fas', 'shopping-cart')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
    				<div class="dropdown-menu">
-   					<%= link_to "<span class='only-desktop'>Ordenes de compra</span> #{icon('fas', 'shopping-cart')}".html_safe, purchase_orders_path, class: 'dropdown-item', title: "Ordenes de compra" if can? :read, PurchaseOrder %>
-   					<%= link_to "<span class='only-desktop'>Remitos de compra</span> #{icon('fas', 'file-alt')}".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos" if can? :read, ArrivalNote %>
-					<%= link_to "<span class='only-desktop'>Comprobantes</span> #{icon('fas', 'file-invoice-dollar')}".html_safe, purchase_invoices_path, class: 'dropdown-item', title: "Compras" if can? :read, PurchaseInvoice %>
+   					<%= link_to "<span class='nav-span'>Ordenes de compra</span> #{icon('fas', 'shopping-cart')}".html_safe, purchase_orders_path, class: 'dropdown-item', title: "Ordenes de compra" if can? :read, PurchaseOrder %>
+   					<%= link_to "<span class='nav-span'>Remitos de compra</span> #{icon('fas', 'file-alt')}".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos" if can? :read, ArrivalNote %>
+					<%= link_to "<span class='nav-span'>Comprobantes</span> #{icon('fas', 'file-invoice-dollar')}".html_safe, purchase_invoices_path, class: 'dropdown-item', title: "Compras" if can? :read, PurchaseInvoice %>
 				</div>
 			</li>
 
-		  	<li class="nav-item">
-		    	<%= link_to "<span class='only-desktop'>Clientes</span> #{icon('fas', 'briefcase')}".html_safe, clients_path, class: 'nav-link', title: 'Clientes' if can? :read, Client %>
+			<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Recibos</span> #{icon('fas', 'file-invoice')}".html_safe, receipts_path, class: 'nav-link', title: 'Recibos' if can? :read, Receipt  %>
 		  	</li>
 
 		  	<li class="nav-item">
-		    	<%= link_to "<span class='only-desktop'>Productos</span> #{icon('fas', 'cubes')}".html_safe, products_path, class: 'nav-link', title: 'Productos' if can? :read, Product %>
+		    	<%= link_to "<span class='nav-span'>Clientes</span> #{icon('fas', 'briefcase')}".html_safe, clients_path, class: 'nav-link', title: 'Clientes' if can? :read, Client %>
 		  	</li>
 
 		  	<li class="nav-item">
-		    	<%= link_to "<span class='only-desktop'>Servicios</span> #{icon('fas', 'hands-helping')}".html_safe, services_path, class: 'nav-link', title: 'Servicios' if can? :read, Service %>
+		    	<%= link_to "<span class='nav-span'>Productos</span> #{icon('fas', 'cubes')}".html_safe, products_path, class: 'nav-link', title: 'Productos' if can? :read, Product %>
 		  	</li>
 
 		  	<li class="nav-item">
-		    	<%= link_to "<span class='only-desktop'>Depósitos</span> #{icon('fas', 'archive')}".html_safe, depots_path, class: 'nav-link', title: 'Depósitos' if can? :read, Depot %>
+		    	<%= link_to "<span class='nav-span'>Servicios</span> #{icon('fas', 'hands-helping')}".html_safe, services_path, class: 'nav-link', title: 'Servicios' if can? :read, Service %>
 		  	</li>
 
 		  	<li class="nav-item">
-		  		<%= link_to "<span class='only-desktop'>Proveedores</span> #{icon('fas', 'plane')}".html_safe, suppliers_path, class: 'nav-link', title: "Proveedores" if can? :read, Supplier %>
+		    	<%= link_to "<span class='nav-span'>Depósitos</span> #{icon('fas', 'archive')}".html_safe, depots_path, class: 'nav-link', title: 'Depósitos' if can? :read, Depot %>
 		  	</li>
 
 		  	<li class="nav-item">
-		    	<%= link_to "<span class='only-desktop'>Libro I.V.A.</span> #{icon('fas', 'book')}".html_safe, iva_books_path, class: 'nav-link', title: 'Libro I.V.A.' if can? :read, IvaBook %>
+		  		<%= link_to "<span class='nav-span'>Proveedores</span> #{icon('fas', 'plane')}".html_safe, suppliers_path, class: 'nav-link', title: "Proveedores" if can? :read, Supplier %>
+		  	</li>
+
+		  	<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Libro I.V.A.</span> #{icon('fas', 'book')}".html_safe, iva_books_path, class: 'nav-link', title: 'Libro I.V.A.' if can? :read, IvaBook %>
 		  	</li>
 		</ul>
 	</div>

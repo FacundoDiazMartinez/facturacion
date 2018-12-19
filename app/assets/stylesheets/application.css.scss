@@ -30,6 +30,7 @@
 @import "invoice";
 
 
+
 @font-face {
 	font-family: 'Montserrat Regular';
 	src:url('/fonts/montserrat-font/Montserrat-Regular.ttf');
@@ -81,13 +82,13 @@ li.nav-item > .dropdown-menu {
   width: 100%;
 }
 
-.dropdown-menu.show{
+div#navpills > ul > li > div.dropdown-menu.show{
   position: relative !important;
   transform: translate3d(0px, 0px, 0px) !important;
   border: none;
 }
 
-.dropdown-menu > .dropdown-item{
+div#navpills > ul > li > div.dropdown-menu > .dropdown-item{
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 14px;
   line-height: 18px;
@@ -249,4 +250,64 @@ td.verical-align{
 }
 td > a:visited{
   color: black;
+}
+
+.display-menu > li > a:visited, .display-menu > li > a{
+    color: black !important;
+}
+
+.display-menu > li > a:hover{
+    color: white !important;
+}
+
+@media (max-width: 992px) {
+
+  span.nav-span {
+    display: inline-block;
+  }
+  .dropdown-toggle::after{
+    display: inline-block;
+    float: left;
+    margin-top: 7px;
+  }
+
+  #yield-wrapper {
+    width: 100%;
+    margin-left: 0% !important;
+    margin-right: 0% !important;
+  }
+  td.text-right {
+    display:block;
+  }
+
+  .only-desktop{
+    display: none;
+  }
+  a.btn-outline-secondary{
+    border-color: transparent;
+  }
+  .table th, .table td{
+    padding: initial;
+  }
+
+  .table thead th{
+    font-weight: bold !important;
+  }
+
+  td a.btn-outline-secondary:hover{
+    color: black;
+    background-color: transparent;
+    border-color: #6c757d;
+  }
+  
+  .text-center > .dropdown-item{
+    text-align: center !important;
+  }
+
+} 
+
+.right-nav{
+  right: 0px;
+  left: auto !important;
+  text-align: center;
 }

@@ -1,0 +1,36 @@
+<!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
+    <div class="border">
+      <center>
+        <h2 class="text_size_25">
+          <% case @type
+          when "Crédito Fiscal" %>
+            LIBRO I.V.A. COMPRAS
+          <% when "Débito Fiscal" %>
+            LIBRO I.V.A. VENTAS
+          <% end %>
+          <br>
+          Empresa: <%= current_user.company.name %>
+        </h2>
+      </center>
+
+    </div>
+
+
+    <div class="side_borders" style="border-bottom: 1px solid black;">
+      <br>
+
+      <table class="width_100">
+        <tr>
+          <td><b>Período comprendido entre:</b> <%= @from %> y <%= @to %></td>
+          <td><b>Fecha de emisión:</b> <%= DateTime.now.to_date %></td>
+        </tr>
+        <tr>
+          <td><b>Libro I.V.A. correspondiente a:</b> <%= @type %></td>
+          <td></td>
+        </tr>
+      </table>
+
+      <br>
+    </div>
+
+  <!-- FIN DEL ENCABEZADO -->
