@@ -30,6 +30,10 @@
 				</div>
 			</li>
 
+			<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Recibos</span> #{icon('fas', 'file-invoice')}".html_safe, receipts_path, class: 'nav-link', title: 'Recibos' if can? :read, Receipt  %>
+		  	</li>
+
 		  	<li class="nav-item">
 		    	<%= link_to "<span class='nav-span'>Clientes</span> #{icon('fas', 'briefcase')}".html_safe, clients_path, class: 'nav-link', title: 'Clientes' if can? :read, Client %>
 		  	</li>

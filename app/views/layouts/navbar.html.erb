@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="collapse navbar-collapse flex-grow-1 text-right" id="myNavbar">
-        <ul class="navbar-nav ml-auto flex-nowrap">
+        <ul class="navbar-nav ml-auto flex-nowrap text-center">
             <% if user_signed_in? %>
               <%= subscribe_to "/facturacion/notifications/#{current_user.id}" %>
               <li class="nav-item">
@@ -27,16 +27,12 @@
                 <%= render '/notifications/notification-container' %>
               </li>
               <li class="nav-item dropdown">
-                <a href="" id="navbarDropdownMenuMiCuenta" class="dropdown-toggle nav-link m-2 menu-item" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Mi cuenta</a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuMiCuenta">
-                  <li>
-                    <%= link_to "Editar perfil", edit_user_registration_path %>
-                  </li>
-                  <li role="separator" class="divider"></li>
-                  <li>
-                    <%= link_to('Salir', destroy_user_session_path, :method => :delete) %>
-                  </li>
-                </ul>
+                <a href="" id="navbarDropdownMenuMiCuenta" role="button" class="dropdown-toggle nav-link m-2 menu-item" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Mi cuenta</a>
+                <div class="dropdown-menu text-center right-nav" aria-labelledby="navbarDropdown">
+                    <%= link_to "Editar perfil", edit_user_registration_path, class: 'dropdown-item' %>
+                    <div class="dropdown-divider only-desktop"></div>
+                    <%= link_to 'Salir', destroy_user_session_path, :method => :delete, class: 'dropdown-item' %>
+                </div>
               </li>
             <% else %>
             <li class="nav-item">

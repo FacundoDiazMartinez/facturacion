@@ -34,6 +34,38 @@ class AccountMovement < ApplicationRecord
     # end
   #TABLA
 
+  COMP_TIPO = [
+    "Factura A",
+    "Nota de Crédito A",
+    "Nota de Débito A",
+    "Factura B",
+    "Nota de Crédito B",
+    "Nota de Débito B",
+    "Factura C",
+    "Nota de Crédito C",
+    "Nota de Débito C",
+    "Recibo X"
+  ]
+
+  #FILTROS DE BUSQUEDA
+    def self.search_by_cbte_tipo cbte_tipo
+      if !cbte_tipo.blank?
+        where(cbte_tipo: cbte_tipo)
+      else
+        all
+      end
+    end
+
+    def self.search_by_date from, to
+      if !from.blank? && !to.blank?
+        where(created_at: from..to)
+      else
+        all
+      end
+    end
+  #FILTROS DE BUSQUEDA
+
+
   #FUNCIONES
   	def days
   		(Date.today - created_at.to_date).to_i / 1.days 
@@ -70,6 +102,16 @@ class AccountMovement < ApplicationRecord
       freeze
     end
   #FUNCIONES
+
+  #ATRIBUTOS
+    def comprobante
+      if not invoice_id.nil?
+        "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{invoice.comp_number}" #Transforma Nota de Crédito A => NCA
+      else
+        "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{receipt.number}"
+      end
+    end
+  #ATRIBUTOS
 
   #PROCESOS
     def check_debe_haber

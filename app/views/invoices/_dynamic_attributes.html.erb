@@ -30,7 +30,7 @@
 	<div class="form-group row">
 		<%= form.label :associated_invoice, "Factura asociada", class:'col-4 col-form-label col-form-label-sm' %>
 		<div class="col-8">
-			<%= form.autocomplete_field :associated_invoice, autocomplete_associated_invoice_invoices_path, class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: @invoice.is_invoice?, autofocus: true %>
+			<%= autocomplete_field_tag :associated_invoice, form.object.invoice_comp_number, autocomplete_associated_invoice_invoices_path, class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: @invoice.is_invoice?, autofocus: true, id_element: "#invoice_associated_invoice" %>
 			<%= form.hidden_field :associated_invoice %>
 		</div>
 	</div>

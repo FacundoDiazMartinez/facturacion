@@ -82,13 +82,13 @@ li.nav-item > .dropdown-menu {
   width: 100%;
 }
 
-.dropdown-menu.show{
+div#navpills > ul > li > div.dropdown-menu.show{
   position: relative !important;
   transform: translate3d(0px, 0px, 0px) !important;
   border: none;
 }
 
-.dropdown-menu > .dropdown-item{
+div#navpills > ul > li > div.dropdown-menu > .dropdown-item{
   font-family: verdana, arial, helvetica, sans-serif;
   font-size: 14px;
   line-height: 18px;
@@ -299,7 +299,15 @@ td > a:visited{
     background-color: transparent;
     border-color: #6c757d;
   }
+  
+  .text-center > .dropdown-item{
+    text-align: center !important;
+  }
 
 } 
 
-
+.right-nav{
+  right: 0px;
+  left: auto !important;
+  text-align: center;
+}
