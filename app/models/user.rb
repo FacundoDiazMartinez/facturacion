@@ -64,8 +64,8 @@ class User < ApplicationRecord
 
 
   	def set_company company_id
-  		update_columns(company_id: company_id, admin: true)
-  	end
+  		update_columns(company_id: company_id, admin: true) 	  
+    end
 
   	def has_company?
   		not company_id.nil?
