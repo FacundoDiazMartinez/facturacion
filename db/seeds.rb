@@ -23,7 +23,7 @@ Locality.where(code: "10", name: "Capital", province_id: province.id).first_or_c
 
 ###ROL ADMIN
 
-Role.where(id: 1, name: "Administrador").first_or_initialize.save
+#Role.where(id: 1, name: "Administrador").first_or_initialize.save
 
 ####FriendlyNames
 
