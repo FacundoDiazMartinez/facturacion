@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 2018_12_19_171655) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.string "number", null: false
+    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -290,13 +290,21 @@ ActiveRecord::Schema.define(version: 2018_12_19_171655) do
 
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
+<<<<<<< HEAD
     t.boolean "active", default: true, null: false
+=======
+    t.integer "iva_aliquot"
+>>>>>>> 952b777563640f923300ecec9f01811ac5644733
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
+<<<<<<< HEAD
     t.string "iva_aliquot", default: "05", null: false
+=======
+    t.boolean "active", default: true, null: false
+>>>>>>> 952b777563640f923300ecec9f01811ac5644733
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
   end
@@ -466,7 +474,7 @@ ActiveRecord::Schema.define(version: 2018_12_19_171655) do
     t.string "titular"
     t.string "account_number"
     t.string "bank_name"
-    t.string "iva_cond", default: "Responsable Inscripto", null: false
+    t.string "iva_cond", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
