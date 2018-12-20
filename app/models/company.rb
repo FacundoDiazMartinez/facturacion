@@ -96,8 +96,7 @@ class Company < ApplicationRecord
 		def set_admin_role
 			if self.roles.blank?
 				admin_role = Role.where(company_id: self.id, name: "Administrador").first_or_initialize
-				admin_role.save
-				if admin_role.new_record?
+				if admin_role.save?
 					UserRole.create(role_id: admin_role.id, user_id: self.users.first.id).first_or_create
 				end
 			end
