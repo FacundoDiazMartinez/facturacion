@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_19_171655) do
+ActiveRecord::Schema.define(version: 2018_12_20_184031) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,6 +224,7 @@ ActiveRecord::Schema.define(version: 2018_12_19_171655) do
     t.bigint "associated_invoice"
     t.date "fch_serv_desde"
     t.date "fch_serv_hasta"
+    t.date "fch_vto_pago"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"

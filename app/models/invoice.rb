@@ -23,6 +23,7 @@ class Invoice < ApplicationRecord
 
     after_save :set_state
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
+    after_save :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado" || i.state == "Anulado"}
     before_validation :check_if_confirmed
@@ -278,6 +279,14 @@ class Invoice < ApplicationRecord
           return response && !self.errors.any?
       end
 
+      def check_receipt
+        r = Receipt.where(invoice_id: id).first_or_initialize
+        r.total       = total_pay
+        r.date        = created_at
+        r.company_id  = company_id
+        r.save
+      end
+
       def touch_account_movement
         if state == "Confirmado"
           am              = AccountMovement.where(invoice_id: id).first_or_initialize
@@ -288,12 +297,12 @@ class Invoice < ApplicationRecord
             am.debe         = false
             am.haber        = true
             am.total        = total.to_f
-            am.saldo        = (client.saldo.to_f - am.total) unless !am.new_record?
+            am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
           else
             am.debe         = true
             am.haber        = false
             am.total        = total.to_f
-            am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
+            am.saldo        = (client.saldo.to_f - am.total) unless !am.new_record?
           end
           am.save
         end
@@ -382,15 +391,18 @@ class Invoice < ApplicationRecord
       def set_bill
         set_constants
         bill = Afip::Bill.new(
-          net:        self.net_amount_sum,
-          doc_num:    self.client.document_number,
-          sale_point: self.sale_point.name,
-          documento:  Afip::DOCUMENTOS.key(self.client.document_type),
-          moneda:     self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym,
-          iva_cond:   self.client.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym,
-          concepto:   self.concepto,
-          ivas:       self.iva_array,
-          cbte_type:  self.cbte_tipo
+          net:            self.net_amount_sum,
+          doc_num:        self.client.document_number,
+          sale_point:     self.sale_point.name,
+          documento:      Afip::DOCUMENTOS.key(self.client.document_type),
+          moneda:         self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym,
+          iva_cond:       self.client.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym,
+          concepto:       self.concepto,
+          ivas:           self.iva_array,
+          cbte_type:      self.cbte_tipo,
+          fch_serv_desde: self.fch_serv_desde,
+          fch_serv_hasta: self.fch_serv_hasta,
+          due_date:       self.fch_vto_pago
         )
         bill.doc_num = self.client.document_number
         return bill

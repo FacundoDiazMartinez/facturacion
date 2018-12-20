@@ -4,7 +4,6 @@ class Payment < ApplicationRecord
 
   after_save :set_total_pay_to_invoice
   after_save :set_notification
-  after_save :check_receipt
 
   after_initialize :set_payment_date
 
@@ -42,17 +41,6 @@ class Payment < ApplicationRecord
       self.payment_date = Date.today
     end
 
-    def check_receipt
-      r = Receipt.where(invoice_id: invoice.id).first_or_initialize
-      if invoice.is_credit_note?
-        r.total     = - invoice.total_pay
-      else
-        r.total     = invoice.total_pay
-      end
-      r.date        = invoice.created_at
-      r.company_id  = invoice.company_id
-      r.save
-    end
   #PROCESOS
 
   #FUNCIONES

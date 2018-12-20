@@ -1,30 +1,30 @@
 $(document).ready(function(){
 	$("#service_cost_price").on("change", function(){
-		setPrecioNeto();
+		setPrecioNetoForService();
 	});
 
 	$("#service_gain_margin").on("change", function(){
-		setPrecioNeto();
+		setPrecioNetoForService();
 	});
 
 	$("#service_iva_aliquot").on("change", function(){
-		setPrecioFinal();
+		setPrecioFinalForService();
 	});
 
 	$("#service_net_price").on("change", function(){
-		setPrecioFinal();
+		setPrecioFinalForService();
 	});
 
 	$("#service_price").on("change", function(){
-		setCostPrice();
+		setCostPriceForService();
 	});
 
 	$(document).on('change', '#service_product_category_id', function(){
-		$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIva(data)}, "script")
+		$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIvaForService(data)}, "script")
 	})
 });
 	
-function setPrecioNeto(){
+function setPrecioNetoForService(){
 	var costo 		= parseFloat($("#service_cost_price").val());
 	var ganancia 	= parseFloat($("#service_gain_margin").val());
 	var neto 		= $("#service_net_price");
@@ -33,7 +33,7 @@ function setPrecioNeto(){
 	neto.trigger("change");
 };
 
-function setPrecioFinal(){
+function setPrecioFinalForService(){
 	var neto 		= parseFloat($("#service_net_price").val());
 	var iva 		= parseFloat($("#service_iva_aliquot :selected").text());
 	var final 		= $("#service_price");
@@ -41,7 +41,7 @@ function setPrecioFinal(){
 	final.val((neto * (1 + iva)).toFixed(2));
 };
 
-function setCostPrice(){
+function setCostPriceForService(){
 	var neto 		= parseFloat($("#service_net_price").val());
 	var costo 		= $("#service_cost_price").val();
 	var ganancia 	= $("#service_gain_margin");
@@ -54,7 +54,7 @@ function setCostPrice(){
 	ganancia.val((neto / costo * 100 - 100).toFixed(2))
 };
 
-function fillProductIva(data){
+function fillProductIvaForService(data){
 	var response = jQuery.parseJSON(data);
 	$("#service_iva_aliquot").val(response[0].iva).trigger("change")
 };

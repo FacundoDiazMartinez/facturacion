@@ -16,6 +16,9 @@
 		    <div class="col-4">
 		      	<%= form.text_field :fch_serv_hasta, class: 'form-control datepicker', placeholder: "Hasta", disabled: !@invoice.editable? %>
 		    </div>
+		    <div class="col-8 offset-4">
+		      	<%= form.text_field :fch_vto_pago, class: 'form-control datepicker', placeholder: "Vencimiento", disabled: !@invoice.editable? %>
+		    </div>
 	    </div>
 	<% else %>
 		<div class="form-group row">
