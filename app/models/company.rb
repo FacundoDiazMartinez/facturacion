@@ -14,6 +14,7 @@ class Company < ApplicationRecord
 	has_many :iva_books
 	has_many :roles
 	has_many :services
+	has_many :user_activities, through: :users
 
 	belongs_to :province
 	belongs_to :locality
@@ -89,6 +90,13 @@ class Company < ApplicationRecord
 
 		def date_less_than_today
 			errors.add(:activity_init_date, "La fecha de inicio de actividad no puede ser mayor que hoy.") unless activity_init_date <= Date.today
+		end
+
+		def set_admin_role user_id
+			if self.roles.blank?
+				admin_role = Role.where(company_id: self.id, name: "Administrador").first_or_create
+				UserRole.where(role_id: admin_role.id, user_id: user_id).first_or_create
+			end
 		end
 	#Fin validaciones
 

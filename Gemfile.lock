@@ -19,7 +19,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    Afip (0.8.1)
+    Afip (0.8.5)
       httpi
       savon
     actioncable (5.2.2)
@@ -1063,9 +1063,6 @@ DEPENDENCIES
   will_paginate-bootstrap4
   wkhtmltopdf-binary
   zip-zip
-
-RUBY VERSION
-   ruby 2.5.1p57
 
 BUNDLED WITH
    1.17.1
