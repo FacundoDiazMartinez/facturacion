@@ -1,6 +1,6 @@
 class Receipt < ApplicationRecord
   #RECIBO DE PAGO
-  belongs_to :invoice, optional: true
+  belongs_to :invoice
   belongs_to :client
   belongs_to :company
 
@@ -20,6 +20,24 @@ class Receipt < ApplicationRecord
     "54"=>"Recibo M",
     "00"=>"Recibo X"
   }
+
+  #FILTROS DE BUSQUEDA
+  	def self.find_by_period from, to
+  		if !from.blank? && !to.blank?
+  			where(date: from..to)
+  		else
+  			all
+  		end
+  	end
+
+    def self.search_by_client name
+      if not name.blank?
+        joins(invoice: :client).where("clients.name ILIKE ?", "%#{name}%")
+      else
+        all
+      end
+    end
+  #FILTROS DE BUSQUEDA
 
   #PROCESOS
   	def touch_account_movement
