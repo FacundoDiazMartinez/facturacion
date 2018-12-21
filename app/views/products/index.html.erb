@@ -23,41 +23,37 @@
         <!-- Buscador de productos -->
           <%= form_tag products_path(), {class: 'form-inline', id: 'search_form'} do %>
               
-              <div class="form-row">
               <!-- BUSCAR POR NOMBRE -->
-                <div class="form-group col-md-4 col-xs-12">
-                  <%= label_tag :name, "Nombre", class: 'sr-only' %>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
-                    </div>
-                    <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+              <div class="form-group">
+                <div class="input-group mb-2 col">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
                   </div>
+                  <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
                 </div>
-                <!-- BUSCAR POR NOMBRE -->
+              </div>
+              <!-- BUSCAR POR NOMBRE -->
 
-                <!-- BUSCAR POR CÓDIGO -->
-                <div class="form-group col-md-4 col-xs-12">
-                  <%= label_tag :code, "Código", class: 'sr-only' %>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
-                    </div>
-                    <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form")' %>
+              <!-- BUSCAR POR CÓDIGO -->
+              <div class="form-group">
+                <div class="input-group mb-2 col">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
                   </div>
+                  <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form")' %>
                 </div>
-                <!-- BUSCAR POR CÓDIGO -->
+              </div>
+              <!-- BUSCAR POR CÓDIGO -->
 
-                <!-- BUSCAR POR CATEGORÍA -->
-                <div class="form-group col-md-4 col-xs-12">
-                  <%= label_tag :category, "Categoría", class: 'sr-only' %>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
-                    </div>
-                    <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
+              <!-- BUSCAR POR CATEGORÍA -->
+              <div class="form-group">
+                <div class="input-group mb-2 col">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
                   </div>
+                  <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
                 </div>
+              </div>
               <!-- BUSCAR POR CATEGORÍA -->
 
               <!-- BUSCAR POR STOCK -->
