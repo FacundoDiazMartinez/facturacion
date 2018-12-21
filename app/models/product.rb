@@ -229,13 +229,20 @@ class Product < ApplicationRecord
           		product.created_by 			= current_user.id
           		product.updated_by 			= current_user.id
           		if product.valid?
-          			product.delay.save!
+          			products << product
           		else
           			pp product.errors
           			invalid << i
           		end
         	end
+        	delay.save_all_products(products)
         	return_process_result(invalid, current_user)
+		end
+
+		def save_all_products products
+			products.each do |p|
+				p.save
+			end
 		end
 
 		def self.return_process_result invalid, user
