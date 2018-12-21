@@ -229,7 +229,7 @@ class Product < ApplicationRecord
           		product.created_by 			= current_user.id
           		product.updated_by 			= current_user.id
           		if product.valid?
-          			delay.product.save!
+          			product.delay.save!
           		else
           			pp product.errors
           			invalid << i
