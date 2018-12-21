@@ -195,17 +195,21 @@ class Product < ApplicationRecord
 	    def self.save_excel file, supplier_id, current_user
 	    	#TODO Añadir created_by y updated_by
 	      	spreadsheet = open_spreadsheet(file)
+	      	excel = []
+	      	(2..spreadsheet.last_row).each do |r|
+	      		excel << spreadsheet.row(r)
+	      	end
         	header = self.permited_params
         	categories = {}
         	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-        	delay.load_products(spreadsheet, header, categories, current_user, supplier_id)
+        	delay.load_products(excel, header, categories, current_user, supplier_id)
 		end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
 	    	invalid 	= []
-			(2..spreadsheet.last_row).each do |i|
-          		row = Hash[[header, spreadsheet.row(i)].transpose]
+			(1..spreadsheet.size - 1).each do |i|
+          		row = Hash[[header, spreadsheet[i]].transpose]
           		product = new
           		if categories["#{row[:product_category_name]}"].nil?
           			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
