@@ -460,7 +460,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_184031) do
     t.string "titular"
     t.string "account_number"
     t.string "bank_name"
-    t.string "iva_cond", null: false
+    t.string "iva_cond", default: "Responsable Inscripto", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
