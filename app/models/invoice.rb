@@ -281,6 +281,7 @@ class Invoice < ApplicationRecord
 
       def check_receipt
         r = Receipt.where(invoice_id: id).first_or_initialize
+        r.cbte_tipo   = is_credit_note? ? "99" : "00"
         r.total       = total_pay
         r.date        = created_at
         r.company_id  = company_id

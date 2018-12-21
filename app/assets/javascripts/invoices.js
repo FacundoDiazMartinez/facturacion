@@ -19,6 +19,8 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
 	}
+	var recharge = parseFloat($("#client_recharge").val() * -1);
+
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.tipo").val(data.item.tipo);
@@ -32,11 +34,10 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	})
 
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
-	subtotal.trigger("change");
+	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
 
 $(document).on("change", ".price, .quantity", function(){
-
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
@@ -44,7 +45,8 @@ $(document).on("change", ".price, .quantity", function(){
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
 
-	if (bonus_amount.val() > 0) {
+	alert(bonus_amount.val())
+	if (bonus_amount.val() != 0) {
 		total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
 	}else{
 		total = (parseFloat(price.val()) * parseFloat(quantity.val()));

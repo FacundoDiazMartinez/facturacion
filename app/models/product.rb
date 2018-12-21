@@ -209,7 +209,7 @@ class Product < ApplicationRecord
         	header = self.permited_params
         	categories = {}
         	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-        	delay.load_products(spreadsheet, header, categories, current_user, supplier_id)
+        	load_products(spreadsheet, header, categories, current_user, supplier_id)
 		end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
@@ -240,7 +240,7 @@ class Product < ApplicationRecord
           		product.created_by 			= current_user.id
           		product.updated_by 			= current_user.id
           		if product.valid?
-          			product.save!
+          			product.delay.save!
           		else
           			pp product.errors
           			invalid << i

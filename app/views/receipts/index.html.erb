@@ -6,8 +6,10 @@
   <div class="page-section">
     <div class="card">
       <div class="card-header">
+
         <%= form_tag receipts_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR PROVEEDOR -->
+
+          <!-- BUSCAR POR CLIENTE -->
           <%= label_tag :client, "Cliente", class: 'sr-only' %>
           <div class="input-group mb-2 col">
             <div class="input-group-prepend">
@@ -15,9 +17,9 @@
             </div>
             <%= text_field_tag :client, params[:client], class: 'form-control', placeholder: 'Buscar por cliente', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR PROVEEDOR -->
+          <!-- BUSCAR POR CLIENTE -->
 
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <!-- BUSCAR POR FECHA -->
           <%= label_tag :created_at, "Fecha", class: 'sr-only' %>
           <div class="input-group col">
             <div class="input-group-prepend">
@@ -26,8 +28,8 @@
             <%= text_field_tag :from, params[:from], class: 'form-control datepicker', placeholder: 'Fecha desde...', onchange: 'remoteSubmit("#search_form")' %>
             <%= text_field_tag :to, params[:to], class: 'form-control datepicker', placeholder: 'Fecha hasta...', onchange: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-          <% end %>
+          <!-- BUSCAR POR FECHA -->
+        <% end %>
       </div>
 
       <div id="receipts_table" class="card-body">
