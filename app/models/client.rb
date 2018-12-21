@@ -27,6 +27,7 @@ class Client < ApplicationRecord
 	validates_presence_of :saldo, message: "Saldo inválido. Revise por favor."
 
 	accepts_nested_attributes_for :client_contacts, reject_if: :all_blank, allow_destroy: true
+	accepts_nested_attributes_for :invoices, reject_if: :all_blank, allow_destroy: true
 
 
 	# TABLA

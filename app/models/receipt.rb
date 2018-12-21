@@ -24,24 +24,21 @@ class Receipt < ApplicationRecord
 
   #PROCESOS
   	def touch_account_movement
-  		am 				     = AccountMovement.where(receipt_id: id).first_or_initialize
-  		am.client_id 	 = invoice.client_id
-  		am.receipt_id  = id
-  		am.cbte_tipo	 = invoice.is_credit_note? ? "Devolución" : "Recibo X"
-  		am.debe 		   = invoice.is_credit_note?
-  		am.haber 		   = invoice.is_invoice?
-  		am.total 		   = total.to_f
-      if invoice.is_credit_note?
-  		  am.saldo       = invoice.client.saldo.to_f - total.to_f unless !am.new_record?
-      else
-        am.saldo       = invoice.client.saldo.to_f + total.to_f unless !am.new_record?
-      end
-  		am.save
+  		AccountMovement.create_from_receipt(self)
   	end
 
     def set_number
       last_r = Receipt.where(company_id: company_id).last
       self.number = last_r.nil? ? "00001" : (last_r.number.to_i + 1).to_s.rjust(5,padstr= '0') unless (!self.number.blank? || self.total < 0)
+    end
+
+    def self.create_from_invoice invoice
+      r = Receipt.where(invoice_id: invoice.id).first_or_initialize
+      r.cbte_tipo   = invoice.is_credit_note? ? "99" : "00"
+      r.total       = invoice.total_pay
+      r.date        = invoice.created_at
+      r.company_id  = invoice.company_id
+      r.save
     end
   #PROCESOS
 

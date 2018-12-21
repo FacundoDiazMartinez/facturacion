@@ -81,6 +81,7 @@ class Product < ApplicationRecord
 
 	#FILTROS DE BUSQUEDA
 		def self.search_by_name name
+			pp "ENTROOOOOOOOOOOO"
 			if not name.blank?
 				where("products.name ILIKE ? ", "%#{name}%")
 			else
@@ -98,7 +99,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.id = ? ", category)
+				joins(:product_category).where("product_categories.name ILIKE? ", "%#{category}%")
 			else
 				all
 			end
@@ -277,5 +278,7 @@ class Product < ApplicationRecord
 	#PROCESOS
 
 	private
-		default_scope { where(active: true, tipo: "Producto") }
+		def self.default_scope
+		 	where(active: true, tipo: "Producto")
+		end
 end

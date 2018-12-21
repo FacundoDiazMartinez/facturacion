@@ -117,5 +117,42 @@ class AccountMovement < ApplicationRecord
     def check_debe_haber
       errors.add(:debe, "No se define si el mvimiento pertenece al Debe o al Haber.") unless debe != haber
     end
+
+    def self.create_from_receipt receipt
+      am             = AccountMovement.where(receipt_id: receipt.id).first_or_initialize
+      am.client_id   = receipt.invoice.client_id
+      am.receipt_id  = receipt.id
+      am.cbte_tipo   = receipt.invoice.is_credit_note? ? "Devolución" : "Recibo X"
+      am.debe        = receipt.invoice.is_credit_note?
+      am.haber       = receipt.invoice.is_invoice?
+      am.total       = receipt.total.to_f
+      if receipt.invoice.is_credit_note?
+        am.saldo       = receipt.invoice.client.saldo.to_f + receipt.total.to_f unless !am.new_record?
+      else
+        am.saldo       = receipt.invoice.client.saldo.to_f - receipt.total.to_f unless !am.new_record?
+      end
+      am.save     
+    end
+
+    def self.create_from_invoice invoice
+      if invoice.state == "Confirmado"
+          am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
+          am.client_id    = invoice.client_id
+          am.invoice_id   = invoice.id
+          am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
+          if invoice.is_credit_note?
+            am.debe         = false
+            am.haber        = true
+            am.total        = invoice.total.to_f
+            am.saldo        = (invoice.client.saldo.to_f - am.total) unless !am.new_record?
+          else
+            am.debe         = true
+            am.haber        = false
+            am.total        = invoice.total.to_f
+            am.saldo        = (invoice.client.saldo.to_f + am.total) unless !am.new_record?
+          end
+          am.save
+        end
+    end
   #PROCESOS
 end

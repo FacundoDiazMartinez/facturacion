@@ -6,6 +6,10 @@ class Clients::AccountMovementsController < ApplicationController
 		@account_movements =  @client.account_movements.search_by_cbte_tipo(params[:cbte_tipo]).search_by_date(params[:from], params[:to]).order("created_at DESC").paginate(page: params[:page], per_page: 10)
 	end
 
+	def add_payment
+		
+	end
+
 	protected
 		def set_client
 			@client = current_user.company.clients.find(params[:id])
