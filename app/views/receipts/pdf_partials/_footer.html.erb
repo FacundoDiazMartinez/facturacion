@@ -1,31 +1,17 @@
 <!-- PIE DE PAGINA -->
-<div class="row footer_bottom">
-  <div class="container">
-    <table class="width_100">
-    <tr>
-      <td><%= wicked_pdf_image_tag '/images/afip.png',:width => "150"%></td>
-      <td><b>
-        <% if @invoice.check_authorized_invoice %>
-          Comprobante Autorizado
-        <% else %>
-          Comprobante NO Autorizado
-        <% end %>
-      </b></td>
-      <td> </td>
-      <td class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
-    </tr>
-
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td class="text_right"><b>Fecha de Vto. de CAE: </b> <%= @invoice.cae_due_date %> </td>
-    </tr>
-  </table>
+<% if not @receipt.observation.blank? %>
+  <div class="row footer_bottom">
+    <div class="container">
+      <table class="width_100">
+      <tr>
+        <td> <b>Observación:</b> <%= @receipt.observation %>  </td>
+      </tr>
+    </table>
+    </div>
   </div>
-</div>
+<% end %>
+<br>
 <div class="text_center">
   Página <%= page_number %> de <%= total_pages%>
 </div>
-
 <!-- FIN PIE DE PAGINA -->

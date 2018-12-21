@@ -77,6 +77,14 @@ class Receipt < ApplicationRecord
     def tipo
       total < 0 ? "Devolución" : "Pago"
     end
+
+    def letra_tipo
+      if cbte_tipo!= "99"
+        CBTE_TIPO[cbte_tipo][-1]
+      else
+        "D"
+      end
+    end
   #ATRIBUTOS
 
   #FUNCIONES

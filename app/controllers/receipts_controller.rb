@@ -20,7 +20,7 @@ class ReceiptsController < ApplicationController
       format.pdf do
         render pdf: "#{@receipt.id}",
         layout: 'pdf.html',
-        template: 'invoices/show',
+        template: 'receipts/show',
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"

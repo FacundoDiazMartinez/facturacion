@@ -1,7 +1,7 @@
 <!-- DETALLE -->
 <div class="row">
-  <div class="container" style="height: 680px;">
-    <table class="width_100">
+  <div class="container" style="height: 880px;">
+    <table class="width_100 TFtable">
     <tr>
       <th class="description_header">Codigo</th>
       <th class="description_header">Producto/Servicio</th>
@@ -36,27 +36,27 @@
     <table class="width_100">
       <col width="600">
       <col width="100">
-    <tr>
-      <td class="text_right"><b>
-        <% if total_pages > 1 %>
-          Subtotal página:
-        <% else %>
-          Subtotal:
-        <% end %>
-      </b>
-      </td>
-      <td class="text_right"><b>$ <%= total_of_page %></b></td>
-    </tr>
+      <tr>
+        <td class="text_right"><b>
+          <% if total_pages > 1 %>
+            Subtotal página:
+          <% else %>
+            Subtotal:
+          <% end %>
+        </b>
+        </td>
+        <td class="text_right"><b>$ <%= total_of_page %></b></td>
+      </tr>
 
-    <tr>
-      <td class="text_right"><b>Otros Tributos:</b></td>
-      <td class="text_right"><b>$ <%= @invoice.imp_op_ex %> </b></td>
-    </tr>
+      <tr>
+        <td class="text_right"><b>Otros Tributos:</b></td>
+        <td class="text_right"><b>$ <%= @receipt.invoice.imp_op_ex %> </b></td>
+      </tr>
 
-    <tr>
-      <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%= @invoice.total %></b></td>
-    </tr>
+      <tr>
+        <td class="text_right"><b>Importe Total:</b></td>
+        <td class="text_right"><b>$ <%= @receipt.total %></b></td>
+      </tr>
   </table>
   </div>
 </div>
