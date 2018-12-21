@@ -155,6 +155,17 @@ class Product < ApplicationRecord
 		end
 	#ATRIBUTOS
 
+  # ATRIBUTOS VIRTUALES
+  def price_modification=(new_price)
+    @price_modification = new_price
+    if (new_price.to_s.ends_with? "%" )
+      self.price += (self.price * (new_price.to_d/100)).round(2)
+    else
+      self.price = new_price
+    end
+  end
+  # ATRIBUTOS VIRTUALES
+
 	#PROCESOS
 		def self.create params
 			product = Product.where(company_id: company_id, code: code, name: name).first_or_initialize

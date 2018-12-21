@@ -37,10 +37,14 @@ Rails.application.routes.draw do
   end
 
   resources :products do
-    get :autocomplete_product_code, :on => :collection
-    get :export, on: :collection
-    get :product_category, on: :collection
-    post :import, on: :collection
+    collection do
+      get :autocomplete_product_code
+      get :export
+      get :product_category
+      get :edit_multiple
+      put :update_multiple
+      post :import
+    end
   end
 
   resources :services do
