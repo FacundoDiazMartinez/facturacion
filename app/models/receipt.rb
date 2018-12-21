@@ -18,7 +18,8 @@ class Receipt < ApplicationRecord
     "09"=>"Recibo B",
     "15"=>"Recibo C",
     "54"=>"Recibo M",
-    "00"=>"Recibo X"
+    "00"=>"Recibo X",
+    "99"=>"Devolución"
   }
 
   #PROCESOS
