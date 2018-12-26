@@ -8,6 +8,7 @@ class CompaniesController < ApplicationController
   # GET /companies/1.json
   def show
     @users = @company.users.paginate(per_page: 5, page: params[:page])
+    @activities = @company.user_activities.paginate(per_page: 5, page: params[:page]) unless params[:company_view] != "activities"
   end
 
   # GET /companies/new
@@ -27,8 +28,9 @@ class CompaniesController < ApplicationController
     respond_to do |format|
       if @company.save
         current_user.set_company(@company.id)
+        @company.set_admin_role current_user.id
         format.html { redirect_to @company, notice: 'Compañía creada con éxito.' }
-        format.json { render :show, status: :created, location: @company }
+        format.json { render :show, status: :created, location: @compaset_admin_roleny }
       else
         format.html { render :new }
         format.json { render json: @company.errors, status: :unprocessable_entity }

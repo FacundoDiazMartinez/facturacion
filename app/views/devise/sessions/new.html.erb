@@ -1,49 +1,46 @@
-<div id="bg"></div>
+<div id="bg" class="login-background"></div>
 <table class="full-table">
-    <tbody>
-      <td class="align-middle">
-        <div class="col-sm-5" style="margin: auto;">
-          <div class="card" id="login">
-            <div class="card-header login-header">
-              <center>
-                <%= image_tag '/images/logo_blanco1.png', :style => "width:60%;margin:5px auto" %>
-              </center>
-            </div>
-            <div class="card-body">
-              <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-                <%= error_explanation resource %>
-                <center>
-
-                <%= flash_error unless flash.nil? %> 
-                  <div class="form-group">
-                    <%= f.email_field :email, autofocus: true, class:'form-control', placeholder: "E-mail", required: true %>
-                  </div>
-
-                  <div class="form-group">
-                    <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: "Contraseña", required: true %>
-                  </div>
-
-                  <% if devise_mapping.rememberable? -%>
-                    <div class="form-group">
-                      <%= f.label :remember_me do %>
-                        <%= f.check_box :remember_me %>
-                        Recordar usuario
-                      <% end %>
-                    </div>
-                  <% end -%>
-
-                  <div class="actions">
-                    <%= f.submit "Ingresar", class:'btn btn-primary' %>
-                    <hr>
-                    <%= link_to "Registrarse", new_registration_path(resource_name), class: 'btn btn-secondary btn-sm' %> <br>
-                    <br>
-                    <%= link_to "¿Olvidaste tu contraseña?", new_password_path(resource_name) %>
-                  </div>
-                </center>
-              <% end %>
-            </div>
-          </div>
+  <tbody>
+    <td class="align-middle">
+      <div class="card col-6 offset-3" id="login">
+        <div class="card-header login-header">
+          <center>
+            <h1> Martínez Elásticos S.R.L </h1>
+          </center>
         </div>
-      </td>
-    </tbody>
-  </table>
+        <div class="card-body">
+          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+            <%= error_explanation resource %>
+            <center>
+              <%= flash_error unless flash.nil? %> 
+              <div class="form-group">
+                <%= f.email_field :email, autofocus: true, class:'form-control', placeholder: "E-mail", required: true %>
+              </div>
+
+              <div class="form-group">
+                <%= f.password_field :password, autocomplete: "off", class: 'form-control', placeholder: "Contraseña", required: true %>
+              </div>
+
+              <% if devise_mapping.rememberable? -%>
+                <div class="form-group">
+                  <%= f.label :remember_me do %>
+                    <%= f.check_box :remember_me %>
+                    Recordar usuario
+                  <% end %>
+                </div>
+              <% end -%>
+
+              <div class="actions">
+                <%= f.submit "Ingresar", class:'btn btn-primary' %>
+                <hr>
+                <%= link_to "Registrarse", new_registration_path(resource_name), class: 'btn btn-secondary btn-sm' %> <br>
+                <br>
+                <%= link_to "¿Olvidaste tu contraseña?", new_password_path(resource_name) %>
+              </div>
+            </center>
+          <% end %>
+        </div>
+      </div>
+    </td>
+  </tbody>
+</table>

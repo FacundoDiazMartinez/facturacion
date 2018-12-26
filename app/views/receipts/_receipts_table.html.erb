@@ -1,0 +1,32 @@
+<div class="table-responsive table-striped">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Número</th>
+        <th>Comprobante asoc.</th>
+        <th>Cliente</th>
+        <th>Total</th>
+        <th colspan="1"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @receipts.each do |receipt| %>
+        <tr>
+          <td><%= receipt.date %></td>
+          <td><%= receipt.tipo %></td>
+          <td><%= receipt.number %></td>
+          <td><%= receipt.full_invoice %></td>
+          <td><%= receipt.client.name %></td>
+          <td>$<%= receipt.total %></td>
+          <td><%= link_to icon('fas', 'eye').html_safe, receipt_path(receipt.id, format: :pdf), target: '_blank', class: 'btn btn-link' %></td>
+          <!-- <td><%= link_to 'Edit', edit_receipt_path(receipt) %></td>
+          <td><%= link_to 'Destroy', receipt, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<%= paginate @receipts %>

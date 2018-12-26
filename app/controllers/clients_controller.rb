@@ -41,6 +41,7 @@ class ClientsController < ApplicationController
   # PATCH/PUT /clients/1.json
   def update
     respond_to do |format|
+      @client.user_id = current_user.id
       if @client.update(client_params)
         index
       end

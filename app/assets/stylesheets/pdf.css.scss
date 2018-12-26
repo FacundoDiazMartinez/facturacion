@@ -37,6 +37,10 @@
   text-align: center;
 }
 
+.text_justify {
+  text-align: justify;
+}
+
 .right_border{
   border-right: solid 1px;
 }
@@ -60,6 +64,10 @@
 
 }
 
+
+
+
+// Saltos de página
 .alwaysbreak {
    page-break-before: always;
  }
@@ -69,3 +77,27 @@
 .nobreak {
   page-break-inside: avoid;
 }
+// Saltos de página
+
+
+
+
+// Tabla con filas con background alternado
+	.TFtable{
+		width:100%;
+		border-collapse:collapse;
+	}
+
+	/* provide some minimal visual accomodation for IE8 and below */
+	.TFtable tr{
+		background: #b8d1f3;
+	}
+	/*  Define the background color for all the ODD background rows  */
+	.TFtable tr:nth-child(odd){
+		background: #CCC;
+	}
+	/*  Define the background color for all the EVEN background rows  */
+	.TFtable tr:nth-child(even){
+		background: #FFF;
+	}
+// Fin tabla con filas alternadas

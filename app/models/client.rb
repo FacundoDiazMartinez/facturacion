@@ -27,6 +27,7 @@ class Client < ApplicationRecord
 	validates_presence_of :saldo, message: "Saldo inválido. Revise por favor."
 
 	accepts_nested_attributes_for :client_contacts, reject_if: :all_blank, allow_destroy: true
+	accepts_nested_attributes_for :invoices, reject_if: :all_blank, allow_destroy: true
 
 
 	# TABLA
@@ -53,25 +54,25 @@ class Client < ApplicationRecord
 
 	#FILTROS DE BUSQUEDA
 		def self.find_by_full_document params={}
-			where(document_type: params[:document_type], document_number: params[:document_number])	
+			where(document_type: params[:document_type], document_number: params[:document_number])
 		end
 
 		def self.search_by_name name
-	      	if !name.nil?
-	        	where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
-	      	else
-	        	all 
-	      	end
-	    end
+    	if !name.nil?
+      	where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
+    	else
+      	all
+    	end
+    end
 
-	    def self.search_by_document document_number
-	      	if !document_number.blank?
-	        	where("document_number ILIKE ?", "#{document_number}%")
-	      	else
-	        	all 
-	      	end
-	    end
-		
+    def self.search_by_document document_number
+      	if !document_number.blank?
+        	where("document_number ILIKE ?", "#{document_number}%")
+      	else
+        	all
+      	end
+    end
+
 	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS

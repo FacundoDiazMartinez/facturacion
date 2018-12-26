@@ -1,0 +1,36 @@
+<%= form_tag search_product_purchase_order_path(), id: 'serach_form' do %>
+	<%= hidden_field_tag :index_id, params[:index_id] %>
+
+	<div class="form-row">
+	    <div class="col">
+			<%= label_tag :supplier_id, "Proveedor" %>
+			<%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}, params[:supplier_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
+		</div>
+
+	    <div class="col">
+			<%= label_tag :product_category_id, "Categoría" %>
+			<%= select_tag :product_category_id, options_for_select(current_user.company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.name]}, params[:product_category_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
+		</div>
+	</div>
+	<hr>
+	<div class="table-responsive">
+  		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Producto</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @products.each do |product| %>
+					<tr>
+						<td><%= product.name %></td>
+						<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]})" %></td>
+					</tr>
+				<% end -%>
+			</tbody>
+		</table>
+	</div>
+<% end -%>
+
+<%= paginate @products %>

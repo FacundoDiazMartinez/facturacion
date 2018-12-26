@@ -1,5 +1,6 @@
 <div class="p-4">
   <%= title_helper 'Ventas Registradas' %>
+  
   <% if can? :create, Invoice %>
     <%= button_new_helper(new_invoice_path()) %>
   <% end %>
@@ -11,47 +12,61 @@
       </button>
       <div class="card-header collapse navbar-collapse" id="filtros">
         <%= form_tag invoices_path(), {class: 'form-inline', style: 'width: 100%', id: 'search_form'} do %>
-          <!-- BUSCAR POR CLIENTE -->
-          <div class="col-12 col-md-3 mt-1 mb-1">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><%= icon('fas', 'user') %></div>
+          <div class="row" style="width: 100%;">
+            <div class="col-10">
+              <div class="row">
+                <!-- BUSCAR POR CLIENTE -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'user') %></div>
+                    </div>
+                    <%= text_field_tag :client_name, params[:client_name], class: 'form-control', placeholder: 'Buscar por cliente', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR CLIENTE -->
+
+                <!-- BUSCAR POR NÚMERO -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'search') %></div>
+                    </div>
+                    <%= text_field_tag :comp_number, params[:comp_number], class: 'form-control', placeholder: 'Buscar por número', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR NÚMERO -->
+
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+                    </div>
+                    <%= select_tag :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, params[:cbte_tipo]), {prompt: 'Buscar por tipo...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+                    </div>
+                    <%= select_tag :state, options_for_select(Invoice::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
               </div>
-              <%= text_field_tag :client_name, params[:client_name], class: 'form-control', placeholder: 'Buscar por cliente', onkeyup: 'remoteSubmit("#search_form")' %>
+            </div>
+            <div class="col-2">
+              <!-- CAMBIAR TIPO DE VISTA -->
+                <%= button_tag icon('fas', 'list-ul'), onclick:'changeView("list")', type:'button', class:'btn btn-light' %>
+                <%= button_tag icon('fas', 'th-large'), onclick:'changeView("table")', type:'button', class:'btn btn-light' %>
+                <%= hidden_field_tag :view, params[:view], onchange: 'remoteSubmit("#search_form")' %>
+              <!-- CAMBIAR TIPO DE VISTA -->
             </div>
           </div>
-          <!-- BUSCAR POR CLIENTE -->
-
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-          <div class="col-12 col-md-3 mt-1 mb-1">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
-              </div>
-              <%= select_tag :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, params[:cbte_tipo]), {prompt: 'Buscar por tipo...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
-            </div>
-          </div>
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-          <div class="col-12 col-md-3 mt-1 mb-1">
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <div class="input-group-text"><%= icon('far', 'check-square') %></div>
-              </div>
-              <%= select_tag :state, options_for_select(Invoice::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
-            </div>
-          </div>
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-
-          <!-- CAMBIAR TIPO DE VISTA -->
-          <div class="form-group col-12 col-md-3 justify-content-end">
-            <%= button_tag icon('fas', 'list-ul'), onclick:'changeView("list")', type:'button', class:'btn btn-light' %>
-            <%= button_tag icon('fas', 'th-large'), onclick:'changeView("table")', type:'button', class:'btn btn-light' %>
-            <%= hidden_field_tag :view, params[:view], onchange: 'remoteSubmit("#search_form")' %>
-          </div>
-          <!-- CAMBIAR TIPO DE VISTA -->
-          
         <% end %>
       </div>
       <div class="card-body">

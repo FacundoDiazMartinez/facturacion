@@ -18,6 +18,7 @@
 //= require jquery_nested_form
 //= require invoices
 //= require users
+//= require litecode-alert
 //= require popper
 //= require bootstrap
 //= require bootstrap-toggle
@@ -130,4 +131,19 @@ function populateSelect(data, dropdown){
 	$.each(data, function(id, d) {
 		select.append($("<option />").val(d[0]).text(d[1]));
 	});
+};
+
+function setProduct(product, index){
+  $("#"+index).find("input.product_id").val(product["id"]);
+  $("#"+index).find("input.code").val(product["code"]);
+  $("#"+index).find("input.name").val(product["name"]);
+  $("#"+index).find("input.name").prop('title', product["name"]);
+  $("#"+index).find("input.price").val(product["price"]);
+  $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
+  $("#"+index).find("input.subtotal").val(product["price"]);
+  $("#"+index).find("input.prodPrice").val(product["cost_price"]).trigger("change");
+
+  subtotal = $("#"+index).find("input.subtotal");
+  $("#search_product_modal").modal('hide')
+  subtotal.trigger("change");
 };

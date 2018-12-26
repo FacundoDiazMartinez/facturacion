@@ -34,12 +34,18 @@ Rails.application.routes.draw do
     get :set_supplier, on: :collection
     get :generate_pdf, on: :member
     patch :approve, on: :member
+    get :search_product, on: :collection
   end
 
   resources :products do
-    get :autocomplete_product_code, :on => :collection
-    get :export, on: :collection
-    post :import, on: :collection
+    collection do
+      get :autocomplete_product_code
+      get :export
+      get :product_category
+      get :edit_multiple
+      put :update_multiple
+      post :import
+    end
   end
 
   resources :services do
@@ -75,6 +81,8 @@ Rails.application.routes.draw do
 
   #ACCOUNT MOVEMENTS
   get '/clients/:id/account_movements', to: 'clients/account_movements#index', as: 'client_account_movements'
+  get '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#add_payment', as: 'client_account_movements_add_payment'
+
   #ACCOUNT MOVEMENTS
 
 
@@ -84,6 +92,7 @@ Rails.application.routes.draw do
     get :confirm, on: :member
     get :search_product, on: :collection
     get :autocomplete_associated_invoice, on: :collection
+    get :autocomplete_invoice_number, on: :collection
     get :change_attributes, on: :collection
     get :change_attributes, on: :member
     get :set_associated_invoice, on: :collection

@@ -1,4 +1,49 @@
 <% if not @products.empty? %>
+	<% if params[:view] == "list" %>
+	<div class="table-responsive">
+		<%= form_tag edit_multiple_products_path, method: :get, id: 'edit_form' do %>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th><input type="checkbox"></th>
+						<th>Código</th>
+						<th scope="col">Nombre</th>
+						<th scope="col" class="only-desktop">Categoría</th>
+						<th scope="col">Precio</th>
+						<th scope="col" class="only-desktop">Proveedor</th>
+						<th scope="col">
+							<div class="btn-group" role="group">
+						    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						      <i class="fas fa-ellipsis-v"></i>
+						    </button>
+						    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+									<%= link_to "Editar seleccionados", "#", onclick: "$('#edit_form').submit()", class: 'dropdown-item' %>
+						    </div>
+							</div>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @products.each do |product| %>
+						<tr>
+							<td><%= check_box_tag "product_ids[]", product.id %></td>
+							<td><%= product.code %></td>
+							<td><%= link_to product.name, product %></td>
+							<td class="only-desktop"><%= product.category_name %></td>
+							<td>$ <%= product.price %></td>
+							<td class="only-desktop"><%= product.supplier_name %></td>
+							<td>
+								<%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+							</td>
+						</tr>
+					<% end %>
+				</tbody>
+			</table>
+		<% end %>
+	</div>
+
+	<% else %>
+
 	<div class="row d-flex align-items-stretch">
 		<% @products.each do |product|%>
 		<div class="col-12 col-md-6 col-lg-4 mb-4">
@@ -19,8 +64,9 @@
 
 		<% end %>
 	</div>
-	<%= paginate @products %>
+	<% end %>
 
+	<%= paginate @products %>
 <% else %>
   <center><h1>¡Todavia no cargaste ningún producto!</h1></center>
 <% end %>

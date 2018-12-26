@@ -1,6 +1,7 @@
 class IvaBook < ApplicationRecord
   belongs_to :invoice, optional: true
   belongs_to :purchase_invoice, optional: true
+  belongs_to :company
 
   default_scope { where(active: true) }
 
@@ -60,6 +61,14 @@ class IvaBook < ApplicationRecord
       invoice_id.nil? ? "Crédito Fiscal" : "Débito Fiscal"
     end
 
+    def iva
+      if is_debit?
+        self.invoice.imp_iva
+      else
+        self.purchase_invoice.iva_amount
+      end
+    end
+
     def full_invoice
       if is_debit?
         Invoice.unscoped do
@@ -79,8 +88,13 @@ class IvaBook < ApplicationRecord
       ib.tipo       = ib.clase
       ib.company_id = invoice.company_id
       ib.date       = invoice.cbte_fch
-      ib.net_amount = invoice.net_amount_sum
-      ib.iva_amount = invoice.iva_amount_sum
+      if ["03", "08", "13"].include?(invoice.cbte_tipo.to_s)
+        ib.net_amount = -invoice.net_amount_sum
+        ib.iva_amount = -invoice.iva_amount_sum
+      else
+        ib.net_amount = invoice.net_amount_sum
+        ib.iva_amount = invoice.iva_amount_sum
+      end
       ib.total      = ib.net_amount + ib.iva_amount
       ib.save
     end
@@ -90,8 +104,13 @@ class IvaBook < ApplicationRecord
       ib.tipo       = ib.clase
       ib.company_id = invoice.company_id
       ib.date       = invoice.date
-      ib.net_amount = invoice.net_amount
-      ib.iva_amount = invoice.iva_amount
+      if ["03", "08", "13"].include?(invoice.cbte_tipo.to_s)
+        ib.net_amount = -invoice.net_amount
+        ib.iva_amount = -invoice.iva_amount
+      else
+        ib.net_amount = invoice.net_amount
+        ib.iva_amount = invoice.iva_amount
+      end
       ib.total      = ib.net_amount + ib.iva_amount
       ib.save
     end

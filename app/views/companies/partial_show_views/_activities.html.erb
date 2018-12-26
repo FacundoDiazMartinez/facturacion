@@ -1,1 +1,19 @@
-act
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <% @activities.each do |activity| %>
+      <div class="card card-horizontal activity-card" data-link="<%= activity.link%>">
+        <div class="image-left">
+          <%= image_tag activity.photo, class: 'activity-img' %>
+        </div>
+        <div class="p-2">
+          <h5><%= activity.title %></h5>
+          <h6><small><%= activity.body %></small></h6>
+        </div>
+      </div>
+      <% end -%>
+    </div>
+  </div>
+</div>
+
+<%= paginate @activities %>

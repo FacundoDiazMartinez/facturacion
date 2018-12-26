@@ -23,7 +23,7 @@ Locality.where(code: "10", name: "Capital", province_id: province.id).first_or_c
 
 ###ROL ADMIN
 
-Role.where(id: 1, name: "Administrador").first_or_initialize.save
+#Role.where(id: 1, name: "Administrador").first_or_initialize.save
 
 ####FriendlyNames
 
@@ -59,6 +59,10 @@ f_sup = FriendlyName.where(name: "Proveedores", subject_class: "Supplier").first
 f_sup.save
 f_ivab = FriendlyName.where(name: "Libros IVA", subject_class: "IvaBook").first_or_initialize
 f_ivab.save
+f_receipt = FriendlyName.where(name: "Recibos", subject_class: "Receipt").first_or_initialize
+f_receipt.save
+
+
 
 #Clientes Permissions
 Permission.where(action_name: "read", description: "Ver el índice de clientes", friendly_name_id: f_cli.id).first_or_initialize.save
@@ -112,6 +116,14 @@ Permission.where(action_name: "create", description: "Crear un remito de recepci
 Permission.where(action_name: "cancel", description: "Anular un remito de recepción", friendly_name_id: f_arrival.id).first_or_initialize.save
 Permission.where(action_name: "update", description: "Actualizar un remito de recepción", friendly_name_id: f_arrival.id).first_or_initialize.save
 Permission.where(action_name: "manage", description: "Administrar remitos de recepción", friendly_name_id: f_arrival.id).first_or_initialize.save
+
+#Recibos
+Permission.where(action_name: "read", description: "Ver índice de recibos", friendly_name_id: f_receipt.id).first_or_initialize.save
+Permission.where(action_name: "show", description: "Ver datos de un recibo", friendly_name_id: f_receipt.id).first_or_initialize.save
+Permission.where(action_name: "create", description: "Crear un recibo", friendly_name_id: f_receipt.id).first_or_initialize.save
+Permission.where(action_name: "cancel", description: "Anular un recibo", friendly_name_id: f_receipt.id).first_or_initialize.save
+Permission.where(action_name: "update", description: "Actualizar un recibo", friendly_name_id: f_receipt.id).first_or_initialize.save
+Permission.where(action_name: "manage", description: "Administrar recibos", friendly_name_id: f_receipt.id).first_or_initialize.save
 
 #Productos
 Permission.where(action_name: "read", description: "Ver índice de productos", friendly_name_id: f_prod.id).first_or_initialize.save

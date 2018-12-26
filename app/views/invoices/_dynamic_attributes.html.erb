@@ -16,6 +16,9 @@
 		    <div class="col-4">
 		      	<%= form.text_field :fch_serv_hasta, class: 'form-control datepicker', placeholder: "Hasta", disabled: !@invoice.editable? %>
 		    </div>
+		    <div class="col-8 offset-4">
+		      	<%= form.text_field :fch_vto_pago, class: 'form-control datepicker', placeholder: "Vencimiento", disabled: !@invoice.editable? %>
+		    </div>
 	    </div>
 	<% else %>
 		<div class="form-group row">
@@ -30,7 +33,7 @@
 	<div class="form-group row">
 		<%= form.label :associated_invoice, "Factura asociada", class:'col-4 col-form-label col-form-label-sm' %>
 		<div class="col-8">
-			<%= form.autocomplete_field :associated_invoice, autocomplete_associated_invoice_invoices_path, class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: @invoice.is_invoice?, autofocus: true %>
+			<%= autocomplete_field_tag :associated_invoice, form.object.invoice_comp_number, autocomplete_associated_invoice_invoices_path, class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: @invoice.is_invoice?, autofocus: true, id_element: "#invoice_associated_invoice" %>
 			<%= form.hidden_field :associated_invoice %>
 		</div>
 	</div>

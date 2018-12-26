@@ -81,6 +81,7 @@ class Product < ApplicationRecord
 
 	#FILTROS DE BUSQUEDA
 		def self.search_by_name name
+			pp "ENTROOOOOOOOOOOO"
 			if not name.blank?
 				where("products.name ILIKE ? ", "%#{name}%")
 			else
@@ -98,7 +99,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.id = ? ", category)
+				joins(:product_category).where("product_categories.name ILIKE? ", "%#{category}%")
 			else
 				all
 			end
@@ -119,8 +120,6 @@ class Product < ApplicationRecord
 				all
 			end
 		end
-
-
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
@@ -151,7 +150,22 @@ class Product < ApplicationRecord
 		def measurement_unit_name
 			MEASUREMENT_UNITS[measurement_unit]
 		end
+
+		def supplier_name
+			supplier_id.nil? ? "Sin proveedor" : supplier.name
+		end
 	#ATRIBUTOS
+
+  # ATRIBUTOS VIRTUALES
+  def price_modification=(new_price)
+    @price_modification = new_price
+    if (new_price.to_s.ends_with? "%" )
+      self.price += (self.price * (new_price.to_d/100)).round(2)
+    else
+      self.price = new_price
+    end
+  end
+  # ATRIBUTOS VIRTUALES
 
 	#PROCESOS
 		def self.create params
@@ -193,17 +207,21 @@ class Product < ApplicationRecord
 	    def self.save_excel file, supplier_id, current_user
 	    	#TODO Añadir created_by y updated_by
 	      	spreadsheet = open_spreadsheet(file)
+	      	excel = []
+	      	(2..spreadsheet.last_row).each do |r|
+	      		excel << spreadsheet.row(r)
+	      	end
         	header = self.permited_params
         	categories = {}
         	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-        	delay.load_products(spreadsheet, header, categories, current_user, supplier_id)
+        	delay.load_products(excel, header, categories, current_user, supplier_id)
 		end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
 	    	invalid 	= []
-			(2..spreadsheet.last_row).each do |i|
-          		row = Hash[[header, spreadsheet.row(i)].transpose]
+			(1..spreadsheet.size - 1).each do |i|
+          		row = Hash[[header, spreadsheet[i]].transpose]
           		product = new
           		if categories["#{row[:product_category_name]}"].nil?
           			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
@@ -271,5 +289,7 @@ class Product < ApplicationRecord
 	#PROCESOS
 
 	private
-		default_scope { where(active: true, tipo: "Producto") }
+		def self.default_scope
+		 	where(active: true, tipo: "Producto")
+		end
 end

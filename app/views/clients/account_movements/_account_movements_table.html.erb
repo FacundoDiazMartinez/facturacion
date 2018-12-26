@@ -4,8 +4,8 @@
 			<th>Fecha</th>
 			<th>Comprobante</th>
 			<th>Días</th>
-			<th>Debe</th>
-			<th>Haber</th>
+			<th class="text-danger">Debe</th>
+			<th class="text-success">Haber</th>
 			<th>Saldo</th>
 		</tr>
 	</thead>
@@ -15,8 +15,8 @@
 	    	<td><%= l(am.created_at, format: :only_date) %></td>
 	    	<td><%= am.comprobante %></td>
 	    	<td><%= am.days %></td>
-	    	<td><%= "$#{am.invoice.total}" unless !am.debe %></td>
-	    	<td><%= "$#{am.receipt.total}" unless !am.haber %></td>
+	    	<td class="text-danger"><%= "$#{am.total}" unless !am.debe %></td>
+	    	<td class="text-success"><%= "$#{am.total}" unless !am.haber %></td>
 	    	<td>$<%= am.saldo %></td>
 	    </tr>
 	<% end %>
