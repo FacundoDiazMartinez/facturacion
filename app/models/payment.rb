@@ -38,7 +38,7 @@ class Payment < ApplicationRecord
     end
 
     def set_payment_date
-      self.payment_date = Date.today
+      self.payment_date ||= Date.today
     end
 
   #PROCESOS
