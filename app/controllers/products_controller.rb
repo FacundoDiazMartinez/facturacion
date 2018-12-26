@@ -23,6 +23,26 @@ class ProductsController < ApplicationController
   def edit
   end
 
+  def edit_multiple
+    if params[:product_ids] && params[:product_ids].any?
+    @products = Product.find(params[:product_ids])
+    else
+      redirect_to products_path(view: 'list'), alert: "Debe seleccionar al menos 1 producto."
+    end
+  end
+
+  def update_multiple
+      @products = Product.find(params[:product_ids])
+      @products.reject! do |product|
+        product.update_attributes(update_multiple_product_params.reject { |k,v| v.blank? } )
+      end
+      if @products.empty?
+        redirect_to products_path(view: 'list'), notice: "#{ params[:product_ids].count.to_s } productos fueron actualizados."
+      else
+        render "edit_multiple"
+      end
+  end
+
   # POST /products
   # POST /products.json
   def create
@@ -100,5 +120,9 @@ class ProductsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
       params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit)
+    end
+
+    def update_multiple_product_params
+      params[:product].permit(:price_modification, :active)
     end
 end

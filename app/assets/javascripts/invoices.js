@@ -37,6 +37,10 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
 
+$(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field', function(event, data){
+	$(this).closest("div.form-group").find("input.invoice_id").val(data.item.id);
+})
+
 $(document).on("change", ".price, .quantity", function(){
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
@@ -164,20 +168,6 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 		popup.removeClass("show");
 	}
 }
-
-function setProduct(product, index){
-	$("#"+index).find("input.product_id").val(product["id"]);
-	$("#"+index).find("input.code").val(product["code"]);
-  	$("#"+index).find("input.name").val(product["name"]);
-	$("#"+index).find("input.name").prop('title', product["name"]);
-  	$("#"+index).find("input.price").val(product["price"]);
-  	$("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
-	$("#"+index).find("input.subtotal").val(product["price"]);
-
-	subtotal = $("#"+index).find("input.subtotal");
-	$("#search_product_modal").modal('hide')
-	subtotal.trigger("change");
-};
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 	form = $(this).parents('form:first')

@@ -84,6 +84,12 @@ class InvoicesController < ApplicationController
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit} }
   end
 
+  def autocomplete_invoice_number
+    term = params[:term]
+    invoices = current_user.company.invoices.joins(:sale_point).where("sale_points.name || ' - ' || invoices.comp_number ILIKE ?", "%#{term}%").order(:updated_at).all
+    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :value => invoice.full_number} }
+  end
+
   def autocomplete_associated_invoice
     term = params[:term]
     invoices = current_user.company.invoices.where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%")

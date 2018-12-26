@@ -2,6 +2,10 @@ class Invoices::ClientsController < ApplicationController
 	#before_action :set_invoice, only: [:edit, :update]
 	before_action :set_client, only: [:edit, :update]
 
+	def show
+		
+	end
+
 	def edit
 		
 	end
