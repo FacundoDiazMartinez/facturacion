@@ -81,7 +81,6 @@ class Product < ApplicationRecord
 
 	#FILTROS DE BUSQUEDA
 		def self.search_by_name name
-			pp "ENTROOOOOOOOOOOO"
 			if not name.blank?
 				where("products.name ILIKE ? ", "%#{name}%")
 			else
@@ -203,55 +202,55 @@ class Product < ApplicationRecord
 	      update_column(:active,false)
 	    end
 
-	    #IMPORTAR EXCEL o CSV
-	    def self.save_excel file, supplier_id, current_user
-	    	#TODO Añadir created_by y updated_by
-	      	spreadsheet = open_spreadsheet(file)
-	      	excel = []
-	      	(2..spreadsheet.last_row).each do |r|
-	      		excel << spreadsheet.row(r)
-	      	end
-        	header = self.permited_params
-        	categories = {}
-        	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-        	delay.load_products(excel, header, categories, current_user, supplier_id)
+    #IMPORTAR EXCEL o CSV
+    def self.save_excel file, supplier_id, current_user
+    	#TODO Añadir created_by y updated_by
+      	spreadsheet = open_spreadsheet(file)
+      	excel = []
+      	(2..spreadsheet.last_row).each do |r|
+      		excel << spreadsheet.row(r)
+      	end
+      	header = self.permited_params
+      	categories = {}
+      	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
+      	delay.load_products(excel, header, categories, current_user, supplier_id)
 		end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
-	    	invalid 	= []
-			(1..spreadsheet.size - 1).each do |i|
-          		row = Hash[[header, spreadsheet[i]].transpose]
-          		product = new
-          		if categories["#{row[:product_category_name]}"].nil?
-          			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
-          			if pc.save
-          				product_category_id = pc.id
-          				categories["#{row[:product_category_name]}"] = product_category_id
-          			else
-          				pp pc.errors
-          			end
-          		end
-          		product.supplier_id 		= supplier_id
-          		product.product_category_id = categories["#{row[:product_category_name]}"]
-          		product.code 				= row[:code]
-          		product.name 				= row[:name]
-          		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
-          		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
-          		product.price 				= row[:price].round(2) unless row[:price].nil?
-          		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
-          		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
-          		product.company_id 			= current_user.company_id
-          		product.created_by 			= current_user.id
-          		product.updated_by 			= current_user.id
-          		if product.valid?
-          			product.save!
-          		else
-          			pp product.errors
-          			invalid << i
-          		end
-        	end
-        	return_process_result(invalid, current_user)
+    	invalid 	= []
+			(0..spreadsheet.size - 1).each do |i|
+    		row = Hash[[header, spreadsheet[i]].transpose]
+    		product = new
+    		if categories["#{row[:product_category_name]}"].nil?
+    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
+    			if pc.save
+    				product_category_id = pc.id
+    				categories["#{row[:product_category_name]}"] = product_category_id
+    			else
+    				pp pc.errors
+    			end
+    		end
+    		product.supplier_id 		= supplier_id
+    		product.product_category_id = categories["#{row[:product_category_name]}"]
+    		product.code 				= row[:code]
+    		product.name 				= row[:name]
+    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
+    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
+    		product.price 				= row[:price].round(2) unless row[:price].nil?
+    		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
+    		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
+    		product.company_id 			= current_user.company_id
+    		product.created_by 			= current_user.id
+    		product.updated_by 			= current_user.id
+    		if product.valid?
+    			product.save!
+    		else
+    			pp product.errors
+    			invalid << i
+    		end
+    	end
+    	return_process_result(invalid, current_user)
 		end
 
 		def self.return_process_result invalid, user
