@@ -65,6 +65,21 @@ class ServicesController < ApplicationController
     end
   end
 
+  def import
+    result = Service.save_excel(params[:file], current_user)
+    respond_to do |format|
+      flash[:success] = 'Los servicios estan siendo cargados. Le avisaremos cuando termine el proceso.'
+      format.html {redirect_to services_path}
+    end
+  end
+
+  def export
+    @services = params[:empty] ? [] : current_user.company.services #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
+    respond_to do |format|
+      format.xlsx {response.headers['Content-Disposition'] = 'attachment; filename="servicios.xlsx"'}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_service
