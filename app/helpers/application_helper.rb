@@ -15,6 +15,7 @@ module ApplicationHelper
 
 
 	def error_explanation object=nil
+
 		@object = object
 		if not object.nil?
 			content_tag :div do
