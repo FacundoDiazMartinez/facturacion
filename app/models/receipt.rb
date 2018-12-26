@@ -1,6 +1,6 @@
 class Receipt < ApplicationRecord
   #RECIBO DE PAGO
-  belongs_to :invoice, optional: true
+  belongs_to :invoice
   belongs_to :client
   belongs_to :company
 
@@ -21,6 +21,24 @@ class Receipt < ApplicationRecord
     "00"=>"Recibo X",
     "99"=>"Devolución"
   }
+
+  #FILTROS DE BUSQUEDA
+  	def self.find_by_period from, to
+  		if !from.blank? && !to.blank?
+  			where(date: from..to)
+  		else
+  			all
+  		end
+  	end
+
+    def self.search_by_client name
+      if not name.blank?
+        joins(invoice: :client).where("clients.name ILIKE ?", "%#{name}%")
+      else
+        all
+      end
+    end
+  #FILTROS DE BUSQUEDA
 
   #PROCESOS
   	def touch_account_movement
@@ -55,6 +73,14 @@ class Receipt < ApplicationRecord
 
     def tipo
       total < 0 ? "Devolución" : "Pago"
+    end
+
+    def letra_tipo
+      if cbte_tipo!= "99"
+        CBTE_TIPO[cbte_tipo][-1]
+      else
+        "D"
+      end
     end
   #ATRIBUTOS
 
