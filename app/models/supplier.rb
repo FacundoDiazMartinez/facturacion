@@ -9,8 +9,8 @@ class Supplier < ApplicationRecord
   after_save   :set_update_activity
 
   #ATRIBUTOS
-  	def full_document
-		"#{Afip::DOCUMENTOS.key(document_type)}: #{document_number}"
+	def full_document
+	"#{Afip::DOCUMENTOS.key(document_type)}: #{document_number}"
 	end
 
   def current_user=(var)
@@ -19,6 +19,10 @@ class Supplier < ApplicationRecord
 
   def current_user
     @current_user
+  end
+
+  def full_document
+    "#{Afip::DOCUMENTOS.key(document_type)}: #{document_number}"
   end
   #ATRIBUTOS
 
@@ -37,7 +41,7 @@ class Supplier < ApplicationRecord
       if !name.nil?
         where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
       else
-        all 
+        all
       end
     end
 
@@ -45,7 +49,7 @@ class Supplier < ApplicationRecord
       if !document_number.blank?
         where("document_number ILIKE ?", "#{document_number}%")
       else
-        all 
+        all
       end
     end
   #FILSTROS DE BUSQUEDA

@@ -48,12 +48,7 @@ $(document).on("change", ".price, .quantity", function(){
 	iva_aliquot 		= $(this).closest("tr.fields").find("input.iva_aliquot");
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
-
-	if (bonus_amount.val() != 0) {
-		total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
-	}else{
-		total = (parseFloat(price.val()) * parseFloat(quantity.val()));
-	}
+	total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
 
 	subtotal.val(total);
 	subtotal.trigger("change");
@@ -141,6 +136,7 @@ $(document).on('nested:fieldAdded', function(event){
 $(document).on('nested:fieldRemoved', function(event){
 	 var field = event.field;
 	 field.find("input.amount").val(0); //Ponemos en 0 el field que acabamos de eliminar (ya que no se elimina, se setea con display: none) para que funcione bien el complete_payments
+	 field.find("input.subtotal").val(0).trigger("change");
 })
 
 

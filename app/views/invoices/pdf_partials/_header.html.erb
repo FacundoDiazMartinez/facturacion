@@ -34,7 +34,7 @@
         <td>
           <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
             <% if !@invoice.fill_comp_number.nil? %>
-              Comp.Nro: <%= @invoice.fill_comp_number %>
+             - Comp.Nro: <%= @invoice.fill_comp_number %>
             <% end %>
           </b>
         </td>
@@ -73,7 +73,7 @@
     <table class="width_100">
     <tr>
       <td><b>CUIT: </b><%= @invoice.client.document_number %></td>
-      <td><b>Apellido y Nombre / Razon Social: </b> <%= @invoice.client.name %></td>
+      <td><b>Cliente / Razon Social: </b> <%= @invoice.client.name %></td>
       <td></td>
     </tr>
 
