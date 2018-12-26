@@ -4,19 +4,9 @@
   left: 0;
   min-width: 100%;
   min-height: 100%;
-
+  background-image: url("/images/background-market.png");
   background-size: cover;
   background-repeat: no-repeat;
-}
-
-#login {
-  padding-left: 0px !important;
-  padding-right: 0px !important;
-  border: 1px solid black;
-
-  h1 {
-    color:white;
-  }
 }
 
 .full-table{
