@@ -12,7 +12,7 @@
           <th class="description_header">Destinatario</th>
       <% end %>
 
-      <th class="description_header">N° C.U.I.T.</th>
+      <th class="description_header">Documento</th>
       <th class="description_header">Condición I.V.A.</th>
       <th class="description_header">Comprobante N°</th>
       <th class="description_header">Imp. Total</th>
@@ -28,7 +28,7 @@
             <tr style="height: 30px;">
               <td class="text_right"><%= det.date %></td>
               <td class="text_left"><%= det.purchase_invoice.supplier.name %></td>
-              <td class="text_right"><%= det.purchase_invoice.supplier.document_number %></td>
+              <td class="text_right"><%= det.purchase_invoice.supplier.full_document %></td>
               <td class="text_right"><%= det.purchase_invoice.supplier.iva_cond %></td>
               <td class="text_right"><%= det.full_invoice %></td>
               <td class="text_right"><%="$ " + det.purchase_invoice.total.to_s %></td>
@@ -42,7 +42,7 @@
           <tr style="height: 30px;">
             <td class="text_right"><%= det.date %></td>
             <td class="text_left"><%= det.invoice.client.name %></td>
-            <td class="text_right"><%= det.invoice.client.document_number %></td>
+            <td class="text_right"><%= det.invoice.client.full_document %></td>
             <td class="text_right"><%= det.invoice.client.iva_cond %></td>
             <td class="text_right"><%= det.full_invoice %></td>
             <td class="text_right"><%="$ " + det.invoice.total.to_s %></td>

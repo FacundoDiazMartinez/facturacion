@@ -12,6 +12,8 @@ class Receipt < ApplicationRecord
   before_save :set_number, on: :create
 
   default_scope {where(active: true)}
+  scope :no_devolution, -> {where.not(cbte_tipo: "99")}
+
 
   CBTE_TIPO = {
     "04"=>"Recibo A",
