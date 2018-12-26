@@ -3,7 +3,7 @@ class Invoices::ClientsController < ApplicationController
 	before_action :set_client, only: [:edit, :update]
 
 	def show
-		
+		@client = current_user.company.clients.find(params[:id])
 	end
 
 	def edit
