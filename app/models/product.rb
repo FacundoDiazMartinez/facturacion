@@ -16,7 +16,7 @@ class Product < ApplicationRecord
   	has_many   :product_price_histories
 
     scope :active, -> { where(active: true) }
-    validates_uniqueness_of :code, scope: [:company_id, :active], message: "Ya existe un producto con el mismo identificador."
+    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador."
     validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
