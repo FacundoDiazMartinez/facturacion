@@ -16,14 +16,14 @@ class Product < ApplicationRecord
   	has_many   :product_price_histories
 
     scope :active, -> { where(active: true) }
-
+    validates_uniqueness_of :code, scope: [:company_id, :active], message: "Ya existe un producto con el mismo identificador."
+    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
   	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
   	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
   	validates_presence_of :name, message: "El nombre del producto no puede estar en blanco."
-  	validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
@@ -98,7 +98,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.id = ? ", category)
+				joins(:product_category).where("product_categories.name ILIKE? ", "%#{category}%")
 			else
 				all
 			end
@@ -198,55 +198,59 @@ class Product < ApplicationRecord
 			s.save
 		end
 
-    def destroy
-      update_column(:active,false)
-    end
+	    def destroy
+	      update_column(:active,false)
+	    end
 
     #IMPORTAR EXCEL o CSV
     def self.save_excel file, supplier_id, current_user
-      #TODO Añadir created_by y updated_by
-      spreadsheet = open_spreadsheet(file)
-      header = self.permited_params
-      categories = {}
-      current_user.company.product_categories.map{ |pc| categories[pc.name] = pc.id }
-      load_products( spreadsheet, header, categories, current_user, supplier_id )
-    end
+    	#TODO Añadir created_by y updated_by
+      	spreadsheet = open_spreadsheet(file)
+      	excel = []
+      	(2..spreadsheet.last_row).each do |r|
+      		excel << spreadsheet.row(r)
+      	end
+      	header = self.permited_params
+      	categories = {}
+      	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
+      	delay.load_products(excel, header, categories, current_user, supplier_id)
+		end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
-	    	invalid 	= []
-			(2..spreadsheet.last_row).each do |i|
-          		row = Hash[[header, spreadsheet.row(i)].transpose]
-          		product = new
-          		if categories["#{row[:product_category_name]}"].nil?
-          			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
-          			if pc.save
-          				product_category_id = pc.id
-          				categories["#{row[:product_category_name]}"] = product_category_id
-          			else
-          				pp pc.errors
-          			end
-          		end
-          		product.supplier_id 		= supplier_id
-          		product.product_category_id = categories["#{row[:product_category_name]}"]
-          		product.code 				= row[:code]
-          		product.name 				= row[:name]
-          		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
-          		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
-          		product.price 				= row[:price].round(2) unless row[:price].nil?
-          		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
-          		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
-          		product.company_id 			= current_user.company_id
-          		product.created_by 			= current_user.id
-          		product.updated_by 			= current_user.id
-          		if product.valid?
-          			product.delay.save!
-          		else
-          			pp product.errors
-          			invalid << i
-          		end
-        	end
-        	return_process_result(invalid, current_user)
+    	invalid 	= []
+			(0..spreadsheet.size - 1).each do |i|
+    		row = Hash[[header, spreadsheet[i]].transpose]
+    		product = new
+    		if categories["#{row[:product_category_name]}"].nil?
+    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
+    			if pc.save
+    				product_category_id = pc.id
+    				categories["#{row[:product_category_name]}"] = product_category_id
+    			else
+    				pp pc.errors
+    			end
+    		end
+    		product.supplier_id 		= supplier_id
+    		product.product_category_id = categories["#{row[:product_category_name]}"]
+    		product.code 				= row[:code]
+    		product.name 				= row[:name]
+    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
+    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
+    		product.price 				= row[:price].round(2) unless row[:price].nil?
+    		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
+    		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
+    		product.company_id 			= current_user.company_id
+    		product.created_by 			= current_user.id
+    		product.updated_by 			= current_user.id
+    		if product.valid?
+    			product.save!
+    		else
+    			pp product.errors
+    			invalid << i
+    		end
+    	end
+    	return_process_result(invalid, current_user)
 		end
 
     def self.return_process_result invalid, user
@@ -284,5 +288,7 @@ class Product < ApplicationRecord
 	#PROCESOS
 
 	private
-		default_scope { where(active: true, tipo: "Producto") }
+		def self.default_scope
+		 	where(active: true, tipo: "Producto")
+		end
 end

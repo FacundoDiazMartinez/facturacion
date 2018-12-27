@@ -8,7 +8,7 @@ class CompaniesController < ApplicationController
   # GET /companies/1.json
   def show
     @users = @company.users.paginate(per_page: 5, page: params[:page])
-    @activities = @company.user_activities.paginate(per_page: 5, page: params[:page]) unless params[:company_view] != "activities"
+    @activities = @company.user_activities.order(created_at: :desc).paginate(per_page: 5, page: params[:page]) unless params[:company_view] != "activities"
   end
 
   # GET /companies/new

@@ -1,14 +1,5 @@
 <%= form_with(model: service, local: true, class: 'directUpload', data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host}) do |f| %>
-  <% if service.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(service.errors.count, "error") %> prohibited this service from being saved:</h2>
-      <ul>
-      <% service.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= error_explanation @service %>
 
 <div class="row">
   <!-- IMAGEN DEL PRODUCTO -->

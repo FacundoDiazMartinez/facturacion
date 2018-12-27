@@ -13,6 +13,7 @@ class Invoice < ApplicationRecord
     has_many :products, through: :invoice_details
     has_many :iva_books, dependent: :destroy
     has_many :delivery_notes, dependent: :destroy
+    has_many  :commissioners, through: :invoice_details
 
     has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
@@ -280,37 +281,19 @@ class Invoice < ApplicationRecord
       end
 
       def check_receipt
-        r = Receipt.where(invoice_id: id).first_or_initialize
-        r.cbte_tipo   = is_credit_note? ? "99" : "00"
-        r.total       = total_pay
-        r.date        = created_at
-        r.company_id  = company_id
-        r.save
+        Receipt.create_from_invoice(self)
       end
 
       def touch_account_movement
-        if state == "Confirmado"
-          am              = AccountMovement.where(invoice_id: id).first_or_initialize
-          am.client_id    = client_id
-          am.invoice_id   = id
-          am.cbte_tipo    = Afip::CBTE_TIPO[cbte_tipo]
-          if is_credit_note?
-            am.debe         = false
-            am.haber        = true
-            am.total        = total.to_f
-            am.saldo        = (client.saldo.to_f + am.total) unless !am.new_record?
-          else
-            am.debe         = true
-            am.haber        = false
-            am.total        = total.to_f
-            am.saldo        = (client.saldo.to_f - am.total) unless !am.new_record?
-          end
-          am.save
-        end
+        AccountMovement.create_from_invoice(self)
       end
 
       def set_invoice_activity
         UserActivity.create_for_confirmed_invoice(self)
+      end
+
+      def activate_commissions
+        commissioners.update_all(active: true)
       end
     #PROCESOS
 
@@ -457,6 +440,7 @@ class Invoice < ApplicationRecord
             imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
+          self.activate_commissions
           if response && !self.associated_invoice.nil?
             self.invoice.update_column(:state, "Anulado")
           end

@@ -65,6 +65,21 @@ class ServicesController < ApplicationController
     end
   end
 
+  def import
+    result = Service.save_excel(params[:file], current_user)
+    respond_to do |format|
+      flash[:success] = 'Los servicios estan siendo cargados. Le avisaremos cuando termine el proceso.'
+      format.html {redirect_to services_path}
+    end
+  end
+
+  def export
+    @services = params[:empty] ? [] : current_user.company.services #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
+    respond_to do |format|
+      format.xlsx {response.headers['Content-Disposition'] = 'attachment; filename="servicios.xlsx"'}
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_service
@@ -73,6 +88,6 @@ class ServicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def service_params
-      params.require(:service).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo)
+      params.require(:service).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement_unit, :measurement)
     end
 end

@@ -87,7 +87,7 @@ class ProductsController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
-    products = current_user.company.products.unscoped.where('code ILIKE ? AND active = "t"', "%#{term}%").order(:code).all
+    products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
   end
 

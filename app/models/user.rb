@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :push_notifications, foreign_key: "sender_id", class_name: "Notification"
   has_many :user_activities
   has_many :client
+  has_many :commissioners
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable, :trackable,
@@ -45,9 +46,9 @@ class User < ApplicationRecord
 
     def self.search_by_state state
       if state == "Aprobados"
-        where(approved: true)
+        where(approved: true).or(where(admin: true))
       elsif state == "No aprobados"
-        where(approved: false)
+        where(approved: false, admin: false)
       else
         all 
       end

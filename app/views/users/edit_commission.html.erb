@@ -1,0 +1,31 @@
+<div class="modal-header">
+  	<h5 class="modal-title" id="clientModalTitle">Nuevo cliente</h5>
+  	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    	<span aria-hidden="true">&times;</span>
+  	</button>
+</div>
+<%= form_for @commission, url: update_commission_user_path(@user.id, commission_id: @commission_id)  do |f| %>
+	<div class="modal-body">
+		<%= hidden_field_tag :commission_id, @commission.id %>
+	  	<div class="form-group">
+	  		<%= f.label :invoice_detail_id, "Comprobante" %>
+	  		<%= text_field_tag :invoice_detail_id, @commission.invoice.full_number, class: 'form-control', disabled: true %>
+	  	</div>
+	  	<div class="form-group">
+	  		<%= label_tag :total, "Total del comprobante" %>
+	  		<%= text_field_tag :total, @commission.invoice.total, class: 'form-control', disabled: true %>
+	  	</div>
+	  	<div class="form-group">
+	  		<%= f.label :created_at, "Fecha de creación" %>
+	  		<%= text_field_tag :created_at, l(@commission.created_at), class: 'form-control', disabled: true %>
+	  	</div>
+	  	<div class="form-group">
+	  		<%= f.label :percentage, "Porcentaje (%)" %>
+	  		<%= f.number_field :percentage, class: 'form-control' %>
+	  	</div>
+	</div>
+	<div class="modal-footer">
+		<%= save_button %>
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	</div>
+<% end %>

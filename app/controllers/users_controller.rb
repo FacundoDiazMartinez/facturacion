@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :approve, :disapprove, :roles]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :approve, :disapprove, :roles, :commission, :edit_commission, :update_commission]
+  before_action :set_commission, only: [:edit_commission, :update_commission]
   skip_before_action :authenticate_user!, only: :autocomplete_company_code
 
   # GET /users
@@ -56,6 +57,24 @@ class UsersController < ApplicationController
     
   end
 
+  def commission
+    @commissions = @user.commissioners.where(active: true).search_by_date(params[:from], params[:to]).paginate(page: params[:page], per_page: 10)
+  end
+
+  def edit_commission
+    
+  end
+
+  def update_commission
+    respond_to do |format|
+      if @commission.update(commission_params)
+        format.html {redirect_to commission_user_path(@user.id), notice: "Comisión actualizada con éxito."}
+      else
+        format.html {render :edit_commission}
+      end
+    end
+  end
+
   def autocomplete_company_code
     term = params[:term]
     pp companies = Company.where('code = ?', term).order(:name).all
@@ -68,8 +87,16 @@ class UsersController < ApplicationController
       @user = current_user.company.users.find(params[:id])
     end
 
+    def set_commission
+      @commission = @user.commissioners.where(active: true).find(params[:commission_id])
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:first_name, :last_name, :dni, :birthday, :address, :avatar, :phone, :mobile_phone, :postal_code, :province_id, :locality_id, user_roles_attributes: [:id, :role_id, :_destroy])
+    end
+
+    def commission_params
+      params.require(:commissioner).permit(:percentage)
     end
 end

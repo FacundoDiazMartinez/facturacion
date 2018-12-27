@@ -1,20 +1,19 @@
-<div id="bg"></div>
+
 <table class="full-table">
-    <tbody>
-      <td class="align-middle">
-        <div class="col-sm-5" style="margin: auto;">
-          <div class="card" id="login">
+  <tbody>
+    <th>
+      <td>
+          <div class="card col-6 offset-3" id="login">
             <div class="card-header login-header">
               <center>
-                <%= image_tag '/images/logo_blanco1.png', :style => "width:60%;margin:5px auto" %>
+                <h1> Martínez Elásticos S.R.L </h1>
               </center>
             </div>
             <div class="card-body">
               <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
                 <%= error_explanation resource %>
                 <center>
-
-                <%= flash_error unless flash.nil? %> 
+                  <%= flash_error unless flash.empty? %>
                   <div class="form-group">
                     <%= f.email_field :email, autofocus: true, class:'form-control', placeholder: "E-mail", required: true %>
                   </div>
@@ -43,7 +42,7 @@
               <% end %>
             </div>
           </div>
-        </div>
       </td>
-    </tbody>
-  </table>
+    </th>
+  </tbody>
+</table>

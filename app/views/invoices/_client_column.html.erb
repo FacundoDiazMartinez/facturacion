@@ -3,7 +3,11 @@
   <div class="col-8 input-group">
     <%= text_field_tag :invoice_client_name, @client.name, class: 'form-control', readonly: true %>
     <div class="input-group-append">
-      <%= link_to icon('far' , 'edit').html_safe, edit_invoices_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+      <% if !@invoice.editable? %>
+        <%= link_to icon('far' , 'eye').html_safe, invoices_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+      <% else %>
+        <%= link_to icon('far' , 'edit').html_safe, edit_invoices_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+      <% end -%>
     </div>
   </div>
 </div>
