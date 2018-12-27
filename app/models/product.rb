@@ -97,7 +97,6 @@ class Product < ApplicationRecord
 		end
 
 		def self.search_by_category category
-      pp category
 			if not category.blank?
 				joins(:product_category).where("product_categories.id = ? ", category)
 			else
