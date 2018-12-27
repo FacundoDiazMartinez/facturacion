@@ -97,6 +97,7 @@ class Product < ApplicationRecord
 		end
 
 		def self.search_by_category category
+      pp category
 			if not category.blank?
 				joins(:product_category).where("product_categories.id = ? ", category)
 			else
@@ -169,7 +170,7 @@ class Product < ApplicationRecord
 	#PROCESOS
 		def self.create params
 			product = Product.where(company_id: company_id, code: code, name: name).first_or_initialize
-			if produc.new_record?
+			if product.new_record?
 				super
 			else
 				update(params)
@@ -198,19 +199,19 @@ class Product < ApplicationRecord
 			s.save
 		end
 
-	    def destroy
-	      update_column(:active,false)
-	    end
+    def destroy
+      update_column(:active,false)
+    end
 
-	    #IMPORTAR EXCEL o CSV
-	    def self.save_excel file, supplier_id, current_user
-	    	#TODO Añadir created_by y updated_by
-	      	spreadsheet = open_spreadsheet(file)
-        	header = self.permited_params
-        	categories = {}
-        	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-        	load_products(spreadsheet, header, categories, current_user, supplier_id)
-		end
+    #IMPORTAR EXCEL o CSV
+    def self.save_excel file, supplier_id, current_user
+      #TODO Añadir created_by y updated_by
+      spreadsheet = open_spreadsheet(file)
+      header = self.permited_params
+      categories = {}
+      current_user.company.product_categories.map{ |pc| categories[pc.name] = pc.id }
+      load_products( spreadsheet, header, categories, current_user, supplier_id )
+    end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
@@ -249,23 +250,23 @@ class Product < ApplicationRecord
         	return_process_result(invalid, current_user)
 		end
 
-		def self.return_process_result invalid, user
-			if invalid.any?
-        		{
-        			'result' => false,
-        			'message' => 'Uno o mas productos no pudieron importarse.',
-        			'product_with_errors' => invalid
-        		}
-        		Notification.create_for_failed_import invalid, user
-        	else
-        		{
-        			'result' => true,
-        			'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
-        			'product_with_errors' => []
-        		}
-        		Notification.create_for_success_import user
-        	end
-		end
+    def self.return_process_result invalid, user
+      if invalid.any?
+        {
+          'result' => false,
+          'message' => 'Uno o mas productos no pudieron importarse.',
+          'product_with_errors' => invalid
+        }
+        Notification.create_for_failed_import invalid, user
+      else
+        {
+          'result' => true,
+          'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
+          'product_with_errors' => []
+        }
+        Notification.create_for_success_import user
+      end
+    end
 
 		def self.permited_params
 		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]

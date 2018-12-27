@@ -1,5 +1,4 @@
 <% if not @products.empty? %>
-	<% if params[:view] == "list" %>
 	<div class="table-responsive">
 		<%= form_tag edit_multiple_products_path, method: :get, id: 'edit_form' do %>
 			<table class="table table-hover">
@@ -42,31 +41,7 @@
 		<% end %>
 	</div>
 
-	<% else %>
-
-	<div class="row d-flex align-items-stretch">
-		<% @products.each do |product|%>
-		<div class="col-12 col-md-6 col-lg-4 mb-4">
-			<div class="card card-shadow" style="height:100%;">
-				<%= link_to product_path(product.id) do %>
-				<div class="card-div-img-top" style="background: url('<%= product.photo %>')">
-				</div>
-				<div class="card-body">
-					<center>
-						<h5 class="card-title"><%= product.name %></h5>
-						<p class="card-text text-muted"><%= product.category_name %></p>
-						<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(product.price) %></span></strong></p>
-					</center>
-				</div>
-				<% end -%>
-			</div>
-		</div>
-
-		<% end %>
-	</div>
-	<% end %>
-
 	<%= paginate @products %>
 <% else %>
-  <center><h1>¡Todavia no cargaste ningún producto!</h1></center>
+  <center><h1>¡No hay productos disponibles!</h1></center>
 <% end %>
