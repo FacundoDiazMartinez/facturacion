@@ -4,6 +4,7 @@
 			<th>Fecha</th>
 			<th>Comprobante</th>
 			<th>Días</th>
+			<th>Observación</th>
 			<th class="text-danger">Debe</th>
 			<th class="text-success">Haber</th>
 			<th>Saldo</th>
@@ -15,6 +16,7 @@
 	    	<td><%= l(am.created_at, format: :only_date) %></td>
 	    	<td><%= am.comprobante %></td>
 	    	<td><%= am.days %></td>
+	    	<td><%= am.observation %></td>
 	    	<td class="text-danger"><%= "$#{am.total}" unless !am.debe %></td>
 	    	<td class="text-success"><%= "$#{am.total}" unless !am.haber %></td>
 	    	<td>$<%= am.saldo %></td>

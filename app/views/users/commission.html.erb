@@ -1,0 +1,47 @@
+<div class="p-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+    <h1 class="h2">Comisiones de <%= @user.name %></h1>
+  </div>
+
+  <div class="page-section">
+    <div class="card card-fluid">
+      <div class="card-header">
+        <%= form_tag commission_user_path(@user.id), {class: 'form-inline', id: 'search_form'} do %>
+          <!-- BUSCAR POR CLIENTE -->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'list') %></div>
+            </div>
+            <%= text_field_tag :cbte_number, params[:cbte_number], class: 'form-control', placeholder: 'Buscar por Nº de factura', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR CLIENTE -->
+          <!-- BUSCAR POR CLIENTE -->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+            </div>
+            <%= text_field_tag :from, params[:from], class: 'form-control datepicker', placeholder: 'Desde', onchange: 'remoteSubmit("#search_form")' %>
+            <%= text_field_tag :to, params[:to], class: 'form-control datepicker', placeholder: 'Hasta', onchange: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR CLIENTE -->
+
+        <% end %>
+      </div>
+      <div class="card-body">
+        <div id="commission_table">
+          <%= render 'commission_table' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade bd-example-modal-lg" id="commissionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="commission_modal">
+      </div>
+    </div>
+  </div>
+</div>

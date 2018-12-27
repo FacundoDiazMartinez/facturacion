@@ -31,14 +31,18 @@ ul.navpills > .nav-item{
     float: left;
     margin-top: 7px;
   }
+  li.nav-item > div.dropdown-menu.show{
+    display: inline-block;
+  }
 }
 
-li.nav-item > div.dropdown-menu{
-  background-color: theme-color("dark");
+li.nav-item > div.dropdown-menu {
+  background-color: theme-color("dark") !important;
+  display: none;
 }
 
-.dropdown-item{
-  color: white;
+li.nav-item > div.dropdown-menu > a.dropdown-item{
+  color: white !important;
   text-align: right;
 }
 
