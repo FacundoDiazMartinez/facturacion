@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.string "cbte_tipo", null: false
     t.boolean "debe"
     t.boolean "haber"
+    t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.float "saldo", default: 0.0, null: false
     t.datetime "created_at", null: false
@@ -82,6 +83,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.boolean "active", default: true, null: false
     t.string "iva_cond", default: "Responsable Monotributo", null: false
     t.bigint "company_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
@@ -90,6 +92,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "commissioners", force: :cascade do |t|
@@ -169,7 +172,6 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.float "stock_count", default: 0.0, null: false
-    t.float "stock_limit", default: 0.0, null: false
     t.boolean "filled", default: false, null: false
     t.string "location", null: false
     t.datetime "created_at", null: false
@@ -187,7 +189,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   create_table "invoice_details", force: :cascade do |t|
     t.bigint "invoice_id"
     t.bigint "product_id"
-    t.float "quantity", default: 0.0, null: false
+    t.float "quantity", default: 1.0, null: false
     t.string "measurement_unit", null: false
     t.float "price_per_unit", default: 0.0, null: false
     t.float "bonus_percentage", default: 0.0, null: false
@@ -195,6 +197,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.float "subtotal", default: 0.0, null: false
     t.string "iva_aliquot"
     t.float "iva_amount"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
@@ -251,6 +254,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.float "net_amount"
     t.float "iva_amount"
     t.float "total"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_iva_books_on_company_id"
@@ -281,7 +285,10 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   create_table "payments", force: :cascade do |t|
     t.string "type_of_payment"
     t.float "total", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
+    t.bigint "delayed_job_id"
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
@@ -379,7 +386,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.bigint "purchase_order_id"
     t.bigint "product_id"
     t.float "price", default: 0.0, null: false
-    t.float "quantity", default: 0.0, null: false
+    t.float "quantity", default: 1.0, null: false
     t.float "total", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -388,7 +395,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.integer "number", null: false
+    t.string "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -474,7 +481,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.string "titular"
     t.string "account_number"
     t.string "bank_name"
-    t.string "iva_cond", default: "Responsable Inscripto", null: false
+    t.string "iva_cond", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
@@ -509,7 +516,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
-    t.integer "company_id"
+    t.bigint "company_id"
     t.string "first_name"
     t.string "last_name"
     t.integer "dni"
@@ -536,7 +543,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.bigint "province_id"
     t.bigint "locality_id"
     t.boolean "admin", default: false, null: false
-    t.index ["company_id"], name: "index_users_on_company_id", unique: true
+    t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["locality_id"], name: "index_users_on_locality_id"
@@ -556,6 +563,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
+  add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
   add_foreign_key "delayed_jobs", "payments"
@@ -605,4 +613,5 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
+  add_foreign_key "users", "companies"
 end
