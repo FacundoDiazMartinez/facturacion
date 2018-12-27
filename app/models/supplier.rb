@@ -5,8 +5,8 @@ class Supplier < ApplicationRecord
   has_many   :product_categories
   has_many   :products
 
-  after_create :set_create_activity
-  after_save   :set_update_activity
+  after_validation   :set_create_activity, on: :create
+  after_validation   :set_update_activity, on: :update
 
   #ATRIBUTOS
   	def full_document

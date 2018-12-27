@@ -97,6 +97,7 @@ Permission.where(action_name: "read", description: "Ver índice de empleados", f
 Permission.where(action_name: "manage", description: "Administrar los empleados", friendly_name_id: f_users.id).first_or_initialize.save
 Permission.where(action_name: "disapprove", description: "Expulsar un empleado", friendly_name_id: f_users.id).first_or_initialize.save
 Permission.where(action_name: "destroy", description: "Eliminar un empleado", friendly_name_id: f_users.id).first_or_initialize.save
+Permission.where(action_name: "menu", description: "Ver menú principal de Personal", friendly_name_id: f_comp.id).first_or_initialize.save
 
 
 #Compras
@@ -108,6 +109,8 @@ Permission.where(action_name: "disapprove", description: "Rechazar órdenes de c
 Permission.where(action_name: "manage", description: "Administrar órdenes de compra", friendly_name_id: f_comp.id).first_or_initialize.save
 Permission.where(action_name: "update", description: "Actualizar ordenes de compra", friendly_name_id: f_comp.id).first_or_initialize.save
 Permission.where(action_name: "destroy", description: "Eliminar ordenes de compra", friendly_name_id: f_comp.id).first_or_initialize.save
+Permission.where(action_name: "menu", description: "Ver menú principal de Compras", friendly_name_id: f_comp.id).first_or_initialize.save
+
 
 #Remitos de recepcion
 Permission.where(action_name: "read", description: "Ver índice de remitos de recepción", friendly_name_id: f_arrival.id).first_or_initialize.save

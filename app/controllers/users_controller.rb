@@ -23,7 +23,7 @@ class UsersController < ApplicationController
       if @user.update(user_params)
         format.html { redirect_to users_path, notice: 'Actualizado correctamente' }
       else
-        format.html {redirect_to users_path, notice: 'Error al actualizar'}
+        format.html {redirect_to users_path, alert: 'Error al actualizar'}
       end
     end
   end

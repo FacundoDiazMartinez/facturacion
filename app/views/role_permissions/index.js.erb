@@ -1,5 +1,3 @@
-'<% if ["role_permissions", "permissions"].include?(params[:view]) %>'
-	$("#permissions_wrapper").html("<%= j render "/role_permissions/#{params[:view]}" %>");
-'<% else %>'
+
   $("#permissions_wrapper").html("<%= j render "/role_permissions/permissions" %>");
-'<% end %>'
+  $("#permission_collapse_<%= params[:collapse_id] %>").show();
