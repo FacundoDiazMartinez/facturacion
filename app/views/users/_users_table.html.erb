@@ -6,6 +6,8 @@
         <th>D.N.I.</th>
         <th>Nacimiento</th>
         <th>Estado</th>
+        <th>Acceso</th>
+        <th>Comisiones</th>
         <th colspan="3"></th>
       </tr>
     </thead>
@@ -19,8 +21,11 @@
         <td><%= l(user.birthday.to_date) %></td>
         <td><%= change_state_to_user(user) %></td>
         <td>
-          <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, User %>
           <%= link_to icon('fas', 'user-tie'), roles_user_path(user), class: 'btn btn-sm btn-icon btn-outline-secondary', data: {toggle: 'modal', target: '#roleModal'}, remote: true if can? :manage, UserRole %>
+        </td>
+        <td><%= link_to "#{icon('fas', 'money-bill-alt')}".html_safe, commission_user_path(user.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+        <td>
+          <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, User %>
           <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, User %>
         </td>
       </tr>

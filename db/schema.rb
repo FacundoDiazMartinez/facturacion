@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_20_184031) do
+ActiveRecord::Schema.define(version: 2018_12_26_184723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_184031) do
     t.float "saldo", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "observation"
     t.index ["client_id"], name: "index_account_movements_on_client_id"
     t.index ["invoice_id"], name: "index_account_movements_on_invoice_id"
     t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
@@ -89,6 +90,18 @@ ActiveRecord::Schema.define(version: 2018_12_20_184031) do
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
+  end
+
+  create_table "commissioners", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "invoice_detail_id"
+    t.float "percentage", default: 0.0, null: false
+    t.boolean "active", default: false, null: false
+    t.float "total_commission", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_detail_id"], name: "index_commissioners_on_invoice_detail_id"
+    t.index ["user_id"], name: "index_commissioners_on_user_id"
   end
 
   create_table "companies", force: :cascade do |t|
@@ -222,6 +235,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_184031) do
     t.date "fch_serv_desde"
     t.date "fch_serv_hasta"
     t.date "fch_vto_pago"
+    t.text "observation"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
@@ -542,6 +556,8 @@ ActiveRecord::Schema.define(version: 2018_12_20_184031) do
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
+  add_foreign_key "commissioners", "invoice_details"
+  add_foreign_key "commissioners", "users"
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"

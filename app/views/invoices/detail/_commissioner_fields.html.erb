@@ -1,0 +1,34 @@
+<%= link_to icon('fas', 'search'), "#", data:{toggle: 'modal', target:"#add_commissioner_#{f.index}_modal", remote: true}, class: 'btn btn-sm btn-secondary' %>
+<div class="modal fade bd-example-modal-lg text-justify" id="add_commissioner_<%= f.index %>_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  	<div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+	      	<div class="modal-header">
+			  	<h5 class="modal-title" id="clientModalTitle"><%= icon('far', 'plus') %> Agregar comisionante</h5>
+			  	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			    	<span aria-hidden="true">&times;</span>
+			  	</button>
+			</div>
+			<div class="modal-body">
+			  	<div id="commissioners_fields_<%= f.index %>">
+				  	<%= f.fields_for :commissioners,(f.object.commissioners.build unless !f.object.commissioners.empty?), wrapper: false do |cf| %>
+				  		<div  class="row">
+					  		<div class="form-group col">
+					  			<%= cf.label :user_id, "Comisionante" %>
+					  			<%= cf.select :user_id, current_user.company.users.map{|u| [u.name, u.id]}, {prompt: "Seleccione..."}, {class: 'form-control'} %>
+					  		</div>
+					  		<div class="form-group col">
+					  			<%= cf.label :percentage, "Porcentaje (%)" %>
+					  			<%= cf.number_field :percentage, class: 'form-control' %>
+					  		</div>
+					  	</div>
+					<% end -%>
+				</div>
+				<hr>
+				<center><%= f.link_to_add "#{icon('fas', 'plus')} Agregar otro comisionante".html_safe, :commissioners, class: 'btn btn-primary', data:{target: "#commissioners_fields_#{f.index}"} %></center>
+			</div>
+			<div class="modal-footer">
+			  	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+			</div>
+	    </div>
+  	</div>
+</div>

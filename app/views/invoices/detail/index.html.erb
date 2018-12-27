@@ -44,14 +44,14 @@
 						<td class="only-desktop"><%= pf.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
 						<%= pf.hidden_field :company_id, value: current_user.company_id %>
 					<% end %>
-					<td class="only-desktop"><%= f.select :user_id, grouped_options_for_select(current_user.company.grouped_users_by_role), {include_blank: "Ninguno"}, {class: 'form-control form-control-sm', disabled: !@invoice.editable?} %></td>
+					<td class="text-center"><%= render '/invoices/detail/commissioner_fields', f: f %></td>
 					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@invoice.editable? %></td>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
 						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control iva_aliquot', style: 'width: 100px;', disabled: !@invoice.editable?} %>
 					</td>
 					<td class="only-desktop"><%= f.hidden_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@invoice.editable? %>
-						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', min: 0, disabled: !@invoice.editable? %></td>
+						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
 
 					<td><%= f.number_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: !@invoice.editable? %></td>
 					<% if @invoice.editable? %>

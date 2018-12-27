@@ -140,6 +140,7 @@ class AccountMovement < ApplicationRecord
           am.client_id    = invoice.client_id
           am.invoice_id   = invoice.id
           am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
+          am.observation  = invoice.observation
           if invoice.is_credit_note?
             am.debe         = false
             am.haber        = true
