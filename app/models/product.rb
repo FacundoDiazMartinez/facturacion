@@ -169,7 +169,7 @@ class Product < ApplicationRecord
 	#PROCESOS
 		def self.create params
 			product = Product.where(company_id: company_id, code: code, name: name).first_or_initialize
-			if produc.new_record?
+			if product.new_record?
 				super
 			else
 				update(params)
@@ -253,23 +253,23 @@ class Product < ApplicationRecord
     	return_process_result(invalid, current_user)
 		end
 
-		def self.return_process_result invalid, user
-			if invalid.any?
-        		{
-        			'result' => false,
-        			'message' => 'Uno o mas productos no pudieron importarse.',
-        			'product_with_errors' => invalid
-        		}
-        		Notification.create_for_failed_import invalid, user
-        	else
-        		{
-        			'result' => true,
-        			'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
-        			'product_with_errors' => []
-        		}
-        		Notification.create_for_success_import user
-        	end
-		end
+    def self.return_process_result invalid, user
+      if invalid.any?
+        {
+          'result' => false,
+          'message' => 'Uno o mas productos no pudieron importarse.',
+          'product_with_errors' => invalid
+        }
+        Notification.create_for_failed_import invalid, user
+      else
+        {
+          'result' => true,
+          'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
+          'product_with_errors' => []
+        }
+        Notification.create_for_success_import user
+      end
+    end
 
 		def self.permited_params
 		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]

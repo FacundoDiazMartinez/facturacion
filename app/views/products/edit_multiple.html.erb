@@ -3,7 +3,7 @@
 
   <%= form_tag update_multiple_products_path, method: :put do %>
     <p class="text-muted">Productos seleccionados</p>
-    <ul>
+    <ul class="text-center list-unstyled">
       <% @products.each do |product| %>
       <li>
         <%= hidden_field_tag "product_ids[]", product.id %>
@@ -14,32 +14,43 @@
 
     <% if @products.first.errors.any? %>
     <p class="text-muted">Errores al actualizar</p>
-    <ul>
+    <ul class="text-center list-unstyled">
       <% @products.first.errors.full_messages.each do |msg| %>
       <li style="color:red"><%= msg %></li>
       <% end %>
     </ul>
     <% end %>
 
-
     <p class="text-muted">Elementos a actualizar</p>
-    <div class="card">
-      <div class="card-body">
-        <%= fields_for :product do |f| %>
-        <div class="form-row">
-          <div class="form-group">
-            <%= f.label :price_modification, "Precio final*" %>
-            <%= f.text_field :price_modification, value: params[:price_modification], :class => 'form-control', step: '.01' %>
+    <div class="d-flex justify-content-center">
+      <div class="card col-md-4">
+        <div class="card-body">
+          <%= fields_for :product do |f| %>
+          <div class="form-row">
+            <div class="form-group">
+              <%= f.label :price_modification, "Precio final" %>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text">$</div>
+                </div>
+                <%= f.text_field :price_modification, value: params[:price_modification], :class => 'form-control text-right', step: '.01' %>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <%= f.label :active, "Activo?" %>
-            <%= f.select :active, [["Sí", true], ["No", false]], { include_blank: true }, class: 'form-control' %>
+          <div class="form-row">
+            <div class="form-group" style="width:100%">
+              <%= f.label :active, "Activo?" %>
+              <%= f.select :active, [["Sí", true], ["No", false]], { include_blank: true }, class: 'form-control' %>
+            </div>
+          </div>
+          <% end %>
+          <div class="form-row">
+            <div class="form-group">
+              <p class="text-muted">Para realizar modificaciones de precio porcentuales puede utilizar el signo % como caracter final. Ejemplo: '-10%' reduce los valores de los productos en un 10%.</p>
+            </div>
           </div>
         </div>
-        <% end %>
       </div>
     </div>
     <center>

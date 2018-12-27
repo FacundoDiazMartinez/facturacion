@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
   # GET /products
   # GET /products.json
   def index
-    @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order("updated_at DESC").paginate(page: params[:page], per_page: 9)
+    @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order(updated_at: :desc).paginate(page: params[:page], per_page: 15)
   end
 
   # GET /products/1
@@ -92,7 +92,7 @@ class ProductsController < ApplicationController
   end
 
   def import
-    result = Product.save_excel(params[:file], params[:supplier_id], current_user)
+    #result = Product.save_excel(params[:file], params[:supplier_id], current_user)
     respond_to do |format|
         flash[:success] = 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'
         format.html {redirect_to products_path}

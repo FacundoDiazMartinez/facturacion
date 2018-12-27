@@ -1,11 +1,10 @@
 <% if not @products.empty? %>
-	<% if params[:view] == "list" %>
 	<div class="table-responsive">
 		<%= form_tag edit_multiple_products_path, method: :get, id: 'edit_form' do %>
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th><input type="checkbox"></th>
+						<th></th>
 						<th>Código</th>
 						<th scope="col">Nombre</th>
 						<th scope="col" class="only-desktop">Categoría</th>
@@ -13,10 +12,10 @@
 						<th scope="col" class="only-desktop">Proveedor</th>
 						<th scope="col">
 							<div class="btn-group" role="group">
-						    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						    <button id="btnMenu" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
 						      <i class="fas fa-ellipsis-v"></i>
 						    </button>
-						    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+						    <div class="dropdown-menu" aria-labelledby="btnMenu">
 									<%= link_to "Editar seleccionados", "#", onclick: "$('#edit_form').submit()", class: 'dropdown-item' %>
 						    </div>
 							</div>
@@ -26,7 +25,7 @@
 				<tbody>
 					<% @products.each do |product| %>
 						<tr>
-							<td><%= check_box_tag "product_ids[]", product.id %></td>
+							<td><%= check_box_tag "product_ids[]", product.id, false, { class: 'checkbox-tag' } %></td>
 							<td><%= product.code %></td>
 							<td><%= link_to product.name, product %></td>
 							<td class="only-desktop"><%= product.category_name %></td>
@@ -42,31 +41,33 @@
 		<% end %>
 	</div>
 
-	<% else %>
-
-	<div class="row d-flex align-items-stretch">
-		<% @products.each do |product|%>
-		<div class="col-12 col-md-6 col-lg-4 mb-4">
-			<div class="card card-shadow" style="height:100%;">
-				<%= link_to product_path(product.id) do %>
-				<div class="card-div-img-top" style="background: url('<%= product.photo %>')">
-				</div>
-				<div class="card-body">
-					<center>
-						<h5 class="card-title"><%= product.name %></h5>
-						<p class="card-text text-muted"><%= product.category_name %></p>
-						<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(product.price) %></span></strong></p>
-					</center>
-				</div>
-				<% end -%>
-			</div>
-		</div>
-
-		<% end %>
-	</div>
-	<% end %>
-
 	<%= paginate @products %>
 <% else %>
-  <center><h1>¡Todavia no cargaste ningún producto!</h1></center>
+  <center><h1>¡No hay productos disponibles!</h1></center>
 <% end %>
+
+<script type="text/javascript">
+	$(document).ready(() => {
+		countCheckedCheckboxes();
+	})
+
+	$('.checkbox-tag').change(countCheckedCheckboxes);
+
+	function countCheckedCheckboxes() {
+		var checkboxes = $('tbody input[type=checkbox]:checked');
+		if (checkboxes.length > 0) {
+			toggleBtnGroup(true);
+		} else {
+			toggleBtnGroup(false);
+		}
+	};
+
+	function toggleBtnGroup(boolFlag) {
+		var btn = $('#btnMenu');
+		if (boolFlag) {
+			btn.removeAttr('disabled');
+		} else {
+			btn.attr('disabled', 'disabled');
+		}
+	}
+</script>
