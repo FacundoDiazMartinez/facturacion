@@ -24,7 +24,7 @@
       <div id="sidebar-wrapper" class="navbar-expand-lg">
         <%= render template: '/layouts/navpills.html.erb' %>
       </div>
-      <div id="yield-wrapper">
+      <div id="<%= user_signed_in? ? 'yield-wrapper' : '' %>">
         <!-- HELPER NEDDED -->
         <% if notice %>
           <p class="alert-lc alert-lc-success"><%= notice %></p>

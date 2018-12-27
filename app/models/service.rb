@@ -1,5 +1,9 @@
 class Service < Product
 
+  # validates_uniqueness_of :id, scope: [:company_id, :active], message: "Ya existe un servicio con el mismo identificador."
+  # validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un servicio con el mismo nombre."
+
+
   before_validation :set_tipo
 
   self.table_name =  "products"

@@ -25,56 +25,53 @@
     <div class="card card-fluid">
       <div class="card-header">
         <!-- Buscador de productos -->
-          <%= form_tag products_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <%= form_tag products_path(), { id: 'search_form', class: 'form-inline' } do %>
 
               <!-- BUSCAR POR NOMBRE -->
-              <div class="form-group">
-                <div class="input-group mb-2 col">
+                <div class="input-group col">
                   <div class="input-group-prepend">
                     <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
                   </div>
-                  <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+                  <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form"); clearPagination();' %>
                 </div>
-              </div>
               <!-- BUSCAR POR NOMBRE -->
 
               <!-- BUSCAR POR CÓDIGO -->
-              <div class="form-group">
-                <div class="input-group mb-2 col">
+                <div class="input-group col">
                   <div class="input-group-prepend">
                     <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
                   </div>
-                  <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form")' %>
+                  <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form"); clearPagination();' %>
                 </div>
-              </div>
               <!-- BUSCAR POR CÓDIGO -->
 
               <!-- BUSCAR POR CATEGORÍA -->
-              <div class="form-group">
-                <div class="input-group mb-2 col">
+                <div class="input-group col">
                   <div class="input-group-prepend">
-                    <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
+                    <div class="input-group-text"><%= icon('fas', 'list') %></div>
                   </div>
-                  <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
+                  <%= select_tag :category, options_for_select( ProductCategory.all.map { |c| [c.name, c.id] }, params[:category] ),{class: 'form-control', prompt: "Todos" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
                 </div>
-              </div>
               <!-- BUSCAR POR CATEGORÍA -->
 
               <!-- BUSCAR POR STOCK -->
-              <label>
+              <!-- <label>
                 <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'remoteSubmit("#search_form")'} %>
                 <%= label_tag :stock, " Sólo con disponibilidad en inventario" %>
-              </label>
+              </label> -->
               <!-- BUSCAR POR STOCK -->
               <!-- TIPO DE VISTA -->
-              <div class="col-2">
-                <!-- CAMBIAR TIPO DE VISTA -->
-                <%= button_tag icon('fas', 'list-ul'), onclick:'changeView("list")', type:'button', class:'btn btn-light' %>
-                <%= button_tag icon('fas', 'th-large'), onclick:'changeView("table")', type:'button', class:'btn btn-light' %>
+              <div class="col">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <!-- CAMBIAR TIPO DE VISTA -->
+                  <%= button_tag icon('fas', 'list-ul'), onclick: 'changeView("list")', type: 'button', class: 'btn btn-secondary' %>
+                  <%= button_tag icon('fas', 'th-large'), onclick: 'changeView("table")', type: 'button', class: 'btn btn-secondary' %>
+                  <!-- CAMBIAR TIPO DE VISTA -->
+                </div>
                 <%= hidden_field_tag :view, params[:view], onchange: 'remoteSubmit("#search_form")' %>
-                <!-- CAMBIAR TIPO DE VISTA -->
               </div>
               <!-- TIPO DE VISTA -->
+              <%= hidden_field_tag :page, 1 %>
             </div>
           <% end %>
         <!-- Buscador de productos -->
@@ -90,3 +87,9 @@
 </div>
 
 <%= render 'import' %>
+
+<script type="text/javascript">
+	function clearPagination() {
+		$('#page').val(1);
+	}
+</script>

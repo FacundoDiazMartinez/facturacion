@@ -13,6 +13,7 @@ class Invoice < ApplicationRecord
     has_many :products, through: :invoice_details
     has_many :iva_books, dependent: :destroy
     has_many :delivery_notes, dependent: :destroy
+    has_many  :commissioners, through: :invoice_details
 
     has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
@@ -290,6 +291,10 @@ class Invoice < ApplicationRecord
       def set_invoice_activity
         UserActivity.create_for_confirmed_invoice(self)
       end
+
+      def activate_commissions
+        commissioners.update_all(active: true)
+      end
     #PROCESOS
 
   	#ATRIBUTOS
@@ -435,6 +440,7 @@ class Invoice < ApplicationRecord
             imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
+          self.activate_commissions
           if response && !self.associated_invoice.nil?
             self.invoice.update_column(:state, "Anulado")
           end

@@ -115,7 +115,7 @@ class PurchaseOrdersController < ApplicationController
   end
 
   def search_product
-    @products = current_user.company.products.unscoped.where(active: true).search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
+    @products = Product.unscoped.where(active: true, company_id: current_user.company_id).search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
     render '/purchase_orders/details/search_product'
   end
 

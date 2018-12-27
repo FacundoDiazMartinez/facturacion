@@ -5,24 +5,25 @@
   </button>
 </div>
 <%= nested_form_for @user  do |f| %>
-    <div class="modal-body">
-    
-    <%= f.fields_for :user_roles, @user.user_roles do |fr| %>
-      
-      <div class="form-group">
-      <%= fr.label :role_id, 'Rol: ' %>
-        <div class="row">
-          <div class="col"> 
-          <%= fr.select :role_id, current_user.company.roles.map{|a| [a.name, a.id]} ,{ prompt: "Seleccione..." }, {required:true, class: 'form-control form-control-sm input-group-text'}%>
-          </div>
-          <div class="col"> 
-            <%= fr.link_to_remove "#{icon('fas', 'times')}".html_safe %>
+  <div class="modal-body">
+    <center>
+      <%= f.link_to_add "#{icon('fas', 'plus')} Agregar rol".html_safe ,:user_roles, class: 'btn btn-primary', data:{target: '#user_roles_fields'} %>
+    </center>
+    <hr>
+    <div id="user_roles_fields">
+      <%= f.fields_for :user_roles, @user.user_roles do |fr| %>
+        <div class="form-group">
+          <div class="row">
+            <div class="col-8 offset-1"> 
+              <%= fr.select :role_id, current_user.company.roles.map{|a| [a.name, a.id]} ,{ prompt: "Seleccione..." }, {required:true, class: 'form-control'}%>
+            </div>
+            <div class="col-2"> 
+              <%= fr.link_to_remove "#{icon('fas', 'trash')}".html_safe, class: 'btn btn-danger' %>
+            </div>
           </div>
         </div>
-      </div>
-    <% end %>
-    <%= f.link_to_add "#{icon('fas', 'plus')}".html_safe ,:user_roles %>
-
+      <% end %>
+    </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

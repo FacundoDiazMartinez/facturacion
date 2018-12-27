@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
   # GET /products
   # GET /products.json
   def index
-    @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order("updated_at DESC").paginate(page: params[:page], per_page: 9)
+    @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order(updated_at: :desc).paginate(page: params[:page], per_page: 15)
   end
 
   # GET /products/1
@@ -87,12 +87,12 @@ class ProductsController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
-    products = current_user.company.products.unscoped.where('code ILIKE ? AND active = "t"', "%#{term}%").order(:code).all
+    products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
   end
 
   def import
-    result = Product.save_excel(params[:file], params[:supplier_id], current_user)
+    #result = Product.save_excel(params[:file], params[:supplier_id], current_user)
     respond_to do |format|
         flash[:success] = 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'
         format.html {redirect_to products_path}
@@ -119,7 +119,7 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit)
+      params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit, :supplier_id)
     end
 
     def update_multiple_product_params

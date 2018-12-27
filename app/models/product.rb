@@ -16,14 +16,14 @@ class Product < ApplicationRecord
   	has_many   :product_price_histories
 
     scope :active, -> { where(active: true) }
-
+    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador."
+    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
   	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
   	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
   	validates_presence_of :name, message: "El nombre del producto no puede estar en blanco."
-  	validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
@@ -169,7 +169,7 @@ class Product < ApplicationRecord
 	#PROCESOS
 		def self.create params
 			product = Product.where(company_id: company_id, code: code, name: name).first_or_initialize
-			if produc.new_record?
+			if product.new_record?
 				super
 			else
 				update(params)
@@ -253,23 +253,23 @@ class Product < ApplicationRecord
     	return_process_result(invalid, current_user)
 		end
 
-		def self.return_process_result invalid, user
-			if invalid.any?
-        		{
-        			'result' => false,
-        			'message' => 'Uno o mas productos no pudieron importarse.',
-        			'product_with_errors' => invalid
-        		}
-        		Notification.create_for_failed_import invalid, user
-        	else
-        		{
-        			'result' => true,
-        			'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
-        			'product_with_errors' => []
-        		}
-        		Notification.create_for_success_import user
-        	end
-		end
+    def self.return_process_result invalid, user
+      if invalid.any?
+        {
+          'result' => false,
+          'message' => 'Uno o mas productos no pudieron importarse.',
+          'product_with_errors' => invalid
+        }
+        Notification.create_for_failed_import invalid, user
+      else
+        {
+          'result' => true,
+          'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
+          'product_with_errors' => []
+        }
+        Notification.create_for_success_import user
+      end
+    end
 
 		def self.permited_params
 		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]

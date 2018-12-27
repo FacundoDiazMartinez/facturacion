@@ -59,6 +59,9 @@ Rails.application.routes.draw do
     patch :approve, on: :member
     patch :disapprove, on: :member
     get :roles, on: :member
+    get :commission, on: :member
+    get :edit_commission, on: :member
+    patch :update_commission, on: :member
   end
   resources :suppliers
   resources :depots
