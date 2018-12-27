@@ -117,12 +117,13 @@ class InvoicesController < ApplicationController
     else
       set_invoice
     end
+    @associated = true
     associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice], state: "Confirmado").first
     associated_invoice.invoice_details.each do |id|
-      @invoice.invoice_details.build(id.attributes)
+      @invoice.invoice_details.new(id.attributes)
     end
     associated_invoice.payments.each do |payment|
-      @invoice.payments.build(payment.attributes)
+      @invoice.payments.new(payment.attributes)
     end
   end
 

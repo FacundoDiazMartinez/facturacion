@@ -13,7 +13,7 @@ class Invoice < ApplicationRecord
     has_many :products, through: :invoice_details
     has_many :iva_books, dependent: :destroy
     has_many :delivery_notes, dependent: :destroy
-    has_many  :commissioners, through: :invoice_details
+    has_many :commissioners, through: :invoice_details
 
     has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
@@ -23,6 +23,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
+    after_save :touch_commissioners
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
@@ -294,6 +295,10 @@ class Invoice < ApplicationRecord
 
       def activate_commissions
         commissioners.update_all(active: true)
+      end
+
+      def touch_commissioners
+        self.commissioners.map{|c| c.run_callbacks(:save)}
       end
     #PROCESOS
 

@@ -20,6 +20,7 @@
 						    </div>
 							</div>
 						</th>
+						<th scope="col"> Eliminar </th>
 					</tr>
 				</thead>
 				<tbody>
@@ -33,6 +34,9 @@
 							<td class="only-desktop"><%= product.supplier_name %></td>
 							<td>
 								<%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+							</td>
+							<td>
+								<%= link_to icon('fas', 'trash').html_safe, product , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
 							</td>
 						</tr>
 					<% end %>
