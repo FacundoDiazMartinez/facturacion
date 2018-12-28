@@ -1,4 +1,5 @@
-<h5><strong>Total comisionado: </strong> $<%= @commissions.sum(:total_commission) %></h5>
+<h5><strong>Total comisionado: </strong> $<%= @commission_sum %></h5>
+<i>Si utiliza alguno de los filtros se mostrará el total comisionado en los resultados obtenidos.</i>
 <div class="table-responsive">
   <table class="table table-hover">
     <thead>
@@ -15,15 +16,15 @@
 
     <tbody>
       <% @commissions.each do |commission| %>
-      <tr>
-        <td><%= commission.full_number %></td>
-        <td><%= commission.cbte_fch %></td>
-        <td><%= commission.tipo %></td>
-        <td>$<%= commission.total %></td>
-        <td>%<%= commission.percentage %></td>
-        <td>$<%= commission.total_commission %></td>
-        <td><%= link_to icon('fas', 'edit'), edit_commission_user_path(@user.id, commission_id: commission.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{toggle: 'modal', target: '#commissionModal', remote: true} if can? :manage, User %></td>
-      </tr>
+        <tr>
+          <td><%= commission.full_number %></td>
+          <td><%= commission.cbte_fch %></td>
+          <td><%= commission.tipo %></td>
+          <td>$<%= commission.total %></td>
+          <td>%<%= commission.percentage %></td>
+          <td>$<%= commission.total_commission %></td>
+          <td><%= link_to icon('fas', 'edit'), edit_commission_user_path(@user.id, commission_id: commission.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{toggle: 'modal', target: '#commissionModal', remote: true} if can? :manage, User %></td>
+        </tr>
       <% end %>
     </tbody>
   </table>

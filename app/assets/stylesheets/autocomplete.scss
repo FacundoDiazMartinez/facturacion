@@ -37,9 +37,12 @@ a.ui-button:active,
 }
 
 .ui-menu{
-	max-width: 20vw;
 	background-color: white;
 	border-style: solid;
 	border-width: 1px;
 	list-style-type: none;
+}
+
+.autocomplete-target{
+  position: absolute;
 }

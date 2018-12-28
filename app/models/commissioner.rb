@@ -3,7 +3,7 @@ class Commissioner < ApplicationRecord
   	belongs_to :invoice_detail, optional: true
 
   	after_save :set_total
-
+    default_scope {joins(invoice_detail: :invoice).where("invoices.active = 't'")}
   	def set_total
   		pp invoice
   		if invoice.is_credit_note? 
@@ -40,8 +40,16 @@ class Commissioner < ApplicationRecord
 	  		else
 	  			all
 	  		end
-		else
-			all
-		end
-	end
+		  else
+			 all
+		  end
+    end
+    
+    def self.search_by_cbte_number cbte_number
+      if not cbte_number.blank?
+        joins(invoice_detail: :invoice).where("invoices.comp_number ILIKE ?", "%#{cbte_number}%")
+      else
+        all
+      end
+    end
 end

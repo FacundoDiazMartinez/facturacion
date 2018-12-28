@@ -58,7 +58,8 @@ class UsersController < ApplicationController
   end
 
   def commission
-    @commissions = @user.commissioners.search_by_date(params[:from], params[:to]).paginate(page: params[:page], per_page: 10)
+    @commissions = @user.commissioners.includes(invoice_detail: :invoice).search_by_date(params[:from], params[:to]).search_by_cbte_number(params[:cbte_number]).paginate(page: params[:page], per_page: 10)
+    @commission_sum = @user.commissioners.search_by_date(params[:from], params[:to]).search_by_cbte_number(params[:cbte_number]).sum(:total_commission)
   end
 
   def edit_commission
