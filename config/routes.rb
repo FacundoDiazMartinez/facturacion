@@ -85,6 +85,7 @@ Rails.application.routes.draw do
   #ACCOUNT MOVEMENTS
   get '/clients/:id/account_movements', to: 'clients/account_movements#index', as: 'client_account_movements'
   get '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#add_payment', as: 'client_account_movements_add_payment'
+  patch '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#create_payment', as: 'client_account_movements_create_payment'
 
   #ACCOUNT MOVEMENTS
 

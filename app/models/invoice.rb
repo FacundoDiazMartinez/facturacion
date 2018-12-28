@@ -346,6 +346,14 @@ class Invoice < ApplicationRecord
       def full_number
         "#{sale_point.name} - #{comp_number}" unless not(state == "Confirmado" || state == "Anulado")
       end
+
+      def full_name
+        "Pto. venta: #{sale_point_name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
+      end
+
+      def name
+        "#{sale_point_name} - #{comp_number}"
+      end
   	#ATRIBUTOS
 
 

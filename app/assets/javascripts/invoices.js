@@ -39,6 +39,10 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 
 $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field', function(event, data){
 	$(this).closest("div.form-group").find("input.invoice_id").val(data.item.id);
+	$(this).closest("div.fields").find("div.info").html(
+		"<p><strong>Total:</strong> $" + data.item.total + ". <strong>Monto faltante: </strong> $" + data.item.faltante + "</p>"
+	);
+	$(this).closest("div.fields").find("div.payments").show("fast")
 })
 
 $(document).on("change", ".price, .quantity", function(){
