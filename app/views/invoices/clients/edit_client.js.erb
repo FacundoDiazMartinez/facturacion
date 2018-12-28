@@ -8,6 +8,7 @@
 	  	$.each(options, function(i, option) {
 		    $('#invoice_cbte_tipo').append( new Option(option[0],option[1]) );
 		});
+		addRechargeToDetails()
 	});
 '<% else %>'
 	$("#client_errors").html("<%= j error_explanation(@client) %>");

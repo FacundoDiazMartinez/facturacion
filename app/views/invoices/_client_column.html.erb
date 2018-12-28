@@ -6,7 +6,7 @@
       <% if !@invoice.editable? %>
         <%= link_to icon('far' , 'eye').html_safe, invoices_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
       <% else %>
-        <%= link_to icon('far' , 'edit').html_safe, edit_invoices_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+        <%= link_to icon('far' , 'edit').html_safe, edit_invoices_client_path( @client.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
       <% end -%>
     </div>
   </div>

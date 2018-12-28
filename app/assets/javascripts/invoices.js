@@ -46,9 +46,12 @@ $(document).on("change", ".price, .quantity", function(){
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
 	iva_aliquot 		= $(this).closest("tr.fields").find("input.iva_aliquot");
-	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
-	total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
+
+	b_amount = ((parseFloat(price.val()) * parseFloat(quantity.val())) * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2)
+	console.log(b_amount)
+	bonus_amount.val(b_amount);
+	total = ((parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val())).toFixed(2);
 
 	subtotal.val(total);
 	subtotal.trigger("change");
@@ -61,7 +64,8 @@ $(document).on("change", ".bonus_percentage", function(){
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 
 	total 				= parseFloat(price.val()) * parseFloat(quantity.val());
-	bonus_amount.val(total * (parseFloat(bonus_percentage.val()) / 100));
+	b_amount = (total * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2);
+	bonus_amount.val(b_amount);
 	price.trigger("change");
 });
 
@@ -72,7 +76,8 @@ $(document).on("change", ".bonus_amount", function(){
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 
 	total 				= parseFloat(price.val()) * parseFloat(quantity.val());
-	bonus_percentage.val(parseFloat(bonus_amount.val()) * 100 / parseFloat(total));
+	b_percentage = (parseFloat(bonus_amount.val()) * 100 / parseFloat(total)).toFixed(2);
+	bonus_percentage.val(b_percentage);
 	price.trigger("change");
 });
 
@@ -81,7 +86,7 @@ $(document).on("change", ".iva_aliquot", function(){
 	iva_amount			= $(this).closest("tr.fields").find("input.iva_amount");
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").find('option:selected');
 
-	amount = parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text());
+	amount = (parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text())).toFixed(2);
 	iva_amount.val(amount);
 });
 

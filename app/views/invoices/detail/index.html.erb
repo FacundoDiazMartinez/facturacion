@@ -41,7 +41,7 @@
 							<%= pf.text_field :name, class: 'form-control name', data: {toggle:"tooltip"}, disabled: !@invoice.editable? %>
 						</td>
 						<td><%= pf.number_field :price, class: 'form-control form-control-sm price', disabled: !@invoice.editable? %></td>
-						<td class="only-desktop"><%= pf.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
+						<td class="only-desktop"><%= pf.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
 						<%= pf.hidden_field :company_id, value: current_user.company_id %>
 					<% end %>
 					<td class="text-center">
