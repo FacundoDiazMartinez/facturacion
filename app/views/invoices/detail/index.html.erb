@@ -30,7 +30,7 @@
 		    	<tr class="fields" id="<%= f.index %>">
 		    		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 			  			<td>
-			  				<%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
+			  				<%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
 			  				<%= pf.hidden_field :id, class: 'product_id' %>
 			  			</td>
 			  			<td><%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: !@invoice.editable? %></td>
