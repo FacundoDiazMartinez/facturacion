@@ -10,7 +10,7 @@
 			</div>
 			<div class="modal-body">
 			  	<div id="commissioners_fields_<%= f.index %>">
-				  	<%= f.fields_for :commissioners,(f.object.commissioners.build unless !f.object.commissioners.empty?), wrapper: false do |cf| %>
+				  	<%= f.fields_for :commissioners, wrapper: false do |cf| %>
 				  		<div  class="row">
 					  		<div class="form-group col">
 					  			<%= cf.label :user_id, "Comisionante" %>
@@ -21,6 +21,9 @@
 					  			<%= cf.number_field :percentage, class: 'form-control' %>
 					  		</div>
 					  	</div>
+					  	<% if cf.object.new_record? %>
+					  		<%= cf.hidden_field :invoice_detail_id%>
+					  	<% end -%>
 					<% end -%>
 				</div>
 				<hr>

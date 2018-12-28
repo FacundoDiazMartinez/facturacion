@@ -16,10 +16,10 @@
     <tbody>
       <% @commissions.each do |commission| %>
       <tr>
-        <td><%= commission.invoice.full_number %></td>
-        <td><%= commission.invoice.cbte_fch %></td>
-        <td><%= commission.invoice.tipo %></td>
-        <td><%= commission.invoice.total %></td>
+        <td><%= commission.full_number %></td>
+        <td><%= commission.cbte_fch %></td>
+        <td><%= commission.tipo %></td>
+        <td>$<%= commission.total %></td>
         <td>%<%= commission.percentage %></td>
         <td>$<%= commission.total_commission %></td>
         <td><%= link_to icon('fas', 'edit'), edit_commission_user_path(@user.id, commission_id: commission.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{toggle: 'modal', target: '#commissionModal', remote: true} if can? :manage, User %></td>

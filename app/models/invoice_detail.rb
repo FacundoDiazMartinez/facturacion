@@ -83,6 +83,14 @@ class InvoiceDetail < ApplicationRecord
       super
     end
 
+    def commissioners_attributes=(attributes)
+      attributes.each do |num,c|
+        com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first_or_initialize
+        com.percentage = c["percentage"] 
+        com.total_commission = 0
+      end
+    end
+
     def product
       Product.unscoped{super}
     end

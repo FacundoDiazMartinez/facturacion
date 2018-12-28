@@ -58,7 +58,7 @@ class UsersController < ApplicationController
   end
 
   def commission
-    @commissions = @user.commissioners.where(active: true).search_by_date(params[:from], params[:to]).paginate(page: params[:page], per_page: 10)
+    @commissions = @user.commissioners.search_by_date(params[:from], params[:to]).paginate(page: params[:page], per_page: 10)
   end
 
   def edit_commission
@@ -88,7 +88,7 @@ class UsersController < ApplicationController
     end
 
     def set_commission
-      @commission = @user.commissioners.where(active: true).find(params[:commission_id])
+      @commission = @user.commissioners.find(params[:commission_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

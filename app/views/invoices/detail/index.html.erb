@@ -44,7 +44,9 @@
 						<td class="only-desktop"><%= pf.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
 						<%= pf.hidden_field :company_id, value: current_user.company_id %>
 					<% end %>
-					<td class="text-center"><%= render '/invoices/detail/commissioner_fields', f: f %></td>
+					<td class="text-center">
+						<%= render '/invoices/detail/commissioner_fields', f: f %>
+					</td>
 					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@invoice.editable? %></td>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
