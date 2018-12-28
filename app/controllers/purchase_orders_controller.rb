@@ -89,7 +89,7 @@ class PurchaseOrdersController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.cost_price} }
   end
 
   def approve
@@ -112,6 +112,11 @@ class PurchaseOrdersController < ApplicationController
         format.html {render :edit, notice: "No tiene los provilegios necesarios para aprobar la orden de compra."}
       end
     end
+  end
+
+  def search_product
+    @products = Product.unscoped.where(active: true, company_id: current_user.company_id).search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
+    render '/purchase_orders/details/search_product'
   end
 
   private

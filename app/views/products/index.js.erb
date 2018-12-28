@@ -1,1 +1,11 @@
-$("#products_table").html("<%= j render 'products_table' %>");
+<% if params[:page] %>
+  $("#page").val("<%= params[:page] %>");
+<% elsif params[:name] %>
+  $("#page").val(1);
+<% end %>
+
+<% if params[:view] == "table" %>
+  $("#products-wrapper").html("<%= j render 'products_cards' %>");
+<% else %>
+  $("#products-wrapper").html("<%= j render 'products_table' %>");
+<% end %>

@@ -11,7 +11,7 @@
 					<div class="col-6">
 					    <div class="card card-fluid">
 							<div class="card-header">
-								<center>Asignados</center>
+								<center><strong>ASIGNADOS</strong></center>
 							</div>
 							<div class="card-body">
 								<div id="role_permissions_wrapper">
@@ -24,12 +24,10 @@
 					<div class="col-6">
 					    <div class="card card-fluid">
 							<div class="card-header">
-								<center>Lista de permisos</center>
+								<center><strong>PERMISOS A ASIGNAR</strong></center>
 							</div>
-							<div class="card-body">
-								<div id="permissions_wrapper">
-									<%# render 'permissions' %>
-								</div>
+							<div id="permissions_wrapper" class="card-body">
+								<%= render 'permissions' %>
 							</div>		
 						</div>
 					</div>
@@ -46,68 +44,6 @@
     </div>
   </div>
 </div>
-
-
-<style media="screen">
-	  .nav-tabs.nav-justified {
-	    margin-bottom: 0px !important;
-	  }
-	ul {
-		text-align:left;
-		list-style: none;
-		padding-left: 0px;
-	}
-
-	#accordion-list .panel-collapse li {
-		padding: 10px 20px;
-		border-bottom: 1px solid #ddd;
-	}
-
-	li.panel-heading {
-		border-bottom: 1px solid #ddd !important;
-	}
-
-	.panel {
-		border-radius: 0px !important;
-	}
-	.panel-group {
-		margin-bottom: 0px;
-	}
-
-	a.permission_tab {
-		color: black !important;
-	}
-
-	a.permission_tab:hover {
-		background: rgba(0, 0, 0, 0.5) !important;
-	}
-
-	a.permission_tab:active {
-		background: rgba(0, 0, 0, 0.5) !important;
-	}
-
-	#permissions_wrapper {
-		border: 1px solid #ddd;
-		border-top: none;
-		box-sizing: border-box;
-	}
-
-	#role_permissions_wrapper {
-		border: 1px solid #ddd;
-		border-top: none;
-		box-sizing: border-box;
-	}
-
-	a.collapsible {
-		color: black !important;
-
-	}
-
-	li.card-header:hover {
-		background: rgba(0, 0, 0, 0.5) !important;
-
-	}
-</style>
 
 <script type="text/javascript">
   function changeTabPanel(klass){
@@ -155,3 +91,8 @@
 }
 
 </script>
+
+<style media="screen">
+	
+
+</style>

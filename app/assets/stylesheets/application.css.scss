@@ -74,10 +74,6 @@ a.bg-secondary {
   color: white !important;
 }
 
-a.dropdown-item:visited {
-  color: white !important;
-}
-
 li.nav-item > .dropdown-menu {
   width: 100%;
 }
@@ -212,14 +208,6 @@ img#image{
   vertical-align: middle;
 }
 
-a:visited {
-  color: black;
-}
-
-a.nav-link:visited{
-  color: white;
-}
-
 a.nav-link:hover{
   background-color: rgba(0,0,0,.5);
 }
@@ -248,16 +236,13 @@ a.nav-link:hover{
 td.verical-align{
   vertical-align: middle;
 }
-td > a:visited{
-  color: black;
-}
-
-.display-menu > li > a:visited, .display-menu > li > a{
-    color: black !important;
-}
 
 .display-menu > li > a:hover{
     color: white !important;
+}
+
+.display-menu > li > a{
+    color: black !important;
 }
 
 @media (max-width: 992px) {
@@ -299,12 +284,12 @@ td > a:visited{
     background-color: transparent;
     border-color: #6c757d;
   }
-  
+
   .text-center > .dropdown-item{
     text-align: center !important;
   }
 
-} 
+}
 
 .right-nav{
   right: 0px;

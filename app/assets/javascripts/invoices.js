@@ -19,6 +19,8 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
 	}
+	var recharge = parseFloat($("#client_recharge").val() * -1);
+
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.tipo").val(data.item.tipo);
@@ -32,23 +34,21 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	})
 
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
-	subtotal.trigger("change");
+	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
 
-$(document).on("change", ".price, .quantity", function(){
+$(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field', function(event, data){
+	$(this).closest("div.form-group").find("input.invoice_id").val(data.item.id);
+})
 
+$(document).on("change", ".price, .quantity", function(){
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
 	iva_aliquot 		= $(this).closest("tr.fields").find("input.iva_aliquot");
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
-
-	if (bonus_amount.val() > 0) {
-		total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
-	}else{
-		total = (parseFloat(price.val()) * parseFloat(quantity.val()));
-	}
+	total = (parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val());
 
 	subtotal.val(total);
 	subtotal.trigger("change");
@@ -136,6 +136,7 @@ $(document).on('nested:fieldAdded', function(event){
 $(document).on('nested:fieldRemoved', function(event){
 	 var field = event.field;
 	 field.find("input.amount").val(0); //Ponemos en 0 el field que acabamos de eliminar (ya que no se elimina, se setea con display: none) para que funcione bien el complete_payments
+	 field.find("input.subtotal").val(0).trigger("change");
 })
 
 
@@ -167,20 +168,6 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 		popup.removeClass("show");
 	}
 }
-
-function setProduct(product, index){
-	$("#"+index).find("input.product_id").val(product["id"]);
-	$("#"+index).find("input.code").val(product["code"]);
-  	$("#"+index).find("input.name").val(product["name"]);
-	$("#"+index).find("input.name").prop('title', product["name"]);
-  	$("#"+index).find("input.price").val(product["price"]);
-  	$("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
-	$("#"+index).find("input.subtotal").val(product["price"]);
-
-	subtotal = $("#"+index).find("input.subtotal");
-	$("#search_product_modal").modal('hide')
-	subtotal.trigger("change");
-};
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 	form = $(this).parents('form:first')

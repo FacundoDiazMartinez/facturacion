@@ -1,5 +1,6 @@
 <div class="p-4">
   <%= title_helper 'Ventas Registradas' %>
+  
   <% if can? :create, Invoice %>
     <%= button_new_helper(new_invoice_path()) %>
   <% end %>

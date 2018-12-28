@@ -70,11 +70,24 @@
         <hr>
 
       <!-- BOTONES DE ACCION -->
+      <div class="row">
+        <div class="col-12 col-md-4">
+          <div class="form-group row">
+            <%= form.label :observation, "Observación", class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <%= form.text_field :observation, class: 'form-control', disabled: !@invoice.editable? %>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-4">
           <center>
             <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
               <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
             <% end %>
           </center>
+        </div>
+        <div class="col-12 col-md-4"></div>
+      </div>
       <!-- BOTONES DE ACCION -->
     </div>
   </div>

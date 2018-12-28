@@ -1,20 +1,23 @@
 <% if !(@role.name == "Administrador") %>
-<div class="card-group" id="accordion-list" role="tablist" aria-multiselectable="false">
+<div id="accordion-list" class="accordion">
   <ul class="card card-fluid">
     <%= hidden_field_tag :friendly_name_tag %>
     <%= hidden_field_tag :friendly_name_position_id_tag, params[:collapse_id] %>
     <% @friendly_names.each_with_index do |fn, i| %>
-      <li role="presentation" class="card-header" role="tab">
-        <a role="button" class="collapsible" data-toggle="collapse" href="#role_p_collapse_<%= i %>" data-parent="#accordion-list" aria-expanded="false" aria-controls="role_p_collapse_<%= i %>" onclick='fillFriendlyName("<%= fn.to_s %>", "<%= i %>")'>
-          <%= fn %>
-        </a>
-      </li>
-      <div id="role_p_collapse_<%= i %>" class="card-collapse collapse" role="tabpanel">
-        <ul class="card-body">
-          <% roles_each = @role_permissions.map{ |p| p if p.friendly_name.name == fn }.compact.sort_by{ |p| p[:description] } %>
+      <% roles_each = @role_permissions.map{ |p| p if p.friendly_name.name == fn }.compact.sort_by{ |p| p[:description] } %>
+      <a role="button" data-toggle="collapse" data-target="#role_p_collapse_<%= i %>" aria-expanded="false" aria-controls="role_p_collapse_<%= i %>" onclick="fillVarsAndToggle('<%= fn %>', <%= i %>)">
+        <li role="presentation" class="card-header" style="text-align: center;">
+          <strong> <%= fn.upcase %> </strong>
+          <div class="float-right">
+            <span class="badge badge-pill badge-dark"><%= roles_each.count %></span>
+          </div>
+        </li>
+      </a>
+      <div id="role_p_collapse_<%= i %>" class="card-collapse collapse" data-parent="#accordion-list">
+        <ul class="card-body">          
           <% if !roles_each.blank? %>
             <% roles_each.each_with_index do |permission, j| %>
-                <li id="role_permission_id_<%= permission[:id] %>">
+                <li id="role_permission_id_<%= permission[:id] %>" class="permission_list">
                   <div class="row">
                     <div class="col">
                       <%= permission[:description] %>
@@ -47,10 +50,20 @@
 
 <script type="text/javascript">
 
-  function fillFriendlyName(friendly_name, position) {
-    $("#friendly_name_tag").val(friendly_name); 
-    $("#friendly_name_position_id_tag").val(position);
-    console.log($("#friendly_name_tag").val());
-    remoteSubmit("#permissions_tag");
+  function fillVarsAndToggle(friendly_name, position) {
+      
+    //checkToggles(position);
+  
+    if ($('#role_p_collapse_' + position).hasClass("show"))
+    {
+      $("#permissions_wrapper").html("<center> <h4> Seleccione una categoria </h4> </center>");
+    }
+    else {
+      $("#friendly_name_tag").val(friendly_name); 
+      $("#friendly_name_position_id_tag").val(position);  
+      remoteSubmit("#permissions_tag");
+    }
+
   }
+
 </script>

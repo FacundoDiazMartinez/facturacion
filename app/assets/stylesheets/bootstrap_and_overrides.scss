@@ -30,6 +30,18 @@ body {
     height: 2.25rem;
 }
 
+.dropdown-menu {
+  border-radius: 0.25rem;
+  box-shadow: 1px 1px 5px 0px;
+
+  .dropdown-item {
+    color: #000 !important;
+
+    &:hover {
+      background-color: inherit !important;
+    }
+  }
+}
 
 //// FIN BOTONES /////
 
@@ -83,7 +95,7 @@ h6 small {
     background-position: center !important;
     background-size: contain !important;
   }
-  
+
   .card-body {
 
     a {
@@ -107,5 +119,3 @@ h6 small {
     border-right: 1px solid #e9e9e9;
   }
 }
-
-

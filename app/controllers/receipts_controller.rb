@@ -4,12 +4,28 @@ class ReceiptsController < ApplicationController
   # GET /receipts
   # GET /receipts.json
   def index
-    @receipts = current_user.company.receipts.paginate(page: params[:page], per_page: 10)
+    @receipts = current_user.company.receipts.no_devolution.find_by_period(params[:from], params[:to]).search_by_client(params[:client]).paginate(page: params[:page], per_page: 15)
   end
 
   # GET /receipts/1
   # GET /receipts/1.json
   def show
+    # la siguiene variable la cree para el pdf:
+    Product.unscoped do
+      @group_details = @receipt.invoice.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@receipt.id}",
+        layout: 'pdf.html',
+        template: 'receipts/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /receipts/new

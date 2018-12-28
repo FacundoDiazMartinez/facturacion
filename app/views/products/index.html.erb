@@ -2,9 +2,12 @@
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
     <h1 class="h2">Productos</h1>
     <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="btn-group mr-2">
+      <div class="btn-group">
         <!-- Categorias -->
-          <%= link_to "#{icon('fas', 'list')} Categorías".html_safe, product_categories_path, class: 'btn btn-secondary', title: "Vea las categorías disponibles de los productos." %>
+          <%= link_to "#{icon('fas', 'dollar-sign')} Lista de precios".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
+        <!-- Categorias -->
+        <!-- Categorias -->
+          <%= link_to "#{icon('fas', 'list')} Categorías".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
         <!-- Categorias -->
         <!-- Importar y exportar productos -->
           <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(format: :xlsx), class: 'btn btn-sm btn-outline-secondary', title: 'Exportar productos a una hoja de cálculo' if can? :export, Product %>
@@ -16,70 +19,77 @@
 
   <% if can? :create, Product %>
     <%= button_new_helper(new_product_path()) %>
-  <% end %> 
+  <% end %>
+
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">
         <!-- Buscador de productos -->
-          <%= form_tag products_path(), {class: 'form-inline', id: 'search_form'} do %>
-              
-              <div class="form-row">
+          <%= form_tag products_path(), { id: 'search_form', class: 'form-inline' } do %>
+
               <!-- BUSCAR POR NOMBRE -->
-                <div class="form-group col-md-4 col-xs-12">
-                  <%= label_tag :name, "Nombre", class: 'sr-only' %>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
-                    </div>
-                    <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+                <div class="input-group col">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
                   </div>
+                  <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form"); clearPagination();' %>
                 </div>
-                <!-- BUSCAR POR NOMBRE -->
+              <!-- BUSCAR POR NOMBRE -->
 
-                <!-- BUSCAR POR CÓDIGO -->
-                <div class="form-group col-md-4 col-xs-12">
-                  <%= label_tag :code, "Código", class: 'sr-only' %>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
-                    </div>
-                    <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form")' %>
+              <!-- BUSCAR POR CÓDIGO -->
+                <div class="input-group col">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
                   </div>
+                  <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form"); clearPagination();' %>
                 </div>
-                <!-- BUSCAR POR CÓDIGO -->
+              <!-- BUSCAR POR CÓDIGO -->
 
-                <!-- BUSCAR POR CATEGORÍA -->
-                <div class="form-group col-md-4 col-xs-12">
-                  <%= label_tag :category, "Categoría", class: 'sr-only' %>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
-                    </div>
-                    <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
+              <!-- BUSCAR POR CATEGORÍA -->
+                <div class="input-group col">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text"><%= icon('fas', 'list') %></div>
                   </div>
+                  <%= select_tag :category, options_for_select( ProductCategory.all.map { |c| [c.name, c.id] }, params[:category] ),{class: 'form-control', prompt: "Todos" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
                 </div>
               <!-- BUSCAR POR CATEGORÍA -->
 
               <!-- BUSCAR POR STOCK -->
-              <label>
+              <!-- <label>
                 <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'remoteSubmit("#search_form")'} %>
-                Sólo con disponibilidad en inventario
-              </label>
+                <%= label_tag :stock, " Sólo con disponibilidad en inventario" %>
+              </label> -->
+              <!-- BUSCAR POR STOCK -->
+              <!-- TIPO DE VISTA -->
+              <div class="col">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <!-- CAMBIAR TIPO DE VISTA -->
+                  <%= button_tag icon('fas', 'list-ul'), onclick: 'changeView("list")', type: 'button', class: 'btn btn-secondary' %>
+                  <%= button_tag icon('fas', 'th-large'), onclick: 'changeView("table")', type: 'button', class: 'btn btn-secondary' %>
+                  <!-- CAMBIAR TIPO DE VISTA -->
+                </div>
+                <%= hidden_field_tag :view, params[:view], onchange: 'remoteSubmit("#search_form")' %>
+              </div>
+              <!-- TIPO DE VISTA -->
+              <%= hidden_field_tag :page, 1 %>
             </div>
-            <!-- BUSCAR POR STOCK -->
           <% end %>
         <!-- Buscador de productos -->
-      </div>
       <div class="card-body">
         <!-- Tabla de Producto -->
-          <div id="products_table">
-            <%= render 'products_table' %>
-          </div>
+        <div id="products-wrapper">
+          <%= render 'products_table' %>
+        </div>
         <!-- Tabla de Producto -->
       </div>
     </div>
   </div>
-
 </div>
 
 <%= render 'import' %>
+
+<script type="text/javascript">
+	function clearPagination() {
+		$('#page').val(1);
+	}
+</script>

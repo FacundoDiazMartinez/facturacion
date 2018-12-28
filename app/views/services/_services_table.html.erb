@@ -4,14 +4,31 @@
 		<div class="col-xs-12 col-md-6 col-lg-4 mb-4">
 			<div class="card card-shadow" style="height:100%;">
 				<%= link_to service_path(service.id) do %>
+				<br>
 				<div class="card-div-img-top" style="background: url('<%= service.photo %>')">
 				</div>
 				<div class="card-body">
 					<center>
 						<h5 class="card-title"><%= service.name %></h5>
 						<p class="card-text text-muted"><%= service.category_name %></p>
-						<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(service.price) %></span></strong></p>
 					</center>
+
+						<table style="width: 100%"> <!--  Tabla para alinear horizontalmente precio y botón eliminar -->
+							<tr>
+								<td style="width: 33%;"></td>
+								<td style="width: 34%">
+									<center>
+										<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(service.price) %></span></strong></p>
+									</center>
+								</td>
+								<td style="width: 33%;">
+									<center>
+										<%= link_to icon('fas', 'trash').html_safe, service , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+									</center>
+								</td>
+							</tr>
+						</table>
+
 				</div>
 				<% end -%>
 			</div>

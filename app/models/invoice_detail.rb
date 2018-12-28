@@ -2,7 +2,10 @@ class InvoiceDetail < ApplicationRecord
   belongs_to :invoice
   belongs_to :product, optional: true
 
+  has_many :commissioners
+
   accepts_nested_attributes_for :product, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :commissioners, reject_if: :all_blank, allow_destroy: true
 
   before_validation :check_product
 

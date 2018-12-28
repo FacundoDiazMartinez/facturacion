@@ -1,17 +1,19 @@
-<% if !(@role.name == "Administrador") %>
-<div class="card-group" id="accordion-list" role="tablist" aria-multiselectable="false">
+
+<% if !params[:friendly_name_tag].blank? %>
+  <% if !(@role.name == "Administrador") %>
+  <% permission_collapse = @permissions.map{ |p| p if p.friendly_name.name == params[:friendly_name_tag] }.compact.sort_by{ |p| p[:description] } %>
   <ul class="card card-fluid">  
-    <li role="presentation" class="card-header" role="tab">
-        <a role="button" class="collapsible"href="#">
-          <%= params[:friendly_name_tag] %>
-        </a>
-      </li>
+      <div role="presentation" class="card-header" role="tab" style="text-align: center;">
+        <strong> <%= params[:friendly_name_tag].upcase %> </strong>
+        <div class="float-right">
+          <span class="badge badge-pill badge-dark"><%= permission_collapse.count %></span>
+        </div>
+      </div>
       <div id="permission_collapse_<%= params[:friendly_name_position_id_tag] %>">
-        <ul class="card-body">
-          <% permission_collapse = @permissions.map{ |p| p if p.friendly_name.name == params[:friendly_name_tag] }.compact.sort_by{ |p| p[:description] } %>
+        <ul class="card-body">          
           <% if !permission_collapse.blank? %>
             <% permission_collapse.each_with_index do |permission, j| %>
-                <li id="list_permission_id_<%= permission[:id] %>">
+                <li id="list_permission_id_<%= permission[:id] %>" class="permission_list">
                   <div class="row">
                     <div class="col">
                     <%= permission[:description] %>
@@ -34,10 +36,14 @@
         </ul>
       </div>
   </ul>
-</div>
+  <% else %>
+    <center>
+      <h4>Este rol posee todos los permisos</h4>
+    </center>
+  <% end %>
 <% else %>
   <center>
-    <h3>Este rol posee todos los permisos</h3>
+    <h4>Seleccione una categoría</h4>
   </center>
-<% end %>
+<% end -%>
 
