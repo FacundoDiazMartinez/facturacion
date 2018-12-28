@@ -2,7 +2,7 @@
 	<div class="fields">
 		<div class="form-group m-4">
 			<%= label_tag :id, "Seleccione la factura que desea pagar" %>
-			<%= autocomplete_field_tag :number, nil, autocomplete_invoice_number_invoices_path(client_id: @client.id), class: 'invoice-number-autocomplete_field form-control form-control-sm' , required: true %>
+			<%= autocomplete_field_tag "number_#{invf.index}", nil, autocomplete_invoice_number_invoices_path(client_id: @client.id), class: 'invoice-number-autocomplete_field form-control form-control-sm' , required: true  %>
 			<%= invf.hidden_field :id, class: 'invoice_id' %>
 		</div>
 		<div class="payments" style="display: none;">
