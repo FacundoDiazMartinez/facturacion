@@ -9,11 +9,6 @@
 		padding-left: 0px;
 	}
 
-	ul.msj-body {
-		text-align:left;
-		list-style: none;
-		margin-left: 5px;
-	}
 
 	li.card-header {
 		list-style: none;
@@ -70,7 +65,10 @@
 	}
 
 	li.permission_list {
+		text-align:left;
 		list-style: none;
+		margin-left: 5px;
+		margin-right: 5px;
 	}
 
 	span.badge {
