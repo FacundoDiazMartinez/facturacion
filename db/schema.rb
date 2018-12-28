@@ -563,12 +563,9 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
-<<<<<<< HEAD
   add_foreign_key "clients", "users"
-=======
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
->>>>>>> 03f85542e401e5e2156592706d97c9183028fad3
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"

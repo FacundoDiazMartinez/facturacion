@@ -1,5 +1,5 @@
 class Invoices::ClientsController < ApplicationController
-	#before_action :set_invoice, only: [:edit, :update]
+	before_action :set_invoice, only: [:edit, :update]
 	before_action :set_client, only: [:edit, :update]
 
 	def show
@@ -34,7 +34,11 @@ class Invoices::ClientsController < ApplicationController
 	protected
 
 		def set_invoice
-			@invoice = current_user.company.invoices.find(params[:invoice_id])
+			if params[:invoice_id].blank?
+				@invoice = Invoice.new
+			else
+				@invoice = current_user.company.invoices.find(params[:invoice_id])
+			end
 		end
 
 		def set_client
