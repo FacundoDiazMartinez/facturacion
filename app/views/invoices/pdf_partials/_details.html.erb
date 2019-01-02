@@ -20,10 +20,8 @@
         <td><%= det.product.code %></td>
         <td><%= det.product.name %></td>
         <% if det.bonus_amount != 0 %>
-          <% pp "-------------------------CON RECARGO/DESCUENTO------------------" %>
           <td class="text_right">$ <%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
         <% else %>
-          <% pp "-------------------------SIN RECARGO/DESCUENTO------------------" %>
           <td class="text_right">$ <%= det.price_per_unit %></td>
         <% end %>
         <td class="text_right"><%= det.quantity %></td>
