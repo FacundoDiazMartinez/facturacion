@@ -3,6 +3,7 @@
   height: 100%;
   margin:10px 0;
   z-index: 10000;
+  width: 100%;
 }
 
 .ui-menu-item-wrapper:hover, .ui-menu-item-wrapper:focus {
@@ -45,4 +46,5 @@ a.ui-button:active,
 
 .autocomplete-target{
   position: absolute;
+  max-width: 50vw;
 }
