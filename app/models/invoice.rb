@@ -13,7 +13,7 @@ class Invoice < ApplicationRecord
     has_many :products, through: :invoice_details
     has_many :iva_books, dependent: :destroy
     has_many :delivery_notes, dependent: :destroy
-    has_many  :commissioners, through: :invoice_details
+    has_many :commissioners, through: :invoice_details
 
     has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
@@ -23,6 +23,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
+    after_save :touch_commissioners
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
@@ -295,6 +296,10 @@ class Invoice < ApplicationRecord
       def activate_commissions
         commissioners.update_all(active: true)
       end
+
+      def touch_commissioners
+        self.commissioners.map{|c| c.run_callbacks(:save)}
+      end
     #PROCESOS
 
   	#ATRIBUTOS
@@ -340,6 +345,14 @@ class Invoice < ApplicationRecord
 
       def full_number
         "#{sale_point.name} - #{comp_number}" unless not(state == "Confirmado" || state == "Anulado")
+      end
+
+      def full_name
+        "Pto. venta: #{sale_point_name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
+      end
+
+      def name
+        "#{sale_point_name} - #{comp_number}"
       end
   	#ATRIBUTOS
 

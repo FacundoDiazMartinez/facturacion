@@ -296,3 +296,7 @@ td.verical-align{
   left: auto !important;
   text-align: center;
 }
+
+.custom-file-label::after{
+  content: "Buscar" !important;
+}

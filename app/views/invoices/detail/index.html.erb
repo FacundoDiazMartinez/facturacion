@@ -30,7 +30,7 @@
 		    	<tr class="fields" id="<%= f.index %>">
 		    		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 			  			<td>
-			  				<%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
+			  				<%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
 			  				<%= pf.hidden_field :id, class: 'product_id' %>
 			  			</td>
 			  			<td><%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: !@invoice.editable? %></td>
@@ -41,10 +41,12 @@
 							<%= pf.text_field :name, class: 'form-control name', data: {toggle:"tooltip"}, disabled: !@invoice.editable? %>
 						</td>
 						<td><%= pf.number_field :price, class: 'form-control form-control-sm price', disabled: !@invoice.editable? %></td>
-						<td class="only-desktop"><%= pf.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
+						<td class="only-desktop"><%= pf.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
 						<%= pf.hidden_field :company_id, value: current_user.company_id %>
 					<% end %>
-					<td class="text-center"><%= render '/invoices/detail/commissioner_fields', f: f %></td>
+					<td class="text-center">
+						<%= render '/invoices/detail/commissioner_fields', f: f %>
+					</td>
 					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@invoice.editable? %></td>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>

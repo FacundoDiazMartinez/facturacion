@@ -86,8 +86,9 @@ class InvoicesController < ApplicationController
 
   def autocomplete_invoice_number
     term = params[:term]
-    invoices = current_user.company.invoices.joins(:sale_point).where("sale_points.name || ' - ' || invoices.comp_number ILIKE ?", "%#{term}%").order(:updated_at).all
-    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :value => invoice.full_number} }
+    invoices = current_user.company.invoices.joins(:sale_point).select("sale_points.id, sale_points.name as sale_point_name, invoices.sale_point_id, invoices.comp_number, invoices.cbte_fch, invoices.updated_at, invoices.state, invoices.total, invoices.total_pay").where("sale_points.name || ' -  ' || invoices.comp_number ILIKE ? AND (invoices.total > invoices.total_pay) AND client_id = ? AND comp_number IS NOT NULL", "%#{term}%", params[:client_id]).order(:updated_at).all
+
+    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_name, :value => invoice.name, total: invoice.total, faltante: invoice.total - invoice.total_pay} }
   end
 
   def autocomplete_associated_invoice
@@ -117,12 +118,13 @@ class InvoicesController < ApplicationController
     else
       set_invoice
     end
+    @associated = true
     associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice], state: "Confirmado").first
     associated_invoice.invoice_details.each do |id|
-      @invoice.invoice_details.build(id.attributes)
+      @invoice.invoice_details.new(id.attributes)
     end
     associated_invoice.payments.each do |payment|
-      @invoice.payments.build(payment.attributes)
+      @invoice.payments.new(payment.attributes)
     end
   end
 

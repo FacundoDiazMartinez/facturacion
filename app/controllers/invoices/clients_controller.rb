@@ -36,7 +36,6 @@ class Invoices::ClientsController < ApplicationController
 		def set_invoice
 			if params[:invoice_id].blank?
 				@invoice = Invoice.new
-				#@invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
 			else
 				@invoice = current_user.company.invoices.find(params[:invoice_id])
 			end
