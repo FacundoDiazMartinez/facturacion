@@ -123,8 +123,8 @@ class InvoicesController < ApplicationController
     associated_invoice.invoice_details.each do |id|
       @invoice.invoice_details.new(id.attributes)
     end
-    associated_invoice.payments.each do |payment|
-      @invoice.payments.new(payment.attributes)
+    associated_invoice.income_payments.each do |payment|
+      @invoice.income_payments.new(payment.attributes)
     end
   end
 
@@ -136,7 +136,7 @@ class InvoicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, payments_attributes: [:id, :type_of_payment, :total, :payment_date, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name, :tipo], commissioners_attributes: [:id, :user_id, :percentage, :_destroy]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
+      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name, :tipo], commissioners_attributes: [:id, :user_id, :percentage, :_destroy]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
     end
 
     def client_params

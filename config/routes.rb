@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :daily_cashes
   resources :roles do
     resources :role_permissions do
       post :toggle_association, on: :collection

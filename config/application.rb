@@ -21,7 +21,7 @@ module Facturacion
   	config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
   	config.i18n.default_locale = :es
 
-    config.to_prepare do
+    config.after_initialize do
       Devise::SessionsController.skip_before_action   :redirect_to_company
       Devise::PasswordsController.skip_before_action  :redirect_to_company
       Devise::UnlocksController.skip_before_action    :redirect_to_company

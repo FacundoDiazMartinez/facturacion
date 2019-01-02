@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_26_184723) do
+ActiveRecord::Schema.define(version: 2019_01_02_185931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,6 +132,34 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.bigint "locality_id", null: false
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "daily_cash_movements", force: :cascade do |t|
+    t.bigint "daily_cash_id"
+    t.string "movement_type", null: false
+    t.float "amount", default: 0.0, null: false
+    t.bigint "associated_document"
+    t.string "payment_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "flow", default: "income", null: false
+    t.bigint "payment_id"
+    t.index ["daily_cash_id"], name: "index_daily_cash_movements_on_daily_cash_id"
+    t.index ["payment_id"], name: "index_daily_cash_movements_on_payment_id"
+  end
+
+  create_table "daily_cashes", force: :cascade do |t|
+    t.bigint "company_id"
+    t.string "state"
+    t.float "initial_amount", default: 0.0, null: false
+    t.float "final_amount", default: 0.0, null: false
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.date "date", null: false
+    t.float "current_amount", null: false
+    t.index ["company_id"], name: "index_daily_cashes_on_company_id"
+    t.index ["user_id"], name: "index_daily_cashes_on_user_id"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -288,10 +316,13 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "flow", default: "income", null: false
+    t.bigint "purchase_order_id"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
+    t.index ["purchase_order_id"], name: "index_payments_on_purchase_order_id"
   end
 
   create_table "permissions", force: :cascade do |t|
@@ -305,12 +336,12 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
 
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
+    t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
-    t.boolean "active", default: true, null: false
     t.string "iva_aliquot", default: "05", null: false
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
@@ -566,6 +597,10 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
+  add_foreign_key "daily_cash_movements", "daily_cashes"
+  add_foreign_key "daily_cash_movements", "payments"
+  add_foreign_key "daily_cashes", "companies"
+  add_foreign_key "daily_cashes", "users"
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
@@ -584,6 +619,7 @@ ActiveRecord::Schema.define(version: 2018_12_26_184723) do
   add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "invoices"
+  add_foreign_key "payments", "purchase_orders"
   add_foreign_key "permissions", "friendly_names"
   add_foreign_key "product_categories", "companies"
   add_foreign_key "product_categories", "suppliers"

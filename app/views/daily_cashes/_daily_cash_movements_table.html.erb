@@ -1,0 +1,27 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Fecha</th>
+      <th scope="col">Documento asociado</th>
+      <th scope="col">Monto</th>
+      <th scope="col">Medio</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Flujo</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @daily_cash_movements.first.each do |movement| %>
+      <tr>
+        <td><%= l(movement.created_at, format: :short ) %></td>
+        <td><%= movement.associated_document %></td>
+        <td>$<%= movement.amount %></td>
+        <td><%= movement.payment_type %></td>
+        <td><%= movement.movement_type %></td>
+        <td><%= movement.flow_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @daily_cash_movements %>
