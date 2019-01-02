@@ -1,5 +1,5 @@
 class Invoices::ClientsController < ApplicationController
-	#before_action :set_invoice, only: [:edit, :update]
+	before_action :set_invoice, only: [:update]  #Se necesita un invoice porque al renderizar el client_column pregunta si el invoice es editable
 	before_action :set_client, only: [:edit, :update]
 
 	def show
@@ -7,7 +7,7 @@ class Invoices::ClientsController < ApplicationController
 	end
 
 	def edit
-		
+
 	end
 
 	def update
@@ -34,7 +34,12 @@ class Invoices::ClientsController < ApplicationController
 	protected
 
 		def set_invoice
-			@invoice = current_user.company.invoices.find(params[:invoice_id])
+			if params[:invoice_id].blank?
+				@invoice = Invoice.new
+				#@invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
+			else
+				@invoice = current_user.company.invoices.find(params[:invoice_id])
+			end
 		end
 
 		def set_client
