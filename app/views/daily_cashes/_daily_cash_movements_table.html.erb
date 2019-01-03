@@ -11,7 +11,7 @@
   </thead>
 
   <tbody>
-    <% @daily_cash_movements.first.each do |movement| %>
+    <% @daily_cash_movements.each do |movement| %>
       <tr>
         <td><%= l(movement.created_at, format: :short ) %></td>
         <td><%= movement.associated_document %></td>

@@ -4,6 +4,7 @@ class DailyCash < ApplicationRecord
   has_many   :daily_cash_movements
 
   after_save :create_initial_movement, on: :create
+  validates_uniqueness_of :date, scope:  :company_id, message: "No se puede abrir dos veces caja en el mismo día."
 
   #FILTROS DE BUSQUEDA
   	def self.search_by_date date
