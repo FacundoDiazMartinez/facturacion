@@ -1,5 +1,6 @@
 var total_venta = parseInt(0);
 var rest = parseInt(0);
+ var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
 
 $( document ).ready(function() {
 	autocomplete_field();
@@ -55,10 +56,13 @@ $(document).on("change", ".price, .quantity", function(){
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
 	iva_aliquot 		= $(this).closest("tr.fields").find("input.iva_aliquot");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
+	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 
-	b_amount = ((parseFloat(price.val()) * parseFloat(quantity.val())) * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2)
-	console.log(b_amount)
-	bonus_amount.val(b_amount);
+	if (!custom_bonus) {
+		b_amount = ((parseFloat(price.val()) * parseFloat(quantity.val())) * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2)
+		bonus_amount.val(b_amount);
+	}
+
 	total = ((parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val())).toFixed(2);
 
 	subtotal.val(total);
@@ -82,14 +86,20 @@ $(document).on("change", ".bonus_amount", function(){
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
+	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 
 	total 				= parseFloat(price.val()) * parseFloat(quantity.val());
 	b_percentage = (parseFloat(bonus_amount.val()) * 100 / parseFloat(total)).toFixed(2);
 	bonus_percentage.val(b_percentage);
-	price.trigger("change");
+
+	total = parseFloat(total) - parseFloat(bonus_amount.val()).toFixed(2);
+	subtotal.val(total.toFixed(2));
+	custom_bonus = true; //Aquí indicamos que el usuario está estableciendo un monto específico que debe respetarse siempre
+	subtotal.trigger("change");
 });
 
 $(document).on("change", ".iva_aliquot", function(){
+
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	iva_amount			= $(this).closest("tr.fields").find("input.iva_amount");
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").find('option:selected');
@@ -100,9 +110,9 @@ $(document).on("change", ".iva_aliquot", function(){
 
 function autocomplete_field() {
 	$('.autocomplete_field').on('railsAutocomplete.select', function(event, data){
-			$(this).closest("tr.fields").find("input.name").val(data.item.name);
-			$(this).closest("tr.fields").find("input.price").val(data.item.price);
-			$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+		$(this).closest("tr.fields").find("input.name").val(data.item.name);
+		$(this).closest("tr.fields").find("input.price").val(data.item.price);
+		$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	});
 }
 
@@ -141,6 +151,7 @@ function complete_payments(){
 }
 
 $(document).on('nested:fieldAdded', function(event){
+	custom_bonus = false; // Al empezar a trabajar con un nuevo producto, se resetea el custom_bonus (Definido al principio)
 	autocomplete_field();
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
@@ -206,7 +217,7 @@ $(document).on("click","#client_name", function(){
 
 function addRechargeToDetails(){
 	var recharge = parseFloat($("#client_recharge").val() * -1);
-	$("input.bonus_percentage").each(function() { 
+	$("input.bonus_percentage").each(function() {
 		$(this).val(recharge).trigger("change");
 	})
 }
