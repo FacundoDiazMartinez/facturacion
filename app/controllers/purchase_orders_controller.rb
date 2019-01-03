@@ -39,12 +39,12 @@ class PurchaseOrdersController < ApplicationController
   # POST /purchase_orders
   # POST /purchase_orders.json
   def create
+    @purchase_orders = current_user.company.purchase_orders.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("purchase_orders.created_at DESC").paginate(page: params[:page])
     @purchase_order = current_user.company.purchase_orders.new(purchase_order_params)
     @purchase_order.user_id = current_user.id
     respond_to do |format|
       if @purchase_order.save
-        format.html { redirect_to @purchase_order, notice: 'La órden de compra fue creada exitosamente.' }
-        format.json { render :show, status: :created, location: @purchase_order }
+        format.html { redirect_to '/purchase_orders', notice: 'La órden de compra fue creada exitosamente.' }
       else
         format.html { render :new }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }

@@ -1,5 +1,5 @@
 class Invoices::ClientsController < ApplicationController
-	before_action :set_invoice, only: [:edit, :update]
+	before_action :set_invoice, only: [:update]  #Se necesita un invoice porque al renderizar el client_column pregunta si el invoice es editable
 	before_action :set_client, only: [:edit, :update]
 
 	def show
@@ -7,7 +7,7 @@ class Invoices::ClientsController < ApplicationController
 	end
 
 	def edit
-		
+
 	end
 
 	def update
