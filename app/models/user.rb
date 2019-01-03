@@ -88,7 +88,7 @@ class User < ApplicationRecord
 			if self.has_management_role?
 				"Administrador"
 			else
-				self.roles.nil? ? "Sin acceso" : self.roles.first.name
+				self.roles.blank? ? "Sin acceso" : self.roles.first.name
 			end
 		end
 

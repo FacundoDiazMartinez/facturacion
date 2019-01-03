@@ -155,7 +155,10 @@ es:
         name:  "Nombre"
         location: "Ubicación"
         stock_count: "Stock actual"
-
+      daily_cash:
+        initial_amount: "Monto de apertura"
+        final_amount: "Monto de cierre"
+        state: "Estado"
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"

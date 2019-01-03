@@ -1,0 +1,16 @@
+<%= form_for @daily_cash do |form| %>
+	<div class="modal-body">
+		<div class="form-group">
+			<%= label_tag :date, "Fecha" %>
+			<%= text_field_tag :date, l(Date.today), class: 'form-control', required: true, disabled: true %>
+		</div>
+		<div class="form-group">
+			<%= form.label :initial_amount %>
+			<%= form.number_field :initial_amount, value: DailyCash.last_value(current_user.company_id), class: 'form-control', required: true %>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		<%= save_button %>
+	</div>
+<% end -%>

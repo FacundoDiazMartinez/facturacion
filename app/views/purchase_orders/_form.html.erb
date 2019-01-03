@@ -71,7 +71,7 @@
           <% if not @purchase_order.new_record? %>
             <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
           <% end %>
-          <% if !@purchase_order.state == "Aprobado" && !@purchase_order.new_record?%>
+          <% if @purchase_order.state != "Aprobado" && !@purchase_order.new_record?%>
             <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-success' %>
           <% end %>
         </center>
@@ -81,16 +81,20 @@
   <!-- HEADER -->
 
   <!-- DETALLE -->
-  <p class="text-muted">
-    Conceptos asociados
-    <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
-  </p>
   <div class="card card-shadow">
     <div class="card-body">
       <%= render template: '/purchase_orders/details/index.html.erb', locals:{form: form} %>
     </div>
   </div>
   <!-- DETALLE -->
+
+  <!-- PAGOS -->
+  <div class="card card-shadow">
+    <div class="card-body">
+      <%= render template: '/purchase_orders/payments/index.html.erb', locals:{form: form} %>
+    </div>
+  </div>
+  <!-- PAGOS -->
 
   <%= render '/purchase_orders/details/search_product' %>
 

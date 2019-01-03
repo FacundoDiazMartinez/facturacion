@@ -7,6 +7,10 @@ $( document ).ready(function() {
 	if ($("#invoice_total").val() > 0) {
 		total_venta = parseInt($("#invoice_total").val());
 	}
+
+	if ($("#purchase_order_total").val() > 0) {
+		total_venta = parseInt($("#purchase_order_total").val());
+	}
 });
 
 function setConfirmParam() {

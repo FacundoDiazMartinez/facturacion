@@ -8,7 +8,7 @@ class Invoice < ApplicationRecord
     default_scope { where(active: true) }
 
 
-    has_many :payments, dependent: :destroy
+    has_many :income_payments, dependent: :destroy
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
     has_many :iva_books, dependent: :destroy
@@ -18,7 +18,7 @@ class Invoice < ApplicationRecord
     has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
 
-    accepts_nested_attributes_for :payments, allow_destroy: true, reject_if: :all_blank
+    accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
@@ -320,7 +320,7 @@ class Invoice < ApplicationRecord
       end
 
       def sum_payments
-        self.payments.sum(:total)
+        self.income_payments.sum(:total)
       end
 
       def cbte_fch
@@ -353,6 +353,20 @@ class Invoice < ApplicationRecord
 
       def name
         "#{sale_point_name} - #{comp_number}"
+      end
+
+      def sale_point_name
+        sale_point.name
+      end
+
+      def name_with_comp
+        if is_credit_note?
+          "Nota de crédito: #{name}"
+        elsif is_debit_note?
+          "Nota de débito: #{name}"
+        else
+          "Factura: #{name}"
+        end
       end
   	#ATRIBUTOS
 
@@ -470,8 +484,8 @@ class Invoice < ApplicationRecord
     #FILL_COMP_NUMBER
 
     def all_payments_string
-      if !self.payments.nil?
-        array_pagos = self.payments.map{|p| {type: p.type_of_payment, name: p.payment_name, total: p.total}}
+      if !self.income_payments.nil?
+        array_pagos = self.income_payments.map{|p| {type: p.type_of_payment, name: p.payment_name, total: p.total}}
         pagos_reduced = []
 
         # agrupamos pagos segun tipo de pago y a continuación se suman los "totales" de cada grupo

@@ -3,14 +3,15 @@ class PurchaseOrder < ApplicationRecord
   belongs_to :user
   belongs_to :company
 
-  has_many :payments
+  has_many :expense_payments
   has_many :purchase_order_details
+  has_many :payments
 
   has_one :product
 
   default_scope { where(active: true) }
 
-  accepts_nested_attributes_for :payments, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :expense_payments, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :purchase_order_details, reject_if: :all_blank, allow_destroy: true
 
   before_create :set_number
@@ -44,10 +45,18 @@ class PurchaseOrder < ApplicationRecord
       "Nº: #{number} - De: #{supplier.name}"
     end
 
+    def name_with_comp
+      "Orden de compra: #{number}"
+    end
+
     def created_at
       if not super.blank?
   			I18n.l(super.to_date)
   		end
+    end
+
+    def editable?
+      state != "Anulado"
     end
   #ATRIBUTOS
 

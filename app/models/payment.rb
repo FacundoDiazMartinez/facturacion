@@ -1,11 +1,8 @@
 class Payment < ApplicationRecord
-  belongs_to :invoice
   has_one :delayed_job, dependent: :destroy
 
-  after_save :set_total_pay_to_invoice
-  after_save :set_notification
-
   after_initialize :set_payment_date
+  after_save :save_daily_cash_movement
 
   default_scope { where(active: true) }
 
@@ -19,33 +16,26 @@ class Payment < ApplicationRecord
   }
 
   #ATRIBUTOS
-  	def set_total_pay_to_invoice
-  		invoice.update_attribute(:total_pay, invoice.sum_payments)
-  	end
-    
     def payment_name
       TYPES[type_of_payment]
     end
 
     def payment_name
       TYPES[type_of_payment]
+    end
+
+    def associated_document
+      if !invoice_id.nil?
+        invoice.name_with_comp
+      else
+        purchase_order.name_with_comp
+      end
     end
   #ATRIBUTOS
 
   #PROCESOS
-    def set_notification
-      Notification.create_from_payment(self)
-    end
-
     def set_payment_date
       self.payment_date ||= Date.today
-    end
-
-  #PROCESOS
-
-  #FUNCIONES
-    def self.set_payment
-      any? ? all : new
     end
 
     def destroy
@@ -54,5 +44,18 @@ class Payment < ApplicationRecord
       freeze
     end
 
+    def save_daily_cash_movement
+      if payment_date == Date.today
+        DailyCashMovement.save_from_payment(self)
+      else
+        DailyCashMovement.delay(run_at: payment_date).save_from_payment(self)
+      end
+    end
+  #PROCESOS
+
+  #FUNCIONES
+    def self.set_payment
+      any? ? all : new
+    end
   #FUNCIONES
 end

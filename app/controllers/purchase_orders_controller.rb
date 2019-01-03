@@ -39,12 +39,12 @@ class PurchaseOrdersController < ApplicationController
   # POST /purchase_orders
   # POST /purchase_orders.json
   def create
+    @purchase_orders = current_user.company.purchase_orders.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("purchase_orders.created_at DESC").paginate(page: params[:page])
     @purchase_order = current_user.company.purchase_orders.new(purchase_order_params)
     @purchase_order.user_id = current_user.id
     respond_to do |format|
       if @purchase_order.save
-        format.html { redirect_to @purchase_order, notice: 'La órden de compra fue creada exitosamente.' }
-        format.json { render :show, status: :created, location: @purchase_order }
+        format.html { redirect_to '/purchase_orders', notice: 'La órden de compra fue creada exitosamente.' }
       else
         format.html { render :new }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }
@@ -127,6 +127,6 @@ class PurchaseOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_order_params
-      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :user_id, :shipping, :shipping_cost, :company_id, purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :name, :price]])
+      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :user_id, :shipping, :shipping_cost, :company_id, expense_payments_attributes: [:id, :type_of_payment, :total, :_destroy], purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :name, :price]])
     end
 end
