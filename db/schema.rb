@@ -316,7 +316,7 @@ ActiveRecord::Schema.define(version: 2019_01_02_185931) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
