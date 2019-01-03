@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th scope="col">Fecha</th>
+      <th scope="col">Usuario</th>
       <th scope="col">Documento asociado</th>
       <th scope="col">Monto</th>
       <th scope="col">Medio</th>
@@ -13,7 +14,8 @@
   <tbody>
     <% @daily_cash_movements.each do |movement| %>
       <tr>
-        <td><%= l(movement.created_at, format: :short ) %></td>
+        <td><%= l(movement.created_at, format: "%d/%m/%Y - %H:%M" ) %></td>
+        <td><%= movement.daily_cash.user.name %></td>
         <td><%= movement.associated_document %></td>
         <td>$<%= movement.amount %></td>
         <td><%= movement.payment_type %></td>
