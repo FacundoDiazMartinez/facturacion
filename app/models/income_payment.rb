@@ -14,7 +14,7 @@ class IncomePayment < Payment
 
 	#PROCESOS
 		def set_total_pay_to_invoice
-	  		invoice.update_attribute(:total_pay, invoice.sum_payments)
+	  		invoice.update_column(:total_pay, invoice.sum_payments)
 	  	end
 
 	  	def set_notification

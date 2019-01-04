@@ -54,7 +54,7 @@ class DailyCash < ApplicationRecord
   	end
 
     def self.current_daily_cash company_id
-      daily = Company.find(company_id).daily_cashes.find_by_date(Date.today)
+      daily = Company.find(company_id).daily_cashes.where(state: "Abierta").find_by_date(Date.today)
       if daily.nil?
         raise Exceptions::DailyCashClose
       else
@@ -70,14 +70,24 @@ class DailyCash < ApplicationRecord
       end
     end
 
-    def self.all_daily_cash_movements daily_cash
+    def self.all_daily_cash_movements daily_cash, user, payment_type
       daily_cash_movements = []
       if not daily_cash.nil?
-        daily_cash.daily_cash_movements.each do |dcm|
+        daily_cash.daily_cash_movements.search_by_user(user).search_by_payment_type(payment_type).order("created_at ASC").each do |dcm|
           daily_cash_movements << dcm 
         end
       end
       return daily_cash_movements
+    end
+
+    def open_flow
+      if initial_amount > 0
+        "income"
+      elsif initial_amount < 0 
+        "expense"
+      else
+        "neutral"
+      end
     end
   #FUNCIONES
 
@@ -87,8 +97,8 @@ class DailyCash < ApplicationRecord
         movement_type: "Apertura de caja",
         amount: initial_amount,
         associated_document: "-",
-        payment_type: "",
-        flow: "income",
+        payment_type: "0",
+        flow: open_flow,
         user_id: @current_user
       )
     end
@@ -105,13 +115,23 @@ class DailyCash < ApplicationRecord
     def close_daily_cash
       if current_amount != final_amount
         diferencia = final_amount - current_amount
-        return self.daily_cash_movements.create(
+        self.daily_cash_movements.create(
           amount: diferencia,
           movement_type: "Ajuste",
+          payment_type: "0",
           flow: diferencia > 0 ? "income" : "expense",
+          current_balance: final_amount,
           observation:  "Ajuste generado automaticamente por el sistema. Al momento de realizarse se observa monto de cierre igual a $#{final_amount}, monto de caja al momento de cierre igual a $#{current_amount}."
         )
       end
-    end    
+      self.daily_cash_movements.create(
+          amount: 0,
+          movement_type: "Cierre de caja",
+          payment_type: "0",
+          flow: "neutral",
+          current_balance: self.final_amount,
+          observation:  "Cierre de caja. Se registra un monto de cierre de #{self.final_amount} a la fecha.."
+        )
+    end
   #PROCESOS
 end

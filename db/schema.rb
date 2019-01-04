@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_04_144055) do
+ActiveRecord::Schema.define(version: 2019_01_04_150402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_144055) do
     t.bigint "payment_id"
     t.string "observation"
     t.bigint "user_id"
+    t.float "current_balance", default: 0.0, null: false
     t.index ["daily_cash_id"], name: "index_daily_cash_movements_on_daily_cash_id"
     t.index ["payment_id"], name: "index_daily_cash_movements_on_payment_id"
     t.index ["user_id"], name: "index_daily_cash_movements_on_user_id"
@@ -317,7 +318,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_144055) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false

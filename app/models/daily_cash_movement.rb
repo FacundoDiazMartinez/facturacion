@@ -5,6 +5,9 @@ class DailyCashMovement < ApplicationRecord
 
   after_initialize :set_daily_cash
   after_save :touch_daily_cash_current_amount
+  before_save :update_others_movements, if: Proc.new{|dcm|  !dcm.new_record?}
+  before_validation :set_payment_type
+
 
   TYPES = ["Pago", "Ajuste"]
 
@@ -21,6 +24,14 @@ class DailyCashMovement < ApplicationRecord
         all 
       end
     end
+
+    def self.search_by_payment_type payment_type
+      if !payment_type.nil?
+        where(payment_type: payment_type)
+      else
+        all 
+      end
+    end
   #FILTROS DE BUSQUEDA
 
   #ATRIBUTOS
@@ -30,7 +41,9 @@ class DailyCashMovement < ApplicationRecord
   			"Ingreso"
   		when "expense"
   			"Egreso"
-  		else
+  		when "neutral"
+        "Neutro"
+      else
   			"-"
   		end
   	end
@@ -46,7 +59,8 @@ class DailyCashMovement < ApplicationRecord
 
   #PROCESOS
   	def self.save_from_payment payment, company_id
-  		movement = where(daily_cash_id: DailyCash.current_daily_cash(company_id).id, payment_id: payment.id).first_or_initialize
+      daily_cash = DailyCash.current_daily_cash(company_id)
+  		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
   		movement.movement_type 			   =  "Pago"
   		movement.amount 				       =  payment.total
   		movement.associated_document 	 =  payment.associated_document
@@ -54,6 +68,9 @@ class DailyCashMovement < ApplicationRecord
   		movement.flow 					       =  payment.flow
   		movement.payment_id 			     =  payment.id
       movement.user_id               =  payment.user_id
+      if movement.new_record?
+        movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
+      end
   		movement.save
   	end
 
@@ -63,6 +80,25 @@ class DailyCashMovement < ApplicationRecord
 
     def set_daily_cash
       self.daily_cash_id ||= DailyCash.current_daily_cash(User.find(self.user_id).company_id).id
+    end
+
+    def set_payment_type
+       self.payment_type ||= "0"
+    end
+
+    def update_others_movements
+      pp "CALCULOS"
+      pp amount
+      pp amount_was
+      dif = amount - amount_was
+      if dif != 0.0
+        pp "ENTRO #{dif}"
+        next_movements = DailyCashMovement.where("created_at >= ? AND daily_cash_id = ?", created_at, daily_cash_id)
+        next_movements.each do |dcm|
+          balance = dcm.current_balance + dif
+          dcm.update_column(:current_balance, balance)
+        end
+      end
     end
   #PROCESOS
 end

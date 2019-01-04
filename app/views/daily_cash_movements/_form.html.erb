@@ -18,10 +18,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="form-group">
-			<%= form.label :payment_type, "Medio" %>
-			<%= form.select :payment_type, Payment::TYPES.map{|t| [t.last, t.first]}, {}, {class: 'form-control'} %>
-		</div>
 		<div class="row">
 			<div class="col">
 				<div class="form-group">
