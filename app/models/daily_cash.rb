@@ -11,6 +11,15 @@ class DailyCash < ApplicationRecord
 
   STATES = ["Abierta", "Cerrada"]
 
+  PAYMENT_TYPES = {
+    "Caja diaria"             => "0",
+    "Tarjeta de crédito"      => "1",
+    "Tarjeta de débito"       => "2",
+    "Transferencia bancaria"  => "3",
+    "Cheque"                  => "4",
+    "Retenciones"             => "5"
+  }
+
   #ATRIBUTOS
     def current_user=(user)
       @current_user = user 
@@ -22,7 +31,7 @@ class DailyCash < ApplicationRecord
   		if date.blank?
   			date = Date.today
   		end
-      find_by_date(date)		
+      find_by_date(date)
   	end
 
   	def self.search_by_user user
@@ -59,6 +68,16 @@ class DailyCash < ApplicationRecord
       else
         return daily_cash.state == "Abierta"
       end
+    end
+
+    def self.all_daily_cash_movements daily_cash
+      daily_cash_movements = []
+      if not daily_cash.nil?
+        daily_cash.daily_cash_movements.each do |dcm|
+          daily_cash_movements << dcm 
+        end
+      end
+      return daily_cash_movements
     end
   #FUNCIONES
 

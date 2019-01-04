@@ -10,7 +10,7 @@ class DailyCashMovement < ApplicationRecord
 
   FLOW_TYPES = {
     "Egreso"    => "expense",
-     "Ingreso"  => "income"
+    "Ingreso"   => "income"
    }
 
   #FILTROS DE BUSQUEDA
@@ -53,6 +53,7 @@ class DailyCashMovement < ApplicationRecord
   		movement.payment_type			     =  payment.type_of_payment
   		movement.flow 					       =  payment.flow
   		movement.payment_id 			     =  payment.id
+      movement.user_id               =  payment.user_id
   		movement.save
   	end
 

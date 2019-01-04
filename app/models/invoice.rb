@@ -354,7 +354,11 @@ class Invoice < ApplicationRecord
       end
 
       def name
-        "#{sale_point_name} - #{comp_number}"
+        if comp_number.nil? 
+          "Sin confirmar"
+        else
+          "#{sale_point_name} - #{comp_number}"
+        end
       end
 
       def sale_point_name
