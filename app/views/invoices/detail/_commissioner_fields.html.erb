@@ -10,7 +10,7 @@
 			</div>
 			<div class="modal-body">
 			  	<div id="commissioners_fields_<%= f.index %>">
-				  	<%= f.fields_for :commissioners, wrapper: false do |cf| %>
+				  	<%= f.fields_for :commissioners do |cf| %>
 				  		<div class="row fields">
 					  		<div class="form-group col-5">
 					  			<%= cf.label :user_id, "Comisionante" %>

@@ -1,17 +1,17 @@
 class Commissioner < ApplicationRecord
-  	belongs_to :user
+  	belongs_to :user, optional: true
   	belongs_to :invoice_detail, optional: true
 
-  	after_save :set_total
+
+    before_validation :set_total_commission #se setea en 0 el total de comisión, para después modificarlo cuando se guarda la factura
+    validates_presence_of :user_id, message: "Esta intentado guardar comisiones sin personal asignado."
+
     default_scope {joins(invoice_detail: :invoice).where("invoices.active = 't'")}
-  	def set_total
-  		pp invoice
-  		if invoice.is_credit_note? 
-  		 	update_column(:total_commission, -(invoice.total.to_f * percentage.to_f / 100))
-  		else
-  			update_column(:total_commission, invoice.total.to_f * percentage.to_f / 100)
-  		end
-  	end
+
+
+    def set_total_commission
+      self.total_commission = invoice_detail.subtotal.to_f * percentage.to_f / 100
+    end
 
   	def invoice
   		invoice_detail.invoice
@@ -44,7 +44,7 @@ class Commissioner < ApplicationRecord
 			 all
 		  end
     end
-    
+
     def self.search_by_cbte_number cbte_number
       if not cbte_number.blank?
         joins(invoice_detail: :invoice).where("invoices.comp_number ILIKE ?", "%#{cbte_number}%")

@@ -2,7 +2,7 @@ class InvoiceDetail < ApplicationRecord
   belongs_to :invoice
   belongs_to :product, optional: true
 
-  has_many :commissioners
+  has_many :commissioners, dependent: :destroy
 
   accepts_nested_attributes_for :product, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :commissioners, reject_if: :all_blank, allow_destroy: true
@@ -66,10 +66,6 @@ class InvoiceDetail < ApplicationRecord
       end
     end
 
-    #def destroy
-      #update_column(:active,false)
-    #end
-
     def set_total_to_invoice
       invoice.update_attribute(:total, invoice.sum_details)
     end
@@ -82,13 +78,20 @@ class InvoiceDetail < ApplicationRecord
       super
     end
 
-    def commissioners_attributes=(attributes)
-      attributes.each do |num,c|
-        com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first_or_initialize
-        com.percentage = c["percentage"] 
-        com.total_commission = 0
-      end
-    end
+    # def commissioners_attributes=(attributes)
+    #   attributes.each do |num,c|
+    #     if c["_destroy"] == "false"
+    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first_or_initialize
+    #       com.percentage = c["percentage"]
+    #       com.total_commission = 0
+    #     else
+    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first
+    #       if !com.nil?
+    #         com.destroy
+    #       end
+    #     end
+    #   end
+    # end
 
     def product
       Product.unscoped{super}

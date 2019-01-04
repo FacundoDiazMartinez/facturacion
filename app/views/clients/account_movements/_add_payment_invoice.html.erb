@@ -7,7 +7,7 @@
 		</div>
 		<div class="payments" style="display: none;">
 			<div class="info ml-4"></div>
-			<%= invf.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, :payments, class: 'btn btn-sm btn-success float-right mr-4', data: {target: '#payments'}%>
+			<%= invf.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, :income_payments, class: 'btn btn-sm btn-success float-right mr-4', data: {target: '#payments'}%>
 			<div class="table-responsive-sm m-4">
 				<table class="table table-striped invoice-table" id="payments" style="width: 100%;">
 					<thead>
@@ -19,7 +19,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<%= invf.fields_for :payments, invf.object.payments.build, wrapper: false do |f| %>
+						<%= invf.fields_for :income_payments, invf.object.income_payments.build, wrapper: false do |f| %>
 					      	<tr class="fields">
 					      		<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm', style: 'min-width: 100px;'} %></td>
 					      		<td><%= f.number_field :total, class: 'form-control form-control-sm', default: 0.0 %></td>
@@ -34,4 +34,3 @@
 	</div>
 <% end %>
 <hr>
-
