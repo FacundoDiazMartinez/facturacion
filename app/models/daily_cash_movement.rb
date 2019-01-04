@@ -5,8 +5,9 @@ class DailyCashMovement < ApplicationRecord
 
   after_initialize :set_daily_cash
   after_save :touch_daily_cash_current_amount
-
+  before_save :update_others_movements, if: Proc.new{|dcm|  !dcm.new_record?}
   before_validation :set_payment_type
+
 
   TYPES = ["Pago", "Ajuste"]
 
@@ -67,7 +68,9 @@ class DailyCashMovement < ApplicationRecord
   		movement.flow 					       =  payment.flow
   		movement.payment_id 			     =  payment.id
       movement.user_id               =  payment.user_id
-      movement.current_balance       =  daily_cash.current_amount.to_f + payment.total.to_f
+      if movement.new_record?
+        movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
+      end
   		movement.save
   	end
 
@@ -81,6 +84,21 @@ class DailyCashMovement < ApplicationRecord
 
     def set_payment_type
        self.payment_type ||= "0"
-    end 
+    end
+
+    def update_others_movements
+      pp "CALCULOS"
+      pp amount
+      pp amount_was
+      dif = amount - amount_was
+      if dif != 0.0
+        pp "ENTRO #{dif}"
+        next_movements = DailyCashMovement.where("created_at >= ? AND daily_cash_id = ?", created_at, daily_cash_id)
+        next_movements.each do |dcm|
+          balance = dcm.current_balance + dif
+          dcm.update_column(:current_balance, balance)
+        end
+      end
+    end
   #PROCESOS
 end

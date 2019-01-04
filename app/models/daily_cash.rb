@@ -54,7 +54,7 @@ class DailyCash < ApplicationRecord
   	end
 
     def self.current_daily_cash company_id
-      daily = Company.find(company_id).daily_cashes.find_by_date(Date.today)
+      daily = Company.find(company_id).daily_cashes.where(state: "Abierta").find_by_date(Date.today)
       if daily.nil?
         raise Exceptions::DailyCashClose
       else
