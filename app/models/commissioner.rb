@@ -5,6 +5,7 @@ class Commissioner < ApplicationRecord
 
     before_validation :set_total_commission #se setea en 0 el total de comisión, para después modificarlo cuando se guarda la factura
     validates_presence_of :user_id, message: "Esta intentado guardar comisiones sin personal asignado."
+    validates_inclusion_of :percentage, :in => 0..100, message: "El porcentaje de comisión del mecánico no puede superar el 100%"
 
     default_scope {joins(invoice_detail: :invoice).where("invoices.active = 't'")}
 

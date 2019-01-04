@@ -4,6 +4,8 @@ class IncomePayment < Payment
 	after_save :set_notification
 	before_validation :set_flow
 
+	validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
+
 	self.table_name = "payments"
 
 	def self.default_scope

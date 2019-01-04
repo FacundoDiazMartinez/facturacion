@@ -4,7 +4,9 @@
 
   <!-- IMAGEN DE LA EMPRESA -->
   <div class="container-fluid justify-flex-content p-4 light-dark-background">
-    <p class="text-muted">Selecciona un logo para tu empresa</p>
+    <% if @company.logo.blank? %> 
+      <p class="text-muted">Selecciona un logo para tu empresa</p>
+    <% end %>
     <div class="card mb-4 card-shadow" style="width:15%;margin:auto;">
       <div class="comp_container caption captionload">
         <img src="/images/load.gif" width="80%">
