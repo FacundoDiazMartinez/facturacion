@@ -5,7 +5,6 @@
       <th scope="col">Fecha</th>
       <th scope="col">Documento asociado</th>
       <th scope="col">Monto</th>
-      <th scope="col">Medio</th>
       <th scope="col">Tipo</th>
       <th scope="col">Flujo</th>
       <th scope="col"></th>
@@ -19,7 +18,6 @@
         <td><%= l(movement.created_at, format: :short ) %></td>
         <td><%= movement.associated_document %></td>
         <td>$<%= movement.amount %></td>
-        <td><%= Payment::TYPES[movement.payment_type] %></td>
         <td><%= movement.movement_type %></td>
         <td><%= flow_type(movement.flow) %></td>
         <td>

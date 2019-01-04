@@ -6,6 +6,8 @@ class DailyCashMovement < ApplicationRecord
   after_initialize :set_daily_cash
   after_save :touch_daily_cash_current_amount
 
+  before_validation :set_payment_type
+
   TYPES = ["Pago", "Ajuste"]
 
   FLOW_TYPES = {
@@ -17,6 +19,14 @@ class DailyCashMovement < ApplicationRecord
     def self.search_by_user user
       if !user.blank?
         where(user_id: user)
+      else
+        all 
+      end
+    end
+
+    def self.search_by_payment_type payment_type
+      if !payment_type.nil?
+        where(payment_type: payment_type)
       else
         all 
       end
@@ -64,5 +74,9 @@ class DailyCashMovement < ApplicationRecord
     def set_daily_cash
       self.daily_cash_id ||= DailyCash.current_daily_cash(User.find(self.user_id).company_id).id
     end
+
+    def set_payment_type
+       self.payment_type ||= "0"
+    end 
   #PROCESOS
 end

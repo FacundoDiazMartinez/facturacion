@@ -62,10 +62,12 @@ class Payment < ApplicationRecord
     end
 
     def save_daily_cash_movement
-      if payment_date == Date.today
-        DailyCashMovement.save_from_payment(self, company.id)
-      else
-        DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)
+      if payment_type == "0"
+        if payment_date == Date.today
+          DailyCashMovement.save_from_payment(self, company.id)
+        else
+          DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)
+        end
       end
     end
   #PROCESOS

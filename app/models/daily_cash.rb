@@ -70,10 +70,10 @@ class DailyCash < ApplicationRecord
       end
     end
 
-    def self.all_daily_cash_movements daily_cash
+    def self.all_daily_cash_movements daily_cash, user, payment_type
       daily_cash_movements = []
       if not daily_cash.nil?
-        daily_cash.daily_cash_movements.each do |dcm|
+        daily_cash.daily_cash_movements.search_by_user(user).search_by_payment_type(payment_type).order("created_at ASC").each do |dcm|
           daily_cash_movements << dcm 
         end
       end
@@ -87,7 +87,7 @@ class DailyCash < ApplicationRecord
         movement_type: "Apertura de caja",
         amount: initial_amount,
         associated_document: "-",
-        payment_type: "",
+        payment_type: "0",
         flow: "income",
         user_id: @current_user
       )
@@ -108,10 +108,11 @@ class DailyCash < ApplicationRecord
         return self.daily_cash_movements.create(
           amount: diferencia,
           movement_type: "Ajuste",
+          payment_type: "0",
           flow: diferencia > 0 ? "income" : "expense",
           observation:  "Ajuste generado automaticamente por el sistema. Al momento de realizarse se observa monto de cierre igual a $#{final_amount}, monto de caja al momento de cierre igual a $#{current_amount}."
         )
       end
-    end    
+    end
   #PROCESOS
 end
