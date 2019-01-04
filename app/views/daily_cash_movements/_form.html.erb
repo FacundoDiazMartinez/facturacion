@@ -4,21 +4,33 @@
 			<%= form.label :user_id, "Responsable" %>
 			<%= form.select :user_id, current_user.company.users.map{|u| [u.name, u.id]}, {}, class: 'form-control' %>
 		</div>
-		<div class="form-group">
-			<%= form.label :associated_document, "Documento asociado" %>
-			<%= form.text_field :associated_document, class: 'form-control' %>
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<%= form.label :associated_document, "Documento asociado" %>
+					<%= form.text_field :associated_document, class: 'form-control' %>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<%= form.label :amount, "Monto" %>
+					<%= form.text_field :amount, class: 'form-control' %>
+				</div>
+			</div>
 		</div>
-		<div class="form-group">
-			<%= form.label :amount, "Monto" %>
-			<%= form.text_field :amount, class: 'form-control' %>
-		</div>
-		<div class="form-group">
-			<%= form.label :movement_type, "Tipo" %>
-			<%= form.select :movement_type, DailyCashMovement::TYPES, {}, {class: 'form-control'} %>
-		</div>
-		<div class="form-group">
-			<%= form.label :flow, "Fecha" %>
-			<%= form.select :flow, DailyCashMovement::FLOW_TYPES, {}, {class: 'form-control'} %>
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<%= form.label :movement_type, "Tipo" %>
+					<%= form.select :movement_type, DailyCashMovement::TYPES, {}, {class: 'form-control'} %>
+				</div>
+			</div>
+			<div class="col">
+				<div class="form-group">
+					<%= form.label :flow, "Fecha" %>
+					<%= form.select :flow, DailyCashMovement::FLOW_TYPES, {}, {class: 'form-control'} %>
+				</div>
+			</div>
 		</div>
 		<div class="form-group">
 			<%= form.label :observation, "Observación" %>

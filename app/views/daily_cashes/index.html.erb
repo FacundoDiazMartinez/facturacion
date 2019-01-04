@@ -47,6 +47,9 @@
         <% end %>
       </div>
       <div id="daily_cash_movements_table" class="card-body">
+        <% if !@daily_cash.nil? %>
+          <h5><strong>Saldo total:</strong> $ <%= @daily_cash.current_amount %></h5>
+        <% end -%>
         <!-- MOVIMIENTOS ASOCIADOS -->
         <%= render 'daily_cash_movements_table' %>
         <!-- MOVIMIENTOS ASOCIADOS -->

@@ -62,7 +62,7 @@ class Payment < ApplicationRecord
     end
 
     def save_daily_cash_movement
-      if payment_type == "0"
+      if type_of_payment == "0"
         if payment_date == Date.today
           DailyCashMovement.save_from_payment(self, company.id)
         else

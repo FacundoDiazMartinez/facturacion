@@ -40,7 +40,9 @@ class DailyCashMovement < ApplicationRecord
   			"Ingreso"
   		when "expense"
   			"Egreso"
-  		else
+  		when "neutral"
+        "Neutro"
+      else
   			"-"
   		end
   	end
@@ -56,7 +58,8 @@ class DailyCashMovement < ApplicationRecord
 
   #PROCESOS
   	def self.save_from_payment payment, company_id
-  		movement = where(daily_cash_id: DailyCash.current_daily_cash(company_id).id, payment_id: payment.id).first_or_initialize
+      daily_cash = DailyCash.current_daily_cash(company_id)
+  		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
   		movement.movement_type 			   =  "Pago"
   		movement.amount 				       =  payment.total
   		movement.associated_document 	 =  payment.associated_document
@@ -64,6 +67,7 @@ class DailyCashMovement < ApplicationRecord
   		movement.flow 					       =  payment.flow
   		movement.payment_id 			     =  payment.id
       movement.user_id               =  payment.user_id
+      movement.current_balance       =  daily_cash.current_amount.to_f + payment.total.to_f
   		movement.save
   	end
 
