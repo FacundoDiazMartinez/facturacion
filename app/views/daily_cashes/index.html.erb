@@ -1,6 +1,19 @@
 <div class="p-4">
-  <%= title_helper 'Caja diaria' %>
-  <%= button_new_modal_helper(new_daily_cash_path, 'dailyCashtModal') %>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+    <h1 class="h2">Contabilidad</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+      <div class="btn-group">
+        <!-- Movimientos -->
+        <% if !DailyCash.open?(@daily_cash) %>
+          <%= link_to "#{icon('fas', 'door-open')} Abrir caja".html_safe, new_daily_cash_path, class: 'btn btn-sm btn-outline-primary', title: "Abrir caja.", data:{toggle: 'modal', target: '#dailyCashtModal', remote: true} %>
+        <% else %>
+          <%= link_to "#{icon('fas', 'plus')} Añadir movimiento".html_safe, new_daily_cash_movement_path(), class: 'btn btn-sm btn-outline-primary', title: "Genere un nuevo movimiento.", data:{toggle: 'modal', target: '#dailyCashtModal', remote: true} %>
+          <%= link_to "#{icon('fas', 'door-closed')} Cerrar caja".html_safe, edit_daily_cash_path(@daily_cash.id), class: 'btn btn-sm btn-outline-primary', title: "Cerrar caja.", data:{toggle: 'modal', target: '#dailyCashtModal', remote: true} %>
+        <% end -%>
+        <!-- Movimientos -->
+      </div>
+    </div>
+  </div>
 
   <div class="page-section">
     <div class="card card-fluid">
@@ -20,7 +33,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
             </div>
-            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha', onkeyup: 'remoteSubmit("#search_form")' %>
+            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha', onchange: 'remoteSubmit("#search_form")' %>
           </div>
           <!-- BUSCAR POR FECHA -->
         <% end %>
@@ -38,6 +51,15 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div id="daily_cash_modal">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="dailyCashMovementModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="daily_cash_movement_modal">
       </div>
     </div>
   </div>

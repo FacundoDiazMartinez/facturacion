@@ -16,6 +16,7 @@ class Company < ApplicationRecord
 	has_many :services
 	has_many :user_activities, through: :users
 	has_many :daily_cashes
+	has_many :daily_cash_movements, through: :daily_cashes
 
 	belongs_to :province
 	belongs_to :locality

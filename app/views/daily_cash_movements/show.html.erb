@@ -1,0 +1,40 @@
+<div class="modal-header">
+	<h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'exchange-alt') %> Movimiento</h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="modal-body">
+	<div class="form-group">
+		<%= label_tag :date, "Fecha" %>
+		<%= text_field_tag :date, l(@daily_cash_movement.created_at, format: :short), class: 'form-control', disabled: true %>
+	</div>
+	<div class="form-group">
+		<%= label_tag :associated_document, "Documento asociado" %>
+		<%= text_field_tag :associated_document, @daily_cash_movement.associated_document, class: 'form-control', disabled: true %>
+	</div>
+	<div class="form-group">
+		<%= label_tag :amount, "Monto" %>
+		<%= text_field_tag :amount, @daily_cash_movement.amount, class: 'form-control', disabled: true %>
+	</div>
+	<div class="form-group">
+		<%= label_tag :payment_type, "Medio" %>
+		<%= text_field_tag :payment_type, Payment::TYPES[@daily_cash_movement.payment_type], class: 'form-control', disabled: true %>
+	</div>
+	<div class="form-group">
+		<%= label_tag :movement_type, "Tipo" %>
+		<%= text_field_tag :movement_type, @daily_cash_movement.movement_type, class: 'form-control', disabled: true %>
+	</div>
+	<div class="form-group">
+		<%= label_tag :flow, "Fecha" %>
+		<%= text_field_tag :flow, @daily_cash_movement.flow_type, class: 'form-control', disabled: true %>
+	</div>
+	<div class="form-group">
+		<%= label_tag :observation, "Observación" %>
+		<%= text_area_tag :observation, @daily_cash_movement.observation, class: 'form-control', disabled: true %>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+</div>

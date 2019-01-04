@@ -61,8 +61,7 @@ class InvoiceDetail < ApplicationRecord
         product.save
         if not product.errors.any?
           self.price_per_unit   = product.price
-          pp self.measurement_unit = product.measurement_unit
-
+          self.measurement_unit = product.measurement_unit
         end
       end
     end

@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :user_activities
   has_many :client
   has_many :commissioners
+  has_many :daily_cash_movements
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable, :trackable,

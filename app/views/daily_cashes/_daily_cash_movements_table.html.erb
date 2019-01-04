@@ -1,24 +1,31 @@
 <table class="table table-striped">
   <thead>
     <tr>
+      <th scope="col">Responsable</th>
       <th scope="col">Fecha</th>
       <th scope="col">Documento asociado</th>
       <th scope="col">Monto</th>
       <th scope="col">Medio</th>
       <th scope="col">Tipo</th>
       <th scope="col">Flujo</th>
+      <th scope="col"></th>
     </tr>
   </thead>
 
   <tbody>
     <% @daily_cash_movements.each do |movement| %>
       <tr>
+        <td><%= image_tag movement.user_avatar, alt: movement.user_name, class: 'avatar' %> <%= movement.user_name %></td>
         <td><%= l(movement.created_at, format: :short ) %></td>
         <td><%= movement.associated_document %></td>
         <td>$<%= movement.amount %></td>
-        <td><%= movement.payment_type %></td>
+        <td><%= Payment::TYPES[movement.payment_type] %></td>
         <td><%= movement.movement_type %></td>
-        <td><%= movement.flow_type %></td>
+        <td><%= flow_type(movement.flow) %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe, movement, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: "#dailyCashMovementModal", toggle: "modal", remote: true} %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_daily_cash_movement_path(movement.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: "#dailyCashMovementModal", toggle: "modal", remote: true} %>
+        </td>
       </tr>
     <% end %>
   </tbody>
