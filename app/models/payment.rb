@@ -21,12 +21,23 @@ class Payment < ApplicationRecord
     end
 
     def associated_document
+      pp self
       if !invoice_id.nil?
-        invoice.name_with_comp
+        pp invoice.name_with_comp
       elsif !purchase_order_id.nil?
-        purchase_order.name_with_comp
+        pp purchase_order.name_with_comp
       else
-        ""
+        pp ""
+      end
+    end
+
+    def user_id
+      if !invoice_id.nil?
+        invoice.user_id
+      elsif !purchase_order_id.nil?
+        purchase_order.user_id
+      else
+        nil
       end
     end
 

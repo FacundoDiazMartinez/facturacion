@@ -3,14 +3,8 @@ class DailyCashesController < ApplicationController
   # GET /daily_cashes
   # GET /daily_cashes.json
   def index
-    @daily_cash = current_user.company.daily_cashes.includes(daily_cash_movements: :user).search_by_date(params[:date] || Date.today)
-    @daily_cash_movements = []
-    if not @daily_cash.nil?
-      @daily_cash.daily_cash_movements.each do |dcm|
-        @daily_cash_movements << dcm 
-      end
-    end
-    @daily_cash_movements = @daily_cash_movements.paginate(page: params[:page], per_page: 10)
+    @daily_cash = current_user.company.daily_cashes.search_by_user(params[:user]).search_by_date(params[:date] || Date.today)
+    @daily_cash_movements = DailyCash.all_daily_cash_movements(@daily_cash).paginate(page: params[:page], per_page: 10)
   end
 
   def new
