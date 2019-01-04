@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_02_185931) do
+ActiveRecord::Schema.define(version: 2019_01_03_173109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2019_01_02_185931) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.integer "number", null: false
+    t.string "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -144,8 +144,11 @@ ActiveRecord::Schema.define(version: 2019_01_02_185931) do
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
     t.bigint "payment_id"
+    t.string "observation"
+    t.bigint "user_id"
     t.index ["daily_cash_id"], name: "index_daily_cash_movements_on_daily_cash_id"
     t.index ["payment_id"], name: "index_daily_cash_movements_on_payment_id"
+    t.index ["user_id"], name: "index_daily_cash_movements_on_user_id"
   end
 
   create_table "daily_cashes", force: :cascade do |t|
@@ -153,13 +156,11 @@ ActiveRecord::Schema.define(version: 2019_01_02_185931) do
     t.string "state"
     t.float "initial_amount", default: 0.0, null: false
     t.float "final_amount", default: 0.0, null: false
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "date", null: false
     t.float "current_amount", null: false
     t.index ["company_id"], name: "index_daily_cashes_on_company_id"
-    t.index ["user_id"], name: "index_daily_cashes_on_user_id"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -512,7 +513,7 @@ ActiveRecord::Schema.define(version: 2019_01_02_185931) do
     t.string "titular"
     t.string "account_number"
     t.string "bank_name"
-    t.string "iva_cond", null: false
+    t.string "iva_cond", default: "Responsable Inscripto", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
@@ -599,8 +600,8 @@ ActiveRecord::Schema.define(version: 2019_01_02_185931) do
   add_foreign_key "commissioners", "users"
   add_foreign_key "daily_cash_movements", "daily_cashes"
   add_foreign_key "daily_cash_movements", "payments"
+  add_foreign_key "daily_cash_movements", "users"
   add_foreign_key "daily_cashes", "companies"
-  add_foreign_key "daily_cashes", "users"
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"

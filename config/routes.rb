@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
 
 
+  get 'daily_cash_movements/show'
   resources :daily_cashes
+  resources :daily_cash_movements
   resources :roles do
     resources :role_permissions do
       post :toggle_association, on: :collection
