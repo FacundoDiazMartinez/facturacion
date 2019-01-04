@@ -57,8 +57,7 @@ class PurchaseOrdersController < ApplicationController
   def update
     respond_to do |format|
       if @purchase_order.update(purchase_order_params)
-        format.html { redirect_to @purchase_order, notice: 'La órden de compra fue actualizada exitosamente.' }
-        format.json { render :show, status: :ok, location: @purchase_order }
+        format.html { redirect_to '/purchase_orders', notice: 'La órden de compra fue actualizada exitosamente.' }
       else
         format.html { render :edit }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }

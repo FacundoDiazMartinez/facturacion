@@ -53,17 +53,17 @@ class Client < ApplicationRecord
 	# TABLA
 
 	#FILTROS DE BUSQUEDA
-		def self.find_by_full_document params={}
-			where(document_type: params[:document_type], document_number: params[:document_number])
-		end
+	def self.find_by_full_document params={}
+		where(document_type: params[:document_type], document_number: params[:document_number])
+	end
 
-		def self.search_by_name name
-    	if !name.nil?
-      	where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
-    	else
-      	all
-    	end
-    end
+	def self.search_by_name name
+		if !name.nil?
+  			where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
+		else
+  			all
+		end
+	end
 
     def self.search_by_document document_number
       	if !document_number.blank?
