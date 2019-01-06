@@ -86,7 +86,7 @@ class UserActivity < ApplicationRecord
           user_id: product_price_history.user.id,
           photo: "/images/price.png",
           title: "El usuario #{product_price_history.user.name} actualizó precio de un producto",
-          body: "El dia #{I18n.l(Date.today)} el usuario #{product_price_history.user.name} actualizó el precio de #{product_price_history.product.name} de $#{product_price_history.old_price} a $#{product_price_history.price}."
+          body: "El dia #{I18n.l(Date.today)} el usuario #{product_price_history.user.name} actualizó el precio de #{product_price_history.product.name} de $#{product_price_history.old_price.round(2)} a $#{product_price_history.price.round(2)}."
       )
     end
   end

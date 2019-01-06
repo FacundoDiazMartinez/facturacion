@@ -25,10 +25,9 @@
             <td>
               <%  if ! invoice.editable? %>
                 <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <% else %>
+                <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
               <% end %>
-            </td>
-            <td>
-              <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
             </td>
             <%  if invoice.editable? %>
               <td><%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>

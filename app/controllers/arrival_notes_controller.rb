@@ -44,7 +44,7 @@ class ArrivalNotesController < ApplicationController
 
     respond_to do |format|
       if @arrival_note.save
-        format.html { redirect_to @arrival_note, notice: 'Arrival note was successfully created.' }
+        format.html { redirect_to '/arrival_notes', notice: 'Arrival note was successfully created.' }
         format.json { render :show, status: :created, location: @arrival_note }
       else
         format.html { render :new }
@@ -58,8 +58,7 @@ class ArrivalNotesController < ApplicationController
   def update
     respond_to do |format|
       if @arrival_note.update(arrival_note_params)
-        format.html { redirect_to @arrival_note, notice: 'Arrival note was successfully updated.' }
-        format.json { render :show, status: :ok, location: @arrival_note }
+        format.html { redirect_to '/arrival_notes', notice: 'Arrival note was successfully updated.' }
       else
         format.html { render :edit }
         format.json { render json: @arrival_note.errors, status: :unprocessable_entity }

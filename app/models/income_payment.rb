@@ -5,6 +5,8 @@ class IncomePayment < Payment
 	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_validation :set_flow
 
+	validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
+
 	self.table_name = "payments"
 
 	def self.default_scope
