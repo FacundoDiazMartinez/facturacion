@@ -98,7 +98,9 @@ class ArrivalNotesController < ApplicationController
   def cancel
     respond_to do |format|
       if current_user.has_stock_management_role?
-        @arrival_note.update_column(:state, "Anulado")
+        pp "UPDATE"
+        pp @arrival_note.update(state: "Anulado")
+        pp @arrival_note.errors
         format.html {redirect_to edit_arrival_note_path(@arrival_note.id), notice: "El remito fue anulado."}
       else
         format.html {render :edit, notice: "No tiene los provilegios necesarios para anular el remito."}

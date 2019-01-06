@@ -135,7 +135,7 @@ class Product < ApplicationRecord
 		end
 
 		def available_stock
-			stocks.where(state: "Disponible").count
+			stocks.where(state: "Disponible").sum(:quantity)
 		end
 
 		def iva

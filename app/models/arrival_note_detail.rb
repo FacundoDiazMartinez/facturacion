@@ -4,6 +4,7 @@ class ArrivalNoteDetail < ApplicationRecord
 
   before_validation :check_product
   after_create      :change_product_stock
+  after_save        :adjust_product_stock, if: Proc.new{|detail| detail.quantity_changed? && state != "Anulado"}
 
   accepts_nested_attributes_for :product, reject_if: :all_blank
 
@@ -50,7 +51,17 @@ class ArrivalNoteDetail < ApplicationRecord
     end
 
     def remove_stock
+      pp "ENTRO AL REMOVE STOCK"
       self.product.remove_stock(quantity: self.quantity, depot_id: self.arrival_note.depot_id)
+    end
+
+    def adjust_product_stock
+      difference = quantity - quantity_was
+      if difference > 0 
+        self.product.add_stock(quantity: difference, depot_id: self.arrival_note.depot_id)
+      else
+        self.product.remove_stock(quantity: -difference, depot_id: self.arrival_note.depot_id)
+      end
     end
   #PROCESOS
 end

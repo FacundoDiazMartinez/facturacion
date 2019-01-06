@@ -43,6 +43,7 @@ class InvoicesController < ApplicationController
   def create
     @invoice = current_user.company.invoices.new(invoice_params)
     @invoice.user_id = current_user.id
+    pp @invoice
     @client = @invoice.client
     respond_to do |format|
       if @invoice.custom_save(params[:send_to_afip])

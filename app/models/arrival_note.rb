@@ -8,8 +8,8 @@ class ArrivalNote < ApplicationRecord
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
  
   before_validation :set_number
-  before_save :set_state, on: :create
-  after_save  :remove_stock, if: Proc.new{|an| an.saved_change_to_state? && state == "Anulado"}
+  before_save :set_state, if: :new_record?
+  after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
