@@ -1,0 +1,30 @@
+<p class="text-muted">
+  Registra tus cuentas bancarias
+  <%= f.link_to_add "#{icon'fas', 'plus'} Añadir cuenta".html_safe, :banks,  class: 'btn btn-sm btn-success float-md-right', data: {target: '#banks'} %>
+</p>
+<div class="card mb-4 card-shadow">
+  <div  class="card-body table-responsive">
+    <table class="table table-striped" id="banks">
+      <thead>
+        <tr>
+          <th>Banco</th>
+          <th>C.B.U.</th>
+          <th>Nº de cuenta</th>
+          <th>Saldo actual</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+         <%= f.fields_for :banks, :wrapper => false do |bf| %>
+          <tr class="fields">
+            <td><%= bf.text_field :name, class: 'form-control', required: true, placeholder: "Nombre de la entidad bancaria." %></td>
+            <td><%= bf.text_field :cbu, class: 'form-control', required: true, placeholder: "Clave Bancaria Única" %></td>
+            <td><%= bf.text_field :account_number, class: 'form-control', placeholder: "Número de cuenta bancaria" %></td>
+            <td><%= bf.number_field :current_amount, class: 'form-control', required: true, placeholder: "Monto actual en el banco." %></td>
+            <td><%= bf.link_to_remove icon('fas', 'trash'), class: 'text-danger', title: 'Eliminar cuenta', data: { confirm: '¿Está seguro?' } %></td>
+          </tr>
+         <% end -%>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,11 +1,13 @@
 class DailyCashMovement < ApplicationRecord
-  belongs_to :daily_cash
+  belongs_to :daily_cash, touch: true
   belongs_to :user, optional: true
   belongs_to :payment, optional: true
 
   after_initialize :set_daily_cash
   after_save :touch_daily_cash_current_amount
-  before_save :update_others_movements, if: Proc.new{|dcm|  !dcm.new_record?}
+  before_save :fix_balance_on_update, if: Proc.new{|dcm|  !dcm.new_record?}
+  before_destroy :fix_balance_on_destroy
+  after_destroy { |movement| movement.touch_daily_cash_current_amount }
   before_validation :set_payment_type
 
 
@@ -58,6 +60,13 @@ class DailyCashMovement < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
+
+    def set_initial_values
+      if new_record?
+        self.current_balance       =  daily_cash.current_amount.to_f + self.amount
+      end
+    end
+
   	def self.save_from_payment payment, company_id
       daily_cash = DailyCash.current_daily_cash(company_id)
   		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
@@ -86,13 +95,24 @@ class DailyCashMovement < ApplicationRecord
        self.payment_type ||= "0"
     end
 
-    def update_others_movements
-      pp "CALCULOS"
-      pp amount
-      pp amount_was
+    def fix_balance_on_update
       dif = amount - amount_was
+      update_others_movements(dif)
+    end
+
+    def fix_balance_on_destroy
+      update_others_movements(-amount)
+      if movement_type == "Apertura de caja"
+        if daily_cash.daily_cash_movements.count > 1
+          throw :abort
+        end
+      elsif movement_type == "Cierre de caja"
+        daily_cash.update_column(:state, "Abierta")
+      end
+    end
+
+    def update_others_movements dif
       if dif != 0.0
-        pp "ENTRO #{dif}"
         next_movements = DailyCashMovement.where("created_at >= ? AND daily_cash_id = ?", created_at, daily_cash_id)
         next_movements.each do |dcm|
           balance = dcm.current_balance + dif

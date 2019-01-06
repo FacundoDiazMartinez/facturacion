@@ -2,7 +2,7 @@ class Payment < ApplicationRecord
   has_one :delayed_job, dependent: :destroy
 
   after_initialize :set_payment_date
-  after_save :save_daily_cash_movement
+  after_save :save_daily_cash_movement, if: :changed_or_new_record?
 
   default_scope { where(active: true) }
 
@@ -21,13 +21,12 @@ class Payment < ApplicationRecord
     end
 
     def associated_document
-      pp self
       if !invoice_id.nil?
-        pp invoice.name_with_comp
+        invoice.name_with_comp
       elsif !purchase_order_id.nil?
-        pp purchase_order.name_with_comp
+        purchase_order.name_with_comp
       else
-        pp ""
+        ""
       end
     end
 
@@ -75,6 +74,10 @@ class Payment < ApplicationRecord
   #FUNCIONES
     def self.set_payment
       any? ? all : new
+    end
+
+    def changed_or_new_record?
+      !saved_changes.empty? || created_at == updated_at
     end
   #FUNCIONES
 end

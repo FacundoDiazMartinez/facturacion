@@ -54,16 +54,12 @@ class InvoiceDetail < ApplicationRecord
 
   #PROCESOS
     def check_product
-      if new_record?
-        product.company_id = invoice.company_id
-        product.updated_by = invoice.user_id
-        product.created_by = invoice.user_id
+        product.company_id        ||= invoice.company_id
+        product.updated_by          = invoice.user_id
+        product.created_by          = invoice.user_id
+        product.price             ||= price_per_unit
+        product.measurement_unit  ||= measurement_unit
         product.save
-        if not product.errors.any?
-          self.price_per_unit   = product.price
-          self.measurement_unit = product.measurement_unit
-        end
-      end
     end
 
     def set_total_to_invoice
@@ -71,10 +67,9 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def product_attributes=(attributes)
-      if !attributes['id'].blank?
-        self.product            = Product.unscoped.find(attributes['id'])
-        self.measurement_unit   = self.product.measurement_unit
-      end
+      prod = Product.unscoped.where(code: attributes[:code]).first_or_initialize
+      self.product = prod
+      attributes.delete(:id) unless product.persisted?
       super
     end
 

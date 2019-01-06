@@ -64,6 +64,17 @@
               </div>
             </div>
 
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <%= f.label :minimum_stock, "Stock mínimo" %>
+                <%= f.number_field :minimum_stock, class: 'form-control', placeholder: "Se alertará al alcanzar este valor." %>
+              </div>
+              <div class="form-group col-md-6">
+                <%= f.label :recommended_stock, "Stock recomendado" %>
+                <%= f.number_field :recommended_stock, class: 'form-control', placeholder: "Parámetro guia para nueva orden de compra." %>
+              </div>
+            </div>
+
           </div>
       </div>
       <!-- INFORMACIÓN BÁSICA -->

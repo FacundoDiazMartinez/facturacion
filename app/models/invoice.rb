@@ -27,6 +27,7 @@ class Invoice < ApplicationRecord
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :touch_payments
     after_save :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
+    after_touch :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado" || i.state == "Anulado"}
     before_validation :check_if_confirmed
@@ -122,6 +123,24 @@ class Invoice < ApplicationRecord
 
 
   	#FUNCIONES
+      def income_payments_attributes=(attributes)
+        attributes.each do |num, c|
+          if c["_destroy"] == "false"
+            payment = self.income_payments.where(id: c[:id]).first_or_initialize
+            payment.credit_card_id = c["credit_card_id"]
+            payment.type_of_payment = c["type_of_payment"]
+            payment.total = c["total"]
+            payment.payment_date = c["payment_date"]
+            payment.save
+          else
+            payment = self.income_payments.where(id: c[:id]).first
+            if !payment.nil?
+              payment.destroy
+            end
+          end
+        end
+      end
+
   		def total_left
   			total.to_f - total_pay.to_f
   		end
@@ -268,8 +287,6 @@ class Invoice < ApplicationRecord
 
       def update params, send_to_afip = false
           response = super(params)
-          pp response
-          pp errors
           if response && send_to_afip == "true"
             get_cae
           end
@@ -293,7 +310,6 @@ class Invoice < ApplicationRecord
       end
 
       def touch_payments
-        pp "ENTRO AL TOUCH PAYMENTS DE INVOICE"
         income_payments.map{|p| p.run_callbacks(:save)}
       end
 

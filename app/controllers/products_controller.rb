@@ -119,7 +119,7 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit, :supplier_id)
+      params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit, :supplier_id, :minimum_stock, :recommended_stock)
     end
 
     def update_multiple_product_params

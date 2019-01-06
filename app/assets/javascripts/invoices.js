@@ -43,6 +43,7 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 });
 
 $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field', function(event, data){
+	console.log(data)
 	$(this).closest("div.form-group").find("input.invoice_id").val(data.item.id);
 	$(this).closest("div.fields").find("div.info").html(
 		"<p><strong>Total:</strong> $" + data.item.total + ". <strong>Monto faltante: </strong> $" + data.item.faltante + "</p>"
@@ -155,6 +156,13 @@ $(document).on('nested:fieldAdded', function(event){
 	autocomplete_field();
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+	$('.datepicker').datepicker({
+	      language: "es",
+	      dateFormat: "dd/mm/yyyy",
+	      todayHighlight: true,
+	      autoclose: true,
+	      startView: 2
+	});
 });
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -221,3 +229,11 @@ function addRechargeToDetails(){
 		$(this).val(recharge).trigger("change");
 	})
 }
+
+$(document).on("change", ".type_of_payment", function(){
+	if ($(this).val() == "1"){
+		$(this).closest("tr.fields").find("select.credit_card").removeAttr("disabled");
+	}else{
+		$(this).closest("tr.fields").find("select.credit_card").attr("disabled", "disabled");
+	}
+})

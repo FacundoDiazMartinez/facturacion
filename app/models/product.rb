@@ -153,18 +153,30 @@ class Product < ApplicationRecord
 		def supplier_name
 			supplier_id.nil? ? "Sin proveedor" : supplier.name
 		end
+
+		def stock_html
+			if !minimum_stock.blank?
+				if quantity <= minimum_stock
+					return "<div class='text-danger'>#{available_stock}</div>".html_safe
+				else
+					return "<div class='text-success'>#{available_stock}</div>".html_safe
+				end
+			else
+				return "<div class='text-success'>#{available_stock}</div>".html_safe
+			end
+		end
 	#ATRIBUTOS
 
-  # ATRIBUTOS VIRTUALES
-  def price_modification=(new_price)
-    @price_modification = new_price
-    if (new_price.to_s.ends_with? "%" )
-      self.price += (self.price * (new_price.to_d/100)).round(2)
-    else
-      self.price = new_price
-    end
-  end
-  # ATRIBUTOS VIRTUALES
+  	#ATRIBUTOS VIRTUALES
+		def price_modification=(new_price)
+		    @price_modification = new_price
+		    if (new_price.to_s.ends_with? "%" )
+		      	self.price += (self.price * (new_price.to_d/100)).round(2)
+		    else
+		      	self.price = new_price
+		    end
+		end
+  	#ATRIBUTOS VIRTUALES
 
 	#PROCESOS
 		def self.create params

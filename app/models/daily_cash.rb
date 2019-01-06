@@ -4,6 +4,7 @@ class DailyCash < ApplicationRecord
 
   after_save :create_initial_movement, if: Proc.new{|dc| dc.state != "Cerrada"}
   after_save :close_daily_cash, if: Proc.new{|dc| dc.state == "Cerrada"}
+  after_touch :check_childrens, if: :persisted?
   before_validation :set_initial_state, on: :create
   
   validates_uniqueness_of :date, scope:  :company_id, message: "No se puede abrir dos veces caja en el mismo día."
@@ -92,6 +93,14 @@ class DailyCash < ApplicationRecord
   #FUNCIONES
 
   #PROCESOS
+
+    def check_childrens
+      pp daily_cash_movements
+      if daily_cash_movements.count == 0
+        self.destroy
+      end
+    end
+
     def create_initial_movement
       self.daily_cash_movements.create(
         movement_type: "Apertura de caja",
@@ -99,7 +108,8 @@ class DailyCash < ApplicationRecord
         associated_document: "-",
         payment_type: "0",
         flow: open_flow,
-        user_id: @current_user
+        user_id: @current_user,
+        current_balance: initial_amount
       )
     end
 

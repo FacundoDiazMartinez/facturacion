@@ -14,6 +14,7 @@ class DailyCashMovementsController < ApplicationController
 
   	def create
   		@daily_cash_movement = current_user.daily_cash_movements.build(daily_cash_movement_params)
+      @daily_cash_movement.set_initial_values
   		respond_to do |format|
   			if @daily_cash_movement.save
   				format.html { redirect_to daily_cashes_path, notice: "Movimiento generado con éxito."}
@@ -37,6 +38,8 @@ class DailyCashMovementsController < ApplicationController
   		respond_to do |format|
   			if @daily_cash_movement.destroy
   				format.html { redirect_to daily_cashes_path, notice: "Movimiento eliminado con éxito."}
+        else
+          format.html { redirect_to daily_cashes_path, alert: "Esta intentando eliminar una apertura de caja cuando existen movimientos posteriores. Esta acción esta prohibida."}
   			end
   		end
   	end

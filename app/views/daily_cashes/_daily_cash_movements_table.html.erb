@@ -25,6 +25,7 @@
         <td>
           <%= link_to icon('fas', 'eye').html_safe, movement, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: "#dailyCashMovementModal", toggle: "modal", remote: true} %>
           <%= link_to icon('fas', 'edit').html_safe, edit_daily_cash_movement_path(movement.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: "#dailyCashMovementModal", toggle: "modal", remote: true} %>
+          <%= link_to icon('fas', 'trash').html_safe, movement, method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
         </td>
       </tr>
     <% end %>

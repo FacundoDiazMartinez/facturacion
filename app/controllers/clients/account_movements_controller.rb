@@ -26,6 +26,6 @@ class Clients::AccountMovementsController < ApplicationController
 		end
 
 		def client_params
-			params.require(:client).permit(invoice_attributes: [:id, payment_attributes:[:id, :type_of_payment, :total, :payment_date, :_destroy]])
+			params.require(:client).permit(invoices_attributes: [:id, income_payments_attributes:[:id, :type_of_payment, :total, :payment_date, :_destroy]])
 		end
 end

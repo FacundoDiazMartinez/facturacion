@@ -6,7 +6,7 @@ class ExpensePayment < Payment
 	before_validation :set_flow
 
 	def self.default_scope
-    	where(flow: "expense")
+    	where(flow: "expense", active: true)
  	end
 
  	def set_flow

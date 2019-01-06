@@ -17,6 +17,8 @@ class Company < ApplicationRecord
 	has_many :user_activities, through: :users
 	has_many :daily_cashes
 	has_many :daily_cash_movements, through: :daily_cashes
+	has_many :banks
+	has_many :credit_cards
 
 	belongs_to :province
 	belongs_to :locality
@@ -48,6 +50,8 @@ class Company < ApplicationRecord
 	
 
 	accepts_nested_attributes_for :sale_points, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :banks, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :credit_cards, allow_destroy: true, reject_if: :all_blank
 
 	# TABLA
 	# 	create_table "companies", force: :cascade do |t|
