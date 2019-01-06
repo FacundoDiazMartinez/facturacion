@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_06_171944) do
+ActiveRecord::Schema.define(version: 2019_01_06_195928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(version: 2019_01_06_171944) do
     t.string "observation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "req_quantity"
+    t.boolean "completed", default: false, null: false
     t.index ["arrival_note_id"], name: "index_arrival_note_details_on_arrival_note_id"
     t.index ["product_id"], name: "index_arrival_note_details_on_product_id"
   end
@@ -349,7 +351,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_171944) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -369,12 +371,12 @@ ActiveRecord::Schema.define(version: 2019_01_06_171944) do
 
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
+    t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
-    t.boolean "active", default: true, null: false
     t.string "iva_aliquot", default: "05", null: false
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"

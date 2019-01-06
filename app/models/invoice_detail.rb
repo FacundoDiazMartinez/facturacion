@@ -10,6 +10,8 @@ class InvoiceDetail < ApplicationRecord
   before_validation :check_product
 
   after_save :set_total_to_invoice
+  after_validation :reserve_stock, if: Proc.new{|detail| pp detail.invoice.is_invoice? && quantity_changed?}
+
 
   default_scope {where(active: true)}
 
@@ -93,6 +95,20 @@ class InvoiceDetail < ApplicationRecord
       Product.unscoped{super}
     end
 
+    def product_depots
+      product.nil? ? [] : product.depots.map{|p| [p.name, p.id]}
+    end
+
+    def reserve_stock
+      if quantity_change.nil? || new_record?
+        self.product.reserve_stock(quantity: self.quantity, depot_id: @depot_id)
+      else
+        pp "DIFERENCIA"
+        pp dif = quantity_change.second.to_f - quantity_change.first.to_f
+        self.product.rollback_reserved_stock(quantity: dif, depot_id: @depot_id)
+      end
+    end
+
   #PROCESOS
 
   #ATRIBUTOS
@@ -102,6 +118,13 @@ class InvoiceDetail < ApplicationRecord
 
     def default_iva
       iva_aliquot.nil? ? "05" : iva_aliquot
+    end
+
+    def depot_id
+    end
+
+    def depot_id=depot_id
+      @depot_id = depot_id
     end
   #ATRIBUTOS
 

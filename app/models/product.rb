@@ -210,6 +210,25 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+
+		def reserve_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
+			if s.save
+				remove_stock attrs
+			end
+		end
+
+		def rollback_reserved_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			s.save
+			pp s.errors
+			if s.save
+				add_stock attrs
+			end
+		end
+
 	    def destroy
 	      update_column(:active,false)
 	    end
