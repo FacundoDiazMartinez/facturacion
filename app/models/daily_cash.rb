@@ -74,7 +74,7 @@ class DailyCash < ApplicationRecord
     def self.all_daily_cash_movements daily_cash, user, payment_type
       daily_cash_movements = []
       if not daily_cash.nil?
-        daily_cash.daily_cash_movements.search_by_user(user).search_by_payment_type(payment_type).order("created_at ASC").each do |dcm|
+        daily_cash.daily_cash_movements.search_by_user(user).search_by_payment_type(payment_type).order("created_at DESC").each do |dcm|
           daily_cash_movements << dcm 
         end
       end
