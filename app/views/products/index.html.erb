@@ -135,7 +135,9 @@
       data: { product_ids: checked_ids } ,
       contentType: "application/html",
       dataType: "html",
-      async: true
+      async: false
+    }).done(function(response) {
+      $("body").html(response)
     });
   }
 
