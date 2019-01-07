@@ -24,7 +24,7 @@
 						<% end %>
 					</td>
 				<% end %>
-				<td><%= number_field_tag :req_quantity, f.object.quantity, class: 'form-control req_quantity', disabled: !@arrival_note.editable? %></td>
+				<td><%= f.number_field :req_quantity, class: 'form-control req_quantity', disabled: !@arrival_note.editable? %></td>
 				<td><%= f.number_field :quantity, class: 'form-control quantity', disabled: !@arrival_note.editable? %></td>
 				<td><%= f.text_field :observation, class: 'form-control', disabled: !@arrival_note.editable? %></td>
 				<td class="verical-align">
