@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_04_144055) do
+ActiveRecord::Schema.define(version: 2019_01_04_151224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_144055) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.string "number", null: false
+    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -337,12 +337,12 @@ ActiveRecord::Schema.define(version: 2019_01_04_144055) do
 
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
-    t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
+    t.boolean "active", default: true, null: false
     t.string "iva_aliquot", default: "05", null: false
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
@@ -440,6 +440,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_144055) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: true
+    t.boolean "paid_out", default: false
     t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
     t.index ["company_id"], name: "index_purchase_orders_on_company_id"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
@@ -513,7 +514,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_144055) do
     t.string "titular"
     t.string "account_number"
     t.string "bank_name"
-    t.string "iva_cond", default: "Responsable Inscripto", null: false
+    t.string "iva_cond", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 

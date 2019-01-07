@@ -267,8 +267,6 @@ class Invoice < ApplicationRecord
 
       def update params, send_to_afip = false
           response = super(params)
-          pp response
-          pp errors
           if response && send_to_afip == "true"
             get_cae
           end
@@ -354,7 +352,7 @@ class Invoice < ApplicationRecord
       end
 
       def name
-        if comp_number.nil? 
+        if comp_number.nil?
           "Sin confirmar"
         else
           "#{sale_point_name} - #{comp_number}"
