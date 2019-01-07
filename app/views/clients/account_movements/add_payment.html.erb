@@ -1,4 +1,5 @@
 <%= nested_form_for @client, url: client_account_movements_create_payment_path(@client.id) do |form| %>
+	<%= error_explanation @client %>
 	<div class="p-4">
 		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
 			<h1 class="h2">
