@@ -161,6 +161,15 @@ function complete_payments(){
 }
 
 $(document).on('nested:fieldAdded', function(event){
+
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoClose: true,
+      startView: 2
+  });
+
 	custom_bonus = false; // Al empezar a trabajar con un nuevo producto, se resetea el custom_bonus (Definido al principio)
 	autocomplete_field();
 	complete_payments();

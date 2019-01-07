@@ -27,11 +27,12 @@ class IncomePayment < Payment
 	  		invoice.update_column(:total_pay, invoice.sum_payments)
 	  	end
 
-	  	def set_notification
-	     	Notification.create_from_payment(self)
-	    end
 
-	    def set_flow
+  	def set_notification
+     	Notification.create_from_payment(self)
+    end
+
+    def set_flow
  			self.flow = "income"
  		end
 

@@ -38,6 +38,7 @@ Rails.application.routes.draw do
     get :generate_pdf, on: :member
     patch :approve, on: :member
     get :search_product, on: :collection
+    get :add_payment, on: :member
   end
 
   resources :products do

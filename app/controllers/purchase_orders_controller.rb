@@ -1,5 +1,5 @@
 class PurchaseOrdersController < ApplicationController
-  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :approve]
+  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :approve, :add_payment]
 
   # GET /purchase_orders
   # GET /purchase_orders.json
@@ -63,6 +63,9 @@ class PurchaseOrdersController < ApplicationController
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def add_payment
   end
 
   # DELETE /purchase_orders/1

@@ -50,3 +50,26 @@ $(document).on("change", '.prodSubtotal', function(){
 	});
 	$('#purchase_order_total').val(sumaTotales);
 });
+
+$(document).on("click", "#save_btn", function(){
+	var suma = parseFloat(0);
+	$(".purchase_order_payment_amount").each(function(){  /// calculamos la suma total en sector pagos
+		suma = parseFloat(suma) + parseFloat($(this).val());
+	});
+	if (suma > parseFloat($("#faltante").text())) {
+		return window.confirm("Los pagos superan el monto faltante. ¿Desea continuar de todas formas?");
+	}
+});
+
+$(document).on('nested:fieldAdded', function(event){
+
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoClose: true,
+      autoSize: true
+  });
+
+	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+});
