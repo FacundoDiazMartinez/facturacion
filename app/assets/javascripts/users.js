@@ -21,9 +21,9 @@ function displayForm(type){
   $(".card-options").hide();  
   $("#form").show("slow");
   if (type == "manager") {
-    $("#company_code").hide();
+    $("#company_code").hide().removeAttr("required");
   }else{
-     $("#company_code").show();
+     $("#company_code").show().attr("required", "true");
   }
 }
 
