@@ -122,5 +122,6 @@ class PurchaseOrder < ApplicationRecord
       self.purchase_order_details.sum(:total)
     end
 
+
   #FUNCIONES
 end

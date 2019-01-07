@@ -224,7 +224,7 @@ class Invoice < ApplicationRecord
       end
 
       def check_if_confirmed
-        if state_was == "Confirmado"
+        if state_was == "Confirmado" && changed? 
           errors.add(:state, "No se puede actualizar una factura confirmada.")
         end
       end
@@ -376,7 +376,7 @@ class Invoice < ApplicationRecord
       end
 
       def name
-        if comp_number.nil? 
+        if comp_number.nil?
           "Sin confirmar"
         else
           "#{sale_point_name} - #{comp_number}"
