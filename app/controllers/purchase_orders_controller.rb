@@ -95,7 +95,7 @@ class PurchaseOrdersController < ApplicationController
     respond_to do |format|
       if current_user.has_purchase_management_role?
         @purchase_order.update_column(:state, "Aprobado")
-        format.html {redirect_to @purchase_order, notice: "La orden de compra fue aprobada."}
+        format.html {redirect_to '/purchase_orders', notice: "La orden de compra fue aprobada."}
       else
         format.html {render :edit, notice: "No tiene los provilegios necesarios para aprobar la orden de compra."}
       end
