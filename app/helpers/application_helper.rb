@@ -92,10 +92,10 @@ module ApplicationHelper
 	def boolean_to_icon bool
 		if bool
 			icon = 'check-square'
-			"<span style='color: green;'> #{icon('fas', icon)} </span>".html_safe
+			"<span class='text-success'> #{icon('fas', icon)} </span>".html_safe
 		else
 			icon = 'minus-square'
-			"<span style='color: red;'> #{icon('fas', icon)} </span>".html_safe
+			"<span class='text-danger'> #{icon('fas', icon)} </span>".html_safe
 		end
 	end
 

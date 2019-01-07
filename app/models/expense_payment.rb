@@ -13,7 +13,7 @@ class ExpensePayment < Payment
 	end
 
 	def self.default_scope
-    	where(flow: "expense")
+    	where(flow: "expense", active: true)
  	end
 
  	def set_flow

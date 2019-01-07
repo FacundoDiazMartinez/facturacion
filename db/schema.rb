@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_04_151224) do
+ActiveRecord::Schema.define(version: 2019_01_06_195928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,8 @@ ActiveRecord::Schema.define(version: 2019_01_04_151224) do
     t.string "observation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "req_quantity"
+    t.boolean "completed", default: false, null: false
     t.index ["arrival_note_id"], name: "index_arrival_note_details_on_arrival_note_id"
     t.index ["product_id"], name: "index_arrival_note_details_on_product_id"
   end
@@ -60,6 +62,17 @@ ActiveRecord::Schema.define(version: 2019_01_04_151224) do
     t.index ["depot_id"], name: "index_arrival_notes_on_depot_id"
     t.index ["purchase_order_id"], name: "index_arrival_notes_on_purchase_order_id"
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
+  end
+
+  create_table "banks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "cbu", null: false
+    t.string "account_number"
+    t.bigint "company_id"
+    t.float "current_amount", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_banks_on_company_id"
   end
 
   create_table "client_contacts", force: :cascade do |t|
@@ -134,6 +147,26 @@ ActiveRecord::Schema.define(version: 2019_01_04_151224) do
     t.index ["province_id"], name: "index_companies_on_province_id"
   end
 
+  create_table "credit_card_payments", force: :cascade do |t|
+    t.bigint "payment_id"
+    t.bigint "credit_card_id"
+    t.float "amount", default: 0.0, null: false
+    t.string "tipo", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["credit_card_id"], name: "index_credit_card_payments_on_credit_card_id"
+    t.index ["payment_id"], name: "index_credit_card_payments_on_payment_id"
+  end
+
+  create_table "credit_cards", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "company_id"
+    t.float "current_amount", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_credit_cards_on_company_id"
+  end
+
   create_table "daily_cash_movements", force: :cascade do |t|
     t.bigint "daily_cash_id"
     t.string "movement_type", null: false
@@ -146,6 +179,7 @@ ActiveRecord::Schema.define(version: 2019_01_04_151224) do
     t.bigint "payment_id"
     t.string "observation"
     t.bigint "user_id"
+    t.float "current_balance", default: 0.0, null: false
     t.index ["daily_cash_id"], name: "index_daily_cash_movements_on_daily_cash_id"
     t.index ["payment_id"], name: "index_daily_cash_movements_on_payment_id"
     t.index ["user_id"], name: "index_daily_cash_movements_on_user_id"
@@ -378,6 +412,8 @@ ActiveRecord::Schema.define(version: 2019_01_04_151224) do
     t.string "measurement"
     t.string "tipo", default: "Producto", null: false
     t.bigint "supplier_id"
+    t.float "minimum_stock"
+    t.float "recommended_stock"
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
@@ -594,11 +630,15 @@ ActiveRecord::Schema.define(version: 2019_01_04_151224) do
   add_foreign_key "arrival_notes", "depots"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
+  add_foreign_key "banks", "companies"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
   add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
+  add_foreign_key "credit_card_payments", "credit_cards"
+  add_foreign_key "credit_card_payments", "payments"
+  add_foreign_key "credit_cards", "companies"
   add_foreign_key "daily_cash_movements", "daily_cashes"
   add_foreign_key "daily_cash_movements", "payments"
   add_foreign_key "daily_cash_movements", "users"

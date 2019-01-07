@@ -59,5 +59,11 @@ $primary-color: #007bff;
 }
 
 .dropdown-menu.show {
-  display: block !important;
+  display: none;
+}
+
+.dropdown.show:hover {
+  .dropdown-menu.show {
+    display: block !important;
+  }
 }

@@ -57,6 +57,7 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1.json
   def update
     @client = @invoice.client
+    @invoice.user_id = current_user.id
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Factura actualizada con éxito.' }
@@ -80,15 +81,15 @@ class InvoicesController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
-    products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit} }
+    products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit, depots: product.depots.map{|d| [d.id, d.name]}} }
   end
 
   def autocomplete_invoice_number
     term = params[:term]
-    invoices = current_user.company.invoices.joins(:sale_point).select("sale_points.id, sale_points.name as sale_point_name, invoices.sale_point_id, invoices.comp_number, invoices.cbte_fch, invoices.updated_at, invoices.state, invoices.total, invoices.total_pay").where("sale_points.name || ' -  ' || invoices.comp_number ILIKE ? AND (invoices.total > invoices.total_pay) AND client_id = ? AND comp_number IS NOT NULL", "%#{term}%", params[:client_id]).order(:updated_at).all
+    invoices = current_user.company.invoices.joins(:sale_point).select("invoices.id as invoice_id, sale_points.id, sale_points.name as sale_point_name, invoices.sale_point_id, invoices.comp_number, invoices.cbte_fch, invoices.updated_at, invoices.state, invoices.total, invoices.total_pay").where("sale_points.name || ' -  ' || invoices.comp_number ILIKE ? AND (invoices.total > invoices.total_pay) AND client_id = ? AND comp_number IS NOT NULL", "%#{term}%", params[:client_id]).order(:updated_at).all
 
-    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_name, :value => invoice.name, total: invoice.total, faltante: invoice.total - invoice.total_pay} }
+    render :json => invoices.map { |invoice| {:id => invoice.invoice_id, :label => invoice.full_name, :value => invoice.name, total: invoice.total, faltante: invoice.total - invoice.total_pay} }
   end
 
   def autocomplete_associated_invoice
@@ -136,7 +137,13 @@ class InvoicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :_destroy], invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :_destroy, product_attributes: [:id, :code, :company_id, :measurement_unit, :price, :name, :tipo], commissioners_attributes: [:id, :user_id, :percentage, :_destroy]], client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] )
+      params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation,
+        income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy],
+        invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
+          product_attributes: [:id, :code, :company_id, :name, :tipo],
+          commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
+        client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] 
+      )
     end
 
     def client_params

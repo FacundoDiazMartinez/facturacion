@@ -15,18 +15,20 @@
 				<th scope="col">Tipo de pago</th>
 				<th scope="col">Monto</th>
 				<th scope="col">Fecha de pago</th>
+				<th scope="col">Medio</th>
 				<th scope="col"></th>
 			</tr>
 		</thead>
 		<tbody>
 			<%= form.fields_for :income_payments, wrapper: false do |f| %>
 		      	<tr class="fields">
-		      		<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm', style: 'min-width: 100px;', disabled: !@invoice.editable?} %></td>
+		      		<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm type_of_payment', style: 'min-width: 100px;', disabled: !@invoice.editable?} %></td>
 		      		<td class="popup">
 						<%= f.number_field :total, class: 'form-control form-control-sm amount', default: 0.0, disabled: !@invoice.editable? %>
 				    	<span class="popuptext" id="myPopup">Esta intentando cobrar un monto superior.</span>
 					</td>
 		      		<td><%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker', disabled: !@invoice.editable? %></td>
+		      		<td><%= f.select :credit_card_id, options_for_select(current_user.company.credit_cards.map{|cc| [cc.name, cc.id]}), {}, {class: 'form-control credit_card', disabled: f.object.type_of_payment != "1"} %></td>
 		      		<td>
 		      			<% if @invoice.editable? %>
 		      				<%= f.link_to_remove icon('fas', 'trash') %>

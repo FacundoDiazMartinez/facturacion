@@ -10,6 +10,7 @@
 						<th scope="col" class="only-desktop">Categoría</th>
 						<th scope="col">Precio</th>
 						<th scope="col" class="only-desktop">Proveedor</th>
+						<th scope="col">Stock</th>
 						<th scope="col">
 							<div class="btn-group" role="group">
 						    <button id="btnMenu" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
@@ -32,6 +33,7 @@
 							<td class="only-desktop"><%= product.category_name %></td>
 							<td>$ <%= product.price %></td>
 							<td class="only-desktop"><%= product.supplier_name %></td>
+							<td><%= product.stock_html %></td>
 							<td>
 								<%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
 							</td>

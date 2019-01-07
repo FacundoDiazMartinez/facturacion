@@ -3,13 +3,13 @@ class ArrivalNote < ApplicationRecord
   belongs_to :purchase_order
   belongs_to :user
   belongs_to :depot
-  has_many :arrival_note_details
+  has_many :arrival_note_details, dependent: :destroy
 
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
  
   before_validation :set_number
-  before_save :set_state, on: :create
-  after_save  :remove_stock, if: Proc.new{|an| an.saved_change_to_state? && state == "Anulado"}
+  after_save :set_state, if: :new_record?
+  after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -72,7 +72,11 @@ class ArrivalNote < ApplicationRecord
     end
 
     def set_state
-      self.state = "Finalizado"
+      if arrival_note_details.map(&:completed).include?(false)
+        update_column(:state, "Finalizado") unless state == "Anulado"
+      else
+        update_column(:state, "Pendiente") unless state == "Anulado"
+      end
     end
 
     def remove_stock

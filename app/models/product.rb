@@ -98,7 +98,7 @@ class Product < ApplicationRecord
 
 		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.name ILIKE? ", "%#{category}%")
+				joins(:product_category).where("product_categories.id = ? ", category)
 			else
 				all
 			end
@@ -135,7 +135,7 @@ class Product < ApplicationRecord
 		end
 
 		def available_stock
-			stocks.where(state: "Disponible").count
+			stocks.where(state: "Disponible").sum(:quantity)
 		end
 
 		def iva
@@ -153,18 +153,30 @@ class Product < ApplicationRecord
 		def supplier_name
 			supplier_id.nil? ? "Sin proveedor" : supplier.name
 		end
+
+		def stock_html
+			if !minimum_stock.blank?
+				if quantity <= minimum_stock
+					return "<div class='text-danger'>#{available_stock}</div>".html_safe
+				else
+					return "<div class='text-success'>#{available_stock}</div>".html_safe
+				end
+			else
+				return "<div class='text-success'>#{available_stock}</div>".html_safe
+			end
+		end
 	#ATRIBUTOS
 
-  # ATRIBUTOS VIRTUALES
-  def price_modification=(new_price)
-    @price_modification = new_price
-    if (new_price.to_s.ends_with? "%" )
-      self.price += (self.price * (new_price.to_d/100)).round(2)
-    else
-      self.price = new_price
-    end
-  end
-  # ATRIBUTOS VIRTUALES
+  	#ATRIBUTOS VIRTUALES
+		def price_modification=(new_price)
+		    @price_modification = new_price
+		    if (new_price.to_s.ends_with? "%" )
+		      	self.price += (self.price * (new_price.to_d/100)).round(2)
+		    else
+		      	self.price = new_price
+		    end
+		end
+  	#ATRIBUTOS VIRTUALES
 
 	#PROCESOS
 		def self.create params
@@ -196,6 +208,25 @@ class Product < ApplicationRecord
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save
+		end
+
+
+		def reserve_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
+			if s.save
+				remove_stock attrs
+			end
+		end
+
+		def rollback_reserved_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			s.save
+			pp s.errors
+			if s.save
+				add_stock attrs
+			end
 		end
 
 	    def destroy

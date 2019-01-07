@@ -44,7 +44,7 @@ class ArrivalNotesController < ApplicationController
 
     respond_to do |format|
       if @arrival_note.save
-        format.html { redirect_to @arrival_note, notice: 'Arrival note was successfully created.' }
+        format.html { redirect_to '/arrival_notes', notice: 'El Remito fue creado correctamente.' }
         format.json { render :show, status: :created, location: @arrival_note }
       else
         format.html { render :new }
@@ -58,8 +58,7 @@ class ArrivalNotesController < ApplicationController
   def update
     respond_to do |format|
       if @arrival_note.update(arrival_note_params)
-        format.html { redirect_to @arrival_note, notice: 'Arrival note was successfully updated.' }
-        format.json { render :show, status: :ok, location: @arrival_note }
+        format.html { redirect_to '/arrival_notes', notice: 'El Remito fue actualizado correctamente.' }
       else
         format.html { render :edit }
         format.json { render json: @arrival_note.errors, status: :unprocessable_entity }
@@ -72,7 +71,7 @@ class ArrivalNotesController < ApplicationController
   def destroy
     @arrival_note.destroy
     respond_to do |format|
-      format.html { redirect_to arrival_notes_url, notice: 'Arrival note was successfully destroyed.' }
+      format.html { redirect_to arrival_notes_url, notice: 'El Remito fue eliminado correctamente.' }
       format.json { head :no_content }
     end
   end
@@ -86,7 +85,7 @@ class ArrivalNotesController < ApplicationController
     @purchase_order = current_user.company.purchase_orders.find(params[:purchase_order_id])
     @arrival_note.purchase_order_id = @purchase_order.id
     @purchase_order.purchase_order_details.each do |pod|
-      @arrival_note.arrival_note_details.new(product_id: pod.product_id, quantity: pod.quantity)
+      @arrival_note.arrival_note_details.new(product_id: pod.product_id, req_quantity: pod.quantity)
     end
   end
 
@@ -99,7 +98,9 @@ class ArrivalNotesController < ApplicationController
   def cancel
     respond_to do |format|
       if current_user.has_stock_management_role?
-        @arrival_note.update_column(:state, "Anulado")
+        pp "UPDATE"
+        pp @arrival_note.update(state: "Anulado")
+        pp @arrival_note.errors
         format.html {redirect_to edit_arrival_note_path(@arrival_note.id), notice: "El remito fue anulado."}
       else
         format.html {render :edit, notice: "No tiene los provilegios necesarios para anular el remito."}
@@ -115,6 +116,6 @@ class ArrivalNotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def arrival_note_params
-      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number, arrival_note_details_attributes: [:id, :quantity, :observation, :_destroy, product_attributes: [:id, :code, :name, :price]])
+      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number, arrival_note_details_attributes: [:id, :req_quantity, :quantity, :observation, :_destroy, product_attributes: [:id, :code, :name, :price]])
     end
 end

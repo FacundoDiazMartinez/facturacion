@@ -1,19 +1,36 @@
 class IncomePayment < Payment
-	belongs_to :invoice
+	belongs_to :invoice, touch: true
 	after_save :set_total_pay_to_invoice
 	after_save :set_notification
+	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_validation :set_flow
+
+	validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
 
 	self.table_name = "payments"
 
 	def self.default_scope
-    	where(flow: "income")
+    	where(flow: "income", active: true)
  	end
+
+ 	#ATRIBUTOS
+ 		def credit_card_id=(credit_card_id)
+ 			@card_id = credit_card_id
+ 		end
+
+ 		def credit_card_id
+ 		end
+ 	#ATRIBUTOS
 
 	#PROCESOS
 		def set_total_pay_to_invoice
+<<<<<<< HEAD
   		invoice.update_attribute(:total_pay, invoice.sum_payments)
   	end
+=======
+	  		invoice.update_column(:total_pay, invoice.sum_payments)
+	  	end
+>>>>>>> 00339577e5be7611fb1180468236f026d34e02a5
 
   	def set_notification
      	Notification.create_from_payment(self)
@@ -21,6 +38,10 @@ class IncomePayment < Payment
 
     def set_flow
  			self.flow = "income"
+ 		end
+
+ 		def change_credit_card_balance
+ 			CreditCard.find(@card_id).update_balance_from_payment(self)
  		end
 	#PRECESOS
 end

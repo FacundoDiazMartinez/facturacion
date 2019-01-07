@@ -4,6 +4,8 @@ class ArrivalNoteDetail < ApplicationRecord
 
   before_validation :check_product
   after_create      :change_product_stock
+  after_validation  :adjust_product_stock, if: Proc.new{|detail| pp detail.quantity_changed? && detail.arrival_note.state != "Anulado"}
+  before_destroy    :remove_stock
 
   accepts_nested_attributes_for :product, reject_if: :all_blank
 
@@ -28,6 +30,16 @@ class ArrivalNoteDetail < ApplicationRecord
     # end
   # TABLA
 
+  #ATRIBUTOS
+    def quantity
+      (read_attribute("quantity") || self.req_quantity).to_f
+    end
+
+    def completed
+      self.req_quantity.to_f <= self.quantity.to_f
+    end
+  #ATRIBUTOS
+
   #PROCESOS
   	def check_product #Se ejecuta en caso de que el producto se este creando por medio del remito
       if new_record?
@@ -51,6 +63,15 @@ class ArrivalNoteDetail < ApplicationRecord
 
     def remove_stock
       self.product.remove_stock(quantity: self.quantity, depot_id: self.arrival_note.depot_id)
+    end
+
+    def adjust_product_stock
+      difference = quantity.to_f - quantity_was.to_f
+      if difference > 0 
+        self.product.add_stock(quantity: difference, depot_id: self.arrival_note.depot_id)
+      else
+        self.product.remove_stock(quantity: -difference, depot_id: self.arrival_note.depot_id)
+      end
     end
   #PROCESOS
 end

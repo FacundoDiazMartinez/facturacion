@@ -66,7 +66,7 @@
 					                		Stock
 					              		</strong>
 					           		</div>
-					            	<span><%= @product.available_stock %></span>
+					            	<span><%= @product.stock_html %></span>
 					          	</li>
 							</ul>
 						</div>
@@ -123,16 +123,22 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- STOCK -->
+	<div class="container-fluid">
+		<p class="text-muted">Stock</p>
+		<div class="row">
+			<div class="col-md-12 col-xs-12">
+				<div class="card card-shadow mb-4">
+					<div class="card-body" id="stock">
+			        	<%= render 'stock' %>
+			        </div>
+			    </div>
+			</div>
+		</div>
+	</div>
+	<!-- STOCK -->
+
 </div>
 
-<!-- DESCRIPCIÓN -->
-	<!-- <div class="row">
-      <div class="col-sm-12" style="margin-top: 30px;">
-      	<h3>Stock </h3>
-	    <div class="card">
-        		<div class="card-body shadow" id="stock">
-        			<%= render 'stock' %>
-        		</div>
-        	</div>
-      </div>
-	</div> -->
+

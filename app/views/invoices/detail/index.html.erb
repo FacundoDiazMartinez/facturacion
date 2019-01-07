@@ -15,6 +15,7 @@
 				<th scope="col" colspan="2">Código</th>
 				<th scope="col">Tipo</th>
 				<th scope="col">Concepto</th>
+				<th scope="col">Depósito</th>
 				<th scope="col">Precio</th>
 				<th scope="col" class="only-desktop">Medida</th>
 				<th scope="col" class="only-desktop">Comisionantes</th>
@@ -39,11 +40,13 @@
 						</td>
 						<td>
 							<%= pf.text_field :name, class: 'form-control name', data: {toggle:"tooltip"}, disabled: !@invoice.editable? %>
+							<%= pf.hidden_field :company_id, value: current_user.company_id %>
 						</td>
-						<td><%= pf.number_field :price, class: 'form-control form-control-sm price', disabled: !@invoice.editable? %></td>
-						<td class="only-desktop"><%= pf.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
-						<%= pf.hidden_field :company_id, value: current_user.company_id %>
 					<% end %>
+
+					<td class="depot"><%= f.select :depot_id, f.object.product_depots, {}, {class: 'form-control depot_id'} %></td>
+					<td><%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@invoice.editable? %></td>
+					<td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
 					<td class="text-center">
 						<%= render '/invoices/detail/commissioner_fields', f: f %>
 					</td>

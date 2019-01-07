@@ -28,10 +28,13 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
-  	$(this).closest("tr.fields").find("input.tipo").val(data.item.tipo);
+  	$(this).closest("tr.fields").find("select.tipo").val(data.item.tipo);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
+	fillDepots($(this).closest("tr.fields").find("select.depot_id"), data);
+
+	
 
 	$(this).closest("tr.fields").find("input.name").tooltip({
 		title: data.item.name,
@@ -42,7 +45,14 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
 
+function fillDepots(select_depot, data){
+	$.each(data.item.depots, function (i, item) {
+	    select_depot.append($('<option>', {value:item[0], text:item[1]}));
+	});
+}
+
 $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field', function(event, data){
+	console.log(data)
 	$(this).closest("div.form-group").find("input.invoice_id").val(data.item.id);
 	$(this).closest("div.fields").find("div.info").html(
 		"<p><strong>Total:</strong> $" + data.item.total + ". <strong>Monto faltante: </strong> $" + data.item.faltante + "</p>"
@@ -164,6 +174,13 @@ $(document).on('nested:fieldAdded', function(event){
 	autocomplete_field();
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+	$('.datepicker').datepicker({
+	      language: "es",
+	      dateFormat: "dd/mm/yyyy",
+	      todayHighlight: true,
+	      autoclose: true,
+	      startView: 2
+	});
 });
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -230,3 +247,11 @@ function addRechargeToDetails(){
 		$(this).val(recharge).trigger("change");
 	})
 }
+
+$(document).on("change", ".type_of_payment", function(){
+	if ($(this).val() == "1"){
+		$(this).closest("tr.fields").find("select.credit_card").removeAttr("disabled");
+	}else{
+		$(this).closest("tr.fields").find("select.credit_card").attr("disabled", "disabled");
+	}
+})

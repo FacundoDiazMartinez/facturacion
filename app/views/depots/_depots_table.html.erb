@@ -13,7 +13,7 @@
     <% @depots.each do |depot| %>
       <tr>
         <td><%= depot.name %></td>
-        <td><%= depot.stock_count %></td>
+        <td><%= depot.stocks.sum(:quantity) %></td>
         <td><%= depot.location %></td>
         <td><%= boolean_to_icon(!depot.filled) %></td>
         <td class="text-right">
