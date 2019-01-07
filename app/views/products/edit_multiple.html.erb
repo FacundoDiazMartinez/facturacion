@@ -3,14 +3,20 @@
 
   <%= form_tag update_multiple_products_path, method: :put do %>
     <p class="text-muted">Productos seleccionados</p>
-    <ul class="text-center list-unstyled">
-      <% @products.each do |product| %>
-      <li>
-        <%= hidden_field_tag "product_ids[]", product.id %>
-        <%= product.name + " - " + product.category_name %>
-      </li>
-      <% end %>
-    </ul>
+    <div class="d-flex justify-content-center">
+      <div class="card col-12 col-sm-8 col-md-6 col-lg-6">
+        <div class="card-body">
+          <ul class="text-center list-unstyled">
+            <% @products.each do |product| %>
+            <li>
+              <%= hidden_field_tag "product_ids[]", product.id %>
+              <%= product.name + " - " + product.category_name %>
+            </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
 
     <% if @products.first.errors.any? %>
     <p class="text-muted">Errores al actualizar</p>
@@ -23,11 +29,11 @@
 
     <p class="text-muted">Elementos a actualizar</p>
     <div class="d-flex justify-content-center">
-      <div class="card col-md-4">
+      <div class="card col-12 col-sm-8 col-md-6 col-lg-6">
         <div class="card-body">
           <%= fields_for :product do |f| %>
           <div class="form-row">
-            <div class="form-group">
+            <div class="form-group w-100">
               <%= f.label :price_modification, "Precio final" %>
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -39,8 +45,8 @@
           </div>
 
           <div class="form-row">
-            <div class="form-group" style="width:100%">
-              <%= f.label :active, "Activo?" %>
+            <div class="form-group w-100">
+              <%= f.label :active, "Inhabilitar producto?" %>
               <%= f.select :active, [["Sí", true], ["No", false]], { include_blank: true }, class: 'form-control' %>
             </div>
           </div>

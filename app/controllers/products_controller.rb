@@ -25,7 +25,10 @@ class ProductsController < ApplicationController
 
   def edit_multiple
     if params[:product_ids] && params[:product_ids].any?
-    @products = Product.find(params[:product_ids])
+      @products = Product.find(params[:product_ids])
+      respond_to do |format|
+        format.html { render :edit_multiple }
+      end
     else
       redirect_to products_path(view: 'list'), alert: "Debe seleccionar al menos 1 producto."
     end
