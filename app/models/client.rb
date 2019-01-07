@@ -95,7 +95,7 @@ class Client < ApplicationRecord
 		end
 
 		def set_update_activity
-			UserActivity.create_for_updated_client self
+			UserActivity.create_for_updated_client self unless !changed?
 		end
 	#PROCESOS
 

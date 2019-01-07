@@ -80,7 +80,7 @@ class DailyCashMovement < ApplicationRecord
       if movement.new_record?
         movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
       end
-  		movement.save
+  		movement.save unless !movement.changed?
   	end
 
     def touch_daily_cash_current_amount

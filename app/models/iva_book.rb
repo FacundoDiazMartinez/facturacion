@@ -96,7 +96,7 @@ class IvaBook < ApplicationRecord
         ib.iva_amount = invoice.iva_amount_sum
       end
       ib.total      = ib.net_amount + ib.iva_amount
-      ib.save
+      ib.save unless !ib.changed?
     end
 
     def self.add_from_purchase invoice

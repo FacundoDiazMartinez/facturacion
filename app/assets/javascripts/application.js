@@ -13,6 +13,8 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+//= require jquery.validate
+//= require jquery.validate.localization/messages_es
 //= require main-mockup
 //= require private_pub
 //= require jquery_nested_form

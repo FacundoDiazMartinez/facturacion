@@ -1,11 +1,12 @@
 class ArrivalNote < ApplicationRecord
-  belongs_to :company
-  belongs_to :purchase_order
-  belongs_to :user
-  belongs_to :depot
+  belongs_to :company, optional: true
+  belongs_to :purchase_order, optional: true
+  belongs_to :user, optional: true
+  belongs_to :depot, optional: true
   has_many :arrival_note_details, dependent: :destroy
 
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
  
   before_validation :set_number
   after_save :set_state, if: :new_record?
@@ -38,6 +39,19 @@ class ArrivalNote < ApplicationRecord
     #   t.index ["user_id"], name: "index_arrival_notes_on_user_id"
     # end
   #TABLA
+
+  #ATRIBUTOS
+    def purchase_order_attributes=(attributes)
+      pp "ID"
+      pp attributes
+      self.purchase_order_id = attributes["id"]
+      super
+    end
+
+    def purchase_order_number
+      purchase_order.nil? ? "" : purchase_order.number
+    end
+  #ATRIBUTOS
 
 
   #FILTROS DE BUSQUEDA

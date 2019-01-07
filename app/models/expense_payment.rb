@@ -7,7 +7,7 @@ class ExpensePayment < Payment
 	before_validation :set_flow
 
 	def set_purchase_order_paid_out
-		if purchase_order.total.to_f - purchase_order.payments.sum(:total).to_f == 0
+		if purchase_order.total.to_f - purchase_order.expense_payments.sum(:total).to_f == 0
 			purchase_order.update_column(:paid_out, true)
 		end
 	end
