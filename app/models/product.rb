@@ -268,8 +268,6 @@ class Product < ApplicationRecord
 	    			if pc.save
 	    				product_category_id = pc.id
 	    				categories["#{row[:product_category_name]}"] = product_category_id
-	    			else
-	    				pp pc.errors
 	    			end
 	    		end
 	    		product.supplier_id 		= supplier_id
