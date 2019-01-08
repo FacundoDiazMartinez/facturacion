@@ -20,7 +20,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :notifications, only: :index
+  resources :notifications, only: [:index, :show]
   resources :iva_books do
     get :generate_pdf, on: :collection
   end

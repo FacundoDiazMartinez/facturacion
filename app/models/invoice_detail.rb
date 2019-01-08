@@ -59,7 +59,7 @@ class InvoiceDetail < ApplicationRecord
 
   #PROCESOS
     def check_product
-        product.company_id        ||= invoice.company_id
+        product.company_id          = invoice.company_id
         product.updated_by          = invoice.user_id
         product.created_by          = invoice.user_id
         product.price             ||= price_per_unit

@@ -42,8 +42,6 @@ class ArrivalNote < ApplicationRecord
 
   #ATRIBUTOS
     def purchase_order_attributes=(attributes)
-      pp "ID"
-      pp attributes
       self.purchase_order_id = attributes["id"]
       super
     end

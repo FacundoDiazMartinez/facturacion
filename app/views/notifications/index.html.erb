@@ -8,6 +8,7 @@
 				<h5 class="card-title"><strong><%= notification.title %></strong></h5>
 				<p class="text-container"><%= notification.body %></p style="max-height: 300px;">
 				<small><%= icon('fas', 'time') %> Hace <%= distance_of_time_in_words(Time.now ,notification.updated_at.to_time) %></small>
+				<center><small>Click aqui para ver</small></center>
 			</div>
 		</div>
 	</a>
