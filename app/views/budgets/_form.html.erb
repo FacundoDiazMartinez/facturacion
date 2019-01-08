@@ -1,0 +1,58 @@
+<%= nested_form_for(@budget, html: { class: "form-horizontal" }) do |f| %>
+  <%= error_explanation @budget %>
+
+  <div class="card shadow">
+    <div class="card-body">
+      <div class="row">
+
+        <div class="col">
+           <div class="form-group">
+            <%= f.label :client, "Cliente" %>
+            <%= autocomplete_field_tag :client, @budget.client_name, autocomplete_client_budgets_path, class: "form-control", id_element: "#budget_client_id" %>
+            <%= f.hidden_field :client_id %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :total, "Total" %>
+            <%= f.number_field :total, class: "form-control" %>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="form-group">
+            <%= f.label :expiration_date, "Fecha de vencimiento" %>
+            <%= f.text_field :expiration_date, class: "form-control datepicker" %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :reserv_stock, "¿Reservar stock?" %><br>
+            <%= f.check_box :reserv_stock, data:{toggle: 'toggle', on: "Si", off: "No"} %>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <!-- PRODUCTOS -->
+  <div class="card shadow" id="idetails">
+    <%= render template: '/budgets/detail/index.html.erb', locals:{form: f} %>
+  </div>
+  <!-- PRODUCTOS -->
+
+  <hr>
+  <center>
+    <% if @budget.editable? %>
+      <%= save_button %>
+    <% end %>
+  </center>
+
+<% end %>
+<%= render '/budgets/detail/search_product' %>
+
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>

@@ -64,6 +64,12 @@ $(document).ready(function() {
   });
 });
 
+$(document).on("keyup", "input.ui-autocomplete-input", function(e){
+  target = $($(this).data("id-element"))
+  if (target.length != 0){
+    target.val("")
+  }
+});
 
 function remoteSubmit(form_id){
   form = $(form_id);

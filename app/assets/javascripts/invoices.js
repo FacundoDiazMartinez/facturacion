@@ -1,15 +1,15 @@
-var total_venta = parseInt(0);
-var rest = parseInt(0);
+var total_venta = parseFloat(0);
+var rest = parseFloat(0);
  var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
 
 $( document ).ready(function() {
 	autocomplete_field();
 	if ($("#invoice_total").val() > 0) {
-		total_venta = parseInt($("#invoice_total").val());
+		total_venta = parseFloat($("#invoice_total").val());
 	}
 
 	if ($("#purchase_order_total").val() > 0) {
-		total_venta = parseInt($("#purchase_order_total").val());
+		total_venta = parseFloat($("#purchase_order_total").val());
 	}
 });
 
@@ -119,18 +119,18 @@ function autocomplete_field() {
 }
 
 function complete_payments(){
-	var suma = parseInt(0);
-	var payment_fields = parseInt(0);
+	var suma = parseFloat(0);
+	var payment_fields = parseFloat(0);
 	$(".amount").each(function(){  /// calculamos la suma total en sector pagos
-		suma = parseInt(suma) + parseInt($(this).val());
+		suma = parseFloat(suma) + parseFloat($(this).val());
 		payment_fields = payment_fields + 1;
 	});
 	if (payment_fields == 1) { /// si solo hay un tipo de pago, el monto es igual al total de la venta
 		$("#payments").find(".amount").filter(':visible:last').val(total_venta);
 	}
 	else { // en caso de haber más de un tipo de pago, la diferencia entre los pagos y el total de la venta se suma al último campo de pago
-		var resto = parseInt( total_venta - suma);
-		last_amount = parseInt($("#payments").find(".amount").filter(':visible:last').val());
+		var resto = parseFloat( total_venta - suma);
+		last_amount = parseFloat($("#payments").find(".amount").filter(':visible:last').val());
 		if (resto > 0) {
 			$("#payments").find(".amount").filter(':visible:last').val(resto + last_amount);
 		}
@@ -183,9 +183,9 @@ $(document).on('nested:fieldRemoved', function(event){
 
 
 $(document).on("change", ".subtotal", function(){
-	var total = parseInt(0);
+	var total = parseFloat(0);
 	$(".subtotal").each(function(){
-	    total = total + parseInt($(this).val());
+	    total = total + parseFloat($(this).val());
 	});
 	$("#invoice_total").val(total);
 	total_venta = total;
@@ -198,9 +198,9 @@ $(document).on("change", ".amount", function(){
 });
 
 function check_payment_limit(){  //Funcion que indica si se superó el monto de factura al ingresar tipos de pagos
-	var suma = parseInt(0);
+	var suma = parseFloat(0);
 	$(".amount").each(function(){  /// calculamos la suma total en sector pagos
-		suma = parseInt(suma) + parseInt($(this).val());
+		suma = parseFloat(suma) + parseFloat($(this).val());
 	});
 	var popup = $("#myPopup");
 	if (suma > total_venta) {

@@ -19,6 +19,7 @@ class Company < ApplicationRecord
 	has_many :daily_cash_movements, through: :daily_cashes
 	has_many :banks
 	has_many :credit_cards
+	has_many :budgets
 
 	belongs_to :province
 	belongs_to :locality
