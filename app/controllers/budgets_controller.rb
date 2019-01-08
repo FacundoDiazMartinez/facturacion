@@ -10,6 +10,21 @@ class BudgetsController < ApplicationController
   # GET /budgets/1
   # GET /budgets/1.json
   def show
+    Product.unscoped do
+      @group_details = @budget.budget_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@budget.id}",
+        layout: 'pdf.html',
+        template: 'budgets/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /budgets/new
@@ -28,7 +43,7 @@ class BudgetsController < ApplicationController
     @budget.user_id = current_user.id
     respond_to do |format|
       if @budget.save
-        format.html { redirect_to @budget, notice: 'Budget was successfully created.' }
+        format.html { redirect_to @budget, notice: 'El presupuesto fue creado correctamente.' }
         format.json { render :show, status: :created, location: @budget }
       else
         pp @budget.errors
@@ -43,7 +58,7 @@ class BudgetsController < ApplicationController
   def update
     respond_to do |format|
       if @budget.update(budget_params)
-        format.html { redirect_to @budget, notice: 'Budget was successfully updated.' }
+        format.html { redirect_to @budget, notice: 'El presupuesto fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @budget }
       else
         format.html { render :edit }
@@ -57,7 +72,7 @@ class BudgetsController < ApplicationController
   def destroy
     @budget.destroy
     respond_to do |format|
-      format.html { redirect_to budgets_url, notice: 'Budget was successfully destroyed.' }
+      format.html { redirect_to budgets_url, notice: 'El presupuesto fue eliminado correctamente.' }
       format.json { head :no_content }
     end
   end
