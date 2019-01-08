@@ -6,14 +6,10 @@
         <div class="row">
           <!-- PRIMERA COLUMNA -->
             <div class="col-sm">
-              <div class="form-group">
-                <%= form.label :purchase_order_id, "Orden de compra" %>
-                <%= autocomplete_field_tag :purchase_order_id, params[:purchase_order_id], autocomplete_purchase_order_arrival_notes_path, class: 'form-control', id_element: "#arrival_note_purchase_order_id", placeholder: "Número de Orden de Compra", disabled: !@arrival_note.editable? %>
-                <%= form.hidden_field :purchase_order_id %>
-              </div>
+              <%= render '/arrival_notes/purchase_order', form: form %>
               <div class="form-group">
                 <%= form.label :depot_id, "Almacén receptor" %>
-                <%= form.select :depot_id, current_user.company.depots.map{|d| [d.name, d.id]}, {prompt: "Seleccione..."}, {class: 'form-control', disabled: !@arrival_note.editable?} %>
+                <%= form.select :depot_id, current_user.company.depots.map{|d| [d.name, d.id]}, {prompt: "Selecciones..."}, {class: 'form-control', disabled: !@arrival_note.editable?, required: true} %>
               </div>
             </div>
           <!-- PRIMERA COLUMNA -->
@@ -21,7 +17,7 @@
             <div class="col-sm">
               <div class="form-group">
                 <%= form.label :number, "Número de remito" %>
-                <%= form.text_field :number, class: 'form-control', required: true, disabled: !@arrival_note.editable? %>
+                <%= form.text_field :number, class: 'form-control', disabled: !@arrival_note.editable?, required: true %>
               </div>
               <div class="form-group">
                 <%= form.label :state, "Estado" %>
@@ -56,6 +52,7 @@
     </div>
   <!-- DETALLES -->
     <center>
-      <%= save_button %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: 'modal_button_an', class: 'btn btn-primary' %>
     </center>
+
 <% end %>

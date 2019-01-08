@@ -23,21 +23,21 @@
 		</thead>
 		<tbody>
 			<%= form.fields_for :purchase_order_details, wrapper: false do |f| %>
-			<tr class="fields" id="<%= f.index %>">
-				<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
-					<td>
-		  				<%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
-		  				<%= pf.hidden_field :id, class: 'product_id' %>
-				  	</td>
-					<td><%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'purchase_order-autocomplete_field form-control code', data:{noMatchesLabel: "Crear nuevo producto."}, required: true %></td>
-					<td><%= pf.text_field :name, class: 'form-control name' %></td>
-					<td><%= pf.number_field :price, class: 'form-control prodPrice',step: :any %></td>
+				<tr class="fields" id="<%= f.index %>">
+					<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
+						<td>
+		  					<%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
+		  					<%= pf.hidden_field :id, class: 'product_id' %>
+				  		</td>
+						<td><%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'purchase_order-autocomplete_field form-control code', data:{noMatchesLabel: "Crear nuevo producto."}, required: true %></td>
+						<td><%= pf.text_field :name, class: 'form-control name' %></td>
+						<td><%= pf.number_field :cost_price, class: 'form-control prodPrice',step: :any %></td>
 					<% end %>
 					<td><%= f.number_field :quantity, class: 'form-control prodQuant', min: 1 %></td>
 					<td><%= f.number_field :total, class: 'form-control prodSubtotal', readonly: true %></td>
 					<td class="verical-align"><%= f.link_to_remove icon('fas', 'times') %></td>
-				<% end %>
-			</tr>
+				</tr>
+			<% end %>
 		</tbody>
 	</table>
 </div>

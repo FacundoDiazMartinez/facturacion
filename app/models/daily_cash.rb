@@ -55,6 +55,7 @@ class DailyCash < ApplicationRecord
   	end
 
     def self.current_daily_cash company_id
+      pp "ENTRO CURRENT DAILY CASH"
       daily = Company.find(company_id).daily_cashes.where(state: "Abierta").find_by_date(Date.today)
       if daily.nil?
         raise Exceptions::DailyCashClose
@@ -95,7 +96,6 @@ class DailyCash < ApplicationRecord
   #PROCESOS
 
     def check_childrens
-      pp daily_cash_movements
       if daily_cash_movements.count == 0
         self.destroy
       end

@@ -1,6 +1,7 @@
 class InvoiceDetail < ApplicationRecord
   belongs_to :invoice
   belongs_to :product, optional: true
+  belongs_to :depot, optional: true
 
   has_many :commissioners, dependent: :destroy
 
@@ -10,7 +11,8 @@ class InvoiceDetail < ApplicationRecord
   before_validation :check_product
 
   after_save :set_total_to_invoice
-  after_validation :reserve_stock, if: Proc.new{|detail| pp detail.invoice.is_invoice? && quantity_changed?}
+  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed?}
+  after_destroy :remove_reserved_stock
 
 
   default_scope {where(active: true)}
@@ -57,7 +59,7 @@ class InvoiceDetail < ApplicationRecord
 
   #PROCESOS
     def check_product
-        product.company_id        ||= invoice.company_id
+        product.company_id          = invoice.company_id
         product.updated_by          = invoice.user_id
         product.created_by          = invoice.user_id
         product.price             ||= price_per_unit
@@ -70,7 +72,7 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def product_attributes=(attributes)
-      prod = Product.unscoped.where(code: attributes[:code]).first_or_initialize
+      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id]).first_or_initialize
       self.product = prod
       attributes.delete(:id) unless product.persisted?
       super
@@ -99,13 +101,16 @@ class InvoiceDetail < ApplicationRecord
       product.nil? ? [] : product.depots.map{|p| [p.name, p.id]}
     end
 
+    def remove_reserved_stock
+      self.product.rollback_reserved_stock(quantity: quantity, depot_id: depot_id)
+    end
+
     def reserve_stock
       if quantity_change.nil? || new_record?
-        self.product.reserve_stock(quantity: self.quantity, depot_id: @depot_id)
+        self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
       else
-        pp "DIFERENCIA"
-        pp dif = quantity_change.second.to_f - quantity_change.first.to_f
-        self.product.rollback_reserved_stock(quantity: dif, depot_id: @depot_id)
+        dif = quantity_change.first.to_f - quantity_change.second.to_f 
+        self.product.rollback_reserved_stock(quantity: dif, depot_id: depot_id)
       end
     end
 
@@ -118,13 +123,6 @@ class InvoiceDetail < ApplicationRecord
 
     def default_iva
       iva_aliquot.nil? ? "05" : iva_aliquot
-    end
-
-    def depot_id
-    end
-
-    def depot_id=depot_id
-      @depot_id = depot_id
     end
   #ATRIBUTOS
 

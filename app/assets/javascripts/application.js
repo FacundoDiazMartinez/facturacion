@@ -13,6 +13,8 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+//= require jquery.validate
+//= require jquery.validate.localization/messages_es
 //= require main-mockup
 //= require private_pub
 //= require jquery_nested_form
@@ -62,6 +64,12 @@ $(document).ready(function() {
   });
 });
 
+$(document).on("keyup", "input.ui-autocomplete-input", function(e){
+  target = $($(this).data("id-element"))
+  if (target.length != 0){
+    target.val("")
+  }
+});
 
 function remoteSubmit(form_id){
   form = $(form_id);
@@ -133,7 +141,7 @@ function populateSelect(data, dropdown){
 	});
 };
 
-function setProduct(product, index){
+function setProduct(product, index, depot_id){
   $("#"+index).find("input.product_id").val(product["id"]);
   $("#"+index).find("input.code").val(product["code"]);
   $("#"+index).find("input.name").val(product["name"]);
@@ -141,7 +149,9 @@ function setProduct(product, index){
   $("#"+index).find("input.price").val(product["price"]);
   $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
   $("#"+index).find("input.subtotal").val(product["price"]);
+  $("#"+index).find("input.depot_id").val(depot_id);
   $("#"+index).find("input.prodPrice").val(product["cost_price"]).trigger("change");
+
 
   subtotal = $("#"+index).find("input.subtotal");
   $("#search_product_modal").modal('hide')

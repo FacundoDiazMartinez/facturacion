@@ -5,6 +5,7 @@ class PurchaseOrder < ApplicationRecord
 
   has_many :expense_payments
   has_many :purchase_order_details
+  has_many :arrival_notes
 
   has_one :product
 
@@ -22,7 +23,7 @@ class PurchaseOrder < ApplicationRecord
 
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
 
-  STATES = ["Pendiente de aprobación", "Aprobado", "Anulado"]
+  STATES = ["Pendiente de aprobación", "Aprobado", "Anulado", "Finalizada"]
 
   #ATRIBUTOS
   	def total_left

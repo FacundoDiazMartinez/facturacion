@@ -1,0 +1,19 @@
+
+	<div class="p-4">
+		<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+			<h1 class="h2">
+				<%= @notification.title %>
+			</h1>
+		</div>
+
+		<hr>
+		<div class="page-section">
+			<div class="col-12">
+				<%= @notification.body %>
+				<span><small><%= icon('fas', 'time') %> Hace <%= distance_of_time_in_words(Time.now ,@notification.updated_at.to_time) %></small></span>
+				<div class="card shadow">
+					<%= @notification.description.html_safe %>
+				</div>
+			</div>
+		</div>
+	</div>

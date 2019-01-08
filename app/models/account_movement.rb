@@ -80,16 +80,17 @@ class AccountMovement < ApplicationRecord
   	end
 
   	def update_others_movements
+      pp "ENTRO"
   		debe_dif 	= debe ? (total - total_was) : 0.0
   		haber_dif	= haber ? (total - total_was) : 0.0
-  		total_dif = debe_dif + haber_dif
+      total_dif = debe_dif + haber_dif
       if total_dif != 0
     		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
     		next_movements.each do |am|
-    			total_saldo = am.saldo + total_dif
+    			total_saldo = am.saldo - total_dif
     			am.update_column(:saldo, total_saldo)
     		end
-    		client.update_column(:saldo, client.saldo + total_dif)
+    		client.update_column(:saldo, client.saldo - total_dif)
       end
   	end
 
@@ -133,7 +134,7 @@ class AccountMovement < ApplicationRecord
       else
         am.saldo       = receipt.invoice.client.saldo.to_f - receipt.total.to_f unless !am.new_record?
       end
-      am.save     
+      am.save unless !am.changed?
     end
 
     def self.create_from_invoice invoice
@@ -154,7 +155,7 @@ class AccountMovement < ApplicationRecord
             am.total        = invoice.total.to_f
             am.saldo        = (invoice.client.saldo.to_f + am.total) unless !am.new_record?
           end
-          am.save
+          am.save unless !am.changed?
         end
     end
   #PROCESOS

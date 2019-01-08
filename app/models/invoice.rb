@@ -24,12 +24,13 @@ class Invoice < ApplicationRecord
 
     after_save :set_state
     after_save :touch_commissioners
+    after_touch :touch_account_movement
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :touch_payments
     after_save :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
     after_touch :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
-    after_save :set_invoice_activity, if: Proc.new{|i| i.state == "Confirmado" || i.state == "Anulado"}
+    after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
@@ -310,7 +311,7 @@ class Invoice < ApplicationRecord
       end
 
       def touch_payments
-        income_payments.map{|p| p.run_callbacks(:save)}
+        income_payments.map{|p| p.run_callbacks(:save) if p.changed?}
       end
 
       def set_invoice_activity

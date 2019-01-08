@@ -35,6 +35,8 @@ gem 'chunky_png'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 
+#Validaciones
+gem 'jquery-validation-rails'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 

@@ -116,6 +116,9 @@ class ArrivalNotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def arrival_note_params
-      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number, arrival_note_details_attributes: [:id, :req_quantity, :quantity, :observation, :_destroy, product_attributes: [:id, :code, :name, :price]])
+      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number,
+        arrival_note_details_attributes: [:id, :req_quantity, :quantity, :observation, :_destroy, 
+          product_attributes: [:id, :code, :name, :price]],
+        purchase_order_attributes: [:id, :state])
     end
 end

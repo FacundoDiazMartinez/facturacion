@@ -92,7 +92,7 @@ class ProductsController < ApplicationController
   end
 
   def import
-    #result = Product.save_excel(params[:file], params[:supplier_id], current_user)
+    result = Product.save_excel(params[:file], params[:supplier_id], current_user)
     respond_to do |format|
       format.html { redirect_to products_path, notice: 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.' }
     end
