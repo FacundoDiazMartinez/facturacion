@@ -72,7 +72,7 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def product_attributes=(attributes)
-      prod = Product.unscoped.where(code: attributes[:code]).first_or_initialize
+      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id]).first_or_initialize
       self.product = prod
       attributes.delete(:id) unless product.persisted?
       super
