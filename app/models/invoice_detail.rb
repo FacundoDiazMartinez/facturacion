@@ -59,7 +59,7 @@ class InvoiceDetail < ApplicationRecord
 
   #PROCESOS
     def check_product
-        product.company_id        ||= invoice.company_id
+        product.company_id          = invoice.company_id
         product.updated_by          = invoice.user_id
         product.created_by          = invoice.user_id
         product.price             ||= price_per_unit
@@ -72,7 +72,7 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def product_attributes=(attributes)
-      prod = Product.unscoped.where(code: attributes[:code]).first_or_initialize
+      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id]).first_or_initialize
       self.product = prod
       attributes.delete(:id) unless product.persisted?
       super

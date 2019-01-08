@@ -29,13 +29,15 @@ class Notification < ApplicationRecord
 		end
 
 		def self.create_for_failed_import invalid, user
-		    Notification.create(
+		    n = Notification.create(
 		        title:        "Uno o más productos no pudieron importarse.",
-		        body:         "Finalizo el proceso de carga de productos, pero uno o más contienen errores. Por favor revise las siguientes filas del archivo que cargo: #{invalid.join(', ')}.",
+		        body:         "Finalizo el proceso de carga de productos, pero uno o más contienen errores.",
+		        description:  invalid_table(invalid),
 		        link:         "#",
 		        sender_id: 	  0,
 		        receiver_id:  user.id
 		    )
+		    n.update_column(:link, "/notifications/#{n.id}")
 		end
 
 		def self.create_for_success_import user
@@ -53,6 +55,19 @@ class Notification < ApplicationRecord
 	#FUNCIONES
 		def self.unseen
 			where(read_at: nil)
+		end
+
+		def self.invalid_table invalids
+			"<table class='table table-striped'>
+				<thead>
+					<th>Fila</th>
+					<th>Producto</th>
+					<th>Errores</th>
+				</thead>
+				<tbody>
+					#{invalids.map{|i, name, e| '<tr><td>' + i.to_s + '</td><td>' + name + '</td><td>' + e.join('') + '</td></tr>'}.reject { |c| c.blank? }.join('')}
+				</tbody>
+			</table>".html_safe
 		end
 	#FUNCIONES
 end
