@@ -289,10 +289,9 @@ class Product < ApplicationRecord
 	    		else
 	    			invalid << [i, product.name, product.errors.full_messages]
 	    		end
-
-	    		Product.import products unless invalid.count > 0
 	    	end
-    	return_process_result(invalid, current_user)
+	    	Product.import products unless !invalid.empty?
+    		return_process_result(invalid, current_user)
 		end
 
     def self.return_process_result invalid, user

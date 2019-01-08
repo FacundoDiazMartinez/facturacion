@@ -65,7 +65,7 @@ class Notification < ApplicationRecord
 					<th>Errores</th>
 				</thead>
 				<tbody>
-					#{invalids.map{|i, name, e| '<tr><td>' + i.to_s + '</td><td>' + name + '</td><td>' + e.join('') + '</td></tr>'}.reject { |c| c.blank? }.join('')}
+					#{invalids.map{|i, name, e| '<tr><td>' + (i + 1).to_s + '</td><td>' + name + '</td><td>' + e.join('') + '</td></tr>'}.reject { |c| c.blank? }.join('')}
 				</tbody>
 			</table>".html_safe
 		end
