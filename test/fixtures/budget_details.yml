@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  price_per_unit: 1.5
+  quantity: 1.5
+  recharge: 1.5
+  active: false
+  product: one
+  company: one
+
+two:
+  price_per_unit: 1.5
+  quantity: 1.5
+  recharge: 1.5
+  active: false
+  product: two
+  company: two

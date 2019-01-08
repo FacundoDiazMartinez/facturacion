@@ -79,6 +79,10 @@ class Client < ApplicationRecord
 		def iva_cond_sym
 			iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
 		end
+
+		def avatar
+			"/images/default_user.png"
+		end
 	#ATRIBUTOS
 
 	#PROCESOS
