@@ -1,0 +1,32 @@
+<% if not @price_changes.empty? %>
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th scope="col">Nombre</th>
+					<th scope="col">Categoría</th>
+					<th scope="col">Proveedor</th>
+					<th scope="col">Modificación</th>
+					<th scope="col">Registrado por</th>
+					<th scope="col">Aplicado?</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @price_changes.each do |price_change| %>
+					<tr>
+						<td><%= link_to price_change.name, price_change %></td>
+						<td><%= price_change.category_name %></td>
+						<td><%= price_change.supplier_name %></td>
+            <td><%= price_change.modification %>%</td>
+						<td><%= price_change.creator.name %></td>
+						<td><%= boolean_to_icon price_change.applied %></td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+
+	<%= paginate @price_changes %>
+<% else %>
+  <center><h3>¡No hay actualizaciones registradas!</h3></center>
+<% end %>

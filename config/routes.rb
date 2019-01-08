@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
 
 
+  resources :price_changes do
+    member do
+      get :apply
+    end
+  end
   get 'daily_cash_movements/show'
   resources :daily_cashes
   resources :daily_cash_movements

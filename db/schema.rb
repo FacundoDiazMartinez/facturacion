@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_06_195928) do
+ActiveRecord::Schema.define(version: 2019_01_08_143726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -362,6 +362,25 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.index ["friendly_name_id"], name: "index_permissions_on_friendly_name_id"
   end
 
+  create_table "price_changes", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "company_id"
+    t.bigint "supplier_id"
+    t.bigint "product_category_id"
+    t.bigint "creator_id"
+    t.bigint "applicator_id"
+    t.datetime "application_date"
+    t.decimal "modification", null: false
+    t.boolean "applied", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["applicator_id"], name: "index_price_changes_on_applicator_id"
+    t.index ["company_id"], name: "index_price_changes_on_company_id"
+    t.index ["creator_id"], name: "index_price_changes_on_creator_id"
+    t.index ["product_category_id"], name: "index_price_changes_on_product_category_id"
+    t.index ["supplier_id"], name: "index_price_changes_on_supplier_id"
+  end
+
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
     t.bigint "company_id"
@@ -655,6 +674,11 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "purchase_orders"
   add_foreign_key "permissions", "friendly_names"
+  add_foreign_key "price_changes", "companies"
+  add_foreign_key "price_changes", "product_categories"
+  add_foreign_key "price_changes", "suppliers"
+  add_foreign_key "price_changes", "users", column: "applicator_id"
+  add_foreign_key "price_changes", "users", column: "creator_id"
   add_foreign_key "product_categories", "companies"
   add_foreign_key "product_categories", "suppliers"
   add_foreign_key "product_price_histories", "products"

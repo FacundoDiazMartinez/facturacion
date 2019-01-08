@@ -35,10 +35,16 @@ body {
   box-shadow: 1px 1px 5px 0px;
 
   .dropdown-item {
-    color: #000 !important;
+    color: #000;
+    cursor: pointer;
 
     &:hover {
-      background-color: inherit !important;
+      background-color: #e2e2e2;
+    }
+
+    &:disabled {
+      color: #6c757d;
+      cursor: default;
     }
   }
 }
