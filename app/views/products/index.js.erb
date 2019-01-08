@@ -9,3 +9,5 @@
 <% else %>
   $("#products-wrapper").html("<%= j render 'products_table' %>");
 <% end %>
+
+$(document).ready(() => setChecked());

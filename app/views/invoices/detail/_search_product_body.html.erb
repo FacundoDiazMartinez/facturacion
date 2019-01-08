@@ -11,6 +11,11 @@
 			<%= label_tag :product_category_id, "Categoría" %>
 			<%= select_tag :product_category_id, options_for_select(current_user.company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.name]}, params[:product_category_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
 		</div>
+
+		<div class="col">
+			<%= label_tag :depot_id, "Depósito" %>
+			<%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}, params[:depot_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Todos", class: 'form-control' %>
+		</div>
 	</div>
 	<hr>
 	<div class="table-responsive">
@@ -18,6 +23,7 @@
 			<thead>
 				<tr>
 					<th>Producto</th>
+					<th>Stock</th>
 					<th></th>
 				</tr>
 			</thead>
@@ -25,7 +31,8 @@
 				<% @products.each do |product| %>
 					<tr>
 						<td><%= product.name %></td>
-						<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]})" %></td>
+						<td><%= product.stock_html %></td>
+						<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, #{params[:depot_id]})" %></td>
 					</tr>
 				<% end -%>
 			</tbody>

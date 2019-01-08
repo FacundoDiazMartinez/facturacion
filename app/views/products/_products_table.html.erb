@@ -1,79 +1,49 @@
 <% if not @products.empty? %>
 	<div class="table-responsive">
-		<%= form_tag edit_multiple_products_path, method: :get, id: 'edit_form' do %>
-			<table class="table table-hover">
-				<thead>
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Código</th>
+					<th scope="col">Nombre</th>
+					<th scope="col" class="only-desktop">Categoría</th>
+					<th scope="col">Precio</th>
+					<th scope="col" class="only-desktop">Proveedor</th>
+					<th scope="col">Stock</th>
+					<th scope="col">
+						<div class="btn-group" role="group">
+					    <button id="btnMenu" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+					      <i class="fas fa-ellipsis-v"></i>
+					    </button>
+					    <div class="dropdown-menu" aria-labelledby="btnMenu">
+								<%= button_tag "Editar seleccionados", type: 'button', onclick: "getRequest()", class: 'dropdown-item' %>
+					    </div>
+						</div>
+					</th>
+					<th scope="col"> Eliminar </th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @products.each do |product| %>
 					<tr>
-						<th></th>
-						<th>Código</th>
-						<th scope="col">Nombre</th>
-						<th scope="col" class="only-desktop">Categoría</th>
-						<th scope="col">Precio</th>
-						<th scope="col" class="only-desktop">Proveedor</th>
-						<th scope="col">Stock</th>
-						<th scope="col">
-							<div class="btn-group" role="group">
-						    <button id="btnMenu" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
-						      <i class="fas fa-ellipsis-v"></i>
-						    </button>
-						    <div class="dropdown-menu" aria-labelledby="btnMenu">
-									<%= link_to "Editar seleccionados", "#", onclick: "$('#edit_form').submit()", class: 'dropdown-item' %>
-						    </div>
-							</div>
-						</th>
-						<th scope="col"> Eliminar </th>
+						<td><%= check_box_tag "product_ids[]", product.id, false, { class: 'checkbox-tag-multiple', onchange: 'abrir(this.value)' } %></td>
+						<td><%= product.code %></td>
+						<td><%= link_to product.name, product %></td>
+						<td class="only-desktop"><%= product.category_name %></td>
+						<td>$ <%= product.price %></td>
+						<td class="only-desktop"><%= product.supplier_name %></td>
+						<td><%= product.stock_html %></td>
+						<td><%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+						<td>
+							<%= link_to icon('fas', 'trash').html_safe, product , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+						</td>
 					</tr>
-				</thead>
-				<tbody>
-					<% @products.each do |product| %>
-						<tr>
-							<td><%= check_box_tag "product_ids[]", product.id, false, { class: 'checkbox-tag' } %></td>
-							<td><%= product.code %></td>
-							<td><%= link_to product.name, product %></td>
-							<td class="only-desktop"><%= product.category_name %></td>
-							<td>$ <%= product.price %></td>
-							<td class="only-desktop"><%= product.supplier_name %></td>
-							<td><%= product.stock_html %></td>
-							<td>
-								<%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-							</td>
-							<td>
-								<%= link_to icon('fas', 'trash').html_safe, product , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-							</td>
-						</tr>
-					<% end %>
-				</tbody>
-			</table>
-		<% end %>
+				<% end %>
+			</tbody>
+		</table>
 	</div>
 
 	<%= paginate @products %>
 <% else %>
   <center><h1>¡No hay productos disponibles!</h1></center>
 <% end %>
-
-<script type="text/javascript">
-	$(document).ready(() => {
-		countCheckedCheckboxes();
-	})
-
-	$('.checkbox-tag').change(countCheckedCheckboxes);
-
-	function countCheckedCheckboxes() {
-		var checkboxes = $('tbody input[type=checkbox]:checked');
-		if (checkboxes.length > 0) {
-			toggleBtnGroup(true);
-		} else {
-			toggleBtnGroup(false);
-		}
-	};
-
-	function toggleBtnGroup(boolFlag) {
-		var btn = $('#btnMenu');
-		if (boolFlag) {
-			btn.removeAttr('disabled');
-		} else {
-			btn.attr('disabled', 'disabled');
-		}
-	}
-</script>

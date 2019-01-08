@@ -99,7 +99,7 @@ class InvoicesController < ApplicationController
   end
 
   def search_product
-    @products = Product.unscoped.where(active: true, company_id: current_user.company_id).search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
+    @products = Product.unscoped.where(active: true, company_id: current_user.company_id).search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).search_by_depot(params[:depot_id]).paginate(page: params[:page], per_page: 10)
     render '/invoices/detail/search_product'
   end
 
@@ -139,7 +139,7 @@ class InvoicesController < ApplicationController
     def invoice_params
       params.require(:invoice).permit(:active, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation,
         income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy],
-        invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
+        invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :depot_id, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
           product_attributes: [:id, :code, :company_id, :name, :tipo],
           commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
         client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy] 

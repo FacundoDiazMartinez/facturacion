@@ -119,6 +119,14 @@ class Product < ApplicationRecord
 				all
 			end
 		end
+
+		def self.search_by_depot depot_id
+			if !depot_id.blank?
+				joins(stocks: :depot).where("depots.id = ?", depot_id)
+			else
+				all 
+			end
+		end
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
@@ -134,8 +142,8 @@ class Product < ApplicationRecord
 			product_category.nil? ? "Sin categoría" : product_category.name
 		end
 
-		def available_stock
-			stocks.where(state: "Disponible").sum(:quantity)
+		def set_available_stock
+			update_column(:available_stock, self.stocks.where(state: "Disponible").sum(:quantity))
 		end
 
 		def iva
@@ -220,6 +228,8 @@ class Product < ApplicationRecord
 		end
 
 		def rollback_reserved_stock attrs={}
+			pp "ROLLBACK PRODUT"
+			pp attrs
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save

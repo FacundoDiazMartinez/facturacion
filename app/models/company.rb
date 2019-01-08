@@ -26,6 +26,8 @@ class Company < ApplicationRecord
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
 
+	after_save :create_default_deposit, if: :new_record?
+
 	CONCEPTOS = ["Productos", "Servicios", "Productos y Servicios"]
 
 	validates_presence_of :name, message: "Debe especificar el nombre de su compañía."
@@ -126,4 +128,10 @@ class Company < ApplicationRecord
 			roles.map{|r| [r.name, r.users.map{|u| [u.name, u.id]}]}
 		end
 	#FUNCIONES
+
+	#PROCESOS
+		def create_default_deposit
+			self.depots.create(name: "Central", stock_count: 0, filled: false, location: address)
+		end
+	#PROCESOS
 end

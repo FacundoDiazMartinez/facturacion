@@ -32,9 +32,6 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
-	fillDepots($(this).closest("tr.fields").find("select.depot_id"), data);
-
-	
 
 	$(this).closest("tr.fields").find("input.name").tooltip({
 		title: data.item.name,
@@ -45,11 +42,6 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
 
-function fillDepots(select_depot, data){
-	$.each(data.item.depots, function (i, item) {
-	    select_depot.append($('<option>', {value:item[0], text:item[1]}));
-	});
-}
 
 $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field', function(event, data){
 	console.log(data)

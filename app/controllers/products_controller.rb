@@ -25,7 +25,7 @@ class ProductsController < ApplicationController
 
   def edit_multiple
     if params[:product_ids] && params[:product_ids].any?
-    @products = Product.find(params[:product_ids])
+      @products = Product.find(params[:product_ids])
     else
       redirect_to products_path(view: 'list'), alert: "Debe seleccionar al menos 1 producto."
     end
@@ -92,10 +92,9 @@ class ProductsController < ApplicationController
   end
 
   def import
-    #result = Product.save_excel(params[:file], params[:supplier_id], current_user)
+    result = Product.save_excel(params[:file], params[:supplier_id], current_user)
     respond_to do |format|
-        flash[:success] = 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'
-        format.html {redirect_to products_path}
+        format.html {redirect_to products_path, notice: 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'}
     end
   end
 

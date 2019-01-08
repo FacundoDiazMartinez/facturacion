@@ -22,8 +22,11 @@ function displayForm(type){
   $("#form").show("slow");
   if (type == "manager") {
     $("#company_code").hide();
+    $("#code").removeAttr("required");
+
   }else{
      $("#company_code").show();
+     $("#code").attr("required", "required");
   }
 }
 

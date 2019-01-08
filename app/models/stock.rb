@@ -4,6 +4,7 @@ class Stock < ApplicationRecord
 
   after_save :set_stock_to_category
   after_save :set_stock_to_depot
+  after_save :set_stock_to_product
 
   STATES = ["Disponible", "Reservado"]
 
@@ -13,5 +14,9 @@ class Stock < ApplicationRecord
 
   def set_stock_to_depot
   	depot.update_column(:stock_count, product.available_stock )
+  end
+
+  def set_stock_to_product
+    product.set_available_stock
   end
 end
