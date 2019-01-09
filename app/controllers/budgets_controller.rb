@@ -43,13 +43,12 @@ class BudgetsController < ApplicationController
   def create
     @budget = current_user.company.budgets.new(budget_params)
     @budget.user_id = current_user.id
+    @client = @budget.client
     respond_to do |format|
       if @budget.save
-        format.html { redirect_to '/budgets', notice: 'El presupuesto fue creado correctamente.' }
-        format.json { render :show, status: :created, location: @budget }
+        format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue creado correctamente.' }
       else
         format.html { render :new }
-        format.json { render json: @budget.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -58,9 +57,9 @@ class BudgetsController < ApplicationController
   # PATCH/PUT /budgets/1.json
   def update
     respond_to do |format|
+      @client = @budget.client
       if @budget.update(budget_params)
-        format.html { redirect_to @budget, notice: 'El presupuesto fue actualizado correctamente.' }
-        @client = @budget.client
+        format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @budget }
       else
         format.html { render :edit }
