@@ -19,8 +19,6 @@ class PurchaseOrder < ApplicationRecord
   after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
   after_save :touch_payments
 
-  after_save :close_arrival_notes, if: Proc.new{|po| po.state == "Finalizada"}
-
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
 
   STATES = ["Pendiente de aprobación", "Aprobado", "Anulado", "Finalizada"]
