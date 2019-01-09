@@ -25,7 +25,9 @@ class PriceChange < ApplicationRecord
 
   # PROCESOS #
   def apply_to_products applied_by
-    products_array = self.company.products.where(product_category_id: self.product_category_id, supplier_id: self.supplier_id)
+    pp self
+    products_array = self.company.products.search_by_product_category_id(self.product_category_id).search_by_supplier_id(self.supplier_id)
+    pp products_array
     products = products_array.to_a
     products.reject! do |product|
       product.price_modification = "#{self.modification}%"

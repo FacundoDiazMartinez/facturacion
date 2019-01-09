@@ -104,9 +104,25 @@ class Product < ApplicationRecord
 			end
 		end
 
+		def self.search_by_product_category_id category_id
+			unless category_id.blank?
+				where(product_category_id: category_id)
+			else
+				all
+			end
+		end
+
 		def self.search_by_supplier supplier
 			if not supplier.blank?
 				joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
+			else
+				all
+			end
+		end
+
+		def self.search_by_supplier_id supplier_id
+			unless supplier_id.blank?
+				where(supplier_id: supplier_id)
 			else
 				all
 			end
