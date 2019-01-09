@@ -14,6 +14,7 @@
 			<tr>
 				<th scope="col" colspan="2">Código</th>
 				<th scope="col">Concepto</th>
+				<th scope="col">Depósito</th>
 				<th scope="col">Precio</th>
 				<th scope="col" class="only-desktop">Medida</th>
 				<th scope="col" style="width:1%;">Cantidad</th>
@@ -36,8 +37,10 @@
 			  		<td>
 			  			<%= f.text_field :product_name, class: 'form-control form-control-sm name', placeholder: "Concepto", disabled: !@budget.editable? %>
 			  		</td>
+			  		<td>
+			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Seleccione..."}, {class: 'form-control form-control-sm depot_id'} %>
+			  		</td>
 					<td>
-						<%= f.hidden_field :depot_id, class: 'depot_id' %>
 						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@budget.editable? %>
 					</td>
 					<td class="only-desktop">

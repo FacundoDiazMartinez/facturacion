@@ -10,6 +10,21 @@ class BudgetsController < ApplicationController
   # GET /budgets/1
   # GET /budgets/1.json
   def show
+    Product.unscoped do
+      @group_details = @budget.budget_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@budget.id}",
+        layout: 'pdf.html',
+        template: 'budgets/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /budgets/new
@@ -28,13 +43,12 @@ class BudgetsController < ApplicationController
   def create
     @budget = current_user.company.budgets.new(budget_params)
     @budget.user_id = current_user.id
+    @client = @budget.client
     respond_to do |format|
       if @budget.save
-        format.html { redirect_to @budget, notice: 'Budget was successfully created.' }
-        format.json { render :show, status: :created, location: @budget }
+        format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue creado correctamente.' }
       else
         format.html { render :new }
-        format.json { render json: @budget.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -43,9 +57,9 @@ class BudgetsController < ApplicationController
   # PATCH/PUT /budgets/1.json
   def update
     respond_to do |format|
+      @client = @budget.client
       if @budget.update(budget_params)
-        @client = @budget.client
-        format.html { redirect_to @budget, notice: 'Budget was successfully updated.' }
+        format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @budget }
       else
         format.html { render :edit }
@@ -59,7 +73,7 @@ class BudgetsController < ApplicationController
   def destroy
     @budget.destroy
     respond_to do |format|
-      format.html { redirect_to budgets_url, notice: 'Budget was successfully destroyed.' }
+      format.html { redirect_to budgets_url, notice: 'El presupuesto fue eliminado correctamente.' }
       format.json { head :no_content }
     end
   end

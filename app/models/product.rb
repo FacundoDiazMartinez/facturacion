@@ -237,19 +237,21 @@ class Product < ApplicationRecord
 
 		def reserve_stock attrs={}
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+			pp s.quantity.to_f
+			pp attrs[:quantity].to_f
 			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
+			pp s.quantity
 			if s.save
 				remove_stock attrs
+			else
+				pp s.errors
 			end
 		end
 
 		def rollback_reserved_stock attrs={}
-			pp "ROLLBACK PRODUT"
-			pp attrs
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save
-			pp s.errors
 			if s.save
 				add_stock attrs
 			end
