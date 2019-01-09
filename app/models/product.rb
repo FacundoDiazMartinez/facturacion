@@ -2,8 +2,8 @@ class Product < ApplicationRecord
 
   	belongs_to :product_category, optional: true
   	belongs_to :company
-  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
-  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User"
+  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User", optional: true
+  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User", optional: true
   	belongs_to :supplier, optional: true
   	has_many   :stocks
   	has_many   :depots, through: :stocks
@@ -124,7 +124,7 @@ class Product < ApplicationRecord
 			if !depot_id.blank?
 				joins(stocks: :depot).where("depots.id = ?", depot_id)
 			else
-				all 
+				all
 			end
 		end
 	#FILTROS DE BUSQUEDA
@@ -175,16 +175,16 @@ class Product < ApplicationRecord
 		end
 	#ATRIBUTOS
 
-  	#ATRIBUTOS VIRTUALES
-		def price_modification=(new_price)
-		    @price_modification = new_price
-		    if (new_price.to_s.ends_with? "%" )
-		      	self.price += (self.price * (new_price.to_d/100)).round(2)
-		    else
-		      	self.price = new_price
-		    end
-		end
-  	#ATRIBUTOS VIRTUALES
+	#ATRIBUTOS VIRTUALES
+	def price_modification=(new_price)
+    @price_modification = new_price
+    if (new_price.to_s.ends_with? "%" )
+    	self.price += (self.price * (new_price.to_d/100)).round(2)
+    else
+    	self.price = new_price
+    end
+	end
+	#ATRIBUTOS VIRTUALES
 
 	#PROCESOS
 		def self.create params
@@ -246,16 +246,16 @@ class Product < ApplicationRecord
     #IMPORTAR EXCEL o CSV
     def self.save_excel file, supplier_id, current_user
     	#TODO Añadir created_by y updated_by
-      	spreadsheet = open_spreadsheet(file)
-      	excel = []
-      	(2..spreadsheet.last_row).each do |r|
-      		excel << spreadsheet.row(r)
-      	end
-      	header = self.permited_params
-      	categories = {}
-      	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-      	delay().load_products(excel, header, categories, current_user, supplier_id)
-		end
+    	spreadsheet = open_spreadsheet(file)
+    	excel = []
+    	(2..spreadsheet.last_row).each do |r|
+    		excel << spreadsheet.row(r)
+    	end
+    	header = self.permited_params
+    	categories = {}
+    	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
+    	delay.load_products(excel, header, categories, current_user, supplier_id)
+    end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []

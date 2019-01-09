@@ -12,11 +12,12 @@
 					<th scope="col">Stock</th>
 					<th scope="col">
 						<div class="btn-group" role="group">
-					    <button id="btnMenu" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+					    <button id="btnMenuDrop" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					      <i class="fas fa-ellipsis-v"></i>
 					    </button>
-					    <div class="dropdown-menu" aria-labelledby="btnMenu">
-								<%= button_tag "Editar seleccionados", type: 'button', onclick: "getRequest()", class: 'dropdown-item' %>
+					    <div class="dropdown-menu" aria-labelledby="btnMenuDrop">
+								<%= button_tag "Editar seleccionados", id: 'btnMenu', type: 'button', onclick: "getRequest()", class: 'dropdown-item', disabled: true %>
+								<%= link_to "Actualizar precios", price_changes_path, class: 'dropdown-item' %>
 					    </div>
 						</div>
 					</th>
