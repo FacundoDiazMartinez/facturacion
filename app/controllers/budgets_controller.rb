@@ -1,5 +1,5 @@
 class BudgetsController < ApplicationController
-  before_action :set_budget, only: [:show, :edit, :update, :destroy]
+  before_action :set_budget, only: [:show, :edit, :update, :destroy, :make_sale]
 
   # GET /budgets
   # GET /budgets.json
@@ -15,10 +15,12 @@ class BudgetsController < ApplicationController
   # GET /budgets/new
   def new
     @budget = Budget.new
+    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
 
   # GET /budgets/1/edit
   def edit
+    @client = @budget.client
   end
 
   # POST /budgets
@@ -31,7 +33,6 @@ class BudgetsController < ApplicationController
         format.html { redirect_to @budget, notice: 'Budget was successfully created.' }
         format.json { render :show, status: :created, location: @budget }
       else
-        pp @budget.errors
         format.html { render :new }
         format.json { render json: @budget.errors, status: :unprocessable_entity }
       end
@@ -43,6 +44,7 @@ class BudgetsController < ApplicationController
   def update
     respond_to do |format|
       if @budget.update(budget_params)
+        @client = @budget.client
         format.html { redirect_to @budget, notice: 'Budget was successfully updated.' }
         format.json { render :show, status: :ok, location: @budget }
       else
@@ -60,6 +62,24 @@ class BudgetsController < ApplicationController
       format.html { redirect_to budgets_url, notice: 'Budget was successfully destroyed.' }
       format.json { head :no_content }
     end
+  end
+
+  def make_sale
+    @client = @budget.client
+    @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id, total: @budget.total)
+    @budget.budget_details.each do |bd|
+      detail = @invoice.invoice_details.build(
+        quantity: bd.quantity,
+        measurement_unit: bd.measurement_unit,
+        price_per_unit: bd.price_per_unit,
+        bonus_percentage: bd.bonus_percentage,
+        bonus_amount: bd.bonus_amount,
+        subtotal: bd.subtotal,
+        depot_id: bd.depot_id
+      )
+      detail.product = bd.product
+    end
+    render template: '/invoices/new.html.erb'
   end
 
   def autocomplete_client

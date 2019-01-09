@@ -78,7 +78,11 @@ class DailyCashMovement < ApplicationRecord
   		movement.payment_id 			     =  payment.id
       movement.user_id               =  payment.user_id
       if movement.new_record?
-        movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
+        if payment.flow == "income"
+          movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
+        else
+          movement.current_balance       =  daily_cash.current_amount.to_f - payment.total
+        end
       end
   		movement.save unless !movement.changed?
   	end

@@ -11,7 +11,11 @@
       <!-- hidden spacer to center brand on mobile -->
     </span>
     <a class="navbar-brand-two  " href="/">
-      <%= image_tag '/images/logo_blanco1.png', alt: "desideral.com - Sistema de facturación online", width: '90px;' %>
+      <% if !user_signed_in? %>
+        <%= image_tag '/images/logo_blanco1.png', alt: "desideral.com - Sistema de facturación online", width: '90px;', class: 'company_logo' %>
+      <% else %>
+        <%= image_tag current_user.company.logo, alt: "desideral.com - Sistema de facturación online", width: '90px;', class: 'company_logo' %>
+      <% end -%>
     </a>
     <span class="w-100 d-lg-none d-block">
       <!-- hidden spacer to center brand on mobile -->

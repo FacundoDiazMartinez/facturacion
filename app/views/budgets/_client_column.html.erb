@@ -1,0 +1,13 @@
+<div class="form-group">
+  <%= label_tag :budget_client_name, "Cliente" %>
+  <div class="input-group">
+    <%= text_field_tag :budget_client_name, @client.name, class: 'form-control', readonly: true %>
+    <div class="input-group-append">
+      <% if !@budget.editable? %>
+        <%= link_to icon('far', 'eye').html_safe, budgets_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+      <% else %>
+        <%= link_to icon('far', 'edit').html_safe, edit_budgets_client_path(@client.id, budget_id: @budget.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+      <% end %>
+    </div>
+  </div>
+</div>
