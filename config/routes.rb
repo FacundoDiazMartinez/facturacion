@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
 
 
+  resources :price_changes do
+    member do
+      get :apply
+    end
+  end
   resources :budgets do
     get :autocomplete_client, on: :collection
     get :autocomplete_product_code, on: :collection

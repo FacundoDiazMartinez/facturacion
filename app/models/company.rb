@@ -4,6 +4,7 @@ class Company < ApplicationRecord
 	has_many :clients
 	has_many :invoices
 	has_many :product_categories
+	has_many :price_changes
 	has_many :products
 	has_many :receipts, through: :invoices
 	has_many :depots
@@ -50,7 +51,7 @@ class Company < ApplicationRecord
 	validates_length_of :cbu, minimum: 22, maximum: 22, allow_blank: true, message: "C.B.U. inválido. Verifique por favor. Cantidad mínima de caracteres = 22."
 	validates_length_of :cuit, minimum: 11, maximum: 11, allow_blank: true, message: "C.U.I.T. inválido. Verifique por favor. Cantidad mínima de caracteres = 11."
 	validates_inclusion_of :concepto, in: ::Afip::CONCEPTOS.values, message: "Concepto inválido."
-	
+
 
 	accepts_nested_attributes_for :sale_points, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :banks, allow_destroy: true, reject_if: :all_blank

@@ -32,15 +32,15 @@ class ProductsController < ApplicationController
   end
 
   def update_multiple
-      @products = Product.find(params[:product_ids])
-      @products.reject! do |product|
-        product.update_attributes(update_multiple_product_params.reject { |k,v| v.blank? } )
-      end
-      if @products.empty?
-        redirect_to products_path(view: 'list'), notice: "#{ params[:product_ids].count.to_s } productos fueron actualizados."
-      else
-        render "edit_multiple"
-      end
+    @products = Product.find(params[:product_ids])
+    @products.reject! do |product|
+      product.update_attributes(update_multiple_product_params.reject { |k,v| v.blank? })
+    end
+    if @products.empty?
+      redirect_to products_path(view: 'list'), notice: "#{ params[:product_ids].count.to_s } productos fueron actualizados."
+    else
+      render "edit_multiple"
+    end
   end
 
   # POST /products
@@ -94,14 +94,15 @@ class ProductsController < ApplicationController
   def import
     result = Product.save_excel(params[:file], params[:supplier_id], current_user)
     respond_to do |format|
-        format.html {redirect_to products_path, notice: 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'}
+      format.html { redirect_to products_path, notice: 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.' }
     end
   end
 
   def export
-    @products = params[:empty] ? [] : current_user.company.products #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
+    #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
+    @products = params[:empty] ? [] : current_user.company.products
     respond_to do |format|
-      format.xlsx {response.headers['Content-Disposition'] = 'attachment; filename="productos.xlsx"'}
+      format.xlsx { response.headers['Content-Disposition'] = 'attachment; filename="productos.xlsx"' }
     end
   end
 
@@ -123,5 +124,9 @@ class ProductsController < ApplicationController
 
     def update_multiple_product_params
       params[:product].permit(:price_modification, :active)
+    end
+
+    def update_prices_product_params
+
     end
 end

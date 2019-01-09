@@ -1,0 +1,18 @@
+<div class="p-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+    <h1 class="h2">Ajustes de Precios</h1>
+  </div>
+
+  <%= button_new_helper(new_price_change_path()) if can? :create, PriceChange %>
+
+  <div class="page-section">
+    <div class="card">
+      <div class="card-body">
+        <div id="price_changes">
+          <%= render 'price_changes' %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
