@@ -25,15 +25,24 @@ class PriceChange < ApplicationRecord
 
   # PROCESOS #
   def apply_to_products applied_by
-    products = self.company.products.search_by_category(self.product_category_id).search_by_supplier(self.supplier_id)
-    products.reject do |product|
-      product.update_attributes(price_modification: "#{self.modification}%")
+    products = self.company.products.search_by_category(self.product_category_id).search_by_supplier(self.supplier_id).to_a
+    products.reject! do |product|
+      product.price_modification = "#{self.modification}%"
+      product.valid?
     end
-    pp products
-    self.applied = true
-    self.applicator_id = applied_by.id
-    self.application_date = DateTime.now
-    save
+    if products.any?
+      return products
+    else
+      products_array = self.company.products.search_by_category(self.product_category_id).search_by_supplier(self.supplier_id)
+      products_array.each do |product|
+        product.update_attributes(price_modification: "#{self.modification}%")
+      end
+      self.applied = true
+      self.applicator_id = applied_by.id
+      self.application_date = DateTime.now
+      save
+      return []
+    end
   end
   # PROCESOS #
 end

@@ -5,9 +5,6 @@ class PriceChangesController < ApplicationController
     @price_changes = current_user.company.price_changes.all.paginate(page: params[:page], per_page: 15)
   end
 
-  def show
-  end
-
   def new
     @price_change = PriceChange.new
   end
@@ -23,8 +20,17 @@ class PriceChangesController < ApplicationController
   end
 
   def apply
-    @price_change.apply_to_products current_user
-    redirect_to @price_change, notice: "El ajuste fue aplicado con éxito"
+    unless @price_change.applied
+      @products_with_errors = @price_change.apply_to_products current_user
+      if @products_with_errors.empty?
+        redirect_to @price_change, notice: "El ajuste fue aplicado con éxito."
+      else
+        pp @products_with_errors.first.errors.messages
+        render :show, alert: "Los ajustes no fueron aplicados."
+      end
+    else
+      redirect_to @price_change
+    end
   end
 
   private

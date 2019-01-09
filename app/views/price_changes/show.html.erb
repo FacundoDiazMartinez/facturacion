@@ -1,6 +1,24 @@
 <div class="p-4">
   <%= title_helper("Ajuste de Precios") %>
 
+  <% unless @products_with_errors.blank? %>
+  <p class="text-muted">Elementos con errores</p>
+  <div class="d-flex flex-column align-items-center">
+    <div class="card w-50">
+      <div class="card-body">
+        <% @products_with_errors[0 ... 9].each do |product| %>
+          <%= link_to product.name, product %>
+          <ul>
+            <% product.errors.each do |attr, msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <% end %>
+
   <p class="text-muted">Datos del ajuste</p>
   <div class="d-flex flex-column align-items-center">
     <div class="card w-50">

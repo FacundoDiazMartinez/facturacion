@@ -13,9 +13,7 @@ module ApplicationHelper
 	    return html.html_safe
 	end
 
-
 	def error_explanation object=nil
-
 		@object = object
 		if not object.nil?
 			content_tag :div do

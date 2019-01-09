@@ -2,8 +2,8 @@ class Product < ApplicationRecord
 
   	belongs_to :product_category, optional: true
   	belongs_to :company
-  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
-  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User"
+  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User", optional: true
+  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User", optional: true
   	belongs_to :supplier, optional: true
   	has_many   :stocks
   	has_many   :depots, through: :stocks
