@@ -13,7 +13,8 @@
 		<thead>
 			<tr>
 				<th></th>
-				<th scope="col">Código</th>
+				<th scope="col">Código interno</th>
+				<th scope="col">Código de proveedor</th>
 				<th scope="col">Producto</th>
 				<th scope="col">Precio unitario</th>
 				<th scope="col">Cantidad</th>
@@ -30,6 +31,7 @@
 		  					<%= pf.hidden_field :id, class: 'product_id' %>
 				  		</td>
 						<td><%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'purchase_order-autocomplete_field form-control code', data:{noMatchesLabel: "Crear nuevo producto."}, required: true %></td>
+						<td><%= pf.text_field :supplier_code, class: 'purchase_order-autocomplete_field form-control supplier_code' %></td>
 						<td><%= pf.text_field :name, class: 'form-control name' %></td>
 						<td><%= pf.number_field :cost_price, class: 'form-control prodPrice',step: :any %></td>
 					<% end %>

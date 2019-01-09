@@ -1,7 +1,7 @@
 class PurchaseOrder < ApplicationRecord
-  belongs_to :supplier
-  belongs_to :user
-  belongs_to :company
+  belongs_to :supplier, optional: true
+  belongs_to :user, optional: true
+  belongs_to :company, optional: true
 
   has_many :expense_payments
   has_many :purchase_order_details
@@ -20,6 +20,9 @@ class PurchaseOrder < ApplicationRecord
   after_save :touch_payments
 
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
+  validates_presence_of :supplier_id, message: "Debe especificar un proveedor."
+  validates_presence_of :user_id, message: "Debe especificar un usuario."
+  validates_presence_of :company_id, message: "Debe especificar una compañía."
 
   STATES = ["Pendiente de aprobación", "Aprobado", "Anulado", "Finalizada"]
 

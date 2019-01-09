@@ -291,6 +291,7 @@ class Product < ApplicationRecord
 	    		product.supplier_id 		= supplier_id
 	    		product.product_category_id = categories["#{row[:product_category_name]}"]
 	    		product.code 				= row[:code]
+	    		product.supplier_code 		= row[:supplier_code]
 	    		product.name 				= row[:name]
 	    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
 	    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
@@ -329,7 +330,7 @@ class Product < ApplicationRecord
     end
 
 		def self.permited_params
-		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
+		    [:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
 		end
 
 		def self.open_spreadsheet(file)
