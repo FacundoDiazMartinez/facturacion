@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     get :autocomplete_client, on: :collection
     get :autocomplete_product_code, on: :collection
     get :search_product, on: :collection
+    post :make_sale, on: :member
   end
   get 'daily_cash_movements/show'
   resources :daily_cashes
@@ -20,6 +21,12 @@ Rails.application.routes.draw do
     end
   end
   namespace :invoices do
+    resources :clients do
+      get :autocomplete_document, on: :collection
+    end
+  end
+
+  namespace :budgets do
     resources :clients do
       get :autocomplete_document, on: :collection
     end

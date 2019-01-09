@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_08_183834) do
+ActiveRecord::Schema.define(version: 2019_01_08_200034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -463,7 +463,6 @@ ActiveRecord::Schema.define(version: 2019_01_08_183834) do
     t.float "price"
     t.string "iva_aliquot"
     t.string "photo"
-    t.string "measurement_unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "created_by"
@@ -474,6 +473,7 @@ ActiveRecord::Schema.define(version: 2019_01_08_183834) do
     t.float "minimum_stock"
     t.float "recommended_stock"
     t.float "available_stock", default: 0.0, null: false
+    t.string "measurement_unit", default: "7", null: false
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"

@@ -19,7 +19,7 @@
                     <td><%= image_tag budget.client.avatar, alt: budget.client.name, class: 'avatar' %></td>
                     <td><%= budget.client.name %></td>
                     <td><%= l(budget.date) %></td>
-                    <td><%= l(budget.expiration_date) %></td>
+                    <td><%= budget.expiration_date %></td>
                     <td>$<%= budget.total %></td>
                     <td><%= budget.user.name %></td>
                     <td>
