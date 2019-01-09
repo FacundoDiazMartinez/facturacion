@@ -63,7 +63,11 @@ class DailyCashMovement < ApplicationRecord
 
     def set_initial_values
       if new_record?
-        self.current_balance       =  daily_cash.current_amount.to_f + self.amount
+        if flow == "income"
+          self.current_balance       =  daily_cash.current_amount.to_f + self.amount
+        else
+          self.current_balance       =  daily_cash.current_amount.to_f - self.amount
+        end
       end
     end
 
@@ -101,6 +105,9 @@ class DailyCashMovement < ApplicationRecord
 
     def fix_balance_on_update
       dif = amount - amount_was
+      if flow == "expense"
+        dif = -dif
+      end
       update_others_movements(dif)
     end
 
