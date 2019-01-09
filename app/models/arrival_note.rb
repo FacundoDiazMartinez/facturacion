@@ -9,8 +9,9 @@ class ArrivalNote < ApplicationRecord
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
  
   before_validation :set_number
-  after_save :set_state, if: :new_record?
+  after_save :set_state
   after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
+  after_save :check_purchase_order_state
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -42,8 +43,6 @@ class ArrivalNote < ApplicationRecord
 
   #ATRIBUTOS
     def purchase_order_attributes=(attributes)
-      pp "ID"
-      pp attributes
       self.purchase_order_id = attributes["id"]
       super
     end
@@ -86,7 +85,7 @@ class ArrivalNote < ApplicationRecord
     end
 
     def set_state
-      if arrival_note_details.map(&:completed).include?(false)
+      if !arrival_note_details.map(&:completed).include?(false)
         update_column(:state, "Finalizado") unless state == "Anulado"
       else
         update_column(:state, "Pendiente") unless state == "Anulado"
@@ -96,6 +95,12 @@ class ArrivalNote < ApplicationRecord
     def remove_stock
       arrival_note_details.each do |detail|
         detail.remove_stock
+      end
+    end
+
+    def check_purchase_order_state
+      if purchase_order.state == "Finalizada"
+        purchase_order.close_arrival_notes
       end
     end
   #PROCESOS
