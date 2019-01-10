@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
 
+  get 'sale_file/index'
+  get 'sale_file/show'
   resources :price_changes do
     member do
       get :apply
