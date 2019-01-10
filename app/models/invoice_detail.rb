@@ -9,7 +9,7 @@ class InvoiceDetail < ApplicationRecord
   accepts_nested_attributes_for :commissioners, reject_if: :all_blank, allow_destroy: true
 
   before_validation :check_product
-
+  before_validation :calculate_iva_amount, if: Proc.new{|detail| !detail.iva_aliquot.blank?}
   after_save :set_total_to_invoice
   after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed?}
   after_destroy :remove_reserved_stock
@@ -72,7 +72,7 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def product_attributes=(attributes)
-      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id]).first_or_initialize
+      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id], active: true).first_or_initialize
       self.product = prod
       attributes.delete(:id) unless product.persisted?
       super
@@ -112,6 +112,10 @@ class InvoiceDetail < ApplicationRecord
         dif = quantity_change.first.to_f - quantity_change.second.to_f 
         self.product.rollback_reserved_stock(quantity: dif, depot_id: depot_id)
       end
+    end
+
+    def calculate_iva_amount
+      self.iva_amount =  (subtotal.to_f / (1 + iva.to_f) * iva.to_f).round(2)
     end
 
   #PROCESOS

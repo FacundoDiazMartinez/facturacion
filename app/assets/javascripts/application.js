@@ -149,7 +149,8 @@ function setProduct(product, index, depot_id){
   $("#"+index).find("input.price").val(product["price"]);
   $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
   $("#"+index).find("input.subtotal").val(product["price"]);
-  $("#"+index).find("input.depot_id").val(depot_id);
+  $("#"+index).find("input.supplier_code").val(product["supplier_code"]);
+  $("#"+index).find(".depot_id").val(depot_id);
   $("#"+index).find("input.prodPrice").val(product["cost_price"]).trigger("change");
 
 

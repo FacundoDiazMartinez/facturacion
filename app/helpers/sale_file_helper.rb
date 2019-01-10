@@ -1,0 +1,2 @@
+module SaleFileHelper
+end

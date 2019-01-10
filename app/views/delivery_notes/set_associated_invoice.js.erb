@@ -1,0 +1,7 @@
+<%
+  nested_form_for @delivery_note do |f| 
+    @builder = f
+  end
+%>
+
+$("#idetails").html("<%= j render template: '/delivery_notes/details/index.html.erb', locals:{form: @builder} %>");

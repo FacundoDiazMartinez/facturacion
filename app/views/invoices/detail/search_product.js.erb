@@ -1,1 +1,6 @@
-$("#search_product_body").html("<%= j render '/invoices/detail/search_product_body' %>")
+
+<% if !params[:supplier_id].blank? || !params[:product_category_id].blank? || !params[:depot_id].blank? || !params[:product_name].blank? || !params[:product_code].blank?%>
+	$("#search_product_table").html("<%= j render '/invoices/detail/search_product_table' %>");
+<% else %>
+	$("#search_product_body").html("<%= j render '/invoices/detail/search_product_body' %>");
+<% end %>

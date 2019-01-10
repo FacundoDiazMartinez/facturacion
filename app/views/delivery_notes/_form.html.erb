@@ -1,47 +1,100 @@
-<%= form_with(model: delivery_note, local: true) do |form| %>
-  <% if delivery_note.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(delivery_note.errors.count, "error") %> prohibited this delivery_note from being saved:</h2>
+<%= nested_form_for @delivery_note do |form| %>
+  <%= error_explanation @delivery_note %>
+  <!-- HEADER -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <!-- PRIMERA COLUMNA -->
+            <div class="col-sm">
+              <div id="client_form">
+                <%= render 'client_column' %>
+              </div>
+              <%= form.hidden_field :client_id, value: @client.id %>
+            </div>
+          <!-- PRIMERA COLUMNA -->
 
-      <ul>
-      <% delivery_note.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+          <!-- SEGUNDA COLUMNA -->
+            <div class="col-sm">
+              <div class="form-group">
+                <%= form.label :invoice_id, "Factura" %>
+                <%= autocomplete_field_tag :invoice_id, params[:invoice_id] || form.object.invoice_comp_number, autocomplete_invoice_delivery_notes_path, class: 'form-control delivery_note_associated-invoice-autocomplete_field', id_element: "#delivery_note_invoice_id", placeholder: "Número de Factura", disabled: !@delivery_note.editable?, required: true %>
+                <%= form.hidden_field :invoice_id %>
+              </div>
+              <div class="form-group">
+                <%= form.label :date, "Fecha" %>
+                <%= form.text_field :date, class: 'form-control datepicker', required: true, disabled: !@delivery_note.editable? %>
+              </div>
+            </div>
+          <!-- SEGUNDA COLUMNA -->
+
+          <!-- TERCERA COLUMNA -->
+            <div class="col-sm">
+              <div class="form-group">
+                <%= form.label :number, "Número de remito" %>
+                <%= form.text_field :number, class: 'form-control', disabled: !@delivery_note.editable?, required: true %>
+              </div>
+              <div class="form-group">
+                <%= form.label :state, "Estado" %>
+                <%= text_field_tag :state, form.object.state, class: 'form-control', disabled: true %>
+              </div>
+
+            </div>
+          <!-- TERCERA COLUMNA -->
+        </div>
+
+        <center>
+          <% if @delivery_note.state == "Finalizado" && current_user.has_stock_management_role? && @delivery_note.persisted? %>
+            <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_delivery_note_path(@delivery_note.id), method: :patch, class: 'btn btn-danger' %>
+          <% end %>
+        </center>
+      </div>
     </div>
-  <% end %>
+  <!-- HEADER -->
 
-  <div class="field">
-    <%= form.label :company_id %>
-    <%= form.text_field :company_id %>
+  <!-- DETALLES -->
+    <div class="card" id="arrival_details">
+      <div class="card-body" id="idetails">
+        <%= render template: '/delivery_notes/details/index.html.erb', locals:{form: form} %>
+      </div>
+    </div>
+  <!-- DETALLES -->
+
+  <%= render '/delivery_notes/details/search_product' %>
+  <center>
+     <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: "modal_button_dn", class: 'btn btn-primary' %>
+  </center>
+
+  <div class="modal fade bd-example-modal-lg" id="deliveryNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'save') %> Guardar remito</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center">
+              <%= form.hidden_field :state, class: 'delivery_note_purchase_order_state' %>
+              <p>Cerrar el remito implica que su estado pasará a "Finalizado" y no podra editarlo posteriormente.. Elija una de las siguientes opciones:</p>
+              <%= button_tag "#{icon('fas', 'thumbs-up')} Cerrar remito".html_safe, type: 'button', onclick: 'closeDeliveryNote()', class: 'btn btn-primary' %>
+              <%= button_tag "#{icon('fas', 'thumbs-down')} No cerrar remito".html_safe, type: 'submit', class: 'btn btn-danger' %>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Volver</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="field">
-    <%= form.label :invoice_id %>
-    <%= form.text_field :invoice_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :client_id %>
-    <%= form.text_field :client_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :active %>
-    <%= form.check_box :active %>
-  </div>
-
-  <div class="field">
-    <%= form.label :state %>
-    <%= form.text_field :state %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
 <% end %>
+
+<div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="client_modal">
+      </div>
+    </div>
+  </div>
+</div>

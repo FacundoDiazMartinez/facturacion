@@ -1,5 +1,5 @@
 class BudgetsController < ApplicationController
-  before_action :set_budget, only: [:show, :edit, :update, :destroy]
+  before_action :set_budget, only: [:show, :edit, :update, :destroy, :make_sale]
 
   # GET /budgets
   # GET /budgets.json
@@ -10,15 +10,32 @@ class BudgetsController < ApplicationController
   # GET /budgets/1
   # GET /budgets/1.json
   def show
+    Product.unscoped do
+      @group_details = @budget.budget_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@budget.id}",
+        layout: 'pdf.html',
+        template: 'budgets/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /budgets/new
   def new
     @budget = Budget.new
+    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
 
   # GET /budgets/1/edit
   def edit
+    @client = @budget.client
   end
 
   # POST /budgets
@@ -26,14 +43,12 @@ class BudgetsController < ApplicationController
   def create
     @budget = current_user.company.budgets.new(budget_params)
     @budget.user_id = current_user.id
+    @client = @budget.client
     respond_to do |format|
       if @budget.save
-        format.html { redirect_to @budget, notice: 'Budget was successfully created.' }
-        format.json { render :show, status: :created, location: @budget }
+        format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue creado correctamente.' }
       else
-        pp @budget.errors
         format.html { render :new }
-        format.json { render json: @budget.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -42,8 +57,9 @@ class BudgetsController < ApplicationController
   # PATCH/PUT /budgets/1.json
   def update
     respond_to do |format|
+      @client = @budget.client
       if @budget.update(budget_params)
-        format.html { redirect_to @budget, notice: 'Budget was successfully updated.' }
+        format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @budget }
       else
         format.html { render :edit }
@@ -57,9 +73,27 @@ class BudgetsController < ApplicationController
   def destroy
     @budget.destroy
     respond_to do |format|
-      format.html { redirect_to budgets_url, notice: 'Budget was successfully destroyed.' }
+      format.html { redirect_to budgets_url, notice: 'El presupuesto fue eliminado correctamente.' }
       format.json { head :no_content }
     end
+  end
+
+  def make_sale
+    @client = @budget.client
+    @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id, total: @budget.total)
+    @budget.budget_details.each do |bd|
+      detail = @invoice.invoice_details.build(
+        quantity: bd.quantity,
+        measurement_unit: bd.measurement_unit,
+        price_per_unit: bd.price_per_unit,
+        bonus_percentage: bd.bonus_percentage,
+        bonus_amount: bd.bonus_amount,
+        subtotal: bd.subtotal,
+        depot_id: bd.depot_id
+      )
+      detail.product = bd.product
+    end
+    render template: '/invoices/new.html.erb'
   end
 
   def autocomplete_client

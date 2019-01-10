@@ -16,8 +16,8 @@ class Product < ApplicationRecord
   	has_many   :product_price_histories
 
     scope :active, -> { where(active: true) }
-    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador."
-    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
+    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active
+    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
   	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
@@ -234,22 +234,30 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+		def deliver_product attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: attrs[:from]).first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			if s.save
+				d = self.stocks.where(depot_id: attrs[:depot_id], state: "Despachado").first_or_initialize
+				d.quantity = d.quantity.to_f + attrs[:quantity].to_f
+				d.save
+			end
+		end
 
 		def reserve_stock attrs={}
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
 			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
 			if s.save
 				remove_stock attrs
+			else
+				pp s.errors
 			end
 		end
 
 		def rollback_reserved_stock attrs={}
-			pp "ROLLBACK PRODUT"
-			pp attrs
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save
-			pp s.errors
 			if s.save
 				add_stock attrs
 			end
@@ -289,6 +297,7 @@ class Product < ApplicationRecord
 	    		product.supplier_id 		= supplier_id
 	    		product.product_category_id = categories["#{row[:product_category_name]}"]
 	    		product.code 				= row[:code]
+	    		product.supplier_code 		= row[:supplier_code]
 	    		product.name 				= row[:name]
 	    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
 	    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
@@ -327,7 +336,7 @@ class Product < ApplicationRecord
     end
 
 		def self.permited_params
-		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
+		    [:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
 		end
 
 		def self.open_spreadsheet(file)
