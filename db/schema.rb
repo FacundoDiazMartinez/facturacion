@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_06_195928) do
+ActiveRecord::Schema.define(version: 2019_01_08_183834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.integer "number", null: false
+    t.string "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -73,6 +73,43 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_banks_on_company_id"
+  end
+
+  create_table "budget_details", force: :cascade do |t|
+    t.float "price_per_unit", default: 0.0, null: false
+    t.string "product_name", null: false
+    t.string "measurement_unit", null: false
+    t.float "quantity", default: 0.0, null: false
+    t.float "bonus_percentage", default: 0.0, null: false
+    t.float "bonus_amount", default: 0.0, null: false
+    t.float "subtotal", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
+    t.bigint "product_id"
+    t.bigint "depot_id"
+    t.bigint "budget_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["budget_id"], name: "index_budget_details_on_budget_id"
+    t.index ["depot_id"], name: "index_budget_details_on_depot_id"
+    t.index ["product_id"], name: "index_budget_details_on_product_id"
+  end
+
+  create_table "budgets", force: :cascade do |t|
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.string "state", default: "Pendiente", null: false
+    t.date "expiration_date"
+    t.string "number", null: false
+    t.float "total", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.bigint "client_id"
+    t.boolean "reserv_stock", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_budgets_on_client_id"
+    t.index ["company_id"], name: "index_budgets_on_company_id"
+    t.index ["user_id"], name: "index_budgets_on_user_id"
   end
 
   create_table "client_contacts", force: :cascade do |t|
@@ -264,6 +301,8 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.bigint "depot_id"
+    t.index ["depot_id"], name: "index_invoice_details_on_depot_id"
     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
     t.index ["product_id"], name: "index_invoice_details_on_product_id"
     t.index ["user_id"], name: "index_invoice_details_on_user_id"
@@ -343,6 +382,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.bigint "receiver_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "description"
   end
 
   create_table "payments", force: :cascade do |t|
@@ -351,7 +391,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -414,6 +454,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.bigint "supplier_id"
     t.float "minimum_stock"
     t.float "recommended_stock"
+    t.float "available_stock", default: 0.0, null: false
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
@@ -550,7 +591,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
     t.string "titular"
     t.string "account_number"
     t.string "bank_name"
-    t.string "iva_cond", null: false
+    t.string "iva_cond", default: "Responsable Inscripto", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
@@ -631,6 +672,12 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
   add_foreign_key "banks", "companies"
+  add_foreign_key "budget_details", "budgets"
+  add_foreign_key "budget_details", "depots"
+  add_foreign_key "budget_details", "products"
+  add_foreign_key "budgets", "clients"
+  add_foreign_key "budgets", "companies"
+  add_foreign_key "budgets", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
   add_foreign_key "clients", "users"
@@ -649,6 +696,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_195928) do
   add_foreign_key "delivery_notes", "invoices"
   add_foreign_key "delivery_notes", "users"
   add_foreign_key "depots", "companies"
+  add_foreign_key "invoice_details", "depots"
   add_foreign_key "invoice_details", "invoices"
   add_foreign_key "invoice_details", "products"
   add_foreign_key "invoice_details", "users"

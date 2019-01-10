@@ -79,6 +79,10 @@ class Client < ApplicationRecord
 		def iva_cond_sym
 			iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
 		end
+
+		def avatar
+			"/images/default_user.png"
+		end
 	#ATRIBUTOS
 
 	#PROCESOS
@@ -95,7 +99,7 @@ class Client < ApplicationRecord
 		end
 
 		def set_update_activity
-			UserActivity.create_for_updated_client self
+			UserActivity.create_for_updated_client self unless !changed?
 		end
 	#PROCESOS
 

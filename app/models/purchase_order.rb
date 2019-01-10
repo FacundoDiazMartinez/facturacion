@@ -5,6 +5,7 @@ class PurchaseOrder < ApplicationRecord
 
   has_many :expense_payments
   has_many :purchase_order_details
+  has_many :arrival_notes
 
   has_one :product
 
@@ -18,11 +19,9 @@ class PurchaseOrder < ApplicationRecord
   after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
   after_save :touch_payments
 
-
-
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
 
-  STATES = ["Pendiente de aprobación", "Aprobado", "Anulado"]
+  STATES = ["Pendiente de aprobación", "Aprobado", "Anulado", "Finalizada"]
 
   #ATRIBUTOS
   	def total_left
@@ -110,6 +109,12 @@ class PurchaseOrder < ApplicationRecord
 
     def touch_payments
       expense_payments.map{|p| p.run_callbacks(:save)}
+    end
+
+    def close_arrival_notes
+      self.arrival_notes.each do |an|
+        an.update_column(:state, "Finalizado")
+      end
     end
   #PROCESOS
 

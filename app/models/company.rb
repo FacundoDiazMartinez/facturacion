@@ -19,12 +19,15 @@ class Company < ApplicationRecord
 	has_many :daily_cash_movements, through: :daily_cashes
 	has_many :banks
 	has_many :credit_cards
+	has_many :budgets
 
 	belongs_to :province
 	belongs_to :locality
 
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
+
+	after_save :create_default_deposit, if: :new_record?
 
 	CONCEPTOS = ["Productos", "Servicios", "Productos y Servicios"]
 
@@ -126,4 +129,10 @@ class Company < ApplicationRecord
 			roles.map{|r| [r.name, r.users.map{|u| [u.name, u.id]}]}
 		end
 	#FUNCIONES
+
+	#PROCESOS
+		def create_default_deposit
+			self.depots.create(name: "Central", stock_count: 0, filled: false, location: address)
+		end
+	#PROCESOS
 end

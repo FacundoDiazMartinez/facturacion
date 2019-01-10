@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
 
 
+  resources :budgets do
+    get :autocomplete_client, on: :collection
+    get :autocomplete_product_code, on: :collection
+    get :search_product, on: :collection
+  end
   get 'daily_cash_movements/show'
   resources :daily_cashes
   resources :daily_cash_movements
@@ -15,7 +20,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :notifications, only: :index
+  resources :notifications, only: [:index, :show]
   resources :iva_books do
     get :generate_pdf, on: :collection
   end

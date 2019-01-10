@@ -24,15 +24,21 @@ class IncomePayment < Payment
 
 	#PROCESOS
 		def set_total_pay_to_invoice
+<<<<<<< HEAD
   		invoice.update_attribute(:total_pay, invoice.sum_payments)
   	end
 
+=======
+			sum = invoice.sum_payments
+	  		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
+	  	end
+>>>>>>> 82798a42ab4a20dc8fcacabd560b36ae1bcbd1af
 
-  	def set_notification
-     	Notification.create_from_payment(self)
-    end
+	  	def set_notification
+	     	Notification.create_from_payment(self)
+	    end
 
-    def set_flow
+    	def set_flow
  			self.flow = "income"
  		end
 

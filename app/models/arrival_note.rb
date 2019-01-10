@@ -1,15 +1,17 @@
 class ArrivalNote < ApplicationRecord
-  belongs_to :company
-  belongs_to :purchase_order
-  belongs_to :user
-  belongs_to :depot
+  belongs_to :company, optional: true
+  belongs_to :purchase_order, optional: true
+  belongs_to :user, optional: true
+  belongs_to :depot, optional: true
   has_many :arrival_note_details, dependent: :destroy
 
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
 
   before_validation :set_number
-  after_save :set_state, if: :new_record?
+  after_save :set_state
   after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
+  after_save :check_purchase_order_state
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -38,6 +40,17 @@ class ArrivalNote < ApplicationRecord
     #   t.index ["user_id"], name: "index_arrival_notes_on_user_id"
     # end
   #TABLA
+
+  #ATRIBUTOS
+    def purchase_order_attributes=(attributes)
+      self.purchase_order_id = attributes["id"]
+      super
+    end
+
+    def purchase_order_number
+      purchase_order.nil? ? "" : purchase_order.number
+    end
+  #ATRIBUTOS
 
 
   #FILTROS DE BUSQUEDA
@@ -72,7 +85,7 @@ class ArrivalNote < ApplicationRecord
     end
 
     def set_state
-      if arrival_note_details.map(&:completed).include?(false)
+      if !arrival_note_details.map(&:completed).include?(false)
         update_column(:state, "Finalizado") unless state == "Anulado"
       else
         update_column(:state, "Pendiente") unless state == "Anulado"
@@ -85,10 +98,17 @@ class ArrivalNote < ApplicationRecord
       end
     end
 
+<<<<<<< HEAD
     def destroy
       update_column(:active, false)
       run_callbacks :destroy
       freeze
+=======
+    def check_purchase_order_state
+      if purchase_order.state == "Finalizada"
+        purchase_order.close_arrival_notes
+      end
+>>>>>>> 82798a42ab4a20dc8fcacabd560b36ae1bcbd1af
     end
   #PROCESOS
 

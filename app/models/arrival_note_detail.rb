@@ -4,7 +4,7 @@ class ArrivalNoteDetail < ApplicationRecord
 
   before_validation :check_product
   after_create      :change_product_stock
-  after_validation  :adjust_product_stock, if: Proc.new{|detail| pp detail.quantity_changed? && detail.arrival_note.state != "Anulado"}
+  after_validation  :adjust_product_stock, if: Proc.new{|detail| pp detail.quantity_changed? && detail.arrival_note.state != "Anulado" && !detail.new_record?}
   before_destroy    :remove_stock
 
   accepts_nested_attributes_for :product, reject_if: :all_blank

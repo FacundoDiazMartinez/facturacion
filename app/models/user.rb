@@ -137,10 +137,4 @@ class User < ApplicationRecord
       end
     end
 
-		def birthday
-			if not super.blank?
-				I18n.l(super)
-			end
-	  end
-
 end
