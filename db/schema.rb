@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "observation"
-    t.boolean "active", default: true, null: false
     t.index ["client_id"], name: "index_account_movements_on_client_id"
     t.index ["invoice_id"], name: "index_account_movements_on_invoice_id"
     t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
@@ -53,7 +52,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.string "number", null: false
+    t.integer "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -95,7 +94,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "date", default: -> { "('now'::text)::date" }, null: false
     t.string "state", default: "Pendiente", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -142,9 +141,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.integer "payment_day"
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
-    t.bigint "user_id"
     t.index ["company_id"], name: "index_clients_on_company_id"
-    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "commissioners", force: :cascade do |t|
@@ -278,7 +275,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "date", default: -> { "('now'::text)::date" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -322,7 +319,6 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.boolean "active", default: true, null: false
     t.bigint "depot_id"
     t.index ["depot_id"], name: "index_invoice_details_on_depot_id"
     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
@@ -382,7 +378,6 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.float "total"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "active", default: true, null: false
     t.index ["company_id"], name: "index_iva_books_on_company_id"
     t.index ["invoice_id"], name: "index_iva_books_on_invoice_id"
     t.index ["purchase_invoice_id"], name: "index_iva_books_on_purchase_invoice_id"
@@ -417,8 +412,6 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
     t.bigint "purchase_order_id"
-    t.boolean "active", default: true, null: false
-    t.date "payment_date"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["purchase_order_id"], name: "index_payments_on_purchase_order_id"
   end
@@ -453,12 +446,12 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
 
   create_table "product_categories", force: :cascade do |t|
     t.string "name"
-    t.boolean "active", default: true, null: false
     t.bigint "company_id"
     t.integer "products_count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "supplier_id"
+    t.boolean "active", default: true, null: false
     t.string "iva_aliquot", default: "05", null: false
     t.index ["company_id"], name: "index_product_categories_on_company_id"
     t.index ["supplier_id"], name: "index_product_categories_on_supplier_id"
@@ -547,7 +540,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.string "number", null: false
+    t.integer "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -737,7 +730,6 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
   add_foreign_key "budgets", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
-  add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
   add_foreign_key "credit_card_payments", "credit_cards"
