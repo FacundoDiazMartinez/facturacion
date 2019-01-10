@@ -56,7 +56,7 @@ class ArrivalNote < ApplicationRecord
   #FILTROS DE BUSQUEDA
     def self.search_by_purchase_order number
       if not number.blank?
-        where("purchase_orders.number = ?", number)
+        where("purchase_orders.number ILIKE ?", "%#{number}%")
       else
         all
       end
@@ -98,17 +98,17 @@ class ArrivalNote < ApplicationRecord
       end
     end
 
-<<<<<<< HEAD
+
     def destroy
       update_column(:active, false)
       run_callbacks :destroy
       freeze
-=======
+    end
+
     def check_purchase_order_state
       if purchase_order.state == "Finalizada"
         purchase_order.close_arrival_notes
       end
->>>>>>> 82798a42ab4a20dc8fcacabd560b36ae1bcbd1af
     end
   #PROCESOS
 

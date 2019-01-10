@@ -11,6 +11,7 @@ class Budget < ApplicationRecord
   validate :expiration_date_cannot_be_in_the_past
 
   before_validation :set_number
+  before_validation :check_depots, if: :reserv_stock
 
   STATES = ["Pendiente", "Vencido", "Concretado"]
 
@@ -52,6 +53,10 @@ class Budget < ApplicationRecord
     def set_number
       last_budget = Budget.where(company_id: company_id).last
         self.number ||= last_budget.nil? ? "00001" : (last_budget.number.to_i + 1).to_s.rjust(5,padstr= '0')
+    end
+
+    def check_depots
+      errors.add(:base, "Si quiere reservar stock debe especificar el depósito en cada detalle.") unless !budget_details.map{|detail| detail.depot_id.blank?}.include?(true)
     end
   #PROCESOS
 

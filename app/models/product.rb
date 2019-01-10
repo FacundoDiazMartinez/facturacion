@@ -2,8 +2,8 @@ class Product < ApplicationRecord
 
   	belongs_to :product_category, optional: true
   	belongs_to :company
-  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
-  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User"
+  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User", optional: true
+  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User", optional: true
   	belongs_to :supplier, optional: true
   	has_many   :stocks
   	has_many   :depots, through: :stocks
@@ -16,8 +16,8 @@ class Product < ApplicationRecord
   	has_many   :product_price_histories
 
     scope :active, -> { where(active: true) }
-    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador."
-    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
+    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active
+    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
   	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
@@ -104,9 +104,25 @@ class Product < ApplicationRecord
 			end
 		end
 
+		def self.search_by_product_category_id category_id
+			unless category_id.blank?
+				where(product_category_id: category_id)
+			else
+				all
+			end
+		end
+
 		def self.search_by_supplier supplier
 			if not supplier.blank?
 				joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
+			else
+				all
+			end
+		end
+
+		def self.search_by_supplier_id supplier_id
+			unless supplier_id.blank?
+				where(supplier_id: supplier_id)
 			else
 				all
 			end
@@ -124,7 +140,7 @@ class Product < ApplicationRecord
 			if !depot_id.blank?
 				joins(stocks: :depot).where("depots.id = ?", depot_id)
 			else
-				all 
+				all
 			end
 		end
 	#FILTROS DE BUSQUEDA
@@ -175,16 +191,16 @@ class Product < ApplicationRecord
 		end
 	#ATRIBUTOS
 
-  	#ATRIBUTOS VIRTUALES
-		def price_modification=(new_price)
-		    @price_modification = new_price
-		    if (new_price.to_s.ends_with? "%" )
-		      	self.price += (self.price * (new_price.to_d/100)).round(2)
-		    else
-		      	self.price = new_price
-		    end
-		end
-  	#ATRIBUTOS VIRTUALES
+	#ATRIBUTOS VIRTUALES
+	def price_modification=(new_price)
+    @price_modification = new_price
+    if (new_price.to_s.ends_with? "%" )
+    	self.price += (self.price * (new_price.to_d/100)).round(2)
+    else
+    	self.price = new_price
+    end
+	end
+	#ATRIBUTOS VIRTUALES
 
 	#PROCESOS
 		def self.create params
@@ -218,22 +234,30 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+		def deliver_product attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: attrs[:from]).first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			if s.save
+				d = self.stocks.where(depot_id: attrs[:depot_id], state: "Despachado").first_or_initialize
+				d.quantity = s.quantity.to_f + attrs[:quantity].to_f
+				d.save
+			end
+		end
 
 		def reserve_stock attrs={}
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
 			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
 			if s.save
 				remove_stock attrs
+			else
+				pp s.errors
 			end
 		end
 
 		def rollback_reserved_stock attrs={}
-			pp "ROLLBACK PRODUT"
-			pp attrs
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save
-			pp s.errors
 			if s.save
 				add_stock attrs
 			end
@@ -246,16 +270,16 @@ class Product < ApplicationRecord
     #IMPORTAR EXCEL o CSV
     def self.save_excel file, supplier_id, current_user
     	#TODO Añadir created_by y updated_by
-      	spreadsheet = open_spreadsheet(file)
-      	excel = []
-      	(2..spreadsheet.last_row).each do |r|
-      		excel << spreadsheet.row(r)
-      	end
-      	header = self.permited_params
-      	categories = {}
-      	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-      	delay().load_products(excel, header, categories, current_user, supplier_id)
-		end
+    	spreadsheet = open_spreadsheet(file)
+    	excel = []
+    	(2..spreadsheet.last_row).each do |r|
+    		excel << spreadsheet.row(r)
+    	end
+    	header = self.permited_params
+    	categories = {}
+    	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
+    	delay.load_products(excel, header, categories, current_user, supplier_id)
+    end
 
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id
 			products 	= []
@@ -273,6 +297,7 @@ class Product < ApplicationRecord
 	    		product.supplier_id 		= supplier_id
 	    		product.product_category_id = categories["#{row[:product_category_name]}"]
 	    		product.code 				= row[:code]
+	    		product.supplier_code 		= row[:supplier_code]
 	    		product.name 				= row[:name]
 	    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
 	    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
@@ -311,7 +336,7 @@ class Product < ApplicationRecord
     end
 
 		def self.permited_params
-		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
+		    [:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
 		end
 
 		def self.open_spreadsheet(file)

@@ -19,12 +19,11 @@
                     <td><%= image_tag budget.client.avatar, alt: budget.client.name, class: 'avatar' %></td>
                     <td><%= budget.client.name %></td>
                     <td><%= l(budget.date) %></td>
-                    <td><%= l(budget.expiration_date) %></td>
+                    <td><%= budget.expiration_date %></td>
                     <td>$<%= budget.total %></td>
                     <td><%= budget.user.name %></td>
                     <td>
-                        <%= link_to icon('fas', 'file-pdf').html_safe, budget_path(budget.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-                        <%= link_to icon('fas', 'eye').html_safe, budget, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+                        <%= link_to icon('fas', 'eye').html_safe, budget_path(budget.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                         <%= link_to icon('fas', 'edit').html_safe, edit_budget_path(budget.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                         <%= link_to icon('fas', 'trash').html_safe, budget, method: :delete, data:{confirm: "¿Está seguro?"}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                     </td>

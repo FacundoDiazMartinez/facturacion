@@ -20,6 +20,7 @@ $(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field',
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.prodPrice").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+  	$(this).closest("tr.fields").find("input.supplier_code").val(data.item.supplier_code);
 		$(this).closest("tr.fields").find("input.prodSubtotal").val(data.item.price);
 
 		subtotal 			= $(this).closest("tr.fields").find("input.prodSubtotal");

@@ -44,7 +44,7 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order.user_id = current_user.id
     respond_to do |format|
       if @purchase_order.save
-        format.html { redirect_to '/purchase_orders', notice: 'La órden de compra fue creada exitosamente.' }
+        format.html { redirect_to edit_purchase_order_path(@purchase_order.id), notice: 'La órden de compra fue creada exitosamente.' }
       else
         format.html { render :new }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }
@@ -57,7 +57,7 @@ class PurchaseOrdersController < ApplicationController
   def update
     respond_to do |format|
       if @purchase_order.update(purchase_order_params)
-        format.html { redirect_to '/purchase_orders', notice: 'La órden de compra fue actualizada exitosamente.' }
+        format.html { redirect_to edit_purchase_order_path(@purchase_order.id), notice: 'La órden de compra fue actualizada exitosamente.' }
       else
         format.html { render :edit }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }
@@ -91,7 +91,7 @@ class PurchaseOrdersController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.cost_price} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.cost_price, supplier_code: product.supplier_code} }
   end
 
   def approve

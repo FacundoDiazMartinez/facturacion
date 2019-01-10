@@ -4,12 +4,12 @@ $(document).on('railsAutocomplete.select', '.budget_detail-autocomplete_field', 
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
 	}
-
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price).tirgger("change");
+	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price).trigger("change");
+
 
 	$(this).closest("tr.fields").find("input.name").tooltip({
 		title: data.item.name,

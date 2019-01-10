@@ -97,7 +97,7 @@
     </tr>
     <tr>
     <% @invoice.invoice_details.each do |det| %>
-      <td><%= det.product.code %></td>
+      <td><%= det.product.supplier_code %></td>
       <td><%= det.product.name %></td>
       <td class="invoice_text_right"><%= det.quantity %></td>
       <td class="invoice_text_right">unidades</td>
