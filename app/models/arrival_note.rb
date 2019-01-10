@@ -56,7 +56,7 @@ class ArrivalNote < ApplicationRecord
   #FILTROS DE BUSQUEDA
     def self.search_by_purchase_order number
       if not number.blank?
-        where("purchase_orders.number = ?", number)
+        where("purchase_orders.number ILIKE ?", "%#{number}%")
       else
         all 
       end

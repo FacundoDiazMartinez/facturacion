@@ -38,13 +38,6 @@
   <!-- HEADER -->
 
   <!-- DETALLES -->
-    <% if @arrival_note.editable? %>
-      <p class="text-muted">
-        Conceptos asociados
-        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :arrival_note_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
-      </p>
-    <% end %>
-
     <div class="card" id="arrival_details">
       <div class="card-body">
         <%= render template: '/arrival_notes/details/index.html.erb', locals:{form: form} %>

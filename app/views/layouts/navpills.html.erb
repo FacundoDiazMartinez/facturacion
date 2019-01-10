@@ -22,7 +22,7 @@
    				<div class="dropdown-menu">
    					<%= link_to "<span class='nav-span'>Comprobantes</span> #{icon('fas', 'hand-holding-usd')}".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
    					<%= link_to "<span class='nav-span'>Presupuestos</span> #{icon('fas', 'file-contract')}".html_safe, budgets_path, class: 'dropdown-item', title: 'caja diaria' %>
-					<%= link_to "<span class='nav-span'>Remitos</span> #{icon('fas', 'file-alt')}".html_safe, "#", class: 'dropdown-item', title: "Remitos" %>
+					<%= link_to "<span class='nav-span'>Remitos</span> #{icon('fas', 'file-alt')}".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
 				</div>
 			</li>
 

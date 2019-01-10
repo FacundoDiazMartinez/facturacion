@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_09_192035) do
+ActiveRecord::Schema.define(version: 2019_01_10_021458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -251,16 +251,33 @@ ActiveRecord::Schema.define(version: 2019_01_09_192035) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 
+  create_table "delivery_note_details", force: :cascade do |t|
+    t.bigint "delivery_note_id"
+    t.bigint "product_id"
+    t.bigint "depot_id"
+    t.float "quantity", null: false
+    t.string "observation"
+    t.boolean "active", default: true, null: false
+    t.boolean "cumpliment", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["delivery_note_id"], name: "index_delivery_note_details_on_delivery_note_id"
+    t.index ["depot_id"], name: "index_delivery_note_details_on_depot_id"
+    t.index ["product_id"], name: "index_delivery_note_details_on_product_id"
+  end
+
   create_table "delivery_notes", force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "invoice_id"
     t.bigint "user_id"
     t.bigint "client_id"
-    t.integer "number", null: false
+    t.string "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.string "generated_by", default: "system", null: false
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
     t.index ["company_id"], name: "index_delivery_notes_on_company_id"
     t.index ["invoice_id"], name: "index_delivery_notes_on_invoice_id"
@@ -711,6 +728,9 @@ ActiveRecord::Schema.define(version: 2019_01_09_192035) do
   add_foreign_key "daily_cash_movements", "users"
   add_foreign_key "daily_cashes", "companies"
   add_foreign_key "delayed_jobs", "payments"
+  add_foreign_key "delivery_note_details", "delivery_notes"
+  add_foreign_key "delivery_note_details", "depots"
+  add_foreign_key "delivery_note_details", "products"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
   add_foreign_key "delivery_notes", "invoices"

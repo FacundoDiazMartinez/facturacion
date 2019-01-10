@@ -32,6 +32,12 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :delivery_notes do
+    resources :clients do
+      get :autocomplete_document, on: :collection
+    end
+  end
+
   resources :notifications, only: [:index, :show]
   resources :iva_books do
     get :generate_pdf, on: :collection
@@ -46,6 +52,18 @@ Rails.application.routes.draw do
     get :generate_pdf, on: :member
     get :autocomplete_purchase_order, on: :collection
     patch :cancel, on: :member
+  end
+
+  resources :delivery_notes do
+    get :autocomplete_client, on: :collection
+    resources :delivery_note_details, shallow: true
+    get :set_invoice, on: :collection
+    get :generate_pdf, on: :member
+    get :autocomplete_invoice, on: :collection
+    patch :cancel, on: :member
+    get :search_product, on: :collection
+    get :set_associated_invoice, on: :collection
+    get :set_associated_invoice, on: :member
   end
 
   resources :purchase_orders do
@@ -88,7 +106,6 @@ Rails.application.routes.draw do
   resources :depots
   resources :receipts
   resources :clients
-  resources :delivery_notes
   resources :product_categories
   resources :companies
 

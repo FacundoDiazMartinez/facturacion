@@ -234,13 +234,19 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+		def deliver_product attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: attrs[:from]).first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			if s.save
+				d = self.stocks.where(depot_id: attrs[:depot_id], state: "Despachado").first_or_initialize
+				d.quantity = s.quantity.to_f + attrs[:quantity].to_f
+				d.save
+			end
+		end
 
 		def reserve_stock attrs={}
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
-			pp s.quantity.to_f
-			pp attrs[:quantity].to_f
 			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
-			pp s.quantity
 			if s.save
 				remove_stock attrs
 			else
