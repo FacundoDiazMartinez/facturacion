@@ -5,12 +5,10 @@ class DeliveryNote < ApplicationRecord
   belongs_to :client
   has_many :delivery_note_details, dependent: :destroy
 
-  accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :delivery_note_details, reject_if: :all_blank, allow_destroy: true
 
   before_validation :set_number
 
-<<<<<<< HEAD
-=======
   after_save :adjust_stock, if: Proc.new{|dn| saved_change_to_state?}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
@@ -24,23 +22,23 @@ class DeliveryNote < ApplicationRecord
       if not number.blank?
         where("invoices.comp_number ILIKE ?", "%#{number}%")
       else
-        all 
+        all
       end
     end
 
-    def self.search_by_user name 
+    def self.search_by_user name
       if not name.blank?
         where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
       else
-        all 
+        all
       end
    end
 
-    def self.search_by_state state 
+    def self.search_by_state state
       if not state.blank?
         where(state: state)
       else
-        all 
+        all
       end
     end
   #FILTROS DE BUSQUEDA
@@ -54,7 +52,6 @@ class DeliveryNote < ApplicationRecord
       invoice.nil? ? "" : invoice.comp_number
     end
   #ATRIBUTOS
->>>>>>> bfc185d8116b87af5dcb6da60983be084e3f09c5
 
   #PROCESOS
     def set_number
