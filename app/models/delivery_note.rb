@@ -9,6 +9,52 @@ class DeliveryNote < ApplicationRecord
 
   before_validation :set_number
 
+<<<<<<< HEAD
+=======
+  after_save :adjust_stock, if: Proc.new{|dn| saved_change_to_state?}
+
+  STATES = ["Pendiente", "Anulado", "Finalizado"]
+
+  #FILTROS DE BUSQUEDA
+  	def self.without_system
+  		where.not(generated_by: "system")
+  	end
+
+  	def self.search_by_invoice number
+      if not number.blank?
+        where("invoices.comp_number ILIKE ?", "%#{number}%")
+      else
+        all 
+      end
+    end
+
+    def self.search_by_user name 
+      if not name.blank?
+        where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
+      else
+        all 
+      end
+   end
+
+    def self.search_by_state state 
+      if not state.blank?
+        where(state: state)
+      else
+        all 
+      end
+    end
+  #FILTROS DE BUSQUEDA
+
+  #ATRIBUTOS
+  	def editable?
+  		state == "Pendiente" || new_record?
+  	end
+
+    def invoice_comp_number
+      invoice.nil? ? "" : invoice.comp_number
+    end
+  #ATRIBUTOS
+>>>>>>> bfc185d8116b87af5dcb6da60983be084e3f09c5
 
   #PROCESOS
     def set_number
