@@ -4,7 +4,27 @@
 	<div class="page-section">
 		<div class="card">
 			<div class="card-header">
-				FILTROS
+				<%= form_tag depot_path(@depot.id), {class: 'form-inline', id: 'search_form'} do %>
+		          <!-- BUSCAR POR CLIENTE -->
+		          <%= label_tag :product_name, "Producto", class: 'sr-only' %>
+		          <div class="input-group col">
+		            <div class="input-group-prepend">
+		              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+		            </div>
+		            <%= text_field_tag :product_name, params[:product_name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+		          </div>
+		          <!-- BUSCAR POR CLIENTE -->
+
+		          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+		          <%= label_tag :state, "Estado", class: 'sr-only' %>
+		          <div class="input-group col">
+		            <div class="input-group-prepend">
+		              <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+		            </div>
+		            <%= select_tag :state, options_for_select(Stock::STATES, params[:state]), {class: 'form-control', prompt: 'Buscar por estado', onchange: 'remoteSubmit("#search_form")'} %>
+		          </div>
+		          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+		        <% end %>
 			</div>
 			<div class="card-body">
 				<div id="stock">

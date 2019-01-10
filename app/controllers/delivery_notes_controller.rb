@@ -113,6 +113,6 @@ class DeliveryNotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def delivery_note_params
-      params.require(:delivery_note).permit(:invoice_id, :client_id, :active, :state, delivery_note_details_attributes: [:id, :quantity, :depot_id, :observation, :cumpliment, :_destroy])
+      params.require(:delivery_note).permit(:invoice_id, :date, :number, :client_id, :active, :state, delivery_note_details_attributes: [:id, :product_id, :quantity, :depot_id, :observation, :cumpliment, :_destroy])
     end
 end

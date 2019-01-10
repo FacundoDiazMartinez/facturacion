@@ -52,7 +52,7 @@ class DeliveryNote < ApplicationRecord
 
   #ATRIBUTOS
   	def editable?
-  		state == "Pendiente"
+  		state == "Pendiente" || new_record?
   	end
 
     def invoice_comp_number

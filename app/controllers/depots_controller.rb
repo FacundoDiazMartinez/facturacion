@@ -4,14 +4,13 @@ class DepotsController < ApplicationController
   # GET /depots
   # GET /depots.json
   def index
-    set_depots 
-    @depots = current_user.company.depots.search_by_name(params[:name]).order("depots.created_at DESC").paginate(page: params[:page], per_page: 9)
+    @depots = current_user.company.depots.search_by_name(params[:name]).search_by_availability(params[:state]).order("depots.created_at DESC").paginate(page: params[:page], per_page: 9)
   end
 
   # GET /depots/1
   # GET /depots/1.json
   def show
-    @stocks = @depot.stocks.paginate(per_page: 10, page: params[:page])
+    @stocks = @depot.stocks.search_by_product(params[:product_name]).search_by_state(params[:state]).paginate(per_page: 10, page: params[:page])
   end
 
   # GET /depots/new
@@ -30,7 +29,6 @@ class DepotsController < ApplicationController
 
     respond_to do |format|
       if @depot.save
-        set_depots
         format.html { redirect_to @depot, notice: 'Depot was successfully created.' }
         format.json { render :show, status: :created, location: @depot }
       else
@@ -46,7 +44,6 @@ class DepotsController < ApplicationController
   def update
     respond_to do |format|
       if @depot.update(depot_params)
-        set_depots
         format.html { redirect_to @depot, notice: 'Depot was successfully updated.' }
         format.json { render :show, status: :ok, location: @depot }
       else

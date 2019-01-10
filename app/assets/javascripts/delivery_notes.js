@@ -23,6 +23,7 @@ $(document).on('railsAutocomplete.select', '.delivery_note_associated-invoice-au
 	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: data.item.id}, null, "script");
 });
 
+
 $(document).on("click", "#modal_button_dn", function(){
 	form = $(this).closest("form");
 	if (form.valid()) {
@@ -32,20 +33,18 @@ $(document).on("click", "#modal_button_dn", function(){
 	}
 })
 
-$(document).on("ready", function(){
 
+$(document).on("ready", function(){
+	$("button[type='submit']").on("click", function(e){
+		$(this).valid()
+	});
 	jQuery.validator.setDefaults({
 	    errorPlacement: function (error, element) {
-	    //    error.appendTo($(element).parent().next());
-	    	//error.insertAfter(element);
+	    	$(element).attr("data-toggle", "tooltip").attr("data-placement", "top").attr("title", error.text()).tooltip('show')
 	    },
-
-	    //highlight: function (element) {
-	    //    $(element).closest('.form-group').addClass('is-invalid');
-	    //},
-	    //unhighlight: function (element) {
-	    //    $(element).closest('.form-group').removeClass('has-error');
-	    //},
+	    unhighlight: function (element) {
+	       $(element).removeClass('is-invalid').addClass('is-valid');
+	    },
 	    highlight: function (element) {
 	        $(element).removeClass('is-valid').addClass('is-invalid');
 	    } 

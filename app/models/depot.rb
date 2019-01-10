@@ -32,17 +32,17 @@ class Depot < ApplicationRecord
       	end
     end
 
-    def self.search_by_state state
-      	case state
-      	when "Disponible"
-      		where(filled: false)
-      	when "LLeno"
-      		where(filled: true)
-      	when ""
-      		all
-      	else
-      		all
-      	end
+    def self.search_by_availability state
+      case state
+      when "Disponible"
+        where(filled: false)
+      when "LLeno"
+        where(filled: true)
+      when ""
+        all
+      else
+        all
+      end
     end
 #FILTROS DE BUSQUEDA
 end

@@ -43,7 +43,7 @@
         </div>
 
         <center>
-          <% if @delivery_note.state == "Finalizado" && current_user.has_stock_management_role? %>
+          <% if @delivery_note.state == "Finalizado" && current_user.has_stock_management_role? && @delivery_note.persisted? %>
             <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_delivery_note_path(@delivery_note.id), method: :patch, class: 'btn btn-danger' %>
           <% end %>
         </center>
@@ -75,7 +75,6 @@
         </div>
         <div class="modal-body">
             <div class="text-center">
-              <%= form.hidden_field :id, class: 'delivery_note_purchase_order_id' %>
               <%= form.hidden_field :state, class: 'delivery_note_purchase_order_state' %>
               <p>Cerrar el remito implica que su estado pasará a "Finalizado" y no podra editarlo posteriormente.. Elija una de las siguientes opciones:</p>
               <%= button_tag "#{icon('fas', 'thumbs-up')} Cerrar remito".html_safe, type: 'button', onclick: 'closeDeliveryNote()', class: 'btn btn-primary' %>
