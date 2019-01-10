@@ -10,7 +10,7 @@
             <% @products.each do |product| %>
             <li>
               <%= hidden_field_tag "product_ids[]", product.id %>
-              <%= product.name + " - " + product.category_name %>
+              <%= product.code + " - " + product.name + " - " + product.category_name %>
             </li>
             <% end %>
           </ul>
@@ -33,6 +33,11 @@
         <div class="card-body">
           <%= fields_for :product do |f| %>
           <div class="form-row">
+            <div class="form-group">
+              <p class="text-muted">Para realizar modificaciones de precio porcentuales puede utilizar el signo % como caracter final. Ejemplo: '-10%' reduce los valores de los productos en un 10%.</p>
+            </div>
+          </div>
+          <div class="form-row">
             <div class="form-group w-100">
               <%= f.label :price_modification, "Precio final" %>
               <div class="input-group">
@@ -43,19 +48,13 @@
               </div>
             </div>
           </div>
-
           <div class="form-row">
             <div class="form-group w-100">
               <%= f.label :active, "Inhabilitar producto?" %>
-              <%= f.select :active, [["Sí", true], ["No", false]], { include_blank: true }, class: 'form-control' %>
+              <%= f.select :active, [["Sí", false], ["No", true]], { include_blank: "Mantener estado" }, class: 'form-control' %>
             </div>
           </div>
           <% end %>
-          <div class="form-row">
-            <div class="form-group">
-              <p class="text-muted">Para realizar modificaciones de precio porcentuales puede utilizar el signo % como caracter final. Ejemplo: '-10%' reduce los valores de los productos en un 10%.</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
