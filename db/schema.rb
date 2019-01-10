@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.bigint "purchase_order_id"
     t.bigint "user_id"
     t.bigint "depot_id"
-    t.integer "number", null: false
+    t.string "number", null: false
     t.boolean "active", default: true, null: false
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "commissioners", force: :cascade do |t|
@@ -546,7 +547,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.integer "number", null: false
+    t.string "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -736,6 +737,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
   add_foreign_key "budgets", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
+  add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
   add_foreign_key "credit_card_payments", "credit_cards"
