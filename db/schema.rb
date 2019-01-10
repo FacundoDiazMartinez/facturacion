@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_10_021458) do
+ActiveRecord::Schema.define(version: 2019_01_10_172940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,8 +107,10 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
     t.boolean "reserv_stock", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_budgets_on_client_id"
     t.index ["company_id"], name: "index_budgets_on_company_id"
+    t.index ["sales_file_id"], name: "index_budgets_on_sales_file_id"
     t.index ["user_id"], name: "index_budgets_on_user_id"
   end
 
@@ -278,9 +280,11 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
     t.datetime "updated_at", null: false
     t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
+    t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
     t.index ["company_id"], name: "index_delivery_notes_on_company_id"
     t.index ["invoice_id"], name: "index_delivery_notes_on_invoice_id"
+    t.index ["sales_file_id"], name: "index_delivery_notes_on_sales_file_id"
     t.index ["user_id"], name: "index_delivery_notes_on_user_id"
   end
 
@@ -359,9 +363,11 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
     t.date "fch_serv_hasta"
     t.date "fch_vto_pago"
     t.text "observation"
+    t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
+    t.index ["sales_file_id"], name: "index_invoices_on_sales_file_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
@@ -601,6 +607,19 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
     t.index ["company_id"], name: "index_sale_points_on_company_id"
   end
 
+  create_table "sales_files", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "client_id"
+    t.bigint "responsable_id"
+    t.string "observation"
+    t.date "init_date"
+    t.date "final_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_sales_files_on_client_id"
+    t.index ["company_id"], name: "index_sales_files_on_company_id"
+  end
+
   create_table "stocks", force: :cascade do |t|
     t.bigint "product_id"
     t.bigint "depot_id"
@@ -714,6 +733,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
   add_foreign_key "budget_details", "products"
   add_foreign_key "budgets", "clients"
   add_foreign_key "budgets", "companies"
+  add_foreign_key "budgets", "sales_files"
   add_foreign_key "budgets", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
@@ -734,6 +754,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
   add_foreign_key "delivery_notes", "invoices"
+  add_foreign_key "delivery_notes", "sales_files"
   add_foreign_key "delivery_notes", "users"
   add_foreign_key "depots", "companies"
   add_foreign_key "invoice_details", "depots"
@@ -743,6 +764,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "invoices", "sale_points"
+  add_foreign_key "invoices", "sales_files"
   add_foreign_key "invoices", "users"
   add_foreign_key "iva_books", "companies"
   add_foreign_key "iva_books", "invoices"
@@ -778,6 +800,8 @@ ActiveRecord::Schema.define(version: 2019_01_10_021458) do
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "roles", "companies"
   add_foreign_key "sale_points", "companies"
+  add_foreign_key "sales_files", "clients"
+  add_foreign_key "sales_files", "companies"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"
