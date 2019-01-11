@@ -1,22 +1,24 @@
 class DeliveryNote < ApplicationRecord
+<<<<<<< HEAD
   belongs_to :company,optional: true
   belongs_to :invoice,optional: true
   belongs_to :user,optional: true
   belongs_to :client,optional: true
+  belongs_to :sales_file, optional: true
 
+=======
+  belongs_to :company
+  belongs_to :invoice
+  belongs_to :user
+  belongs_to :client
+>>>>>>> 90f0c616dff8abcd3f2874168c89e7c7e95f15d8
   has_many :delivery_note_details, dependent: :destroy
 
-  validates_presence_of :company, message: "Debe especifica una compañía."
-  validates_presence_of :invoice, message: "Debe especificar una factura asociada."
-  validates_presence_of :user, 	  message: "Debe especificar un usuario."
-  validates_presence_of :client,  message: "Debe especificar un cliente."
-
   accepts_nested_attributes_for :delivery_note_details, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :invoice, reject_if: :all_blank
 
   before_validation :set_number
-
   after_save :adjust_stock, if: Proc.new{|dn| saved_change_to_state?}
+  after_create :create_seles_file, if: Proc.new{|dn| dn.sales_file.nil? && !dn.invoice.nil?}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -29,23 +31,23 @@ class DeliveryNote < ApplicationRecord
       if not number.blank?
         where("invoices.comp_number ILIKE ?", "%#{number}%")
       else
-        all 
+        all
       end
     end
 
-    def self.search_by_user name 
+    def self.search_by_user name
       if not name.blank?
         where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
       else
-        all 
+        all
       end
    end
 
-    def self.search_by_state state 
+    def self.search_by_state state
       if not state.blank?
         where(state: state)
       else
-        all 
+        all
       end
     end
   #FILTROS DE BUSQUEDA
@@ -61,23 +63,31 @@ class DeliveryNote < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
-    def set_number
-      last_delivery_note = DeliveryNote.where(company_id: company_id).last
-      self.number ||= last_delivery_note.nil? ? "00001" : (last_delivery_note.number.to_i + 1)
-      self.number = self.number.to_s.rjust(5,padstr= '0')
-    end
-
-    def adjust_stock
-      from = invoice.nil? ? "Disponible" : "Reservado" #Si el remito se crea de una factura, se disminuye el stock de los reservados, si no tiene factura asociada significa q nunca se reservo.
-      self.delivery_note_details.each do |detail|
-        case state
-        when "Anulado"
-          detail.product.deliver_product(quantity: -detail.quantity, depot_id: detail.depot_id, from: from)
-        when "Finalizado"
-          detail.product.deliver_product(quantity: detail.quantity, depot_id: detail.depot_id, from: from)
+    def create_seles_file
+      if sales_file_id.nil?
+        if invoice_id.nil?
+          sf = SalesFile.create(
+            company_id: company_id,
+            client_id: client_id,
+            responsable_id: user_id
+          )
+          update_column(:sales_file_id, sf.id)
+        else
+          update_column(:sales_file_id, invoice.sales_file_id)
         end
       end
     end
+
+    def set_number
+      self.number = self.number.to_s.rjust(8,padstr= '0')
+    end
+
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
+    end
   #PROCESOS
+
 
 end

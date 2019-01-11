@@ -1,0 +1,69 @@
+<div class="p-4">
+  <%= title_helper 'Expedientes de ventas' %>
+  
+
+  <div class="page-section">
+    <div class="card card-fluid navbar-expand-lg">
+      <button class="navbar-toggler btn btn-light btn-lg btn-block" type="button" data-toggle="collapse" data-target="#filtros">
+        <%= icon('fas', 'search') %> Ver filtros
+      </button>
+      <div class="card-header collapse navbar-collapse" id="filtros">
+        <%= form_tag invoices_path(), {class: 'form-inline', style: 'width: 100%', id: 'search_form'} do %>
+          <div class="row" style="width: 100%;">
+            <div class="col-10">
+              <div class="row">
+                <!-- BUSCAR POR CLIENTE -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'user') %></div>
+                    </div>
+                    <%= text_field_tag :client_name, params[:client_name], class: 'form-control', placeholder: 'Buscar por cliente', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR CLIENTE -->
+
+                <!-- BUSCAR POR NÚMERO -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'search') %></div>
+                    </div>
+                    <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Buscar por responsable', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR NÚMERO -->
+
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+                    </div>
+                    <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+                <div class="col-12 col-md-3 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+                    </div>
+                    <%= select_tag :state, options_for_select(SalesFile::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <div id="sales_files_table">
+          <%= render 'sales_files_table' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

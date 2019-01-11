@@ -18,6 +18,7 @@ class PurchaseOrder < ApplicationRecord
   after_save :set_sended_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state == "Enviado"}
   after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
   after_save :touch_payments
+  before_save :set_total_pay
 
   validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
   validates_presence_of :supplier_id, message: "Debe especificar un proveedor."
@@ -119,6 +120,10 @@ class PurchaseOrder < ApplicationRecord
         an.update_column(:state, "Finalizado")
       end
     end
+
+    def set_total_pay
+      self.total_pay = sum_payments
+    end
   #PROCESOS
 
   #FUNCIONES
@@ -128,6 +133,10 @@ class PurchaseOrder < ApplicationRecord
 
     def sum_details
       self.purchase_order_details.sum(:total)
+    end
+
+    def sum_payments
+      self.expense_payments.sum(:total)
     end
 
 

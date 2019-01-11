@@ -22,6 +22,7 @@ class Company < ApplicationRecord
 	has_many :credit_cards
 	has_many :budgets
 	has_many :delivery_notes
+	has_many :sales_files
 
 	belongs_to :province
 	belongs_to :locality

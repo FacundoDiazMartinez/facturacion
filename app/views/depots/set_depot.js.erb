@@ -1,7 +1,7 @@
 '<% if not @depot.errors.any? %>'
 	$("#depotModal").modal('hide');
 	$('#depotModal').on('hidden.bs.modal', function (e) {
-	  	$("#depots_table").html("<%= j render '/depots/depots_table' %>");
+  	$("#depots_table").html("<%= j render '/depots/depots_table' %>");
 	});
 '<% else %>'
 	$("#depot_errors").html("<%= j error_explanation(@depot) %>");

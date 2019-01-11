@@ -1,6 +1,6 @@
 <%= nested_form_for @invoice do |form| %>
-
-<%= error_explanation @invoice %>
+  <%= form.hidden_field :budget_id %>
+  <%= error_explanation @invoice %> 
   <!-- HEADER -->
     <div class="card shadow">
       <div class="card-body">

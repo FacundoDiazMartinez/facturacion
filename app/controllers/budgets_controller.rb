@@ -4,7 +4,7 @@ class BudgetsController < ApplicationController
   # GET /budgets
   # GET /budgets.json
   def index
-    @budgets = current_user.company.budgets.search_by_user(params[:user_name]).search_by_number(params[:number]).search_by_client(params[:client_name]).paginate(per_page: 10, page: params[:page])
+    @budgets = current_user.company.budgets.search_by_user(params[:user_name]).search_by_number(params[:number]).search_by_client(params[:client_name]).paginate(per_page: 10, page: params[:page]).order("created_at DESC")
   end
 
   # GET /budgets/1
@@ -48,6 +48,7 @@ class BudgetsController < ApplicationController
       if @budget.save
         format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue creado correctamente.' }
       else
+        pp @budget.errors
         format.html { render :new }
       end
     end
@@ -80,7 +81,7 @@ class BudgetsController < ApplicationController
 
   def make_sale
     @client = @budget.client
-    @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id, total: @budget.total)
+    @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id, total: @budget.total, budget_id: @budget.id)
     @budget.budget_details.each do |bd|
       detail = @invoice.invoice_details.build(
         quantity: bd.quantity,
