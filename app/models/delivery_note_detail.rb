@@ -21,4 +21,6 @@ class DeliveryNoteDetail < ApplicationRecord
       Product.unscoped{super}
     end
   #ATRIBUTOS
+
+  
 end
