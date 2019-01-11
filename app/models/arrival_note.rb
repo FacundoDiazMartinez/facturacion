@@ -7,7 +7,7 @@ class ArrivalNote < ApplicationRecord
 
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
- 
+
   before_validation :set_number
   after_save :set_state
   after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
@@ -58,30 +58,30 @@ class ArrivalNote < ApplicationRecord
       if not number.blank?
         where("purchase_orders.number ILIKE ?", "%#{number}%")
       else
-        all 
+        all
       end
     end
 
-    def self.search_by_user name 
+    def self.search_by_user name
       if not name.blank?
         where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
       else
-        all 
+        all
       end
    end
 
-    def self.search_by_state state 
+    def self.search_by_state state
       if not state.blank?
         where(state: state)
       else
-        all 
+        all
       end
     end
   #FILTROS DE BUSQUEDA
 
   #PROCESOS
     def set_number
-      self.number = self.number.to_s.rjust(8,padstr= '0') 
+      self.number = self.number.to_s.rjust(8,padstr= '0')
     end
 
     def set_state
@@ -96,6 +96,13 @@ class ArrivalNote < ApplicationRecord
       arrival_note_details.each do |detail|
         detail.remove_stock
       end
+    end
+
+
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
     end
 
     def check_purchase_order_state

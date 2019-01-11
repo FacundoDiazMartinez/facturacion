@@ -1,7 +1,8 @@
 class DeliveryNoteDetail < ApplicationRecord
   belongs_to :delivery_note, optional: true
-  belongs_to :product, optional: true
+  belongs_to :product, optional: true, class_name: "ProductUnscoped"
   belongs_to :depot, optional: true
+
 
   validates_presence_of :delivery_note, message:  "El detalle debe tener asociado un remito."
   validates_presence_of :product, message:  "El detalle debe tener asociado un producto."

@@ -10,6 +10,20 @@ class DeliveryNotesController < ApplicationController
   # GET /delivery_notes/1
   # GET /delivery_notes/1.json
   def show
+
+    @group_details = @delivery_note.delivery_note_details.includes(:product).in_groups_of(20, fill_with= nil)
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@delivery_note.id}",
+        layout: 'pdf.html',
+        template: 'delivery_notes/show',
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   # GET /delivery_notes/new
@@ -33,7 +47,7 @@ class DeliveryNotesController < ApplicationController
     @client = @delivery_note.client
     respond_to do |format|
       if @delivery_note.save
-        format.html { redirect_to edit_delivery_note_path(@delivery_note.id), notice: 'Delivery note was successfully created.' }
+        format.html { redirect_to edit_delivery_note_path(@delivery_note.id), notice: 'El remito fué creado correctamente.' }
         format.json { render :show, status: :created, location: @delivery_note }
       else
         format.html { render :new }
@@ -48,7 +62,7 @@ class DeliveryNotesController < ApplicationController
     @delivery_note.user_id = current_user.id
     respond_to do |format|
       if @delivery_note.update(delivery_note_params)
-        format.html { redirect_to edit_delivery_note_path(@delivery_note.id), notice: 'Delivery note was successfully updated.' }
+        format.html { redirect_to edit_delivery_note_path(@delivery_note.id), notice: 'El remito fué actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @delivery_note }
       else
         format.html { render :edit }
@@ -62,7 +76,7 @@ class DeliveryNotesController < ApplicationController
   def destroy
     @delivery_note.destroy
     respond_to do |format|
-      format.html { redirect_to delivery_notes_url, notice: 'Delivery note was successfully destroyed.' }
+      format.html { redirect_to delivery_notes_url, notice: 'El remito fue eliminado correctamente.' }
       format.json { head :no_content }
     end
   end
@@ -71,7 +85,7 @@ class DeliveryNotesController < ApplicationController
     @delivery_note.user_id = current_user.id
     respond_to do |format|
       if @delivery_note.update(state: "Anulado")
-        format.html { redirect_to @delivery_note, notice: 'Delivery note was successfully updated.' }
+        format.html { redirect_to @delivery_note, notice: 'El remito se actualizó correctamente.' }
       else
         format.html { render :edit }
       end
@@ -84,8 +98,8 @@ class DeliveryNotesController < ApplicationController
   end
 
   def set_associated_invoice
-    if params[:id].blank? 
-      @delivery_note = DeliveryNote.new 
+    if params[:id].blank?
+      @delivery_note = DeliveryNote.new
     else
       set_delivery_note
     end

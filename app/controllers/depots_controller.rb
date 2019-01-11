@@ -26,10 +26,10 @@ class DepotsController < ApplicationController
   # POST /depots.json
   def create
     @depot = current_user.company.depots.new(depot_params)
-
+    set_depots
     respond_to do |format|
       if @depot.save
-        format.html { redirect_to @depot, notice: 'Depot was successfully created.' }
+        format.html { redirect_to @depot, notice: 'El depósito fue creado correctamente.' }
         format.json { render :show, status: :created, location: @depot }
       else
         format.html { render :new }
@@ -44,7 +44,7 @@ class DepotsController < ApplicationController
   def update
     respond_to do |format|
       if @depot.update(depot_params)
-        format.html { redirect_to @depot, notice: 'Depot was successfully updated.' }
+        format.html { redirect_to @depot, notice: 'El depósito se actualizó correctamente.' }
         format.json { render :show, status: :ok, location: @depot }
       else
         format.html { render :edit }
@@ -59,7 +59,7 @@ class DepotsController < ApplicationController
   def destroy
     @depot.destroy
     respond_to do |format|
-      format.html { redirect_to depots_url, notice: 'Depot was successfully destroyed.' }
+      format.html { redirect_to depots_url, notice: 'El depósitio se eliminó correctamente.' }
       format.json { head :no_content }
     end
   end
