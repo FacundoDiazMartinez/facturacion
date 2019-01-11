@@ -2,9 +2,9 @@ class Stock < ApplicationRecord
   belongs_to :product, class_name: "ProductUnscoped"
   belongs_to :depot
 
-  after_save :set_stock_to_category
-  after_save :set_stock_to_depot
+  
   after_save :set_stock_to_product
+  after_save :set_stock_to_depot
 
   STATES = ["Disponible", "Reservado", "Entregado"]
 
@@ -27,11 +27,12 @@ class Stock < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   def set_stock_to_category
-  	product.product_category.update_column(:products_count, product.available_stock) unless product.product_category.nil?
+  	product.product_category.update_column(:products_count, product.available_stock) unless product.product_category_id.nil?
   end
 
   def set_stock_to_depot
   	depot.update_column(:stock_count, product.available_stock )
+    set_stock_to_category
   end
 
   def set_stock_to_product

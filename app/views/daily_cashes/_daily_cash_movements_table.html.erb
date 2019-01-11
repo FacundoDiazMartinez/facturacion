@@ -17,7 +17,7 @@
       <tr>
         <td><%= image_tag movement.user_avatar, alt: movement.user_name, class: 'avatar' %> <%= movement.user_name %></td>
         <td><%= l(movement.created_at, format: :short ) %></td>
-        <td><%= movement.associated_document %></td>
+        <td><%= link_to movement.associated_document, movement.associated_document_link %></td>
         <td>$<%= movement.amount %></td>
         <td><%= movement.movement_type %></td>
         <td><%= flow_type(movement.flow) %></td>

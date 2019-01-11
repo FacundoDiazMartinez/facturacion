@@ -1,7 +1,8 @@
 class Budget < ApplicationRecord
-  belongs_to :company
-  belongs_to :user
-  belongs_to :client
+  belongs_to :company, optional: true
+  belongs_to :user, optional: true
+  belongs_to :client, optional: true
+  belongs_to :sales_file, optional: true
 
   has_many :budget_details, dependent: :destroy
   has_many :products, through: :budget_details
@@ -9,9 +10,14 @@ class Budget < ApplicationRecord
   accepts_nested_attributes_for :budget_details, reject_if: :all_blank, allow_destroy: true
 
   validate :expiration_date_cannot_be_in_the_past
+  validates_presence_of :company_id, message: "El presupuesto debe estar asociado a una compañía."
+  validates_presence_of :user_id, message: "El presupuesto debe estar asociado a un usuario."
+  validates_presence_of :client_id, message: "El presupuesto debe estar asociado a un cliente."
 
   before_validation :set_number
   before_validation :check_depots, if: :reserv_stock
+
+  after_create :create_seles_file, if: Proc.new{|b| b.sales_file.nil?}
 
   STATES = ["Pendiente", "Vencido", "Concretado"]
 
@@ -57,6 +63,16 @@ class Budget < ApplicationRecord
 
     def check_depots
       errors.add(:base, "Si quiere reservar stock debe especificar el depósito en cada detalle.") unless !budget_details.map{|detail| detail.depot_id.blank?}.include?(true)
+    end
+
+    def create_seles_file
+      sf = SalesFile.create(
+        company_id: company_id,
+        client_id: client_id,
+        responsable_id: user_id
+      )
+
+      update_column(:sales_file_id, sf.id)
     end
   #PROCESOS
 

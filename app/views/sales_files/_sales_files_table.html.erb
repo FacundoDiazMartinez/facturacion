@@ -1,0 +1,29 @@
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Cliente</th>
+        <th>Generado por</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @sales_files.each do |sales_file| %>
+      <tr>
+        <td><%= sales_file.number %></td>
+        <td><%= sales_file.client.name %></td>
+        <td><%= sales_file.responsable.name %></td>
+        <td><%= sales_file.state %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe, sales_file_path(sales_file.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @sales_files %>
+</div>

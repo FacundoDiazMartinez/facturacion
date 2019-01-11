@@ -57,6 +57,15 @@ class DailyCashMovement < ApplicationRecord
     def user_avatar
       user.nil? ? "/images/default_user.png" : user.avatar
     end
+
+    def associated_document_link
+      case flow
+      when "income"
+        "/invoices/#{payment.invoice_id}/edit" unless payment.invoice_id.nil?
+      when "expense"
+       "/purchase_orders/#{payment.purchase_order_id}/edit" unless payment.purchase_order_id.nil?
+      end
+    end
   #ATRIBUTOS
 
   #PROCESOS

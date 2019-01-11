@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_10_172940) do
+ActiveRecord::Schema.define(version: 2019_01_10_235021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -362,6 +362,8 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.date "fch_vto_pago"
     t.text "observation"
     t.bigint "sales_file_id"
+    t.bigint "budget_id"
+    t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
@@ -560,6 +562,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
     t.datetime "updated_at", null: false
     t.boolean "active", default: true
     t.boolean "paid_out", default: false
+    t.float "total_pay", default: 0.0, null: false
     t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
     t.index ["company_id"], name: "index_purchase_orders_on_company_id"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
@@ -609,12 +612,14 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
   create_table "sales_files", force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "client_id"
-    t.bigint "responsable_id"
+    t.bigint "responsable_id", null: false
     t.string "observation"
-    t.date "init_date"
+    t.string "number", null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "state", default: "Abierto", null: false
     t.index ["client_id"], name: "index_sales_files_on_client_id"
     t.index ["company_id"], name: "index_sales_files_on_company_id"
   end
@@ -759,6 +764,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_172940) do
   add_foreign_key "invoice_details", "invoices"
   add_foreign_key "invoice_details", "products"
   add_foreign_key "invoice_details", "users"
+  add_foreign_key "invoices", "budgets"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "invoices", "sale_points"

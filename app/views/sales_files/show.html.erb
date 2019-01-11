@@ -1,0 +1,41 @@
+<div class="p-4">
+	<!-- TITULO -->
+	<%= title_helper "Expediente de venta a #{@client.name}" %>
+	<!-- TITULO -->
+	<div class="row">
+		<div class="col-4">
+			<div class="card">
+				<center>
+			  		<img class="card-img-top" src="/images/default_user.png" alt="<%= @client.name %>" style="width: 15rem;">
+			  	</center>
+			  	<div class="card-body">
+			    	<%= render '/clients/resume' %>
+			  	</div>
+			</div>
+		</div>
+		<div class="col-8">
+			<div class="container-fluid">
+				<% if !@sales_file.budgets.empty? %>
+					<h3><%= icon('fas', 'file-contract') %> Presupuestos</h3>
+					<% @budgets = @sales_file.budgets %>
+					<%= render '/budgets/budgets_table' %>
+					<hr>
+				<% end -%>
+
+				<% if !@sales_file.invoices.empty? %>
+					<h3><%= icon('fas', 'hand-holding-usd') %> Facturas</h3>
+					<% params[:view] = "list" %>
+					<% @invoices = @sales_file.invoices.paginate(page: 1) %>
+					<%= render '/invoices/invoices_table' %>
+					<hr>
+				<% end -%>
+
+				<% if !@sales_file.delivery_notes.empty? %>
+					<h3><%= icon('fas', 'file-alt') %> Remitos</h3>
+					<% @delivery_notes = @sales_file.delivery_notes.paginate(page: 1) %>
+					<%= render '/delivery_notes/delivery_notes_table' %>
+				<% end -%>
+	      	</div>
+		</div>
+	</div>
+</div>

@@ -3,9 +3,10 @@ class CreateSalesFiles < ActiveRecord::Migration[5.2]
     create_table :sales_files do |t|
       t.references :company, foreign_key: true
       t.references :client, foreign_key: true
-      t.bigint :responsable_id
+      t.bigint :responsable_id, null: false
       t.string :observation
-      t.date :init_date
+      t.string :number, null: false
+      t.date :init_date, null: false, default: -> { 'CURRENT_DATE' }
       t.date :final_date
 
       t.timestamps
