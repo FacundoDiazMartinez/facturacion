@@ -1,17 +1,12 @@
 class DeliveryNote < ApplicationRecord
-<<<<<<< HEAD
+
   belongs_to :company,optional: true
   belongs_to :invoice,optional: true
   belongs_to :user,optional: true
   belongs_to :client,optional: true
   belongs_to :sales_file, optional: true
 
-=======
-  belongs_to :company
-  belongs_to :invoice
-  belongs_to :user
-  belongs_to :client
->>>>>>> 90f0c616dff8abcd3f2874168c89e7c7e95f15d8
+
   has_many :delivery_note_details, dependent: :destroy
 
   accepts_nested_attributes_for :delivery_note_details, reject_if: :all_blank, allow_destroy: true

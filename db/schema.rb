@@ -95,7 +95,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_235021) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "state", default: "Pendiente", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_235021) do
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "commissioners", force: :cascade do |t|
@@ -277,7 +278,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_235021) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -548,7 +549,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_235021) do
   end
 
   create_table "purchase_orders", force: :cascade do |t|
-    t.integer "number", null: false
+    t.string "number", null: false
     t.string "state", default: "Pendiente de aprobación", null: false
     t.bigint "supplier_id"
     t.text "observation"
@@ -612,10 +613,9 @@ ActiveRecord::Schema.define(version: 2019_01_10_235021) do
   create_table "sales_files", force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "client_id"
-    t.bigint "responsable_id", null: false
+    t.bigint "responsable_id"
     t.string "observation"
-    t.string "number", null: false
-    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "init_date"
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -741,6 +741,7 @@ ActiveRecord::Schema.define(version: 2019_01_10_235021) do
   add_foreign_key "budgets", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
+  add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
   add_foreign_key "credit_card_payments", "credit_cards"
