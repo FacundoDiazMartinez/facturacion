@@ -3,6 +3,7 @@ class DeliveryNote < ApplicationRecord
   belongs_to :invoice,optional: true
   belongs_to :user,optional: true
   belongs_to :client,optional: true
+  belongs_to :sales_file, optional: true
 
   has_many :delivery_note_details, dependent: :destroy
 
@@ -15,8 +16,8 @@ class DeliveryNote < ApplicationRecord
   accepts_nested_attributes_for :invoice, reject_if: :all_blank
 
   before_validation :set_number
-
   after_save :adjust_stock, if: Proc.new{|dn| saved_change_to_state?}
+  after_create :create_seles_file, if: Proc.new{|dn| dn.sales_file.nil? && !dn.invoice.nil?}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -61,6 +62,21 @@ class DeliveryNote < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
+    def create_seles_file
+      if sales_file_id.nil?
+        if invoice_id.nil?
+          sf = SalesFile.create(
+            company_id: company_id,
+            client_id: client_id,
+            responsable_id: user_id
+          )
+          update_column(:sales_file_id, sf.id)
+        else
+          update_column(:sales_file_id, invoice.sales_file_id)
+        end
+      end
+    end
+
     def set_number
       last_delivery_note = DeliveryNote.where(company_id: company_id).last
       self.number ||= last_delivery_note.nil? ? "00001" : (last_delivery_note.number.to_i + 1)

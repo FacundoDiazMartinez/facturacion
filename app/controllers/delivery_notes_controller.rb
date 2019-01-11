@@ -29,6 +29,7 @@ class DeliveryNotesController < ApplicationController
   def create
     @delivery_note = current_user.company.delivery_notes.new(delivery_note_params)
     @delivery_note.user_id = current_user.id
+    @delivery_note.generated_by = current_user.name
     @client = @delivery_note.client
     respond_to do |format|
       if @delivery_note.save

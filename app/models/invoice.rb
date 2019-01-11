@@ -4,6 +4,8 @@ class Invoice < ApplicationRecord
   	belongs_to :company
   	belongs_to :user
     belongs_to :invoice, foreign_key: :associated_invoice, optional: true
+    belongs_to :budget, optional: true
+    belongs_to :sales_file, optional: true
 
     default_scope { where(active: true) }
 
@@ -32,6 +34,7 @@ class Invoice < ApplicationRecord
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
+    after_create :create_seles_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -244,6 +247,20 @@ class Invoice < ApplicationRecord
   	#FUNCIONES
 
     #PROCESOS
+      def create_seles_file
+        if sales_file_id.nil?
+          if budget_id.nil?
+            sf = SalesFile.create(
+              company_id: company_id,
+              client_id: client_id,
+              responsable_id: user_id
+            )
+            update_column(:sales_file_id, sf.id)
+          else
+            update_column(:sales_file_id, budget.sales_file_id)
+          end
+        end
+      end
 
       def cbte_tipo_inclusion
         errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.map{|k,v| v}.include?(cbte_tipo)

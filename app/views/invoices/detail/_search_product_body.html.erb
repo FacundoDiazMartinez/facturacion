@@ -1,23 +1,5 @@
 <%= form_tag search_product_invoices_path(), id: 'serach_form' do %>
 	<%= hidden_field_tag :index_id, params[:index_id] %>
-
-	<div class="form-row">
-	    <div class="col">
-			<%= label_tag :supplier_id, "Proveedor" %>
-			<%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}, params[:supplier_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
-		</div>
-
-	    <div class="col">
-			<%= label_tag :product_category_id, "Categoría" %>
-			<%= select_tag :product_category_id, options_for_select(current_user.company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.id]}, params[:product_category_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
-		</div>
-
-		<div class="col">
-			<%= label_tag :depot_id, "Depósito" %>
-			<%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}, params[:depot_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Todos", class: 'form-control' %>
-		</div>
-	</div>
-	<hr>
 	<div class="form-row">
 	    <div class="col">
 			<%= label_tag :product_name, "Nombre" %>
