@@ -61,7 +61,9 @@
 
   <%= render '/delivery_notes/details/search_product' %>
   <center>
-     <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: "modal_button_dn", class: 'btn btn-primary' %>
+    <% if (@delivery_note.state != "Anulado" && @delivery_note.state != "Finalizado") %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: "modal_button_dn", class: 'btn btn-primary' %>
+    <% end %>
   </center>
 
   <div class="modal fade bd-example-modal-lg" id="deliveryNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -78,7 +80,7 @@
               <%= form.hidden_field :state, class: 'delivery_note_purchase_order_state' %>
               <p>Cerrar el remito implica que su estado pasará a "Finalizado" y no podra editarlo posteriormente.. Elija una de las siguientes opciones:</p>
               <%= button_tag "#{icon('fas', 'thumbs-up')} Cerrar remito".html_safe, type: 'button', onclick: 'closeDeliveryNote()', class: 'btn btn-primary' %>
-              <%= button_tag "#{icon('fas', 'thumbs-down')} No cerrar remito".html_safe, type: 'submit', class: 'btn btn-danger' %>
+              <%= button_tag "#{icon('fas', 'thumbs-down')} Mantener abierto".html_safe, type: 'submit', class: 'btn btn-danger' %>
             </div>
         </div>
         <div class="modal-footer">
