@@ -95,7 +95,7 @@ class ArrivalNotesController < ApplicationController
   def autocomplete_purchase_order
     term = params[:term]
     purchase_orders = current_user.company.purchase_orders.where("number::text ILIKE ? AND state = 'Aprobado'", "%#{term}%").order(:number).all
-    render :json => purchase_orders.map { |po| {:id => po.id, :label => po.number, :value => po.number} }
+    render :json => purchase_orders.map { |po| {:id => po.id, :label => po.number, :value => po.number, :state => po.state} }
   end
 
   def cancel
