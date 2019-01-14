@@ -4,7 +4,11 @@
       <table class="width_100">
         <tr>
           <td class="width_25">N° <%= @arrival_note.number %></td>
-          <td class="width_50"><h1 class="text_size_25 text_center">REMITO</h1></td>
+          <% if state : 'Anulado' %>
+            <td class="width_50"><h1 class="text_size_25 text_center">REMITO ANULADO</h1></td>
+          <% else %>
+            <td class="width_50"><h1 class="text_size_25 text_center">REMITO </h1></td>
+          <% end %>
           <td class="width_25">
             <table >
               <tr>

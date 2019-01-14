@@ -47,7 +47,7 @@
               <div class="form-group col-md-4">
                 <%= f.label :product_category_id, "Categoría" %>
                 <div class="input-group mb-3" id="category">
-                  <%= f.select :product_category_id, current_user.company.product_categories.all.map{|pc| [pc.name, pc.id]}, {include_blank: "Sin categoría"}, {:class => 'form-control'} %>
+                  <%= f.select :product_category_id, current_user.company.product_categories.all.order(:name "ASC").map{|pc| [pc.name, pc.id]}, {include_blank: "Sin categoría"}, {:class => 'form-control'} %>
                   <div class="input-group-append p-0">
                     <%= link_to icon('fas', 'plus'), new_product_category_path(), data:{remote: true, toggle: 'modal', target: '#product_category_modal'}, class: 'btn btn-success' %>
                   </div>
