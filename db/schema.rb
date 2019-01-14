@@ -613,9 +613,10 @@ ActiveRecord::Schema.define(version: 2019_01_10_235021) do
   create_table "sales_files", force: :cascade do |t|
     t.bigint "company_id"
     t.bigint "client_id"
-    t.bigint "responsable_id"
+    t.bigint "responsable_id", null: false
     t.string "observation"
-    t.date "init_date"
+    t.string "number", null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

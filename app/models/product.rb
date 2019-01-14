@@ -180,7 +180,7 @@ class Product < ApplicationRecord
 
 		def stock_html
 			if !minimum_stock.blank?
-				if stock.quantity <= minimum_stock
+				if available_stock <= minimum_stock
 					return "<div class='text-danger'>#{available_stock}</div>".html_safe
 				else
 					return "<div class='text-success'>#{available_stock}</div>".html_safe

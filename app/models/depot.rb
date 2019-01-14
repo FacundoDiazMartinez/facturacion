@@ -44,5 +44,21 @@ class Depot < ApplicationRecord
         all
       end
     end
+
+    def stock_total
+      self.stocks.sum(:quantity)
+    end
+
+    def stock_available
+      self.stocks.where(state: "Disponible").sum(:quantity)
+    end
+
+    def stock_delivered
+      self.stocks.where(state: "Entregado").sum(:quantity)
+    end
+
+    def stock_reserved
+      self.stocks.where(state: "Reservado").sum(:quantity)
+    end
 #FILTROS DE BUSQUEDA
 end

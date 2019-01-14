@@ -16,10 +16,10 @@
 				<th scope="col">Concepto</th>
 				<th scope="col">Depósito</th>
 				<th scope="col">Precio</th>
-				<th scope="col" class="only-desktop">Medida</th>
+				<th scope="col" style="width:10%;"class="only-desktop">Medida</th>
 				<th scope="col" style="width:1%;">Cantidad</th>
-				<th scope="col" class="only-desktop">Descuento (%)</th>
-				<th scope="col" class="only-desktop">Descuento ($)</th>
+				<th scope="col" style="width:7%;" class="only-desktop">Desc.(%)</th>
+				<th scope="col" style="width:7%;" class="only-desktop">Desc.($)</th>
 				<th scope="col" style="width:9%;">Subtotal</th>
 				<th scope="col"></th>
 			</tr>
@@ -38,7 +38,7 @@
 			  			<%= f.text_field :product_name, class: 'form-control form-control-sm name', placeholder: "Concepto", disabled: !@budget.editable? %>
 			  		</td>
 			  		<td>
-			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Seleccione..."}, {class: 'form-control form-control-sm depot_id'} %>
+			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id'} %>
 			  		</td>
 					<td>
 						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@budget.editable? %>

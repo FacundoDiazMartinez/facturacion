@@ -128,6 +128,7 @@ class DailyCash < ApplicationRecord
         self.daily_cash_movements.create(
           amount: diferencia,
           movement_type: "Ajuste",
+          associated_document: "-",
           payment_type: "0",
           flow: diferencia > 0 ? "income" : "expense",
           current_balance: final_amount,
