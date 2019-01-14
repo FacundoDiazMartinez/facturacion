@@ -24,6 +24,8 @@ class DeliveryNote < ApplicationRecord
   validates_presence_of :state, message: "El remito debe poseer un estado."
   validates_inclusion_of :state, in: STATES, message: "El estado es inválido."
 
+  default_scope { where(active: true) }
+
 
   #FILTROS DE BUSQUEDA
   	def self.without_system

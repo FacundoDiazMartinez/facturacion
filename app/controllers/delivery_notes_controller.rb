@@ -85,7 +85,7 @@ class DeliveryNotesController < ApplicationController
     @delivery_note.user_id = current_user.id
     respond_to do |format|
       if @delivery_note.update(state: "Anulado")
-        format.html { redirect_to @delivery_note, notice: 'El remito se actualizó correctamente.' }
+        format.html { redirect_to delivery_notes_path, notice: 'El remito se actualizó correctamente.' }
       else
         format.html { render :edit }
       end
