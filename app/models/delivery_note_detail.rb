@@ -8,6 +8,8 @@ class DeliveryNoteDetail < ApplicationRecord
   validates_presence_of :product, message:  "El detalle debe tener asociado un producto."
   validates_presence_of :depot, message:  "El detalle debe tener asociado un depoósito."
 
+  after_validation  :adjust_product_stock, if: Proc.new{|detail| pp detail.quantity_changed? && detail.delivery_note.state != "Anulado" && !detail.new_record?}
+
   #ATRIBUTOS
   	def product_name
   		product.nil? ? "" : product.name
@@ -22,5 +24,12 @@ class DeliveryNoteDetail < ApplicationRecord
     end
   #ATRIBUTOS
 
-  
+  def adjust_product_stock
+    difference = quantity.to_f - quantity_was.to_f
+    if difference > 0
+      self.product.remove_stock(quantity: difference, depot_id: self.arrival_note.depot_id)
+    else
+      self.product.add_stock(quantity: -difference, depot_id: self.arrival_note.depot_id)
+    end
+  end
 end

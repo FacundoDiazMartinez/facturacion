@@ -61,7 +61,9 @@
 
   <%= render '/delivery_notes/details/search_product' %>
   <center>
-     <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: "modal_button_dn", class: 'btn btn-primary' %>
+    <% if (@delivery_note.state != "Anulado" && @delivery_note.state != "Finalizado") %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: "modal_button_dn", class: 'btn btn-primary' %>
+    <% end %>
   </center>
 
   <div class="modal fade bd-example-modal-lg" id="deliveryNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
