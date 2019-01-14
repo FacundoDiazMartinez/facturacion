@@ -13,6 +13,9 @@ class ArrivalNote < ApplicationRecord
   after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
   after_save :check_purchase_order_state
 
+
+  default_scope { where(active: true) }
+
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
   validates_presence_of :company_id, message: "Debe pertenecer a una compañía."
@@ -98,11 +101,19 @@ class ArrivalNote < ApplicationRecord
       end
     end
 
+    def check_state_for_delete
+
+    end
 
     def destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
+      if self.state == "Finalizado"
+        errors.add(:state, "No puede eliminar un remito finalizado.")
+        return false
+      else
+        update_column(:active, false)
+        run_callbacks :destroy
+        freeze
+      end
     end
 
     def check_purchase_order_state

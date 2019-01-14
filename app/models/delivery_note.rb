@@ -1,17 +1,12 @@
 class DeliveryNote < ApplicationRecord
-<<<<<<< HEAD
+
   belongs_to :company,optional: true
   belongs_to :invoice,optional: true
   belongs_to :user,optional: true
   belongs_to :client,optional: true
   belongs_to :sales_file, optional: true
 
-=======
-  belongs_to :company
-  belongs_to :invoice
-  belongs_to :user
-  belongs_to :client
->>>>>>> 90f0c616dff8abcd3f2874168c89e7c7e95f15d8
+
   has_many :delivery_note_details, dependent: :destroy
 
   accepts_nested_attributes_for :delivery_note_details, reject_if: :all_blank, allow_destroy: true
@@ -19,6 +14,14 @@ class DeliveryNote < ApplicationRecord
   before_validation :set_number
   after_save :adjust_stock, if: Proc.new{|dn| saved_change_to_state?}
   after_create :create_seles_file, if: Proc.new{|dn| dn.sales_file.nil? && !dn.invoice.nil?}
+
+  validates_presence_of :company_id, message: "Debe pertenecer a una compañía."
+  validates_presence_of :invoice_id, message: "Debe pertenecer a una factura."
+  validates_presence_of :user_id, message: "El remito debe estar vinculado a un usuario."
+  validates_presence_of :number, message: "No puede exitir un remito sin numeración."
+  validates_presence_of :state, message: "El remito debe poseer un estado."
+  validates_inclusion_of :state, in: :STATES, message: "El estado es inválido."
+
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 

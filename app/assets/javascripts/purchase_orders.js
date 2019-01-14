@@ -7,7 +7,7 @@ $(function() {
 			$("#purchase_order_shipping_cost").hide();
 			$("#purchase_order_shipping_cost").val("0.0");
 		}
-    });
+  });
 });
 
 $(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field', function(event, data){
@@ -23,7 +23,7 @@ $(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field',
   	$(this).closest("tr.fields").find("input.supplier_code").val(data.item.supplier_code);
 		$(this).closest("tr.fields").find("input.prodSubtotal").val(data.item.price);
 
-		subtotal 			= $(this).closest("tr.fields").find("input.prodSubtotal");
+		subtotal = $(this).closest("tr.fields").find("input.prodSubtotal");
 		subtotal.trigger("change");
 });
 

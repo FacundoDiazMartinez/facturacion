@@ -59,7 +59,7 @@ class PurchaseOrder < ApplicationRecord
     end
 
     def editable?
-      state != "Anulado"
+      state != "Anulado" && state != "Finalizada"
     end
   #ATRIBUTOS
 
@@ -104,7 +104,7 @@ class PurchaseOrder < ApplicationRecord
     end
 
     def destroy
-      if self.state == "Aprobado"
+      if self.editable?
         update_column(:active, false)
         run_callbacks :destroy
         freeze
@@ -117,7 +117,7 @@ class PurchaseOrder < ApplicationRecord
 
     def close_arrival_notes
       self.arrival_notes.each do |an|
-        an.update_column(:state, "Finalizado")
+        an.update_column(:state, "Finalizado") unless an.state == "Anulado"
       end
     end
 
