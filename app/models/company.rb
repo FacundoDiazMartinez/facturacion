@@ -50,8 +50,8 @@ class Company < ApplicationRecord
 	validates_numericality_of :cuit, message: "El C.U.I.T. debe contener únicamente números."
 	validate :date_less_than_today
 	validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-	validates_length_of :cbu, minimum: 22, maximum: 22, allow_blank: true, message: "C.B.U. inválido. Verifique por favor. Cantidad mínima de caracteres = 22."
-	validates_length_of :cuit, minimum: 11, maximum: 11, allow_blank: true, message: "C.U.I.T. inválido. Verifique por favor. Cantidad mínima de caracteres = 11."
+	validates_length_of :cbu, minimum: 22, maximum: 22, allow_blank: true, message: "C.B.U. inválido. Verifique por favor. Cantidad necesaria de caracteres = 22."
+	validates_length_of :cuit, minimum: 11, maximum: 11, allow_blank: true, message: "C.U.I.T. inválido. Verifique por favor. Cantidad necesaria de caracteres = 11."
 	validates_inclusion_of :concepto, in: ::Afip::CONCEPTOS.values, message: "Concepto inválido."
 
 

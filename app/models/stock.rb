@@ -2,7 +2,7 @@ class Stock < ApplicationRecord
   belongs_to :product, class_name: "ProductUnscoped"
   belongs_to :depot
 
-  
+
   after_save :set_stock_to_product
   after_save :set_stock_to_depot
 
@@ -14,7 +14,7 @@ class Stock < ApplicationRecord
         joins(:product).where("products.name ILIKE ? ", "%#{name}%")
       else
         all
-      end  
+      end
     end
 
     def self.search_by_state state
@@ -42,4 +42,5 @@ class Stock < ApplicationRecord
   def product
     Product.unscoped{super}
   end
+
 end
