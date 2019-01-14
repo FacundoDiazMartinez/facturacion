@@ -69,10 +69,13 @@ class ArrivalNotesController < ApplicationController
   # DELETE /arrival_notes/1
   # DELETE /arrival_notes/1.json
   def destroy
-    @arrival_note.destroy
     respond_to do |format|
-      format.html { redirect_to arrival_notes_url, notice: 'El Remito fue eliminado correctamente.' }
-      format.json { head :no_content }
+      if @arrival_note.destroy
+        format.html { redirect_to arrival_notes_url, notice: 'El Remito fue eliminado correctamente.' }
+      else
+        format.html { redirect_to arrival_notes_url, alert: 'No se pudo eliminar el remito.' }
+      end
+
     end
   end
 
@@ -117,7 +120,7 @@ class ArrivalNotesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def arrival_note_params
       params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number,
-        arrival_note_details_attributes: [:id, :req_quantity, :quantity, :observation, :_destroy, 
+        arrival_note_details_attributes: [:id, :req_quantity, :quantity, :observation, :_destroy,
           product_attributes: [:id, :code, :name, :price]],
         purchase_order_attributes: [:id, :state])
     end

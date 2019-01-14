@@ -45,7 +45,9 @@
     </div>
   <!-- DETALLES -->
     <center>
-      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: 'modal_button_an', class: 'btn btn-primary' %>
+      <% if  (@arrival_note.state != "Anulado" && @arrival_note.state != "Finalizado") %>
+          <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: 'modal_button_an', class: 'btn btn-primary' %>
+      <% end %>
     </center>
 
 <% end %>

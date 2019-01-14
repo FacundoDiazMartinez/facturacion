@@ -15,6 +15,14 @@ class DeliveryNote < ApplicationRecord
   after_save :adjust_stock, if: Proc.new{|dn| saved_change_to_state?}
   after_create :create_seles_file, if: Proc.new{|dn| dn.sales_file.nil? && !dn.invoice.nil?}
 
+  validates_presence_of :company_id, message: "Debe pertenecer a una compañía."
+  validates_presence_of :invoice_id, message: "Debe pertenecer a una factura."
+  validates_presence_of :user_id, message: "El remito debe estar vinculado a un usuario."
+  validates_presence_of :number, message: "No puede exitir un remito sin numeración."
+  validates_presence_of :state, message: "El remito debe poseer un estado."
+  validates_inclusion_of :state, in: :STATES, message: "El estado es inválido."
+
+
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
   #FILTROS DE BUSQUEDA

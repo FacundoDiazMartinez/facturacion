@@ -20,7 +20,9 @@
         <td>
           <%= link_to icon('fas', 'eye').html_safe, arrival_note_path(arrival_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_arrival_note_path(arrival_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, ArrivalNote %>
-          <%= link_to icon('fas', 'trash'), arrival_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, ArrivalNote %>
+          <% if (arrival_note.state != "Anulado" && arrival_note.state != "Finalizado") %>
+            <%= link_to icon('fas', 'trash'), arrival_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, ArrivalNote %>
+          <% end %>
         </td>
       </tr>
       <% end %>
