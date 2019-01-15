@@ -29,7 +29,7 @@ class ArrivalNotesController < ApplicationController
 
   # GET /arrival_notes/new
   def new
-    @arrival_note = ArrivalNote.new()
+    @arrival_note = current_user.company.arrival_notes.new()
   end
 
   # GET /arrival_notes/1/edit

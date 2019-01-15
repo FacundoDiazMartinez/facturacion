@@ -9,9 +9,10 @@ class ArrivalNote < ApplicationRecord
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
 
   before_validation :set_number
-  after_save :set_state
+  # after_save :set_state
   after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
   after_save :check_purchase_order_state
+  after_initialize :set_default_number, if: :new_record?
 
 
   default_scope { where(active: true) }
@@ -83,26 +84,27 @@ class ArrivalNote < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   #PROCESOS
+    def set_default_number
+      last_an = ArrivalNote.where(company_id: company_id).last
+      self.number ||= last_an.nil? ? "00000001" : (last_an.number.to_i + 1).to_s.rjust(8,padstr= '0')
+    end
+
     def set_number
       self.number = self.number.to_s.rjust(8,padstr= '0')
     end
 
-    def set_state
-      if !arrival_note_details.map(&:completed).include?(false)
-        update_column(:state, "Finalizado") unless state == "Anulado"
-      else
-        update_column(:state, "Pendiente") unless state == "Anulado"
-      end
-    end
+    # def set_state
+    #   if !arrival_note_details.map(&:completed).include?(false)
+    #     update_column(:state, "Finalizado") unless state == "Anulado"
+    #   else
+    #     update_column(:state, "Pendiente") unless state == "Anulado"
+    #   end
+    # end
 
     def remove_stock
       arrival_note_details.each do |detail|
         detail.remove_stock
       end
-    end
-
-    def check_state_for_delete
-
     end
 
     def destroy
@@ -126,6 +128,14 @@ class ArrivalNote < ApplicationRecord
   #FUNCIONES
     def editable?
       state == "Pendiente"
+    end
+
+    def array_of_state_values
+      if editable?
+        STATES.reject{|x| x == "Anulado"}
+      else
+        STATES
+      end
     end
   #FUNCIONES
 end

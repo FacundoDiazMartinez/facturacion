@@ -21,7 +21,7 @@
               </div>
               <div class="form-group">
                 <%= form.label :state, "Estado" %>
-                <%= form.select :state, ArrivalNote::STATES, {}, {class: 'form-control', disabled: true} %>
+                <%= form.select :state, @arrival_note.array_of_state_values, {}, {class: 'form-control', disabled: !@arrival_note.editable?} %>
               </div>
 
             </div>
@@ -46,7 +46,7 @@
   <!-- DETALLES -->
     <center>
       <% if  (@arrival_note.state != "Anulado" && @arrival_note.state != "Finalizado") %>
-          <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: 'modal_button_an', class: 'btn btn-primary' %>
+          <%= button_tag "#{icon('fas', 'save')} Cerrar remito".html_safe, type: 'button', id: 'modal_button_an', class: 'btn btn-primary' %>
       <% end %>
     </center>
 
