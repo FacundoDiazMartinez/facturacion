@@ -1,6 +1,6 @@
 var total_venta = parseFloat(0);
 var rest = parseFloat(0);
- var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
+var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
 
 $( document ).ready(function() {
 	autocomplete_field();

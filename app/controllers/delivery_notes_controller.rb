@@ -28,7 +28,7 @@ class DeliveryNotesController < ApplicationController
 
   # GET /delivery_notes/new
   def new
-    @delivery_note = current_user.company.delivery_notes.new
+    @delivery_note = current_user.company.delivery_notes.new()
     @delivery_note.set_number
     @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
@@ -106,7 +106,7 @@ class DeliveryNotesController < ApplicationController
     @associated = true
     associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice], state: "Confirmado").first
     associated_invoice.invoice_details.each do |id|
-      pp @delivery_note.delivery_note_details.new(
+      @delivery_note.delivery_note_details.new(
         product_id: id.product_id,
         depot_id: id.depot_id,
         quantity: id.quantity

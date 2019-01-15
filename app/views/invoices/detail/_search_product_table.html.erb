@@ -11,7 +11,7 @@
 
 	<div class="col">
 		<%= label_tag :depot_id, "Depósito" %>
-		<%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}, params[:depot_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Todos", class: 'form-control' %>
+		<%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}), onchange: "remoteSubmit('#serach_form')", prompt: "Todos", class: 'form-control' %>
 	</div>
 </div>
 <hr>
@@ -21,6 +21,7 @@
 			<tr>
 				<th>Producto</th>
 				<th>Stock</th>
+        <th>Depósito</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -29,6 +30,7 @@
 				<tr>
 					<td><%= product.name %></td>
 					<td><%= product.stock_html %></td>
+          <td><%= select_tag :depot_id, options_for_select(product.depots.map{|s| [s.name, s.id]}, params[:depot_id]), class: 'form-control' %></td>
 					<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, #{params[:depot_id]})" %></td>
 				</tr>
 			<% end -%>
