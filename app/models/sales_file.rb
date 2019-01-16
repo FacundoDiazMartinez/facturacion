@@ -16,7 +16,7 @@ class SalesFile < ApplicationRecord
   		if !name.nil?
         	joins(:responsable).where("LOWER(users.first_name ||' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
 	    else
-	        all 
+	        all
 	    end
   	end
 
@@ -24,7 +24,7 @@ class SalesFile < ApplicationRecord
       if !client.nil?
           joins(:client).where("LOWER(clients.name) LIKE LOWER(?)", "%#{client}%")
       else
-          all 
+          all
       end
     end
 
@@ -48,7 +48,7 @@ class SalesFile < ApplicationRecord
   #PROCESOS
     def set_number
       last_sales_file = SalesFile.where(company_id: company_id).last
-      self.number ||= last_sales_file.nil? ? "00001" : (last_sales_file.number.to_i + 1).to_s.rjust(5,padstr= '0')
+      self.number ||= last_sales_file.nil? ? "00000001" : (last_sales_file.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
   #PROCESOS
 end

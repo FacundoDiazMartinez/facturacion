@@ -33,7 +33,7 @@
 
             <div class="form-group">
               <%= form.label :state %>
-              <%= form.text_field :state, class: 'form-control', readonly: true %>
+              <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?)}%>
             </div>
 
           </div>
@@ -76,7 +76,7 @@
           <% if not @purchase_order.new_record? %>
             <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
           <% end %>
-          <% if @purchase_order.state != "Aprobado" && !@purchase_order.new_record?%>
+          <% if @purchase_order.state != PurchaseOrder::STATES[1] && !@purchase_order.new_record? && @purchase_order.state != PurchaseOrder::STATES[3]%>
             <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-success' %>
           <% end %>
         </center>
@@ -104,7 +104,9 @@
   <%= render '/purchase_orders/details/search_product' %>
 
   <center>
-    <%= save_button %>
+    <% if @purchase_order.editable? %>
+      <%= save_button %>
+    <% end %>
   </center>
 
 <% end %>

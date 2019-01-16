@@ -49,7 +49,7 @@ class Receipt < ApplicationRecord
 
     def set_number
       last_r = Receipt.where(company_id: company_id).last
-      self.number = last_r.nil? ? "00001" : (last_r.number.to_i + 1).to_s.rjust(5,padstr= '0') unless (!self.number.blank? || self.total < 0)
+      self.number = last_r.nil? ? "00000001" : (last_r.number.to_i + 1).to_s.rjust(8,padstr= '0') unless (!self.number.blank? || self.total < 0)
     end
 
     def self.create_from_invoice invoice
