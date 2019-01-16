@@ -37,7 +37,7 @@ class InvoicesController < ApplicationController
       if current_user.company.daily_cashes.search_by_date(nil).blank?
         format.html{redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."}
       else
-        if current_user.company.daily_cashes.search_by_date(nil).state == "Cerrada"
+        if !current_user.company.daily_cashes.search_by_date(nil).state == "Abierta"
           format.html{redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."}
         end
       end
