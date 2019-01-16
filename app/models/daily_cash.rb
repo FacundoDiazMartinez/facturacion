@@ -6,7 +6,7 @@ class DailyCash < ApplicationRecord
   after_save :close_daily_cash, if: Proc.new{|dc| dc.state == "Cerrada"}
   after_touch :check_childrens, if: :persisted?
   before_validation :set_initial_state, on: :create
-  
+
   validates_uniqueness_of :date, scope:  :company_id, message: "No se puede abrir dos veces caja en el mismo día."
   validates_presence_of :initial_amount, message: "Debe especificar un valor de inicio."
 
@@ -23,7 +23,7 @@ class DailyCash < ApplicationRecord
 
   #ATRIBUTOS
     def current_user=(user)
-      @current_user = user 
+      @current_user = user
     end
   #ATRIBUTOS
 
@@ -39,7 +39,7 @@ class DailyCash < ApplicationRecord
   		if !user.blank?
   			joins(:daily_cash_movements).where("daily_cash_movements.user_id = ?", user)
   		else
-  			all 
+  			all
   		end
   	end
   #FILTROS DE BUSQUEDA
@@ -55,7 +55,6 @@ class DailyCash < ApplicationRecord
   	end
 
     def self.current_daily_cash company_id
-      pp "ENTRO CURRENT DAILY CASH"
       daily = Company.find(company_id).daily_cashes.where(state: "Abierta").find_by_date(Date.today)
       if daily.nil?
         raise Exceptions::DailyCashClose
@@ -76,7 +75,7 @@ class DailyCash < ApplicationRecord
       daily_cash_movements = []
       if not daily_cash.nil?
         daily_cash.daily_cash_movements.search_by_user(user).search_by_payment_type(payment_type).order("created_at DESC").each do |dcm|
-          daily_cash_movements << dcm 
+          daily_cash_movements << dcm
         end
       end
       return daily_cash_movements
@@ -85,7 +84,7 @@ class DailyCash < ApplicationRecord
     def open_flow
       if initial_amount > 0
         "income"
-      elsif initial_amount < 0 
+      elsif initial_amount < 0
         "expense"
       else
         "neutral"

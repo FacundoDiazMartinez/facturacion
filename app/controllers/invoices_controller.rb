@@ -33,6 +33,15 @@ class InvoicesController < ApplicationController
   def new
     @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
     @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
+    respond_to do |format|
+      if current_user.company.daily_cashes.search_by_date(nil).blank?
+        format.html{redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."}
+      else
+        if current_user.company.daily_cashes.search_by_date(nil).state == "Cerrada"
+          format.html{redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."}
+        end
+      end
+    end
   end
 
   # GET /invoices/1/edit
