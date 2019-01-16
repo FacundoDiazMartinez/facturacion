@@ -101,10 +101,11 @@ class ArrivalNotesController < ApplicationController
   def cancel
     respond_to do |format|
       if current_user.has_stock_management_role?
-        pp "UPDATE"
-        pp @arrival_note.update(state: "Anulado")
-        pp @arrival_note.errors
-        format.html {redirect_to edit_arrival_note_path(@arrival_note.id), notice: "El remito fue anulado."}
+        if @arrival_note.update(state: "Anulado")
+          format.html {redirect_to edit_arrival_note_path(@arrival_note.id), notice: "El remito fue anulado."}
+        else
+          format.html{render :edit}
+        end
       else
         format.html {render :edit, notice: "No tiene los provilegios necesarios para anular el remito."}
       end
@@ -119,9 +120,9 @@ class ArrivalNotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def arrival_note_params
-      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number,
+      params.require(:arrival_note).permit(:purchase_order_id, :depot_id, :number, :state,
         arrival_note_details_attributes: [:id, :req_quantity, :quantity, :observation, :_destroy,
-          product_attributes: [:id, :code, :name, :price]],
+        product_attributes: [:id, :code, :name, :price]],
         purchase_order_attributes: [:id, :state])
     end
 end

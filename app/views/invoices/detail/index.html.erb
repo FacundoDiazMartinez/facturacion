@@ -12,12 +12,15 @@
 	<table class="table table-striped invoice-table" id="details">
 		<thead>
 			<tr>
-				<th scope="col" colspan="2">Código</th>
+        <th></th>
+				<th scope="col">Código</th>
 				<th scope="col">Tipo</th>
 				<th scope="col">Concepto</th>
 				<th scope="col">Precio</th>
 				<th scope="col" class="only-desktop">Medida</th>
-				<th scope="col" class="only-desktop">Comisionantes</th>
+        <% if @invoice.editable? %>
+          	<th scope="col" class="only-desktop">Comisionantes</th>
+        <% end %>
 				<th scope="col" style="width:1%;">Cantidad</th>
 				<th scope="col">I.V.A. (%)</th>
 				<th scope="col" class="only-desktop">Monto Bonificado</th>
@@ -30,7 +33,11 @@
 		    	<tr class="fields" id="<%= f.index %>">
 		    		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 			  			<td>
-			  				<%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
+                <% if @invoice.editable? %>
+                  <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
+                <% else %>
+                  #
+                <% end %>
 			  				<%= pf.hidden_field :id, class: 'product_id' %>
 			  			</td>
 			  			<td><%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: !@invoice.editable? %></td>
@@ -47,9 +54,11 @@
 						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@invoice.editable? %>
 					</td>
 					<td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
-					<td class="text-center">
-						<%= render '/invoices/detail/commissioner_fields', f: f %>
-					</td>
+          <% if @invoice.editable? %>
+            <td class="text-center">
+              <%= render '/invoices/detail/commissioner_fields', f: f %>
+            </td>
+          <% end %>
 					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@invoice.editable? %></td>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>

@@ -10,8 +10,7 @@ class ArrivalNote < ApplicationRecord
 
   before_validation :set_number
   # after_save :set_state
-  after_save  :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
-  after_save :check_purchase_order_state
+  after_save :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
   after_initialize :set_default_number, if: :new_record?
 
 
@@ -26,6 +25,8 @@ class ArrivalNote < ApplicationRecord
   validates_presence_of :number, message: "No puede exitir un remito sin numeración."
   validates_presence_of :state, message: "El remito debe poseer un estado."
   validates_inclusion_of :state, in: STATES, message: "El estado es inválido."
+
+  before_validation :check_purchase_order_state, if: Proc.new{|po| po.state_changed? && po.state == "Anulado"}
 
   #TABLA
     # create_table "arrival_notes", force: :cascade do |t|
@@ -120,7 +121,8 @@ class ArrivalNote < ApplicationRecord
 
     def check_purchase_order_state
       if purchase_order.state == "Finalizada"
-        purchase_order.close_arrival_notes
+        errors.add(:state, "No es posible modificar estado de remito porque la Órden de Compra ya está finalizada.")
+        self.state = state_was
       end
     end
   #PROCESOS

@@ -25,6 +25,8 @@ class PurchaseOrder < ApplicationRecord
   validates_presence_of :user_id, message: "Debe especificar un usuario."
   validates_presence_of :company_id, message: "Debe especificar una compañía."
 
+  before_validation :check_pending_arrival_notes, if: Proc.new{|po| po.state_changed? && po.state == "Finalizada"}
+
   STATES = ["Pendiente de aprobación", "Aprobado", "Anulado", "Finalizada"]
 
   #ATRIBUTOS
@@ -56,6 +58,10 @@ class PurchaseOrder < ApplicationRecord
       if not super.blank?
   			I18n.l(super.to_date)
   		end
+    end
+
+    def pending_approval?
+      state == STATES[0]
     end
 
     def editable?
@@ -90,9 +96,19 @@ class PurchaseOrder < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   #PROCESOS
+    def check_pending_arrival_notes
+      self.arrival_notes.each do |an|
+        if an.editable?
+          errors.add(:state, "No se pudo cerrar Orden de Compra. Existen remitos asociados pendientes.")
+          self.state = state_was
+          break
+        end
+      end
+    end
+
     def set_number
       last_po = PurchaseOrder.where(company_id: company_id).last
-      self.number = last_po.nil? ? "00001" : (last_po.number.to_i + 1).to_s.rjust(5,padstr= '0')
+      self.number = last_po.nil? ? "00000001" : (last_po.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
 
     def set_sended_activity
@@ -115,11 +131,11 @@ class PurchaseOrder < ApplicationRecord
       expense_payments.map{|p| p.run_callbacks(:save)}
     end
 
-    def close_arrival_notes
-      self.arrival_notes.each do |an|
-        an.update_column(:state, "Finalizado") unless an.state == "Anulado"
-      end
-    end
+    # def close_arrival_notes
+    #   self.arrival_notes.each do |an|
+    #     an.update_column(:state, "Finalizado") unless an.state == "Anulado"
+    #   end
+    # end
 
     def set_paid_out
       set_total_pay
@@ -146,6 +162,12 @@ class PurchaseOrder < ApplicationRecord
       self.expense_payments.sum(:total)
     end
 
-
+    def array_of_state_values
+      if editable?
+        STATES.reject{|x| x == "Anulado"}
+      else
+        STATES
+      end
+    end
   #FUNCIONES
 end

@@ -58,7 +58,7 @@ class Budget < ApplicationRecord
   #PROCESOS
     def set_number
       last_budget = Budget.where(company_id: company_id).last
-        self.number ||= last_budget.nil? ? "00001" : (last_budget.number.to_i + 1).to_s.rjust(5,padstr= '0')
+        self.number ||= last_budget.nil? ? "00000001" : (last_budget.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
 
     def check_depots

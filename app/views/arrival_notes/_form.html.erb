@@ -29,7 +29,7 @@
         </div>
 
         <center>
-          <% if @arrival_note.state == "Finalizado" && current_user.has_stock_management_role? %>
+          <% if @arrival_note.state == "Finalizado" && current_user.has_stock_management_role?  && @arrival_note.purchase_order.state != "Finalizada" %>
             <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_arrival_note_path(@arrival_note.id), method: :patch, class: 'btn btn-danger' %>
           <% end %>
         </center>
