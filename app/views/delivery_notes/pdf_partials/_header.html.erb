@@ -52,12 +52,15 @@
 
         <tr>
           <td><b>Cliente Razón Social:</b> <%= @delivery_note.client.name %></td>
-
-          <td><b>Tel:</b> <%= @delivery_note.client.phone %></td>
+          <% unless @delivery_note.client.client_contacts.blank? %>
+            <td><b>Tel: </b> <%= @delivery_note.client.client_contacts.first.phone.blank? ? @delivery_note.client.client_contact.first.phone : " " %></td>
+          <% end %>
         </tr>
 
         <tr>
-          <td><b>E-mail:</b> <%= @delivery_note.client.email %></td>
+          <% unless @delivery_note.client.client_contacts.blank? %>
+            <td><b>E-mail: </b> <%= @delivery_note.client.client_contacts.first.email? ? @delivery_note.client.client_contact.first.email : " " %></td>
+          <% end %>
 
           <td ><b>Dirección: </b><%= @delivery_note.client.address %></td>
         </tr>

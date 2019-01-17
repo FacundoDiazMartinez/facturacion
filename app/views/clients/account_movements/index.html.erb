@@ -1,7 +1,7 @@
 <div class="p-4">
 	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
 		<h1 class="h2">
-			Cuenta corriente de <%= @client.name %>
+			Cta. Cte. - <strong><%= @client.name %></strong>
 		</h1>
 		<%= link_to "#{icon('fas', 'plus')} Registrar pago".html_safe, client_account_movements_add_payment_path(@client.id), class: 'btn btn-primary float-right' %>
 	</div>

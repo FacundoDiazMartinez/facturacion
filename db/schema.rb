@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_16_194148) do
+ActiveRecord::Schema.define(version: 2019_01_17_172236) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -120,18 +120,16 @@ ActiveRecord::Schema.define(version: 2019_01_16_194148) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "charge"
+    t.string "phone"
     t.index ["client_id"], name: "index_client_contacts_on_client_id"
   end
 
   create_table "clients", force: :cascade do |t|
     t.string "name", null: false
-    t.string "phone"
-    t.string "mobile_phone"
-    t.string "email"
     t.string "address"
     t.string "document_type", default: "D.N.I.", null: false
     t.string "document_number", null: false
-    t.string "birthday"
     t.boolean "active", default: true, null: false
     t.string "iva_cond", default: "Responsable Monotributo", null: false
     t.bigint "company_id"
@@ -140,7 +138,7 @@ ActiveRecord::Schema.define(version: 2019_01_16_194148) do
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
     t.float "recharge"
-    t.integer "payment_day"
+    t.string "payment_day"
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
