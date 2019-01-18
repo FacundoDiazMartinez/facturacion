@@ -7,7 +7,7 @@ $(document).on('railsAutocomplete.select', '.client-autocomplete_field', functio
 			$("input.client-autocomplete_field").val(data.item.nomatch);
 		}
 	}
-
+	console.log(data)
 	$.each( data.item, function( key, value ) {
 	  $("#client_"+key).val(value);
 	});

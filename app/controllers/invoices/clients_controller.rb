@@ -25,6 +25,12 @@ class Invoices::ClientsController < ApplicationController
 	    end
 	end
 
+	def autocomplete_name
+		term = params[:term]
+    	clients = current_user.company.clients.where('LOWER(name) ILIKE ?', "%#{term}%").all
+    	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
+	end
+
 	def autocomplete_document
 		term = params[:term]
     	clients = current_user.company.clients.where('document_number ILIKE ?', "%#{term}%").all

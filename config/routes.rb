@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   namespace :invoices do
     resources :clients do
       get :autocomplete_document, on: :collection
+      get :autocomplete_name,     on: :collection
     end
   end
 

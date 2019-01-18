@@ -20,7 +20,6 @@ class Client < ApplicationRecord
 	validates :document_number, length: { minimum: 6, message: 'Numero de documento inválido, verifique.' }, 	if: Proc.new{|c| ['en tramite', 'DNI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
 	validates_uniqueness_of :document_number, scope: [:company_id, :document_type], message: 'Ya existe un cliente con ese documento.', if: Proc.new{|c| not c.default_client?}
 	validates_presence_of :name, message: "Debe especificar el nombre del cliente."
-	validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
 	validates_inclusion_of :document_type, in: Afip::DOCUMENTOS.values, message: "Tipo de documento inválido."
 	validates_inclusion_of :iva_cond, in: IVA_COND, message: "Condición frente a I.V.A. inválida."
 	validates_numericality_of :saldo, message: "Saldo inválido. Revise por favor."
