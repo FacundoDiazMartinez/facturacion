@@ -128,5 +128,10 @@ class Client < ApplicationRecord
 		def birthday
 			read_attribute("birthday") || "Sin registrar"
 		end
+
+		def check_if_expired
+			suma = Invoice.where(client_id: self.id, expired: true).count
+			return ( suma > 0 ) ? true : false
+		end
 	#FUNCIONES
 end

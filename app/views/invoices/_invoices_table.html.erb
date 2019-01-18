@@ -1,4 +1,42 @@
-<% if params[:view] == "list" %>
+<% if params[:view] == "table" %>
+  <div class="row">
+    <% @invoices.each do |invoice| %>
+      <div class="col-md-6 col-lg-4 col-sm-12">
+        <ul class="list-unstyled rounded border-bottom">
+          <li class="media">
+            <img class="mr-3" src="/images/invoice.png" alt="Factura">
+            <div class="media-body">
+              <h5 class="mt-0 mb-1"><%= invoice.nombre_comprobante %> a <%= invoice.client_name %></h5>
+              <strong>Nº:</strong> <%= invoice.full_number %><br>
+              <strong>Tipo:</strong> <%= invoice.tipo %><br>
+              <strong>Estado:</strong> <%= invoice_state(invoice.state) %><br>
+              <i><%= icon('fas', 'clock') %> <%= invoice.cbte_fch %></i><br>
+            </div>
+          </li>
+          <li>
+            <div class="row">
+              <div class="col-md-9" style="padding: 5px 0px 0px 15px;">
+                  <h5>Total: <span class="text-info">$<%= invoice.total %></span></h5>
+              </div>
+              <div class="col-md-3 float-right">
+                <div class="row">
+                  <%  if !invoice.editable? %>
+                    <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
+                  <% end %>
+                  <%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(invoice), class: 'btn btn-link' %>
+                  <%  if invoice.editable? %>
+                    <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-link' %>
+                  <% end -%>
+                </div>
+              </div>
+            </div>
+
+          </li>
+        </ul>
+      </div>
+    <% end -%>
+  </div>
+<% else %>
   <div class="table-responsive">
     <table class="table table-hover">
       <thead>
@@ -36,45 +74,6 @@
         <% end %>
       </tbody>
     </table>
-  </div>
-<% else %>
-  <div class="row">
-    <% @invoices.each do |invoice| %>
-      <div class="col-md-6 col-lg-4 col-sm-12">
-        <ul class="list-unstyled rounded border-bottom">
-          <li class="media">
-            <img class="mr-3" src="/images/invoice.png" alt="Factura">
-            <div class="media-body">
-              <h5 class="mt-0 mb-1"><%= invoice.nombre_comprobante %> a <%= invoice.client_name %></h5>
-              <strong>Nº:</strong> <%= invoice.full_number %><br>
-              <strong>Tipo:</strong> <%= invoice.tipo %><br>
-              <strong>Estado:</strong> <%= invoice_state(invoice.state) %><br>
-              <i><%= icon('fas', 'clock') %> <%= invoice.cbte_fch %></i><br>
-
-            </div>
-          </li>
-          <li>
-            <div class="row">
-              <div class="col-md-9" style="padding: 5px 0px 0px 15px;">
-                  <h5>Total: <span class="text-info">$<%= invoice.total %></span></h5>
-              </div>
-              <div class="col-md-3 float-right">
-                <div class="row">
-                  <%  if !invoice.editable? %>
-                    <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
-                  <% end %>
-                  <%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(invoice), class: 'btn btn-link' %>
-                  <%  if invoice.editable? %>
-                    <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-link' %>
-                  <% end -%>
-                </div>
-              </div>
-            </div>
-
-          </li>
-        </ul>
-      </div>
-    <% end -%>
   </div>
 <% end -%>
 <%= paginate @invoices %>

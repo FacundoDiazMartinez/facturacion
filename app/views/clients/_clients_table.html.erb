@@ -16,7 +16,7 @@
       <tr>
         <td><%= client.name %></td>
         <td><%= client.full_document %></td>
-        <td></td>
+        <td><%= boolean_to_icon client.check_if_expired %></td>
         <td>$ <%= client.saldo %></td>
         <td>
           <% if client.valid_for_account %>

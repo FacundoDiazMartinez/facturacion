@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_17_172236) do
+ActiveRecord::Schema.define(version: 2019_01_18_175702) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -362,6 +362,7 @@ ActiveRecord::Schema.define(version: 2019_01_17_172236) do
     t.text "observation"
     t.bigint "sales_file_id"
     t.bigint "budget_id"
+    t.boolean "expired", default: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
