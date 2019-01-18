@@ -29,7 +29,7 @@ class BudgetsController < ApplicationController
 
   # GET /budgets/new
   def new
-    @budget = Budget.new
+    @budget = current_user.company.budgets.new()
     @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
 
@@ -43,12 +43,13 @@ class BudgetsController < ApplicationController
   def create
     @budget = current_user.company.budgets.new(budget_params)
     @budget.user_id = current_user.id
+    @budget.state = "Válido"
     @client = @budget.client
     respond_to do |format|
       if @budget.save
-        format.html { redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue creado correctamente.' }
+        format.html { redirect_to budgets_path(), notice: 'El presupuesto fue creado correctamente.' }
       else
-        pp @budget.errors
+        @budget.errors
         format.html { render :new }
       end
     end
@@ -94,7 +95,18 @@ class BudgetsController < ApplicationController
       )
       detail.product = bd.product
     end
-    render template: '/invoices/new.html.erb'
+
+      if current_user.company.daily_cashes.search_by_date(nil).blank?
+        session[:return_to] ||= request.referer
+        redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
+      else
+        if !current_user.company.daily_cashes.search_by_date(nil).state == "Abierta"
+          session[:return_to] ||= request.referer
+          redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
+        else
+          render template: '/invoices/new.html.erb'
+        end
+      end
   end
 
   def autocomplete_client
@@ -122,7 +134,7 @@ class BudgetsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def budget_params
-      params.require(:budget).permit(:number, :expiration_date, :total, :active, :client_id, :reserv_stock,
+      params.require(:budget).permit(:number, :expiration_date, :total, :client_id, :reserv_stock,
         budget_details_attributes: [:id, :product_id, :product_name, :depot_id, :price_per_unit, :measurement_unit, :quantity, :bonus_percentage, :bonus_amount, :subtotal, :_destroy])
     end
 end

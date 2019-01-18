@@ -13,13 +13,16 @@ class Budget < ApplicationRecord
   validates_presence_of :company_id, message: "El presupuesto debe estar asociado a una compañía."
   validates_presence_of :user_id, message: "El presupuesto debe estar asociado a un usuario."
   validates_presence_of :client_id, message: "El presupuesto debe estar asociado a un cliente."
+  validates_presence_of :expiration_date, message: "Debe seleccionar una fecha de vencimiento."
 
-  before_validation :set_number
+  # before_validation :set_number
+  after_initialize :set_number, if: :new_record?
   before_validation :check_depots, if: :reserv_stock
-
+  before_validation :set_total_to_budget
+  after_save :change_state_to_expirated
   after_create :create_seles_file, if: Proc.new{|b| b.sales_file.nil?}
 
-  STATES = ["Pendiente", "Vencido", "Concretado"]
+  STATES = ["Generado", "Válido", "Vencido", "Concretado"]
 
   #VALIDACIONES
     def expiration_date_cannot_be_in_the_past
@@ -27,6 +30,16 @@ class Budget < ApplicationRecord
         errors.add(:expiration_date, "La fecha de vencimiento no puede ser menor a hoy.")
       end
     end
+
+    # def expiration_date_cannot_be_in_the_past
+    #   if expiration_date.present?
+    #     if expiration_date < Date.today
+    #       errors.add(:expiration_date, "La fecha de vencimiento no puede ser menor a hoy.")
+    #     end
+    #   else
+    #     errors.add(:expiration_date, "Debe seleccionar una fecha de vencimiento.")
+    #   end
+    # end
   #VALIDACIONES
 
   #FILTROS DE BUSQUEDA
@@ -58,7 +71,7 @@ class Budget < ApplicationRecord
   #PROCESOS
     def set_number
       last_budget = Budget.where(company_id: company_id).last
-        self.number ||= last_budget.nil? ? "00000001" : (last_budget.number.to_i + 1).to_s.rjust(8,padstr= '0')
+      self.number ||= last_budget.nil? ? "00000001" : (last_budget.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
 
     def check_depots
@@ -71,14 +84,28 @@ class Budget < ApplicationRecord
         client_id: client_id,
         responsable_id: user_id
       )
-
       update_column(:sales_file_id, sf.id)
     end
+
+    def set_total_to_budget
+      suma = Float(0)
+      budget_details.each do |b|
+        suma = suma + b.subtotal.to_f
+      end
+      self.total = suma
+    end
+
+    def change_state_to_expirated
+      if self.expiration_date <= Date.today
+        self.state = "Vencido"
+      end
+    end
+    handle_asynchronously :change_state_to_expirated, :run_at => Proc.new { |budget| budget.expiration_date +1.days }
   #PROCESOS
 
   #ATRIBUTOS
   	def editable?
-  		state != "Concretado"
+  		!persisted?
   	end
 
     def client_name

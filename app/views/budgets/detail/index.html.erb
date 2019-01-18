@@ -12,7 +12,8 @@
 	<table class="table table-striped budget-table" id="details">
 		<thead>
 			<tr>
-				<th scope="col" colspan="2">Código</th>
+        <th></th>
+				<th scope="col">Código</th>
 				<th scope="col">Concepto</th>
 				<th scope="col">Depósito</th>
 				<th scope="col">Precio</th>
@@ -28,26 +29,30 @@
 			<%= form.fields_for :budget_details, wrapper: false do |f| %>
 		    	<tr class="fields" id="<%= f.index %>">
 					<td>
-			  			<%= link_to icon('fas', 'search'), search_product_budgets_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
+              <% if @budget.editable? %>
+                	<%= link_to icon('fas', 'search'), search_product_budgets_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
+              <% else %>
+                  #
+              <% end %>
 			  			<%= f.hidden_field :product_id, class: 'product_id' %>
 			  		</td>
 			  		<td>
-			  			<%= autocomplete_field_tag :product, f.object.product_code, autocomplete_product_code_budgets_path, class: 'budget_detail-autocomplete_field form-control form-control-sm code', disabled: !@budget.editable? %>
+			  			<%= autocomplete_field_tag :product, f.object.product_code, autocomplete_product_code_budgets_path, class: 'budget_detail-autocomplete_field form-control form-control-sm code', disabled: !@budget.editable?, style: 'width: 120px;' %>
 			  		</td>
 			  		<td>
 			  			<%= f.text_field :product_name, class: 'form-control form-control-sm name', placeholder: "Concepto", disabled: !@budget.editable? %>
 			  		</td>
 			  		<td>
-			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id'} %>
+			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id', disabled: !@budget.editable?} %>
 			  		</td>
 					<td>
-						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@budget.editable? %>
+						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@budget.editable?, style: 'width: 90px;' %>
 					</td>
 					<td class="only-desktop">
 						<%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@budget.editable?} %>
 					</td>
 					<td>
-						<%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@budget.editable? %>		
+						<%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@budget.editable? %>
 					</td>
 					<td class="only-desktop">
 						<%= f.number_field :bonus_percentage,  class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@budget.editable? %>

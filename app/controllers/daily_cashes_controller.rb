@@ -12,7 +12,7 @@ class DailyCashesController < ApplicationController
   end
 
   def edit
-    
+
   end
 
   def create
@@ -20,12 +20,14 @@ class DailyCashesController < ApplicationController
     @daily_cash.current_user = current_user.id
     @daily_cash.date = Date.today
     @daily_cash.current_amount = @daily_cash.initial_amount
-    respond_to do |format|
-      if @daily_cash.save
-        format.html { redirect_to daily_cashes_path, notice: "Apertura de caja exitosa." }
+    if @daily_cash.save
+      if session[:return_to].blank?
+        redirect_to daily_cashes_path, notice: "Apertura de caja exitosa."
       else
-        format.html { render :new }
+        redirect_to session.delete(:return_to), notice: "Ahora puede continuar con su operación."
       end
+    else
+      render :new
     end
   end
 
