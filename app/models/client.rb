@@ -72,6 +72,14 @@ class Client < ApplicationRecord
       	end
     end
 
+    def self.search_by_expired expired
+    	if not expired.blank?
+    		joins(:invoices).where("invoices.expired = ?", expired)
+    	else
+    		all
+    	end
+    end
+
 	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS

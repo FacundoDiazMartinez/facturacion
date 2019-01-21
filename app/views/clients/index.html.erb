@@ -26,6 +26,14 @@
             <%= text_field_tag :document_number, params[:document_number], class: 'form-control', placeholder: 'Buscar por documento', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
           <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <!-- BUSCAR POR VENCIMIENTO -->
+            <div class="input-group col">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><%= icon('fas', 'list') %></div>
+              </div>
+              
+            </div>
+          <!-- BUSCAR POR VENCIMIENTO -->
         <% end %>
       </div>
       <div class="card-body">

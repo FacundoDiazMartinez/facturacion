@@ -12,6 +12,7 @@
  *
  *= require_tree .
  *= require_self
+ *= require bootstrap-datepicker
  */
 
 @import "autocomplete";
@@ -45,6 +46,8 @@
   max-height: 30px;
   width: auto;
 }
+
+
 
 .hidden{
   display: none;

@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
 
   create_table "budgets", force: :cascade do |t|
     t.date "date", default: -> { "('now'::text)::date" }, null: false
-    t.string "state", default: "Pendiente", null: false
+    t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
     t.float "total", default: 0.0, null: false

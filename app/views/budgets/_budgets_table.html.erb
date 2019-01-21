@@ -3,9 +3,10 @@
         <thead>
             <tr>
                 <th scope="col">Número</th>
-                <th scope="col" colspan="2">Cliente</th>
+                <th scope="col" colspan="2"> <center> Cliente </center> </th>
                 <th scope="col">Fecha</th>
                 <th scope="col">Vencimiento</th>
+                <th scope="col">Estado</th>
                 <th scope="col">Total</th>
                 <th scope="col">Creado por</th>
                 <th scope="col"></th>
@@ -20,6 +21,7 @@
                     <td><%= budget.client.name %></td>
                     <td><%= l(budget.date) %></td>
                     <td><%= budget.expiration_date %></td>
+                    <td><%= budget.state %></td>
                     <td>$<%= budget.total %></td>
                     <td><%= budget.user.name %></td>
                     <td>

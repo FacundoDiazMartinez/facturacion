@@ -25,6 +25,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
+    after_save :update_expired, if: Proc.new{|i| i.state == "Confirmado"}
     after_save :touch_commissioners
     after_touch :touch_account_movement
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
@@ -244,6 +245,13 @@ class Invoice < ApplicationRecord
       def is_debit_note?
         ["02", "07", "12"].include?(cbte_tipo)
       end
+
+      def update_expired
+        if ((Date.today - self.cbte_fch.to_date).to_i >= 30 && (self.total - self.total_pay > 0))
+          self.expired = true
+        end
+      end
+      handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| self.cbte_fch + 30.days }
   	#FUNCIONES
 
     #PROCESOS
