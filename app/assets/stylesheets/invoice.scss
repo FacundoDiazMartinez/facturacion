@@ -19,3 +19,9 @@ table.invoice-table > tbody > tr > td{
 @media (max-width: 992px) {
 	td > input.form-control {width: auto;}
 }
+
+.invoice-header-right {
+  position: fixed;
+  top: 100px;
+  right: 25px;
+}

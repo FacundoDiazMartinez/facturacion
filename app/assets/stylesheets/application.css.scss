@@ -15,6 +15,7 @@
  *= require bootstrap-datepicker
  */
 
+@import "datepicker";
 @import "autocomplete";
 @import "bootstrap";
 @import "bootstrap-toggle";
@@ -46,8 +47,6 @@
   max-height: 30px;
   width: auto;
 }
-
-
 
 .hidden{
   display: none;

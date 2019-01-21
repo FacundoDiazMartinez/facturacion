@@ -73,8 +73,16 @@ class Client < ApplicationRecord
     end
 
     def self.search_by_expired expired
-    	if not expired.blank?
-    		joins(:invoices).where("invoices.expired = ?", expired)
+    	unless expired.blank?
+    		joins(:invoices).distinct.where("invoices.expired = ?", expired)
+    	else
+    		all
+    	end
+    end
+
+    def self.search_by_valid_for_account valid
+    	unless valid.blank?
+    		where("clients.valid_for_account = ?", valid)
     	else
     		all
     	end

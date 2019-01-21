@@ -3,7 +3,7 @@
   <%= error_explanation @invoice %> 
   <!-- HEADER -->
     <div class="card shadow">
-      <div class="card-body">
+      <div class="card-body invoice-header">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
             <div class="col-md-4">
@@ -79,14 +79,16 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-4">
+        <div class="col-4 col-md-4">
           <center>
             <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
               <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
             <% end %>
           </center>
         </div>
-        <div class="col-12 col-md-4"></div>
+        <div class="col-2 offset-md-2">
+          
+        </div>
       </div>
       <!-- BOTONES DE ACCION -->
     </div>
@@ -132,4 +134,5 @@
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
+
 </script>

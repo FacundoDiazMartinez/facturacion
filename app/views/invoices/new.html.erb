@@ -1,5 +1,8 @@
 <div class="p-4">
-	<h1 class="h2"> Nueva Factura</h1>
+	<div class="row">
+		<h1 class="h2"> Nueva Factura</h1>
+		<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Encabezado</button>
+	</div>
 
 	<div id="invoice_form">
 		<%= render '/invoices/form' %>

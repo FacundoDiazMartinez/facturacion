@@ -5,7 +5,7 @@ class ClientsController < ApplicationController
   # GET /clients
   # GET /clients.json
   def index
-    @clients = current_user.company.clients.search_by_name(params[:name]).search_by_expired(params[:expired]).search_by_document(params[:document_number]).paginate(per_page: 10, page: params[:page])
+    @clients = current_user.company.clients.includes(:invoices).search_by_name(params[:name]).search_by_expired(params[:expired]).search_by_document(params[:document_number]).search_by_valid_for_account(params[:valid_for_account]).paginate(per_page: 10, page: params[:page])
   end
 
   # GET /clients/1

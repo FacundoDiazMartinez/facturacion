@@ -1,10 +1,30 @@
 <div class="p-4">
 	<% if @invoice.editable? %>
-		<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Generar Factura</h1>
+		<div class="row">
+			<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Generar Factura</h1>
+			<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Encabezado</button>
+		</div>
 	<% else %>
-		<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
+		<div class="row">
+			<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
+			<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Encabezado</button>
+		</div>
 	<% end %>
 	<div id="invoice_form">
 		<%= render '/invoices/form' %>
 	</div>
 </div>
+
+<script type="text/javascript">
+	function toggleHeader(){
+		var color = $(".invoice-header").css('display');
+		if (color == 'block'){
+			$(".invoice-header").hide('fast')
+		} 
+		else
+		{
+			$(".invoice-header").show('fast')
+		}
+  		
+	}
+</script>
