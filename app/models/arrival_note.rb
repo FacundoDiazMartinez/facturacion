@@ -4,6 +4,7 @@ class ArrivalNote < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :depot, optional: true
   has_many :arrival_note_details, dependent: :destroy
+  has_many :purchase_order_details, through: :purchase_order
 
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
@@ -27,6 +28,7 @@ class ArrivalNote < ApplicationRecord
   validates_inclusion_of :state, in: STATES, message: "El estado es inválido."
 
   before_validation :check_purchase_order_state, if: Proc.new{|po| po.state_changed? && po.state == "Anulado"}
+  before_save :set_required_quantities
 
   #TABLA
     # create_table "arrival_notes", force: :cascade do |t|
@@ -123,6 +125,17 @@ class ArrivalNote < ApplicationRecord
       if purchase_order.state == "Finalizada"
         errors.add(:state, "No es posible modificar estado de remito porque la Órden de Compra ya está finalizada.")
         self.state = state_was
+      end
+    end
+
+    def set_required_quantities
+      arrival_note_details.each do |a|
+        det = purchase_order_details.find_by_product_id(a.product_id)
+        unless det.nil?
+          a.req_quantity = det.quantity
+        else
+          a.req_quantity = 0.to_f
+        end
       end
     end
   #PROCESOS

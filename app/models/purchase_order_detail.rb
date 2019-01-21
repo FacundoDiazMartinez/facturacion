@@ -12,6 +12,7 @@ class PurchaseOrderDetail < ApplicationRecord
   validates_presence_of :price, message: "Falta precio unitario."
   validates_presence_of :quantity, message: "Falta especificar cantidad."
   validates_presence_of :total, message: "Total no especificado."
+  validates_uniqueness_of :prduct_id, scope: :purchase_order_id, message: "No es posible ingresar productos iguales."
 
   #PROCESOS
   	def check_product
