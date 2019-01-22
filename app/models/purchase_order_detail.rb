@@ -20,7 +20,7 @@ class PurchaseOrderDetail < ApplicationRecord
         product.company_id = purchase_order.company_id
         product.save
         if not product.errors.any?
-          self.price   = product.price
+          self.price   = product.cost_price
           self.total = 	self.price * self.quantity
         end
       end

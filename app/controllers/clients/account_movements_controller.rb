@@ -7,7 +7,15 @@ class Clients::AccountMovementsController < ApplicationController
 	end
 
 	def add_payment
-		
+		if current_user.company.daily_cashes.search_by_date(nil).blank?
+			session[:return_to] ||= request.referer
+			redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
+		else
+			if !current_user.company.daily_cashes.search_by_date(nil).state == "Abierta"
+				session[:return_to] ||= request.referer
+				redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
+			end
+		end
 	end
 
 	def create_payment
