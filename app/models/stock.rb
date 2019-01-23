@@ -6,6 +6,9 @@ class Stock < ApplicationRecord
   after_save :set_stock_to_product
   after_save :set_stock_to_depot
 
+  validate :check_company_of_depot
+  validates_uniqueness_of :state, scope: [:product_id, :depot_id], message: "Esta intentando generar estados duplicados para un mismo depósito."
+
   STATES = ["Disponible", "Reservado", "Entregado"]
 
   #FILTROS DE BUSQUEDA
@@ -25,6 +28,12 @@ class Stock < ApplicationRecord
       end
     end
   #FILTROS DE BUSQUEDA
+
+  #VALIDACIONES
+    def check_company_of_depot
+      errors.add(:base, "El depósito no pertenece a su compañía") unless depot.company_id == product.company_id
+    end
+  #VALIDACIONES
 
   def set_stock_to_category
   	product.product_category.update_column(:products_count, product.available_stock) unless product.product_category_id.nil?

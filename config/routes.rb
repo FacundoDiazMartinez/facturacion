@@ -79,6 +79,7 @@ Rails.application.routes.draw do
   end
 
   resources :products do
+    resources :stocks, only: [:edit, :update]
     collection do
       get :autocomplete_product_code
       get :export

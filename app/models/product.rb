@@ -29,6 +29,8 @@ class Product < ApplicationRecord
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
   	after_create :create_price_history
 
+  	accepts_nested_attributes_for :stocks, reject_if: :all_blank, allow_destroy: true
+
 
   	MEASUREMENT_UNITS = {
 	  	"1" => "kilogramos",
