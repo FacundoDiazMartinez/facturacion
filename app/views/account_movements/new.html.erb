@@ -1,0 +1,17 @@
+<div class="p-4">
+	<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+		<h1 class="h2">
+			Pago a cuenta corriente de <%= @client.name %>
+		</h1>
+	</div>
+	<hr>
+	<div class="page-section">
+		<div class="col-6 offset-3">
+			<div class="card shadow">
+	    		<div id="receipts">
+	    			<%= render 'form' %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -61,6 +61,7 @@ class InvoicesController < ApplicationController
       if @invoice.custom_save(params[:send_to_afip])
         format.html{redirect_to edit_invoice_path(@invoice.id), notice: "El comprobante fue creado con éxito."}
       else
+        pp @invoice.errors
         format.html {render :new}
       end
     end

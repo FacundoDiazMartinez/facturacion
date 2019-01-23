@@ -251,10 +251,29 @@ class Invoice < ApplicationRecord
           self.expired = true
         end
       end
-      handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| self.cbte_fch + 30.days }
+      handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| invoice.cbte_fch.to_date + 30.days }
   	#FUNCIONES
 
     #PROCESOS
+      def self.paid_unpaid_invoices client, account_movement
+        pp "ENTRO paid_unpaid_invoices"
+        am_total = -client.saldo.to_f
+        if am_total > 0
+          unpaid_invoices = where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
+          unpaid_invoices.each do |invoice|
+            pp invoice
+            payment = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
+            payment.total = am_total > invoice.total_left ? invoice.total_left : am_total
+
+            if pp payment.save
+              invoice.touch
+            end
+            am_total -= payment.total
+            break if am_total == 0
+          end
+        end
+      end
+
       def create_seles_file
         if sales_file_id.nil?
           if budget_id.nil?

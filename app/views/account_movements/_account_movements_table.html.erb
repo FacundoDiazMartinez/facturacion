@@ -9,6 +9,7 @@
 				<th class="text-danger">Debe</th>
 				<th class="text-success">Haber</th>
 				<th>Saldo</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -21,6 +22,9 @@
 		    	<td class="text-danger"><%= "$#{am.total}" unless !am.debe %></td>
 		    	<td class="text-success"><%= "$#{am.total}" unless !am.haber %></td>
 		    	<td>$<%= am.saldo %></td>
+		    	<td>
+		    		<%= link_to icon('fas', 'trash'), client_account_movement_path(@client.id, am.id), method: :delete, data: {confirm: "Se eliminaran los pagos asociados a este recibo ¿desea continuar?"}, class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.receipt_id.nil? %>
+		    	</td>
 		    </tr>
 		<% end %>
 		</tbody>

@@ -12,7 +12,8 @@ class Payment < ApplicationRecord
   	"2" => "Tarjeta de débito",
   	"3" => "Transferencia bancaria",
   	"4" => "Cheque",
-  	"5" => "Retenciones"
+  	"5" => "Retenciones",
+    "6" => "Cuenta Corriente"
   }
 
   #ATRIBUTOS
@@ -43,8 +44,10 @@ class Payment < ApplicationRecord
     def company
       if !invoice_id.nil?
         invoice.company
-      else
+      elsif !purchase_order_id.nil?
         purchase_order.company
+      else
+        account_movement.receipt.company
       end
     end
   #ATRIBUTOS

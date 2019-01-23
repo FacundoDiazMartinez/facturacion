@@ -1,17 +1,31 @@
 class IncomePayment < Payment
 	belongs_to :invoice, touch: true
+	belongs_to :account_movement, optional: true
+
 	after_save :set_total_pay_to_invoice
 	after_save :set_notification
 	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_validation :set_flow
 
 	validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
+	validate :check_max_total
+	validate :check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
 
 	self.table_name = "payments"
 
 	def self.default_scope
     	where(flow: "income", active: true)
  	end
+
+ 	#VALIDACIONES
+ 		def check_max_total
+ 			errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.") unless (invoice.sum_payments + total) <= invoice.total
+ 		end
+
+ 		def check_available_saldo
+ 			errors.add(:total, "No posee el saldo suficiente en su cuenta corriente.") unless total.to_f <= -invoice.client.saldo.to_f
+ 		end
+ 	#VALIDACIONES
 
  	#ATRIBUTOS
  		def credit_card_id=(credit_card_id)

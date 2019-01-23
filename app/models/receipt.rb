@@ -1,6 +1,6 @@
 class Receipt < ApplicationRecord
   #RECIBO DE PAGO
-  belongs_to :invoice
+  belongs_to :invoice, optional: true
   belongs_to :client
   belongs_to :company
 
@@ -10,6 +10,7 @@ class Receipt < ApplicationRecord
 
   after_save :touch_account_movement
   before_save :set_number, on: :create
+
 
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
@@ -42,6 +43,10 @@ class Receipt < ApplicationRecord
     end
   #FILTROS DE BUSQUEDA
 
+  #VALIDACIONES
+    
+  #VALIDACIONES
+
   #PROCESOS
   	def touch_account_movement
   		AccountMovement.create_from_receipt(self)
@@ -67,10 +72,6 @@ class Receipt < ApplicationRecord
       Invoice.unscoped do
         "#{Afip::CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
       end
-    end
-
-    def client
-      invoice.client
     end
 
     def tipo

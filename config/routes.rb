@@ -107,7 +107,11 @@ Rails.application.routes.draw do
   resources :suppliers
   resources :depots
   resources :receipts
-  resources :clients
+  resources :clients do
+    resources :account_movements do
+      get :export, on: :collection
+    end
+  end
   resources :product_categories
   resources :companies
 
@@ -123,11 +127,12 @@ Rails.application.routes.draw do
   #CLIENTES
 
   #ACCOUNT MOVEMENTS
-  get '/clients/:id/account_movements', to: 'clients/account_movements#index', as: 'client_account_movements'
-  get '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#add_payment', as: 'client_account_movements_add_payment'
-  patch '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#create_payment', as: 'client_account_movements_create_payment'
-
+  # get '/clients/:id/account_movements', to: 'clients/account_movements#index', as: 'client_account_movements'
+  # get '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#add_payment', as: 'client_account_movements_add_payment'
+  # patch '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#create_payment', as: 'client_account_movements_create_payment'
   #ACCOUNT MOVEMENTS
+
+
 
 
   resources :invoices do

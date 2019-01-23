@@ -6,8 +6,8 @@ class Clients::AccountMovementsController < ApplicationController
 		@account_movements =  @client.account_movements.includes(:invoice, :receipt).search_by_cbte_tipo(params[:cbte_tipo]).search_by_date(params[:from], params[:to]).order("created_at DESC").paginate(page: params[:page], per_page: 10)
 	end
 
-	def add_payment
-		
+	def new
+		@account_movement = AccountMovement.new()
 	end
 
 	def create_payment
@@ -15,7 +15,7 @@ class Clients::AccountMovementsController < ApplicationController
 	      	if @client.update(client_params)
 	        	format.html {redirect_to client_account_movements_path(@client.id), notice: "Pago agregado correctamente."}
 	      	else
-	      		format.html { render :add_payment}
+	      		format.html { render :new}
 	      	end
 	    end
 	end
