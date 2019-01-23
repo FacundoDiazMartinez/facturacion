@@ -14,6 +14,7 @@
 //= require jquery-ui
 //= require jquery_ujs
 //= require jquery.validate
+//= require jquery.pjax
 //= require jquery.validate.localization/messages_es
 //= require main-mockup
 //= require private_pub
@@ -33,7 +34,7 @@
 
 $(document).ready(function() {
 
-  //$(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]');
+  $(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]');
 
   $('btn').on('click', function() {
     var $this = $(this);

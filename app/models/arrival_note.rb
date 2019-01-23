@@ -9,7 +9,7 @@ class ArrivalNote < ApplicationRecord
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
 
-  before_validation :set_number
+  #before_validation :set_number
   # after_save :set_state
   after_save :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
   after_initialize :set_default_number, if: :new_record?
@@ -92,9 +92,9 @@ class ArrivalNote < ApplicationRecord
       self.number ||= last_an.nil? ? "00000001" : (last_an.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
 
-    def set_number
-      self.number = self.number.to_s.rjust(8,padstr= '0')
-    end
+    # def set_number
+    #   self.number = self.number.to_s.rjust(8,padstr= '0')
+    # end
 
     # def set_state
     #   if !arrival_note_details.map(&:completed).include?(false)

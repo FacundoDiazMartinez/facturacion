@@ -1,0 +1,8 @@
+wb = xlsx_package.workbook
+title = wb.styles.add_style(:bg_color => "80CBC4", :fg_color=>"#FF000000", :sz=>14,  :border=> {:style => :thin, :color => "80CBC4"})
+wb.add_worksheet(name: "Cuente Corriente") do |sheet|
+    sheet.add_row(["Fecha", "Comprobante", "Observación", "Debe", "Haber", "Saldo"], :style=> title)
+    @account_movements.each do |am|
+        sheet.add_row([l(am.created_at, format: :only_date), am.comprobante, am.observation, am.debe ? "$#{am.total}" : "", am.haber ? "$#{am.total}" : "", "$#{am.saldo}"])
+    end
+end

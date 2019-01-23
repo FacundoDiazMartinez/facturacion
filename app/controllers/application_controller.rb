@@ -3,7 +3,15 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!, except: [:get_localities]
   before_action :redirect_to_company, except: [:get_localities]
   require 'exceptions.rb'
+  after_action :flash_to_headers
 
+  def flash_to_headers
+    flash_header = []
+    unless flash.first.nil?
+      flash_header = [flash.first.first, flash.first.last, SecureRandom.hex(4)]
+    end
+    pp response.headers['X-Flash'] = flash_header.to_json
+  end
   
 
 	def get_localities

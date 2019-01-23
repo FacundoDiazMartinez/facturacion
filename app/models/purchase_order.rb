@@ -20,7 +20,7 @@ class PurchaseOrder < ApplicationRecord
   after_save :touch_payments
   after_touch :set_paid_out
 
-  validates_uniqueness_of :number, scope: :company_id, message: "Error intero del servidor, intentelo nuevamente por favor."
+  validates_uniqueness_of :number, scope: :company_id, message: "Se están duplicando los números de Órdenes de Compra.", if: :number_changed?
   validates_presence_of :supplier_id, message: "Debe especificar un proveedor."
   validates_presence_of :user_id, message: "Debe especificar un usuario."
   validates_presence_of :company_id, message: "Debe especificar una compañía."
@@ -124,6 +124,9 @@ class PurchaseOrder < ApplicationRecord
         update_column(:active, false)
         run_callbacks :destroy
         freeze
+      else
+        errors.add(:state, "No puede eliminar una órden de compra anulada o finalizada.")
+        return false
       end
     end
 

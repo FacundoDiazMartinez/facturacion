@@ -3,8 +3,14 @@ class AccountMovement < ApplicationRecord
   belongs_to :invoice, optional: true
   belongs_to :receipt, optional: true
 
-  before_save :update_others_movements, if: Proc.new{|am|  !am.new_record?}
+  has_many :account_movement_payments, dependent: :destroy
+
+  before_save :set_saldo_to_movements
+  before_destroy :fix_saldo
   after_save  :update_debt
+  after_destroy :update_debt
+
+  validate :check_pertenence_of_receipt_to_client
 
   default_scope { where(active: true) }
 
@@ -13,6 +19,9 @@ class AccountMovement < ApplicationRecord
   validates_presence_of :total, message: "Debe definir un total."
   validates_presence_of :saldo, message: "Falta definir el saldo actual del cliente."
   validate :check_debe_haber
+
+  accepts_nested_attributes_for :receipt, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :account_movement_payments, allow_destroy: true, reject_if: :all_blank
 
   #TABLA
     # create_table "account_movements", force: :cascade do |t|
@@ -65,6 +74,13 @@ class AccountMovement < ApplicationRecord
     end
   #FILTROS DE BUSQUEDA
 
+  #VALIDACIONES
+    def check_pertenence_of_receipt_to_client
+      unless self.receipt.nil?
+        errors.add(:base, "Cliente incorrecto") unless self.client_id == self.receipt.client_id
+      end
+    end
+  #VALIDACIONES
 
   #FUNCIONES
   	def days
@@ -79,30 +95,48 @@ class AccountMovement < ApplicationRecord
   		Client.find(client_id).receipts.select("receipts.total").sum(:total)
   	end
 
-  	def update_others_movements
-      pp "ENTRO"
+    def fix_saldo
+      self.total = 0
+      set_saldo_to_movements
+    end
+
+  	def set_saldo_to_movements
   		debe_dif 	= debe ? (total - total_was) : 0.0
   		haber_dif	= haber ? (total - total_was) : 0.0
       total_dif = debe_dif + haber_dif
+
+      if debe
+        self.saldo = self.client.saldo + debe_dif
+      else
+        self.saldo = self.client.saldo - haber_dif
+      end
+
       if total_dif != 0
     		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
     		next_movements.each do |am|
     			total_saldo = am.saldo - total_dif
     			am.update_column(:saldo, total_saldo)
     		end
-    		client.update_column(:saldo, client.saldo - total_dif)
+    		client.update_debt
       end
   	end
 
   	def update_debt
-  		saldo = AccountMovement.where(client_id: client_id).last.saldo
-  		client.update_column(:saldo, saldo)
+  		self.client.update_debt
   	end
 
     def destroy
       update_column(:active, false)
       run_callbacks :destroy
       freeze
+    end
+
+    def self.reset
+      Invoice.destroy_all
+      AccountMovement.destroy_all
+      Receipt.destroy_all
+      Client.update_all(saldo: 0)
+      DailyCashMovement.destroy_all
     end
   #FUNCIONES
 
@@ -118,23 +152,23 @@ class AccountMovement < ApplicationRecord
 
   #PROCESOS
     def check_debe_haber
-      errors.add(:debe, "No se define si el mvimiento pertenece al Debe o al Haber.") unless debe != haber
+      errors.add(:debe, "No se define si el movimiento pertenece al Debe o al Haber.") unless debe != haber
     end
 
     def self.create_from_receipt receipt
       am             = AccountMovement.where(receipt_id: receipt.id).first_or_initialize
-      am.client_id   = receipt.invoice.client_id
+      am.client_id   = receipt.client_id
       am.receipt_id  = receipt.id
-      am.cbte_tipo   = receipt.invoice.is_credit_note? ? "Devolución" : "Recibo X"
-      am.debe        = receipt.invoice.is_credit_note?
-      am.haber       = receipt.invoice.is_invoice?
+      am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
+      am.debe        = receipt.cbte_tipo == "99"
+      am.haber       = receipt.cbte_tipo != "99"
       am.total       = receipt.total.to_f
-      if receipt.invoice.is_credit_note?
-        am.saldo       = receipt.invoice.client.saldo.to_f + receipt.total.to_f unless !am.new_record?
-      else
-        am.saldo       = receipt.invoice.client.saldo.to_f - receipt.total.to_f unless !am.new_record?
-      end
-      am.save unless !am.changed?
+      # if receipt.cbte_tipo == "99" #DEVOLUCION
+      #   am.saldo       = receipt.client.saldo.to_f + receipt.total.to_f unless !am.new_record?
+      # else
+      #   am.saldo       = receipt.client.saldo.to_f - receipt.total.to_f unless !am.new_record?
+      # end
+      am.save
     end
 
     def self.create_from_invoice invoice
@@ -148,14 +182,15 @@ class AccountMovement < ApplicationRecord
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
-            am.saldo        = (invoice.client.saldo.to_f - am.total) unless !am.new_record?
+            #am.saldo        = (invoice.client.saldo.to_f - am.total) unless !am.new_record?
           else
             am.debe         = true
             am.haber        = false
             am.total        = invoice.total.to_f
-            am.saldo        = (invoice.client.saldo.to_f + am.total) unless !am.new_record?
+            #am.saldo        = (invoice.client.saldo.to_f + am.total) unless !am.new_record?
           end
           am.save unless !am.changed?
+          return am
         end
     end
   #PROCESOS
