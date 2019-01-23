@@ -51,7 +51,7 @@
 					<% end %>
 					<td>
 						<%= f.hidden_field :depot_id, class: 'depot_id' %>
-						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@invoice.editable? %>
+						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"tooltip"}, disabled: !@invoice.editable? %>
 					</td>
 					<td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?} %></td>
           <% if @invoice.editable? %>
@@ -59,10 +59,10 @@
               <%= render '/invoices/detail/commissioner_fields', f: f %>
             </td>
           <% end %>
-					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, step: 1, disabled: !@invoice.editable? %></td>
+					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"tooltip"}, min: 0, step: 1, disabled: !@invoice.editable? %></td>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
-						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control iva_aliquot', style: 'width: 100px;', disabled: !@invoice.editable?} %>
+						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control iva_aliquot', data: {toggle:"tooltip"}, style: 'width: 100px;', disabled: !@invoice.editable?} %>
 					</td>
 					<td class="only-desktop"><%= f.hidden_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@invoice.editable? %>
 						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
