@@ -229,7 +229,7 @@ class Invoice < ApplicationRecord
       end
 
       def check_if_confirmed
-        if state_was == "Confirmado" && changed? 
+        if state_was == "Confirmado" && changed?
           errors.add(:state, "No se puede actualizar una factura confirmada.")
         end
       end
