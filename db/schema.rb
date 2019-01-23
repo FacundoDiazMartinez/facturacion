@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_18_175702) do
+ActiveRecord::Schema.define(version: 2019_01_22_174531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "observation"
+    t.float "amount_available", default: 0.0, null: false
     t.index ["client_id"], name: "index_account_movements_on_client_id"
     t.index ["invoice_id"], name: "index_account_movements_on_invoice_id"
     t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
@@ -362,10 +363,12 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
     t.text "observation"
     t.bigint "sales_file_id"
     t.bigint "budget_id"
+    t.bigint "receipt_id"
     t.boolean "expired", default: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
+    t.index ["receipt_id"], name: "index_invoices_on_receipt_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
     t.index ["sales_file_id"], name: "index_invoices_on_sales_file_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
@@ -420,6 +423,9 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
     t.bigint "purchase_order_id"
+    t.bigint "account_movement_id"
+    t.boolean "generated_by_system", default: false, null: false
+    t.index ["account_movement_id"], name: "index_payments_on_account_movement_id"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["purchase_order_id"], name: "index_payments_on_purchase_order_id"
   end
@@ -570,7 +576,6 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
   end
 
   create_table "receipts", force: :cascade do |t|
-    t.bigint "invoice_id"
     t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.date "date", null: false
@@ -580,8 +585,13 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "number"
+    t.bigint "client_id"
+    t.bigint "invoice_id"
+    t.bigint "sale_point_id"
+    t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
+    t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
   end
 
   create_table "role_permissions", force: :cascade do |t|
@@ -768,6 +778,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
   add_foreign_key "invoices", "budgets"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
+  add_foreign_key "invoices", "receipts"
   add_foreign_key "invoices", "sale_points"
   add_foreign_key "invoices", "sales_files"
   add_foreign_key "invoices", "users"
@@ -775,6 +786,7 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
   add_foreign_key "iva_books", "invoices"
   add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
+  add_foreign_key "payments", "account_movements"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "purchase_orders"
   add_foreign_key "permissions", "friendly_names"
@@ -799,8 +811,10 @@ ActiveRecord::Schema.define(version: 2019_01_18_175702) do
   add_foreign_key "purchase_orders", "companies"
   add_foreign_key "purchase_orders", "suppliers"
   add_foreign_key "purchase_orders", "users"
+  add_foreign_key "receipts", "clients"
   add_foreign_key "receipts", "companies"
   add_foreign_key "receipts", "invoices"
+  add_foreign_key "receipts", "sale_points"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "roles", "companies"

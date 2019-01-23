@@ -1,0 +1,29 @@
+<div class="modal fade bd-example-modal-lg" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'plus') %> Exportar cuenat corriente de <%= @client.name %></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_tag export_client_account_movements_path(@client.id, format: :xlsx), method: :get do %>
+        <div class="modal-body">
+            <div class="form-row">
+              <div class="col">
+                <%= label_tag :since, "Fecha desde" %>
+                <%= text_field_tag :since, params[:since] || Date.today, class: 'form-control datepicker', required: true %>
+              </div>
+              <div class="col">
+                <%= label_tag :to, "Fecha hasta" %>
+                <%= text_field_tag :to, params[:to] || Date.today, class: 'form-control datepicker', required: true %>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer text-center" style="display: block;">
+            <%= button_tag "#{icon('fas', 'download')} Exportar".html_safe, type: 'submit', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

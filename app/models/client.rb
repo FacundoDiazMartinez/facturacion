@@ -52,41 +52,41 @@ class Client < ApplicationRecord
 	# TABLA
 
 	#FILTROS DE BUSQUEDA
-	def self.find_by_full_document params={}
-		where(document_type: params[:document_type], document_number: params[:document_number])
-	end
-
-	def self.search_by_name name
-		if !name.nil?
-  			where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
-		else
-  			all
+		def self.find_by_full_document params={}
+			where(document_type: params[:document_type], document_number: params[:document_number])
 		end
-	end
 
-    def self.search_by_document document_number
-      	if !document_number.blank?
-        	where("document_number ILIKE ?", "#{document_number}%")
-      	else
-        	all
-      	end
-    end
+		def self.search_by_name name
+			if !name.nil?
+	  			where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
+			else
+	  			all
+			end
+		end
 
-    def self.search_by_expired expired
-    	unless expired.blank?
-    		joins(:invoices).distinct.where("invoices.expired = ?", expired)
-    	else
-    		all
-    	end
-    end
+	    def self.search_by_document document_number
+	      	if !document_number.blank?
+	        	where("document_number ILIKE ?", "#{document_number}%")
+	      	else
+	        	all
+	      	end
+	    end
 
-    def self.search_by_valid_for_account valid
-    	unless valid.blank?
-    		where("clients.valid_for_account = ?", valid)
-    	else
-    		all
-    	end
-    end
+	    def self.search_by_expired expired
+	    	unless expired.blank?
+	    		joins(:invoices).distinct.where("invoices.expired = ?", expired)
+	    	else
+	    		all
+	    	end
+	    end
+
+	    def self.search_by_valid_for_account valid
+	    	unless valid.blank?
+	    		where("clients.valid_for_account = ?", valid)
+	    	else
+	    		all
+	    	end
+	    end
 
 	#FILTROS DE BUSQUEDA
 
@@ -115,6 +115,13 @@ class Client < ApplicationRecord
 
 		def set_update_activity
 			UserActivity.create_for_updated_client self unless !changed?
+		end
+
+		def update_debt
+			last_acc_mov 	= account_movements.last 
+			last_saldo 		= last_acc_mov.nil? ? 0.0 : last_acc_mov.saldo #En caso de que no exista ningun movimiento, creo el saldo en 0.0
+  			update_column(:saldo, last_saldo)
+  			Invoice.paid_unpaid_invoices self, last_acc_mov
 		end
 	#PROCESOS
 

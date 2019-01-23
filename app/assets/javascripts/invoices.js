@@ -18,6 +18,18 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
+function updateTooltip22(element) { 
+	var price = element.closest("tr.fields").find("input.price").val();
+	var iva_aliquot = element.closest("tr.fields").find("select.iva_aliquot option:selected").html();
+	$(element).closest("tr.fields").find("input.price").tooltip({
+		title: price * (iva_aliquot + 1),
+		placement: "top"
+	})
+	console.log(price);
+	console.log(iva_aliquot);
+}
+
+
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
 		if (data.item.nomatch.length) {
@@ -38,6 +50,12 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		placement: "top"
 	})
 
+	//$(this).closest("tr.fields").find("input.price").tooltip({
+	//	title: data.item.price * (parseFloat($(this).closest("tr.fields").find("select.iva_aliquot option:selected").html()) + 1),
+	//	placement: "top"
+	//})
+	//console.log($(this).closest("tr.fields").find("select.iva_aliquot option:selected").html()),
+
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
@@ -53,6 +71,7 @@ $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field',
 })
 
 $(document).on("change", ".price, .quantity", function(){
+	
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
@@ -69,6 +88,9 @@ $(document).on("change", ".price, .quantity", function(){
 
 	subtotal.val(total);
 	subtotal.trigger("change");
+
+	updateTooltip22($(this));
+
 });
 
 $(document).on("change", ".bonus_percentage", function(){
@@ -108,6 +130,8 @@ $(document).on("change", ".iva_aliquot", function(){
 
 	amount = (parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text())).toFixed(2);
 	iva_amount.val(amount);
+
+	updateTooltip22($(this));
 });
 
 function autocomplete_field() {
@@ -239,6 +263,8 @@ function addRechargeToDetails(){
 		$(this).val(recharge).trigger("change");
 	})
 }
+
+
 
 $(document).on("change", ".type_of_payment", function(){
 	if ($(this).val() == "1"){
