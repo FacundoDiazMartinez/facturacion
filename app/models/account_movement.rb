@@ -12,7 +12,7 @@ class AccountMovement < ApplicationRecord
 
   validate :check_pertenence_of_receipt_to_client
 
-  default_scope { where(active: true) }
+  default_scope { where(active: true ) }
 
   validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
   validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."

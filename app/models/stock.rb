@@ -31,7 +31,9 @@ class Stock < ApplicationRecord
 
   #VALIDACIONES
     def check_company_of_depot
-      errors.add(:base, "El depósito no pertenece a su compañía") unless depot.company_id == product.company_id
+      if not depot_id.blank?
+        errors.add(:base, "El depósito no pertenece a su compañía") unless depot.company_id == product.company_id
+      end
     end
   #VALIDACIONES
 
@@ -40,8 +42,8 @@ class Stock < ApplicationRecord
   end
 
   def set_stock_to_depot
-  	depot.update_column(:stock_count, product.available_stock )
-    set_stock_to_category
+  	#update_column(:stock_count, product.available_stock )
+    #set_stock_to_category
   end
 
   def set_stock_to_product
