@@ -12,7 +12,7 @@ class PurchaseOrderDetail < ApplicationRecord
   validates_presence_of :price, message: "Falta precio unitario."
   validates_presence_of :quantity, message: "Falta especificar cantidad."
   validates_presence_of :total, message: "Total no especificado."
-  validates_uniqueness_of :prduct_id, scope: :purchase_order_id, message: "No es posible ingresar productos iguales."
+  validates_uniqueness_of :product_id, scope: :purchase_order_id, message: "No es posible ingresar productos iguales."
 
   #PROCESOS
   	def check_product
@@ -20,7 +20,7 @@ class PurchaseOrderDetail < ApplicationRecord
         product.company_id = purchase_order.company_id
         product.save
         if not product.errors.any?
-          self.price   = product.price
+          self.price   = product.cost_price
           self.total = 	self.price * self.quantity
         end
       end

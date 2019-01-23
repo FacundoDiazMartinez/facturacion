@@ -18,6 +18,13 @@ class AccountMovementsController < ApplicationController
     @account_movement = AccountMovement.new
     @account_movement.build_receipt(client_id: @client.id)
     @account_movement.account_movement_payments.build
+    if current_user.company.daily_cashes.search_by_date(nil).blank?
+      session[:return_to] ||= request.referer
+      redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
+    elsif !current_user.company.daily_cashes.search_by_date(nil).state == "Abierta"
+      session[:return_to] ||= request.referer
+      redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
+    end
   end
 
   # GET /account_movements/1/edit
