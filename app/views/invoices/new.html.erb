@@ -8,3 +8,17 @@
 		<%= render '/invoices/form' %>
 	</div>
 </div>
+
+<script type="text/javascript">
+	function toggleHeader(){
+		var display = $(".invoice-header").css('display');
+		if (display == 'block'){
+			$(".invoice-header").hide('fast')
+		} 
+		else
+		{
+			$(".invoice-header").show('fast')
+		}
+  		
+	}
+</script>

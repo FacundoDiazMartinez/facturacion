@@ -18,6 +18,16 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
+function updateTooltip22(element) { 
+	var iva_amount = element.closest("td").find("input.iva_amount").val();
+	$(element).tooltip('dispose');
+	$(element).tooltip({
+		title: "Monto I.V.A.: $" + iva_amount + ".",
+		placement: "top"
+	});
+}
+
+
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
 		if (data.item.nomatch.length) {
@@ -38,6 +48,12 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		placement: "top"
 	})
 
+	//$(this).closest("tr.fields").find("input.price").tooltip({
+	//	title: data.item.price * (parseFloat($(this).closest("tr.fields").find("select.iva_aliquot option:selected").html()) + 1),
+	//	placement: "top"
+	//})
+	//console.log($(this).closest("tr.fields").find("select.iva_aliquot option:selected").html()),
+
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
@@ -53,6 +69,7 @@ $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field',
 })
 
 $(document).on("change", ".price, .quantity", function(){
+	
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
@@ -69,6 +86,7 @@ $(document).on("change", ".price, .quantity", function(){
 
 	subtotal.val(total);
 	subtotal.trigger("change");
+
 });
 
 $(document).on("change", ".bonus_percentage", function(){
@@ -108,6 +126,7 @@ $(document).on("change", ".iva_aliquot", function(){
 
 	amount = (parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text())).toFixed(2);
 	iva_amount.val(amount);
+	updateTooltip22($(this))
 });
 
 function autocomplete_field() {
@@ -239,6 +258,8 @@ function addRechargeToDetails(){
 		$(this).val(recharge).trigger("change");
 	})
 }
+
+
 
 $(document).on("change", ".type_of_payment", function(){
 	if ($(this).val() == "1"){
