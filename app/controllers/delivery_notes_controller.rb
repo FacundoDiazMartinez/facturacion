@@ -4,7 +4,7 @@ class DeliveryNotesController < ApplicationController
   # GET /delivery_notes
   # GET /delivery_notes.json
   def index
-    @delivery_notes = current_user.company.delivery_notes.joins(:invoice, :user).without_system.search_by_invoice(params[:invoice_number]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("delivery_notes.date DESC").paginate(page: params[:page])
+    @delivery_notes = current_user.company.delivery_notes.joins(:invoice, :user).without_system.search_by_invoice(params[:invoice_number]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("delivery_notes.number DESC").paginate(page: params[:page])
   end
 
   # GET /delivery_notes/1

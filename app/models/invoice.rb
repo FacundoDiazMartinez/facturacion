@@ -229,7 +229,7 @@ class Invoice < ApplicationRecord
       end
 
       def check_if_confirmed
-        if state_was == "Confirmado" && changed? 
+        if state_was == "Confirmado" && changed?
           errors.add(:state, "No se puede actualizar una factura confirmada.")
         end
       end
@@ -251,7 +251,7 @@ class Invoice < ApplicationRecord
           self.expired = true
         end
       end
-      handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| self.cbte_fch + 30.days }
+      handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| invoice.cbte_fch.to_date + 30.days }
   	#FUNCIONES
 
     #PROCESOS
