@@ -17,7 +17,7 @@
             <div class="col-sm">
               <div class="form-group">
                 <%= form.label :invoice_id, "Factura" %>
-                <%= autocomplete_field_tag :invoice_id, params[:invoice_comp_number] || form.object.invoice_comp_number, autocomplete_invoice_delivery_notes_path, class: 'form-control delivery_note_associated-invoice-autocomplete_field', id_element: "#delivery_note_invoice_id", placeholder: "Número de Factura", disabled: !@delivery_note.editable?, required: true %>
+                <%= autocomplete_field_tag :invoice_comp_number, params[:invoice_comp_number] || form.object.invoice_comp_number, autocomplete_invoice_delivery_notes_path, class: 'form-control delivery_note_associated-invoice-autocomplete_field', id_element: "#delivery_note_invoice_id", placeholder: "Número de Factura", disabled: !@delivery_note.editable?, required: true %>
                 <%= form.hidden_field :invoice_id %>
               </div>
               <div class="form-group">

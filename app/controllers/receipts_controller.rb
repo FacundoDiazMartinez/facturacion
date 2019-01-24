@@ -12,7 +12,7 @@ class ReceiptsController < ApplicationController
   def show
     # la siguiene variable la cree para el pdf:
     Product.unscoped do
-      @group_details = @receipt.invoice.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
+      @group_details = @receipt.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
     end
 
     respond_to do |format|

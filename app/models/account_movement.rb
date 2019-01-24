@@ -4,6 +4,8 @@ class AccountMovement < ApplicationRecord
   belongs_to :receipt, optional: true
 
   has_many :account_movement_payments, dependent: :destroy
+  has_many :invoices, through: :account_movement_payments
+  has_many :invoice_details, through: :invoices
 
   before_save :set_saldo_to_movements
   before_destroy :fix_saldo
@@ -163,11 +165,6 @@ class AccountMovement < ApplicationRecord
       am.debe        = receipt.cbte_tipo == "99"
       am.haber       = receipt.cbte_tipo != "99"
       am.total       = receipt.total.to_f
-      # if receipt.cbte_tipo == "99" #DEVOLUCION
-      #   am.saldo       = receipt.client.saldo.to_f + receipt.total.to_f unless !am.new_record?
-      # else
-      #   am.saldo       = receipt.client.saldo.to_f - receipt.total.to_f unless !am.new_record?
-      # end
       am.save
     end
 

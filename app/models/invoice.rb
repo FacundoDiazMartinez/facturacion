@@ -47,6 +47,7 @@ class Invoice < ApplicationRecord
     validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
     validate :cbte_tipo_inclusion
+    validate :at_least_one_detail
 
     #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
@@ -125,6 +126,16 @@ class Invoice < ApplicationRecord
         end
       end
   	#FILTROS DE BUSQUEDA
+
+    #VALIDACIONES
+      def at_least_one_detail
+        # when creating a new invoice: making sure at least one detail exists
+        return errors.add :base, "Debe tener al menos un concepto" unless invoice_details.length > 0
+
+        # when updating an existing invoice: Making sure that at least one detail would exist
+        return errors.add :base, "Debe tener al menos un concepto" if invoice_details.reject{|invoice_detail| invoice_detail._destroy == true}.empty?
+      end
+    #VALIDACIONES
 
 
   	#FUNCIONES
@@ -256,12 +267,10 @@ class Invoice < ApplicationRecord
 
     #PROCESOS
       def self.paid_unpaid_invoices client, account_movement
-        pp "ENTRO paid_unpaid_invoices"
         am_total = -client.saldo.to_f
         if am_total > 0
           unpaid_invoices = where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
           unpaid_invoices.each do |invoice|
-            pp invoice
             payment = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
             payment.total = am_total > invoice.total_left ? invoice.total_left : am_total
             payment.save
@@ -411,7 +420,11 @@ class Invoice < ApplicationRecord
       end
 
       def full_number
-        "#{sale_point.name} - #{comp_number}" unless not(state == "Confirmado" || state == "Anulado")
+        if state == "Confirmado" || state == "Anulado"
+          "#{sale_point.name} - #{comp_number}" 
+        else
+          "Falta confirmar"
+        end
       end
 
       def full_name
