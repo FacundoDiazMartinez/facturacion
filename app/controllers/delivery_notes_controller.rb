@@ -104,7 +104,7 @@ class DeliveryNotesController < ApplicationController
       set_delivery_note
     end
     @associated = true
-    associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice], state: "Confirmado").first
+    associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice]).first
     associated_invoice.invoice_details.each do |id|
       @delivery_note.delivery_note_details.new(
         product_id: id.product_id,

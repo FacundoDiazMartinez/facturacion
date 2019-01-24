@@ -3,6 +3,7 @@
   <div class="container" style="height: 880px;">
     <table class="width_100 TFtable">
     <tr>
+      <th class="description_header">Factura</th>
       <th class="description_header">Codigo</th>
       <th class="description_header">Producto/Servicio</th>
       <th class="description_header">Cantidad</th>
@@ -14,6 +15,7 @@
     </tr>
     <% details.compact.each do |det| %>
         <tr>
+          <td><%= det.invoice.name_with_comp %>%></td>
           <td><%= det.product.code %></td>
           <td><%= det.product.name %></td>
           <td class="text_right"><%= det.quantity %></td>
