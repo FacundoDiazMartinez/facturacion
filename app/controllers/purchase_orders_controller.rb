@@ -30,7 +30,7 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/new
   def new
     @purchase_order = PurchaseOrder.new
-    if !current_user.company.depots.where(active: true).blank?
+    if current_user.company.depots.where(active: true).blank?
       session[:return_to] ||= request.referer
       redirect_to depots_path(), alert: "Primero debe cargar un depósito."
     end

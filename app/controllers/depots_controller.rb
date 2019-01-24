@@ -29,12 +29,8 @@ class DepotsController < ApplicationController
     set_depots
     respond_to do |format|
       if @depot.save
-        if session[:return_to].blank?
-          format.html { redirect_to @depot, notice: 'El depósito fue creado correctamente.' }
-          format.json { render :show, status: :created, location: @depot }
-        else
-          redirect_to session.delete(:return_to), notice: "Ahora puede continuar con su operación."
-        end
+        format.html { redirect_to @depot, notice: 'El depósito fue creado correctamente.' }
+        format.json { render :show, status: :created, location: @depot }
       else
         format.html { render :new }
         format.json { render json: @depot.errors, status: :unprocessable_entity }

@@ -26,12 +26,8 @@
       </div>
       <div id="<%= user_signed_in? ? 'yield-wrapper' : '' %>">
         <!-- HELPER NEDDED -->
-        <% if notice %>
           <p class="alert-lc alert-lc-success"><%= notice %></p>
-        <% end %>
-        <% if alert %>
           <p class="alert-lc alert-lc-danger"><%= alert %></p>
-        <% end %>
         <!-- HELPER NEDDED -->
         <div data-pjax-container>
           <%= yield %>

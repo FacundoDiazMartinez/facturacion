@@ -38,6 +38,10 @@ class PurchaseOrder < ApplicationRecord
   		supplier.nil? ? "-" : supplier.email
   	end
 
+    def supplier_name
+  		supplier.nil? ? "-" : supplier.name
+  	end
+
   	def supplier_phone
   		supplier.nil? ? "-" : supplier.phone
   	end
