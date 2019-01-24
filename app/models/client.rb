@@ -118,7 +118,9 @@ class Client < ApplicationRecord
 		end
 
 		def update_debt
+			pp "ENTRO AL UPDATE DEBT"
 			last_acc_mov 	= account_movements.last 
+			pp "ESTE ES EL LAST ACCMV #{last_acc_mov.nil? ? 'Es nulo' : last_acc_mov.id}"
 			last_saldo 		= last_acc_mov.nil? ? 0.0 : last_acc_mov.saldo #En caso de que no exista ningun movimiento, creo el saldo en 0.0
   			update_column(:saldo, last_saldo)
   			Invoice.paid_unpaid_invoices self, last_acc_mov
