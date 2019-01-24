@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
     unless flash.first.nil?
       flash_header = [flash.first.first, flash.first.last, SecureRandom.hex(4)]
     end
-    pp response.headers['X-Flash'] = flash_header.to_json
+    response.headers['X-Flash'] = flash_header.to_json
   end
   
 

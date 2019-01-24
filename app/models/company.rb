@@ -6,7 +6,7 @@ class Company < ApplicationRecord
 	has_many :product_categories
 	has_many :price_changes
 	has_many :products
-	has_many :receipts, through: :invoices
+	has_many :receipts
 	has_many :depots
 	has_many :suppliers
 	has_many :purchase_orders

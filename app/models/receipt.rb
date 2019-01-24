@@ -5,8 +5,9 @@ class Receipt < ApplicationRecord
   belongs_to :company
 
   has_one  :account_movement
-
-  has_many :payments, through: :invoice
+  has_many :account_movement_payments, through: :account_movement
+  has_many :invoices, through: :account_movement_payments
+  has_many :invoice_details, through: :invoices
 
   after_save :touch_account_movement
   before_save :set_number, on: :create
@@ -79,7 +80,11 @@ class Receipt < ApplicationRecord
   #ATRIBUTOS
     def full_invoice
       Invoice.unscoped do
-        "#{Afip::CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
+        full_invoice = []
+        invoices.each do |invoice|
+          full_invoice << "#{Afip::CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
+        end
+        return full_invoice.join(", ")
       end
     end
 

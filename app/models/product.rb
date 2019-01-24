@@ -265,7 +265,13 @@ class Product < ApplicationRecord
 			end
 		end
 
-    def rollback_delivered_stock attrs={}
+	    def destroy
+	      	update_column(:active, false)
+	      	run_callbacks :destroy
+        	freeze
+	    end
+
+	    def rollback_delivered_stock attrs={}
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			if s.save
@@ -273,9 +279,9 @@ class Product < ApplicationRecord
 			end
 		end
 
-    def destroy
-      update_column(:active,false)
-    end
+	    def destroy
+	      update_column(:active,false)
+	    end
 
     #IMPORTAR EXCEL o CSV
     def self.save_excel file, supplier_id, current_user

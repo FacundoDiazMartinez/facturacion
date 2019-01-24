@@ -152,5 +152,9 @@ class ArrivalNote < ApplicationRecord
         STATES
       end
     end
+
+    def depot
+      Depot.unscoped{super}
+    end
   #FUNCIONES
 end

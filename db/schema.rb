@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_23_181016) do
+ActiveRecord::Schema.define(version: 2019_01_24_172405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,7 +134,6 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
     t.boolean "active", default: true, null: false
     t.string "iva_cond", default: "Responsable Monotributo", null: false
     t.bigint "company_id"
-    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
@@ -143,7 +142,6 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
-    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "commissioners", force: :cascade do |t|
@@ -363,8 +361,8 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
     t.text "observation"
     t.bigint "sales_file_id"
     t.bigint "budget_id"
-    t.boolean "expired", default: false
     t.bigint "receipt_id"
+    t.boolean "expired", default: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
@@ -582,13 +580,13 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
     t.float "total", default: 0.0, null: false
     t.date "date", null: false
     t.string "observation"
-    t.string "cbte_tipo", default: "01", null: false
     t.bigint "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "number"
     t.bigint "client_id"
     t.bigint "sale_point_id"
+    t.string "cbte_tipo", null: false
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
@@ -752,7 +750,6 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
   add_foreign_key "budgets", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
-  add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
   add_foreign_key "credit_card_payments", "credit_cards"

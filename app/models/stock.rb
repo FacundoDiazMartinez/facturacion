@@ -42,8 +42,8 @@ class Stock < ApplicationRecord
   end
 
   def set_stock_to_depot
-  	#update_column(:stock_count, product.available_stock )
-    #set_stock_to_category
+  	depot.update_column(:stock_count, product.available_stock )
+    set_stock_to_category
   end
 
   def set_stock_to_product
@@ -52,6 +52,10 @@ class Stock < ApplicationRecord
 
   def product
     Product.unscoped{super}
+  end
+
+  def depot
+    Depot.unscoped{super}
   end
 
 end

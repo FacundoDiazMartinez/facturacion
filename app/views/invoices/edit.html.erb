@@ -1,15 +1,23 @@
 <div class="p-4">
-	<% if @invoice.editable? %>
-		<div class="row">
-			<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Generar Factura</h1>
-			<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Mostrar/Ocultar</button>
+	<div class="row">
+		<div class="col">
+			<% if @invoice.editable? %>
+				<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Generar Factura</h1>
+				<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Mostrar/Ocultar</button>
+			<% else %>
+				<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
+				<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Mostrar/Ocultar</button>
+			<% end %>
 		</div>
-	<% else %>
-		<div class="row">
-			<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
-			<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Mostrar/Ocultar</button>
+		<div class="col text-right">
+			<button class="btn btn-primary" role="button" onclick="toggleHeader()">Encabezado</button>
+			<% if @invoice.receipt_id.blank? %>
+				<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
+			<% else %>
+				<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.receipt_id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
+			<% end -%>
 		</div>
-	<% end %>
+	</div>
 	<div id="invoice_form">
 		<%= render '/invoices/form' %>
 	</div>
@@ -21,10 +29,8 @@
 		if (display == 'flex'){
 			$(".invoice-header").hide('fast')
 		} 
-		else
-		{
+		else{
 			$(".invoice-header").show('fast')
 		}
-  		
 	}
 </script>
