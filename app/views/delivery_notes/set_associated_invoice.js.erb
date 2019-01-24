@@ -1,8 +1,11 @@
 <%
-  nested_form_for @delivery_note do |f| 
+  nested_form_for @delivery_note do |f|
     @builder = f
   end
 %>
 
 $("#idetails").html("<%= j render template: '/delivery_notes/details/index.html.erb', locals:{form: @builder} %>");
 
+$("#delivery_note_client_name").val("<%=@delivery_note.client.name %>");
+$("#delivery_note_client_id").val("<%=@delivery_note.client_id %>");
+$("#invoice_client_iva_cond").val("<%=@delivery_note.client.iva_cond %>");
