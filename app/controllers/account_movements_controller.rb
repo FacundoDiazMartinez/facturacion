@@ -100,10 +100,13 @@ class AccountMovementsController < ApplicationController
           "client_id" => @client.id,
           "company_id" => current_user.company_id, 
           "total" => params[:account_movement][:total].to_f, 
+          "sale_point_id" => params[:account_movement][:receipt_attributes][:sale_point_id].to_f,
           "date" => Date.today
         },
         "account_movement_payments_attributes" => {
           "0" => {
+            "payment_date" => params[:account_movement][:account_movement_payments_attributes]["0"][:payment_date],
+            "type_of_payment" => params[:account_movement][:account_movement_payments_attributes]["0"][:type_of_payment],
             "total" => params[:account_movement][:total].to_f
           }
         }

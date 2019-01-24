@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_24_172405) do
+ActiveRecord::Schema.define(version: 2019_01_24_173238) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2019_01_24_172405) do
     t.boolean "active", default: true, null: false
     t.string "iva_cond", default: "Responsable Monotributo", null: false
     t.bigint "company_id"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "saldo", default: 0.0, null: false
@@ -142,6 +143,7 @@ ActiveRecord::Schema.define(version: 2019_01_24_172405) do
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
+    t.index ["user_id"], name: "index_clients_on_user_id"
   end
 
   create_table "commissioners", force: :cascade do |t|
@@ -575,7 +577,6 @@ ActiveRecord::Schema.define(version: 2019_01_24_172405) do
   end
 
   create_table "receipts", force: :cascade do |t|
-    t.bigint "invoice_id"
     t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.date "date", null: false
@@ -584,9 +585,10 @@ ActiveRecord::Schema.define(version: 2019_01_24_172405) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "number"
+    t.string "cbte_tipo", default: "00", null: false
     t.bigint "client_id"
+    t.bigint "invoice_id"
     t.bigint "sale_point_id"
-    t.string "cbte_tipo", null: false
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
@@ -660,7 +662,7 @@ ActiveRecord::Schema.define(version: 2019_01_24_172405) do
     t.string "titular"
     t.string "account_number"
     t.string "bank_name"
-    t.string "iva_cond", default: "Responsable Inscripto", null: false
+    t.string "iva_cond", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
@@ -750,6 +752,7 @@ ActiveRecord::Schema.define(version: 2019_01_24_172405) do
   add_foreign_key "budgets", "users"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
+  add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
   add_foreign_key "credit_card_payments", "credit_cards"

@@ -1,21 +1,21 @@
 $(document).ready(function(){
-	$("#product_cost_price").on("change", function(){
+	$(document).on("change","#product_cost_price", function(){
 		setPrecioNeto();
 	});
 
-	$("#product_gain_margin").on("change", function(){
+	$(document).on("change","#product_gain_margin", function(){
 		setPrecioNeto();
 	});
 
-	$("#product_iva_aliquot").on("change", function(){
+	$(document).on("change","#product_iva_aliquot", function(){
 		setPrecioFinal();
 	});
 
-	$("#product_net_price").on("change", function(){
+	$(document).on("change","#product_net_price", function(){
 		setPrecioFinal();
 	});
 
-	$("#product_price").on("change", function(){
+	$(document).on("change","#product_price", function(){
 		setCostPrice();
 	});
 
@@ -23,7 +23,7 @@ $(document).ready(function(){
 		$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIva(data)}, "script")
 	})
 });
-	
+
 function setPrecioNeto(){
 	var costo 		= parseFloat($("#product_cost_price").val());
 	var ganancia 	= parseFloat($("#product_gain_margin").val());

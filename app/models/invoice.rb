@@ -31,9 +31,7 @@ class Invoice < ApplicationRecord
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :touch_payments
     after_save :check_receipt
-    pp "EEEEENTTROOO", if: Proc.new{|i| i.state == "Confirmado"}
     after_touch :check_receipt
-    pp "EEEEENTTROOO", if: Proc.new{|i| i.state == "Confirmado"}
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
