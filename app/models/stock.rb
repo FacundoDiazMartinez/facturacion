@@ -42,7 +42,9 @@ class Stock < ApplicationRecord
   end
 
   def set_stock_to_depot
-  	depot.update_column(:stock_count, product.available_stock )
+    if not depot.nil?
+  	  depot.update_column(:stock_count, product.available_stock )
+    end
     set_stock_to_category
   end
 
