@@ -6,10 +6,9 @@
 			<% else %>
 				<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Factura Nº <%= @invoice.comp_number %></h1>
 			<% end %>
-
 		</div>
 		<div class="col text-right">
-			<button class="btn btn-primary" role="button" onclick="toggleHeader()">Encabezado</button>
+			<button class="btn btn-primary" role="button" onclick="toggleHeader()">Mostrar/Ocultar</button>
 			<% if @invoice.receipt_id.blank? %>
 				<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 			<% else %>
@@ -25,7 +24,7 @@
 <script type="text/javascript">
 	function toggleHeader(){
 		var display = $(".invoice-header").css('display');
-		if (display == 'block'){
+		if (display == 'flex'){
 			$(".invoice-header").hide('fast')
 		} 
 		else{

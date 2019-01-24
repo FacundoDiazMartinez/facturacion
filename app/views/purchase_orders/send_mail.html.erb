@@ -8,15 +8,22 @@
 			  	</button>
 			</div>
 			<div class="modal-body">
-			  	<div class="form-group">
-			  		<p>Esta por mandarle la orden de compra al siguiente mail:</p>
-			  		<%= text_field_tag :email, @purchase_order.supplier_email, class: 'form-control' %>
-			  		<%= hidden_field_tag :send_mail %>
-			  	</div>
+				<% if @purchase_order.supplier.try(:email) %>
+				  	<div class="form-group">
+				  		<p>Esta por mandarle la orden de compra al siguiente mail:</p>
+				  		<%= text_field_tag :email, @purchase_order.supplier.email, class: 'form-control' %>
+				  		<%= hidden_field_tag :send_mail %>
+				  	</div>
+				<% end %>
 			</div>
 			<div class="modal-footer">
-			  	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-			  	<button type="submit" class="btn btn-primary">Enviar</button>
+				<% if @purchase_order.supplier.try(:email) %>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+			  		<button type="submit" class="btn btn-primary">Enviar</button>
+			  	<% else %>
+			  		<h7 class="danger">Agregue un email para el proveedor seleccionado <%= link_to @purchase_order.supplier.name, edit_supplier_path(@purchase_order.supplier.id) %></h7>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+			  	<% end %>
 			</div>
 	    </div>
   	</div>

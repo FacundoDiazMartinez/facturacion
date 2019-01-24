@@ -74,7 +74,7 @@ class Receipt < ApplicationRecord
       r.date        = invoice.created_at
       r.company_id  = invoice.company_id
       r.client_id   = invoice.client_id
-      r.save unless !r.changed?
+      r.save
     end
   #PROCESOS
 

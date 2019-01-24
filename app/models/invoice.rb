@@ -30,12 +30,12 @@ class Invoice < ApplicationRecord
     after_touch :touch_account_movement
     after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
     after_save :touch_payments
-    after_save :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
-    after_touch :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
+    after_save :check_receipt
+    after_touch :check_receipt
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
-    after_create :create_seles_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
+    after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -281,7 +281,7 @@ class Invoice < ApplicationRecord
         end
       end
 
-      def create_seles_file
+      def create_sales_file
         if sales_file_id.nil?
           if budget_id.nil?
             sf = SalesFile.create(
@@ -547,7 +547,7 @@ class Invoice < ApplicationRecord
             imp_op_ex: bill.response.imp_op_ex,
             imp_trib: bill.response.imp_trib,
             imp_neto: bill.response.imp_neto,
-            imp_iva: bill.response.imp_iva,
+            imp_iva: bill.response.imp_iva || 0,
             imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
