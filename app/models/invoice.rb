@@ -550,7 +550,7 @@ class Invoice < ApplicationRecord
             imp_op_ex: bill.response.imp_op_ex,
             imp_trib: bill.response.imp_trib,
             imp_neto: bill.response.imp_neto,
-            imp_iva: bill.response.imp_iva || 0,
+            imp_iva: bill.response.try(:imp_iva) || 0,
             imp_total: bill.response.imp_total,
             state: "Confirmado"
           )
