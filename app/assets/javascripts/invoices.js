@@ -19,14 +19,12 @@ function setConfirmParam() {
 }
 
 function updateTooltip22(element) { 
-	var price = element.closest("tr.fields").find("input.price").val();
-	var iva_aliquot = element.closest("tr.fields").find("select.iva_aliquot option:selected").html();
-	$(element).closest("tr.fields").find("input.price").tooltip({
-		title: price * (iva_aliquot + 1),
+	var iva_amount = element.closest("td").find("input.iva_amount").val();
+	$(element).tooltip('dispose');
+	$(element).tooltip({
+		title: "Monto I.V.A.: $" + iva_amount + ".",
 		placement: "top"
-	})
-	console.log(price);
-	console.log(iva_aliquot);
+	});
 }
 
 
@@ -89,8 +87,6 @@ $(document).on("change", ".price, .quantity", function(){
 	subtotal.val(total);
 	subtotal.trigger("change");
 
-	updateTooltip22($(this));
-
 });
 
 $(document).on("change", ".bonus_percentage", function(){
@@ -130,8 +126,7 @@ $(document).on("change", ".iva_aliquot", function(){
 
 	amount = (parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text())).toFixed(2);
 	iva_amount.val(amount);
-
-	updateTooltip22($(this));
+	updateTooltip22($(this))
 });
 
 function autocomplete_field() {

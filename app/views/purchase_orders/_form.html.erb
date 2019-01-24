@@ -75,10 +75,16 @@
         <center>
           <% if not @purchase_order.new_record? %>
             <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
+            <% if not @purchase_order.delivered && @purchase_order.state != "Pendiente de aprobación" %>
+              <%= button_tag "#{icon('fas', 'envelope')} Enviar a proveedor".html_safe, type: 'button', class: 'btn btn-info', data:{toggle: 'modal', target: '#sendMailModal'} %>
+            <% end -%>
           <% end %>
           <% if @purchase_order.state != PurchaseOrder::STATES[1] && !@purchase_order.new_record? && @purchase_order.state != PurchaseOrder::STATES[3]%>
             <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-success' %>
           <% end %>
+          <% if @purchase_order.delivered %>
+            <p class="text-muted">Presupuesto enviado</p>
+          <% end -%>
         </center>
         <!-- BOTONES DE ACCION -->
       </div>
@@ -102,6 +108,7 @@
   <!-- PAGOS -->
 
   <%= render '/purchase_orders/details/search_product' %>
+   <%= render template: '/purchase_orders/send_mail.html.erb' %>
 
   <center>
     <% if @purchase_order.editable? %>

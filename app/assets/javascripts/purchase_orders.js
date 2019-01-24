@@ -74,3 +74,12 @@ $(document).on('nested:fieldAdded', function(event){
 
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 });
+
+
+$(document).on('hidden.bs.modal', "#sendMailModal", function (e) {
+	$("input#send_mail").val("false")
+})
+
+$(document).on('shown.bs.modal', "#sendMailModal", function (e) {
+	$("input#send_mail").val("true")
+})
