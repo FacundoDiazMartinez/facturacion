@@ -56,7 +56,7 @@ class PurchaseOrdersController < ApplicationController
   # PATCH/PUT /purchase_orders/1.json
   def update
     respond_to do |format|
-      if @purchase_order.update(purchase_order_params)
+      if @purchase_order.update(purchase_order_params, params[:send_mail], params[:email])
         format.html { redirect_to edit_purchase_order_path(@purchase_order.id), notice: 'La órden de compra fue actualizada exitosamente.' }
       else
         format.html { render :edit }

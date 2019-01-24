@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_22_174531) do
+ActiveRecord::Schema.define(version: 2019_01_23_181016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -569,6 +569,7 @@ ActiveRecord::Schema.define(version: 2019_01_22_174531) do
     t.boolean "active", default: true
     t.boolean "paid_out", default: false
     t.float "total_pay", default: 0.0, null: false
+    t.boolean "delivered", default: false, null: false
     t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
     t.index ["company_id"], name: "index_purchase_orders_on_company_id"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"

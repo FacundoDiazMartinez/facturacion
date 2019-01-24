@@ -150,6 +150,13 @@ class PurchaseOrder < ApplicationRecord
     def set_total_pay
       update_column(:total_pay, sum_payments)
     end
+
+    def update purchase_order_params, send_mail = false, email = nil
+      if send_mail == "true" && super(purchase_order_params)
+        PurchaseOrderMailer.send_mail(self, email, company).deliver
+        update_column(:delivered, true)
+      end
+    end
   #PROCESOS
 
   #FUNCIONES

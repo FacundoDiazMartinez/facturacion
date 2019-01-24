@@ -10,6 +10,7 @@ class Receipt < ApplicationRecord
 
   after_save :touch_account_movement
   before_save :set_number, on: :create
+  before_validation :check_total
 
 
   default_scope {where(active: true)}
@@ -44,6 +45,13 @@ class Receipt < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   #VALIDACIONES
+    def check_total
+      if new_record?
+        errors.add(:total, "No se puede crear un recibo por un monto nulo.") unless total > 0.0
+      else
+        destroy unless total > 0.0
+      end
+    end
     
   #VALIDACIONES
 

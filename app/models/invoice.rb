@@ -266,10 +266,8 @@ class Invoice < ApplicationRecord
             pp invoice
             payment = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
             payment.total = am_total > invoice.total_left ? invoice.total_left : am_total
-
-            if pp payment.save
-              invoice.touch
-            end
+            payment.save
+            
             am_total -= payment.total
             break if am_total == 0
           end

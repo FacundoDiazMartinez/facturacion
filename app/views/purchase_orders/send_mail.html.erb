@@ -1,0 +1,25 @@
+<div class="modal fade bd-example-modal-lg" id="sendMailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  	<div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+	      	<div class="modal-header">
+			  	<h5 class="modal-title" id="clientModalTitle"><%= icon('far', 'envelope') %> Enviar PDF al proveedor</h5>
+			  	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			    	<span aria-hidden="true">&times;</span>
+			  	</button>
+			</div>
+			<div class="modal-body">
+				<% if @purchase_order.supplier.email %>
+				  	<div class="form-group">
+				  		<p>Esta por mandarle la orden de compra al siguiente mail:</p>
+				  		<%= text_field_tag :email, @purchase_order.supplier.email, class: 'form-control' %>
+				  		<%= hidden_field_tag :send_mail %>
+				  	</div>
+				<% end %>
+			</div>
+			<div class="modal-footer">
+			  	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+			  	<button type="submit" class="btn btn-primary">Enviar</button>
+			</div>
+	    </div>
+  	</div>
+</div>
