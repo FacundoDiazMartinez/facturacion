@@ -63,7 +63,8 @@ class Receipt < ApplicationRecord
       r.total       = invoice.total_pay
       r.date        = invoice.created_at
       r.company_id  = invoice.company_id
-      r.save unless !r.changed?
+      r.client_id   = invoice.client_id
+      r.save
     end
   #PROCESOS
 

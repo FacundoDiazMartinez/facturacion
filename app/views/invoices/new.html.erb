@@ -1,7 +1,7 @@
 <div class="p-4">
 	<div class="row">
 		<h1 class="h2"> Nueva Factura</h1>
-		<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Encabezado</button>
+		<button class="btn btn-primary invoice-header-right" role="button" onclick="toggleHeader()">Mostrar/Ocultar</button>
 	</div>
 
 	<div id="invoice_form">
@@ -12,7 +12,7 @@
 <script type="text/javascript">
 	function toggleHeader(){
 		var display = $(".invoice-header").css('display');
-		if (display == 'block'){
+		if (display == 'flex'){
 			$(".invoice-header").hide('fast')
 		} 
 		else
