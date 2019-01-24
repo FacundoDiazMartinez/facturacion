@@ -33,7 +33,7 @@ class InvoiceDetail < ApplicationRecord
   validates_inclusion_of :iva_aliquot, in: Afip::ALIC_IVA.map{|k,v| k}, message: "Alícuota de I.V.A. inválida."
   validates_numericality_of :iva_amount, greater_than_or_equal_to: 0.0, message: "El monto I.V.A. debe ser mayor o igual a 0."
   validates_presence_of :iva_amount, message: "Debe especificar una alicuota de I.V.A." #Se pone asi pq el monto se calcula en base a la alicuota
-  
+
 
   # TABLA
   #   create_table "invoice_details", force: :cascade do |t|
@@ -108,8 +108,9 @@ class InvoiceDetail < ApplicationRecord
     def reserve_stock
       if quantity_change.nil? || new_record?
         self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
+        pp "RESERVADO"
       else
-        dif = quantity_change.first.to_f - quantity_change.second.to_f 
+        dif = quantity_change.first.to_f - quantity_change.second.to_f
         self.product.rollback_reserved_stock(quantity: dif, depot_id: depot_id)
       end
     end

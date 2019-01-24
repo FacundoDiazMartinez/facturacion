@@ -271,6 +271,18 @@ class Product < ApplicationRecord
         	freeze
 	    end
 
+	    def rollback_delivered_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			if s.save
+				add_stock attrs
+			end
+		end
+
+	    def destroy
+	      update_column(:active,false)
+	    end
+
     #IMPORTAR EXCEL o CSV
     def self.save_excel file, supplier_id, current_user
     	#TODO Añadir created_by y updated_by

@@ -9,6 +9,7 @@ class Depot < ApplicationRecord
   validates_presence_of :location, message: "Debe especificar una ubicación para el depósito."
 
   default_scope { where(active: true) }
+  
   # TABLA
   # 	create_table "depots", force: :cascade do |t|
 	 #    t.string "name"

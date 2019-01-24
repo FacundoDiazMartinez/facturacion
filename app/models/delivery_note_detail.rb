@@ -2,6 +2,7 @@ class DeliveryNoteDetail < ApplicationRecord
   belongs_to :delivery_note, optional: true
   belongs_to :product, optional: true, class_name: "ProductUnscoped"
   belongs_to :depot, optional: true
+  has_many :invoice_details, through: :delivery_note
 
 
   validates_presence_of :delivery_note, message:  "El concepto debe tener asociado un remito."
@@ -32,4 +33,5 @@ class DeliveryNoteDetail < ApplicationRecord
       self.product.add_stock(quantity: -difference, depot_id: self.depot_id)
     end
   end
+
 end
