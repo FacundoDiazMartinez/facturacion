@@ -8,11 +8,12 @@ class DeliveryNote < ApplicationRecord
 
 
   has_many :delivery_note_details, dependent: :destroy
+  has_many :invoice_details, through: :invoice
 
   accepts_nested_attributes_for :delivery_note_details, reject_if: :all_blank, allow_destroy: true
 
   before_validation :set_number
-  # after_save :adjust_stock, if: Proc.new{|dn| saved_change_to_state?}
+  after_save :adjust_stocks, if: Proc.new{|dn| saved_change_to_state?}
   after_create :create_seles_file, if: Proc.new{|dn| dn.sales_file.nil? && !dn.invoice.nil?}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
@@ -80,6 +81,17 @@ class DeliveryNote < ApplicationRecord
           update_column(:sales_file_id, sf.id)
         else
           update_column(:sales_file_id, invoice.sales_file_id)
+        end
+      end
+    end
+
+    def adjust_stocks
+      if self.state == "Anulado"
+        self.delivery_note_details.each do |dnd|
+          dnd.product.rollback_delivered_stock(quantity: dnd.quantity, depot_id: dnd.depot_id)
+        end
+        self.invoice.invoice_details.each do |id|
+          id.reserve_stock
         end
       end
     end
