@@ -54,4 +54,8 @@ class Stock < ApplicationRecord
     Product.unscoped{super}
   end
 
+  def depot
+    Depot.unscoped{super}
+  end
+
 end

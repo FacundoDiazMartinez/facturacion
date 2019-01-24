@@ -1,5 +1,4 @@
-$(function() {
-	$('#purchase_order_shipping').change(function() {
+$(document).on("change", '#purchase_order_shipping', function() {
 		if ($(this).prop('checked')){
 			$("#purchase_order_shipping_cost").show("");
 			$("#purchase_order_shipping_cost").val("0.0");
@@ -8,7 +7,6 @@ $(function() {
 			$("#purchase_order_shipping_cost").val("0.0");
 		}
   });
-});
 
 $(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
@@ -49,8 +47,13 @@ $(document).on("change", '.prodSubtotal', function(){
 	$(".prodSubtotal").each(function(){
 	  sumaTotales = parseFloat(sumaTotales) + parseFloat($(this).val());
 	});
+	sumaTotales = parseFloat(sumaTotales) +  parseFloat($("#purchase_order_shipping_cost").val())
 	$('#purchase_order_total').val(sumaTotales);
 });
+
+$(document).on("change", '#purchase_order_shipping_cost', function(){
+	$(".prodSubtotal").trigger("change");
+})
 
 $(document).on("click", "#save_btn", function(){
 	var suma = parseFloat(0);

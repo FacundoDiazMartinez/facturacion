@@ -54,6 +54,7 @@ $(document).ready(function() {
 
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 
+
   $('.toogle').bootstrapToggle();
 
   $('.datepicker').datepicker({
@@ -71,6 +72,18 @@ $(document).on("keyup", "input.ui-autocomplete-input", function(e){
     target.val("")
   }
 });
+
+$(document).on('pjax:complete', function() {
+  $('.toggle').bootstrapToggle();
+
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoclose: true,
+      startView: 2
+  });
+})
 
 function remoteSubmit(form_id){
   form = $(form_id);

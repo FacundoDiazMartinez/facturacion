@@ -10,7 +10,7 @@
 			<div class="modal-body">
 			  	<div class="form-group">
 			  		<p>Esta por mandarle la orden de compra al siguiente mail:</p>
-			  		<%= text_field_tag :email, @purchase_order.supplier.email, class: 'form-control' %>
+			  		<%= text_field_tag :email, @purchase_order.supplier_email, class: 'form-control' %>
 			  		<%= hidden_field_tag :send_mail %>
 			  	</div>
 			</div>
