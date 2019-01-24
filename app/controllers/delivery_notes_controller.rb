@@ -28,7 +28,7 @@ class DeliveryNotesController < ApplicationController
 
   # GET /delivery_notes/new
   def new
-    @delivery_note = current_user.company.delivery_notes.new()
+    @delivery_note = current_user.company.delivery_notes.new(invoice_id: params[:associated_invoice])
     @delivery_note.set_number
     @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
@@ -99,7 +99,7 @@ class DeliveryNotesController < ApplicationController
 
   def set_associated_invoice
     if params[:id].blank?
-      @delivery_note = DeliveryNote.new
+      new
     else
       set_delivery_note
     end

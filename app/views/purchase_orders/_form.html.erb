@@ -60,7 +60,7 @@
               <%= form.label :shipping, "¿Incluye transporte?" %>
               <div class="row">
                 <div class="col-2">
-                  <%= form.check_box :shipping, data:{toggle: 'toggle', on: "Si", off: "No"} %>
+                  <%= form.check_box :shipping, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle' %>
                 </div>
                 <div class="col-10">
                   <%= form.number_field :shipping_cost, class: 'form-control', placeholder: "Precio del transporte", style: "display: #{@purchase_order.shipping ? 'block' : 'none'};" %>

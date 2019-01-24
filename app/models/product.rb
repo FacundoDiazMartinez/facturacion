@@ -266,7 +266,9 @@ class Product < ApplicationRecord
 		end
 
 	    def destroy
-	      update_column(:active,false)
+	      	update_column(:active, false)
+	      	run_callbacks :destroy
+        	freeze
 	    end
 
     #IMPORTAR EXCEL o CSV

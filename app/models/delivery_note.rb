@@ -26,6 +26,7 @@ class DeliveryNote < ApplicationRecord
 
   default_scope { where(active: true) }
   after_initialize :set_default_number, if: :new_record?
+  after_initialize :set_date, if: :new_record?
 
 
   #FILTROS DE BUSQUEDA
@@ -87,6 +88,10 @@ class DeliveryNote < ApplicationRecord
     def set_default_number
       last_an = DeliveryNote.where(company_id: company_id).last
       self.number ||= last_an.nil? ? "00000001" : (last_an.number.to_i + 1).to_s.rjust(8,padstr= '0')
+    end
+
+    def set_date
+      self.date ||= Date.today
     end
 
     def set_number

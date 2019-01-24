@@ -9,7 +9,11 @@
               <%= render '/arrival_notes/purchase_order', form: form %>
               <div class="form-group">
                 <%= form.label :depot_id, "Almacén receptor" %>
-                <%= form.select :depot_id, current_user.company.depots.map{|d| [d.name, d.id]}, {prompt: "Selecciones..."}, {class: 'form-control', disabled: !@arrival_note.editable?, required: true} %>
+                <% if @arrival_note.editable? %>
+                  <%= form.select :depot_id, current_user.company.depots.map{|d| [d.name, d.id]}, {prompt: "Selecciones..."}, {class: 'form-control', required: true} %>
+                <% else %>
+                  <%= form.text_field :depot_id, value: @arrival_note.depot.name, readonly: true, class: 'form-control' %>
+                <% end -%>
               </div>
             </div>
           <!-- PRIMERA COLUMNA -->

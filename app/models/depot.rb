@@ -8,6 +8,7 @@ class Depot < ApplicationRecord
   validates_numericality_of :stock_count, greater_than_or_equal_to: 0.0, message: "El stock actual debe ser mayor o igual a 0."
   validates_presence_of :location, message: "Debe especificar una ubicación para el depósito."
 
+  default_scope { where(active: true) }
   # TABLA
   # 	create_table "depots", force: :cascade do |t|
 	 #    t.string "name"
@@ -43,6 +44,12 @@ class Depot < ApplicationRecord
       else
         all
       end
+    end
+
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
     end
 
     def stock_total
