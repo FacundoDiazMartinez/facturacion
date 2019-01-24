@@ -363,8 +363,8 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
     t.text "observation"
     t.bigint "sales_file_id"
     t.bigint "budget_id"
-    t.bigint "receipt_id"
     t.boolean "expired", default: false
+    t.bigint "receipt_id"
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
@@ -577,6 +577,7 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
   end
 
   create_table "receipts", force: :cascade do |t|
+    t.bigint "invoice_id"
     t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.date "date", null: false
@@ -587,7 +588,6 @@ ActiveRecord::Schema.define(version: 2019_01_23_181016) do
     t.datetime "updated_at", null: false
     t.string "number"
     t.bigint "client_id"
-    t.bigint "invoice_id"
     t.bigint "sale_point_id"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
