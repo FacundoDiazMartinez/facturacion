@@ -185,12 +185,10 @@ class AccountMovement < ApplicationRecord
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
-            #am.saldo        = (invoice.client.saldo.to_f - am.total) unless !am.new_record?
           else
             am.debe         = true
             am.haber        = false
             am.total        = invoice.total.to_f
-            #am.saldo        = (invoice.client.saldo.to_f + am.total) unless !am.new_record?
           end
           am.save unless !am.changed?
           return am
