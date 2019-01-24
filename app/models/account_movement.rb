@@ -114,7 +114,7 @@ class AccountMovement < ApplicationRecord
         self.saldo = self.client.saldo - haber_dif
       end
 
-      if total_dif != 0
+      if total_dif != 0 && persisted?
     		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
     		next_movements.each do |am|
     			total_saldo = am.saldo - total_dif
@@ -156,7 +156,7 @@ class AccountMovement < ApplicationRecord
   #PROCESOS
 
     def destroy_receipt
-      self.receipt.destroy
+      self.receipt.destroy unless receipt.nil?
     end
 
     def check_debe_haber
@@ -185,12 +185,10 @@ class AccountMovement < ApplicationRecord
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
-            #am.saldo        = (invoice.client.saldo.to_f - am.total) unless !am.new_record?
           else
             am.debe         = true
             am.haber        = false
             am.total        = invoice.total.to_f
-            #am.saldo        = (invoice.client.saldo.to_f + am.total) unless !am.new_record?
           end
           am.save unless !am.changed?
           return am

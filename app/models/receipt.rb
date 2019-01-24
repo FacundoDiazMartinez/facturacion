@@ -74,6 +74,7 @@ class Receipt < ApplicationRecord
       r.date        = invoice.created_at
       r.company_id  = invoice.company_id
       r.client_id   = invoice.client_id
+      r.sale_point_id = invoice.sale_point_id
       r.save
     end
   #PROCESOS
