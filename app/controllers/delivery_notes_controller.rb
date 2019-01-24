@@ -112,6 +112,7 @@ class DeliveryNotesController < ApplicationController
         quantity: id.quantity
       )
     end
+    @delivery_note.client_id = associated_invoice.client_id
   end
 
   def autocomplete_invoice
