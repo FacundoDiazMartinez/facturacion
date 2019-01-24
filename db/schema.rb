@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_24_171736) do
+ActiveRecord::Schema.define(version: 2019_01_24_172405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -588,6 +588,7 @@ ActiveRecord::Schema.define(version: 2019_01_24_171736) do
     t.bigint "client_id"
     t.bigint "invoice_id"
     t.bigint "sale_point_id"
+    t.string "cbte_tipo", null: false
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
