@@ -29,37 +29,9 @@
 </div>
 
 <div class="form-group row">
-  <%= label_tag :birthday, "Nacimiento", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :birthday, value:"", class: "form-control datepicker birthday", value: l(Date.today),  autocomplete: "off" %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :phone, "Teléfono", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :phone,class: 'form-control form-control-sm phone' %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :mobile_phone, "Celular", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.text_field :mobile_phone,class: 'form-control form-control-sm mobile_phone' %>
-  </div>
-</div>
-
-<div class="form-group row">
   <%= label_tag :address, "Dirección", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
     <%= f.text_field :address,class: 'form-control form-control-sm address' %>
-  </div>
-</div>
-
-<div class="form-group row">
-  <%= label_tag :email, "Email", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.email_field :email,class: 'form-control form-control-sm email' %>
   </div>
 </div>
 
