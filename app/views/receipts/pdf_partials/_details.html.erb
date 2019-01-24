@@ -15,7 +15,7 @@
     </tr>
     <% details.compact.each do |det| %>
         <tr>
-          <td><%= det.invoice.name_with_comp %>%></td>
+          <td><%= det.invoice.name_with_comp %></td>
           <td><%= det.product.code %></td>
           <td><%= det.product.name %></td>
           <td class="text_right"><%= det.quantity %></td>
@@ -52,7 +52,7 @@
 
       <tr>
         <td class="text_right"><b>Otros Tributos:</b></td>
-        <td class="text_right"><b>$ <%= @receipt.invoice.imp_op_ex %> </b></td>
+        <td class="text_right"><b>$ <%= @receipt.invoices.map{|invoice| invoice.imp_op_ex}.join(", ") %> </b></td>
       </tr>
 
       <tr>

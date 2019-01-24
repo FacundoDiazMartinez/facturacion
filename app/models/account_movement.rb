@@ -11,6 +11,7 @@ class AccountMovement < ApplicationRecord
   before_destroy :fix_saldo
   after_save  :update_debt
   after_destroy :update_debt
+  after_destroy :destroy_receipt
 
   validate :check_pertenence_of_receipt_to_client
 
@@ -153,6 +154,11 @@ class AccountMovement < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
+
+    def destroy_receipt
+      self.receipt.destroy
+    end
+
     def check_debe_haber
       errors.add(:debe, "No se define si el movimiento pertenece al Debe o al Haber.") unless debe != haber
     end

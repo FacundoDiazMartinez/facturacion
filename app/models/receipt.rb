@@ -2,6 +2,7 @@ class Receipt < ApplicationRecord
   #RECIBO DE PAGO
   belongs_to :invoice, optional: true
   belongs_to :client
+  belongs_to :sale_point
   belongs_to :company
 
   has_one  :account_movement
@@ -84,7 +85,7 @@ class Receipt < ApplicationRecord
         invoices.each do |invoice|
           full_invoice << "#{Afip::CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
         end
-        return full_invoice.join(", ")
+        return full_invoice.uniq.join(", ")
       end
     end
 
@@ -106,6 +107,26 @@ class Receipt < ApplicationRecord
       update_column(:active, false)
       run_callbacks :destroy
       freeze
+    end
+
+    def all_payments_string
+      payments = self.account_movement_payments.where(generated_by_system: false)
+      if !payments.nil?
+        array_pagos = payments.map{|p| {type: p.type_of_payment, name: p.payment_name, total: p.total}}
+        pagos_reduced = []
+
+        # agrupamos pagos segun tipo de pago y a continuación se suman los "totales" de cada grupo
+        pagos_reduced << array_pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
+
+        showed_payment = ""
+        pagos_reduced.first.each_with_index do |arr,i|
+          showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
+          if ((i+1) < pagos_reduced.first.count)
+            showed_payment = showed_payment + " - "
+          end
+        end
+        return showed_payment
+      end
     end
   #FUNCIONES
 end
