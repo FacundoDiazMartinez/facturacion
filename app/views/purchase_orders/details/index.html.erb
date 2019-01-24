@@ -28,7 +28,7 @@
 					<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 						<td>
               <% if @purchase_order.editable? %>
-                <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
+                <%= link_to icon('fas', 'search'), search_product_purchase_orders_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
               <% else %>
                 #
               <% end %>
