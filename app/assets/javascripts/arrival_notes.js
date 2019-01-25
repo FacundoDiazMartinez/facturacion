@@ -7,7 +7,11 @@ function closePurchaseOrder(){
 $(document).on("click", "#modal_button_an", function(){
 	form = $(this).closest("form");
 	if (form.valid()) {
-		$("#purchaseOrderModal").modal("show");
+		if ($("#arrival_note_state").val() == "Finalizado") {
+			$("#purchaseOrderModal").modal("show");
+		}else if ($("#arrival_note_state").val() == "Pendiente") {
+			form.submit();
+		}
 	}else{
 		form.submit();
 	}
