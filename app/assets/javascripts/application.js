@@ -48,8 +48,8 @@ $(document).ready(function() {
     }, 2000);
   });
 
-  $("#image").on("click", function(){
-    document.getElementById('file_input').click();
+  $(document).on("click","#image", function(){
+    $('#file_input').click();
   })
 
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
@@ -74,6 +74,8 @@ $(document).on("keyup", "input.ui-autocomplete-input", function(e){
 });
 
 $(document).on('pjax:complete', function() {
+  $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+  
   $('.toggle').bootstrapToggle();
 
   $('.datepicker').datepicker({
@@ -103,7 +105,7 @@ function reloadLocality(province, dropdown){
   });
 };
 
-$(function() {
+$(document).on('pjax:complete', function() {
   $('.directUpload').find("input:file").each(function(i, elem) {
     var fileInput    = $(elem);
     var form         = $(fileInput.parents('form:first'));

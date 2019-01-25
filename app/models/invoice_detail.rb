@@ -108,7 +108,6 @@ class InvoiceDetail < ApplicationRecord
     def reserve_stock
       if quantity_change.nil? || new_record?
         self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
-        pp "RESERVADO"
       else
         dif = quantity_change.first.to_f - quantity_change.second.to_f
         self.product.rollback_reserved_stock(quantity: dif, depot_id: depot_id)

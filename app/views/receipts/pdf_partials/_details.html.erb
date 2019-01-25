@@ -13,7 +13,7 @@
       <th class="description_header">Imp.Bonif</th>
       <th class="description_header">Subtotal</th>
     </tr>
-    <% details.compact.each do |det| %>
+    <% details.uniq.compact.each do |det| %>
         <tr>
           <td><%= det.invoice.name_with_comp %></td>
           <td><%= det.product.code %></td>

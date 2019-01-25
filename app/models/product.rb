@@ -279,25 +279,21 @@ class Product < ApplicationRecord
 			end
 		end
 
-	    def destroy
-	      update_column(:active,false)
+    	#IMPORTAR EXCEL o CSV
+	    def self.save_excel file, supplier_id, current_user, depot_id
+	    	#TODO Añadir created_by y updated_by
+	    	spreadsheet = open_spreadsheet(file)
+	    	excel = []
+	    	(2..spreadsheet.last_row).each do |r|
+	    		excel << spreadsheet.row(r)
+	    	end
+	    	header = self.permited_params
+	    	categories = {}
+	    	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
+	    	delay.load_products(excel, header, categories, current_user, supplier_id, depot_id)
 	    end
 
-    #IMPORTAR EXCEL o CSV
-    def self.save_excel file, supplier_id, current_user
-    	#TODO Añadir created_by y updated_by
-    	spreadsheet = open_spreadsheet(file)
-    	excel = []
-    	(2..spreadsheet.last_row).each do |r|
-    		excel << spreadsheet.row(r)
-    	end
-    	header = self.permited_params
-    	categories = {}
-    	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-    	delay.load_products(excel, header, categories, current_user, supplier_id)
-    end
-
-		def self.load_products spreadsheet, header, categories, current_user, supplier_id
+		def self.load_products spreadsheet, header, categories, current_user, supplier_id, depot_id
 			products 	= []
     		invalid 	= []
 			(0..spreadsheet.size - 1).each do |i|
@@ -323,6 +319,11 @@ class Product < ApplicationRecord
 	    		product.company_id 			= current_user.company_id
 	    		product.created_by 			= current_user.id
 	    		product.updated_by 			= current_user.id
+	    		if !depot_id.blank?
+	    			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
+	    			stock.quantity = row[:quantity]
+	    			product.stock = stock
+	    		end
 	    		if product.valid?
 	    			products << product
 	    		else
@@ -333,26 +334,26 @@ class Product < ApplicationRecord
     		return_process_result(invalid, current_user)
 		end
 
-    def self.return_process_result invalid, user
-      if invalid.any?
-        {
-          'result' => false,
-          'message' => 'Uno o mas productos no pudieron importarse.',
-          'product_with_errors' => invalid
-        }
-        Notification.create_for_failed_import invalid, user
-      else
-        {
-          'result' => true,
-          'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
-          'product_with_errors' => []
-        }
-        Notification.create_for_success_import user
-      end
-    end
+	    def self.return_process_result invalid, user
+	      if invalid.any?
+	        {
+	          'result' => false,
+	          'message' => 'Uno o mas productos no pudieron importarse.',
+	          'product_with_errors' => invalid
+	        }
+	        Notification.create_for_failed_import invalid, user
+	      else
+	        {
+	          'result' => true,
+	          'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
+	          'product_with_errors' => []
+	        }
+	        Notification.create_for_success_import user
+	      end
+	    end
 
 		def self.permited_params
-		    [:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
+		    [:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit, :stock]
 		end
 
 		def self.open_spreadsheet(file)
