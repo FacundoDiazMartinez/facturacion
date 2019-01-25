@@ -20,7 +20,10 @@ class IncomePayment < Payment
 
  	#VALIDACIONES
  		def check_max_total
- 			errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.") unless (invoice.sum_payments + total) <= invoice.total
+ 			pp total
+ 			pp invoice
+ 			pp invoice.sum_payments
+ 			errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.") unless (invoice.sum_payments - total_was + total) <= invoice.total
  		end
 
  		def check_available_saldo
