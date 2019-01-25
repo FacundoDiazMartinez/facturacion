@@ -60,11 +60,11 @@ class ArrivalNotesController < ApplicationController
     respond_to do |format|
       if @arrival_note.update(arrival_note_params_array)
         if purchase_order_attributes["state"] == "Finalizada"
-          pp "aqui**********************************************"
-          po = @arrival_note.purchase_order.update(state: "Finalizada")
-          pp po.errors
-          message = 'Remito y su respectiva Orden de Compra fueron cerrados correctamente.'
-          pp message
+          if @arrival_note.purchase_order.update(state: "Finalizada")
+            message = 'Remito y su respectiva Orden de Compra fueron cerrados correctamente.'
+          else
+            message = 'El Remito fue actualizado correctamente, pero hubo un problema al cerrar la Orden de Compra'
+          end
         end
         format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: message }
       else
