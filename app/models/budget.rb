@@ -100,7 +100,7 @@ class Budget < ApplicationRecord
         self.state = "Vencido"
       end
     end
-    handle_asynchronously :change_state_to_expirated, :run_at => Proc.new { |budget| budget.expiration_date +1.days }
+    handle_asynchronously :change_state_to_expirated, :run_at => Proc.new { |budget| budget.expiration_date + 1.days }
   #PROCESOS
 
   #ATRIBUTOS
