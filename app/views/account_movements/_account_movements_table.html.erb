@@ -16,7 +16,7 @@
 		<% @account_movements.each do |am| %>
 		    <tr>
 		    	<td><%= l(am.created_at, format: :only_date) %></td>
-		    	<td><%= am.comprobante %></td>
+		    	<td><%= comprobante_con_link(am) %></td>
 		    	<td><%= am.days %></td>
 		    	<td><%= am.observation %></td>
 		    	<td class="text-danger"><%= "$#{am.total}" unless !am.debe %></td>

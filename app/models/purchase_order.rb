@@ -101,6 +101,7 @@ class PurchaseOrder < ApplicationRecord
 
   #PROCESOS
     def check_pending_arrival_notes
+      pp "ENTRO"
       self.arrival_notes.each do |an|
         if an.editable?
           errors.add(:state, "No se pudo cerrar Orden de Compra. Existen remitos asociados pendientes.")
@@ -156,10 +157,12 @@ class PurchaseOrder < ApplicationRecord
     end
 
     def update purchase_order_params, send_mail = false, email = nil
-      if send_mail == "true" && super(purchase_order_params)
+      response = super(purchase_order_params)
+      if send_mail == "true" && response
         PurchaseOrderMailer.send_mail(self, email, company).deliver
         update_column(:delivered, true)
       end
+      return response
     end
   #PROCESOS
 

@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).on('pjax:complete', function() {
 	$(document).on("change","#product_cost_price", function(){
 		setPrecioNeto();
 	});
