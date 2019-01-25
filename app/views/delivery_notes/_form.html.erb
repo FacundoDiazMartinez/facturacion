@@ -82,7 +82,7 @@
         <div class="modal-body">
             <div class="text-center">
               <%= form.hidden_field :state, class: 'delivery_note_purchase_order_state' %>
-              <p>Cerrar el remito implica que su estado pasará a "Finalizado" y no podra editarlo posteriormente. Elija una de las siguientes opciones:</p>
+              <p>Cerrar el remito implica que su estado pasará a "Finalizado" y no podrá editarlo posteriormente. ¿Desea cerrarlo? </p>
               <%= button_tag "#{icon('fas', 'lock')} Cerrar remito".html_safe, type: 'button', onclick: 'closeDeliveryNote()', class: 'btn btn-info' %>
               <%= button_tag "#{icon('fas', 'lock-open')} Mantener así".html_safe, type: 'submit', class: 'btn btn-info' %>
             </div>
