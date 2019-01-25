@@ -13,7 +13,7 @@ function toggleForLcAlert() {
 	  	setTimeout( () => alertElement.slideUp( "slow", function() {
     		alertElement.html("");
   		}), 6000 );
-	  	
+
 	}
 }
 

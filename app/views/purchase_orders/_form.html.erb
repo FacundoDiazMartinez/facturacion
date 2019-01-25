@@ -108,7 +108,10 @@
   <!-- PAGOS -->
 
   <%= render '/purchase_orders/details/search_product' %>
-   <%= render template: '/purchase_orders/send_mail.html.erb' %>
+  <% if @purchase_order.persisted? %>
+    <%= render template: '/purchase_orders/send_mail.html.erb' %>
+  <% end %>
+
 
   <center>
     <% if @purchase_order.editable? %>
