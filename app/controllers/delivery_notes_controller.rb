@@ -36,6 +36,7 @@ class DeliveryNotesController < ApplicationController
   # GET /delivery_notes/1/edit
   def edit
     @client = @delivery_note.client
+    
   end
 
   # POST /delivery_notes
@@ -60,6 +61,7 @@ class DeliveryNotesController < ApplicationController
   # PATCH/PUT /delivery_notes/1.json
   def update
     @delivery_note.user_id = current_user.id
+    @client = @delivery_note.client
     respond_to do |format|
       if @delivery_note.update(delivery_note_params)
         format.html { redirect_to edit_delivery_note_path(@delivery_note.id), notice: 'El remito fué actualizado correctamente.' }
@@ -104,15 +106,17 @@ class DeliveryNotesController < ApplicationController
       set_delivery_note
     end
     @associated = true
-    associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice]).first
-    associated_invoice.invoice_details.each do |id|
+    @associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice_id] || @delivery_note.invoice_id).first
+    @client = @associated_invoice.client
+    @delivery_note.delivery_note_details.delete_all
+    @associated_invoice.invoice_details.each do |id|
       @delivery_note.delivery_note_details.new(
         product_id: id.product_id,
         depot_id: id.depot_id,
         quantity: id.quantity
       )
     end
-    @delivery_note.client_id = associated_invoice.client_id
+    @delivery_note.client_id = @associated_invoice.client_id
   end
 
   def autocomplete_invoice

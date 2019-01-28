@@ -1,6 +1,7 @@
 <div class="p-4">
-	<div class="row">
-		<%= title_helper 'Editar Remito Nº' %><span><h2><%= @delivery_note.number.to_s %></h2></span>
-	</div>
+	<%= title_helper "Editar Remito Nº #{@delivery_note.number.to_s}" %>
+
+	<div id="form">
 		<%= render 'form', arrival_note: @arrival_note %>
+	</div>
 </div>

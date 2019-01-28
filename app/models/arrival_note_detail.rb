@@ -41,6 +41,9 @@ class ArrivalNoteDetail < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
+
+    
+
   	def check_product #Se ejecuta en caso de que el producto se este creando por medio del remito
       if new_record?
         product.company_id = arrival_note.company_id

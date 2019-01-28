@@ -1,6 +1,6 @@
 <div class="form-group">
   <%= form.label :purchase_order_id, "Orden de compra" %>
-  <%= autocomplete_field_tag :purchase_order_id, params[:purchase_order_id] || form.object.purchase_order_number, autocomplete_purchase_order_arrival_notes_path, class: 'form-control arrival_note-purchase_order-autocomplete_field', id_element: ".arrival_note_purchase_order_id", placeholder: "Número de Orden de Compra aprobada", disabled: !@arrival_note.editable?, required: true %>
+  <%= autocomplete_field_tag :purchase_order_id, form.object.purchase_order_number, autocomplete_purchase_order_arrival_notes_path, class: 'form-control arrival_note-purchase_order-autocomplete_field', id_element: ".arrival_note_purchase_order_id", placeholder: "Número de Orden de Compra aprobada", disabled: !@arrival_note.editable?, required: true %>
 </div>
 <div class="modal fade bd-example-modal-lg" id="purchaseOrderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">

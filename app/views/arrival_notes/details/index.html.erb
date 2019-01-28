@@ -26,7 +26,7 @@
 	      		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 
 	      			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>
-	      			<td><%= pf.autocomplete_field :code, autocomplete_product_code_products_path, class: 'autocomplete_field form-control', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@arrival_note.editable? %></td>
+	      			<td><%= pf.autocomplete_field :code, autocomplete_product_code_products_path, class: 'autocomplete_field arrival_note-autocomplete_field form-control', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@arrival_note.editable? %></td>
 					<td>
 						<%= pf.text_field :name, class: 'form-control name', disabled: !@arrival_note.editable?  %>
 						<% if pf.object.new_record? %>

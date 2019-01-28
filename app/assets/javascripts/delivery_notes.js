@@ -19,8 +19,14 @@ function closeDeliveryNote(){
 }
 
 $(document).on('railsAutocomplete.select', '.delivery_note_associated-invoice-autocomplete_field', function(event, data){
+	params = {
+		associated_invoice_id: data.item.id,
+		date: $("#delivery_note_date").val(),
+		state: $("#delivery_note_state").val(),
+		number: $("#delivery_note_number").val()
+	}
 	form = $(this).parents('form:first');
-	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: data.item.id}, null, "script");
+	$.get(form.attr("action")+'/set_associated_invoice', params, null, "script");
 	if ($("#invoice_comp_number").val() != "") {
 		$('.input-group-text').attr("data-toggle", "");
 			$('.input-group-text').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});

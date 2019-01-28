@@ -87,6 +87,7 @@ class ArrivalNote < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   #PROCESOS
+
     def set_default_number
       last_an = ArrivalNote.where(company_id: company_id).last
       self.number ||= last_an.nil? ? "00000001" : (last_an.number.to_i + 1).to_s.rjust(8,padstr= '0')
