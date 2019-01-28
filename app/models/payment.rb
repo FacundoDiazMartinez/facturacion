@@ -1,5 +1,6 @@
 class Payment < ApplicationRecord
   has_one :delayed_job, dependent: :destroy
+  has_one :daily_cash_movement, dependent: :destroy
 
   after_initialize :set_payment_date
   after_save :save_daily_cash_movement, if: :changed_or_new_record?
