@@ -18,13 +18,7 @@ class AccountMovementsController < ApplicationController
     @account_movement = AccountMovement.new
     @account_movement.build_receipt(client_id: @client.id)
     @account_movement.account_movement_payments.build
-    if current_user.company.daily_cashes.search_by_date(nil).blank?
-      session[:return_to] ||= request.referer
-      redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
-    elsif !current_user.company.daily_cashes.search_by_date(nil).state == "Abierta"
-      session[:return_to] ||= request.referer
-      redirect_to daily_cashes_path(), alert: "Primero debe abrir la caja diaria."
-    end
+    DailyCash.current_daily_cash current_user.company_id
   end
 
   # GET /account_movements/1/edit
@@ -101,13 +95,15 @@ class AccountMovementsController < ApplicationController
           "company_id" => current_user.company_id, 
           "total" => params[:account_movement][:total].to_f, 
           "sale_point_id" => params[:account_movement][:receipt_attributes][:sale_point_id].to_f,
-          "date" => Date.today
+          "date" => Date.today,
+          "user_id" => current_user.id
         },
         "account_movement_payments_attributes" => {
           "0" => {
             "payment_date" => params[:account_movement][:account_movement_payments_attributes]["0"][:payment_date],
             "type_of_payment" => params[:account_movement][:account_movement_payments_attributes]["0"][:type_of_payment],
-            "total" => params[:account_movement][:total].to_f
+            "total" => params[:account_movement][:total].to_f,
+            "user_id" => current_user.id
           }
         }
       })

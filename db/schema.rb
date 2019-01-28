@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_24_173238) do
+ActiveRecord::Schema.define(version: 2019_01_28_143522) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -589,10 +589,12 @@ ActiveRecord::Schema.define(version: 2019_01_24_173238) do
     t.bigint "client_id"
     t.bigint "invoice_id"
     t.bigint "sale_point_id"
+    t.bigint "user_id"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
+    t.index ["user_id"], name: "index_receipts_on_user_id"
   end
 
   create_table "role_permissions", force: :cascade do |t|
@@ -816,6 +818,7 @@ ActiveRecord::Schema.define(version: 2019_01_24_173238) do
   add_foreign_key "receipts", "companies"
   add_foreign_key "receipts", "invoices"
   add_foreign_key "receipts", "sale_points"
+  add_foreign_key "receipts", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "roles", "companies"

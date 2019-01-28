@@ -14,7 +14,7 @@
 				<p class="text-muted">Últimos movimientos</p>
 	      		<div class="card card-fluid card-shadow" id="amovements">
 	      			<% @account_movements = @client.account_movements.order("created_at DESC").paginate(page: params[:page], per_page: 10) %>
-	      			<%= render '/clients/account_movements/account_movements_table' %>
+	      			<%= render '/account_movements/account_movements_table' %>
 	      		</div>
 	      	</div>
 		</div>

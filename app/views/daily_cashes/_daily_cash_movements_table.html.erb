@@ -15,7 +15,7 @@
   <tbody>
     <% @daily_cash_movements.each do |movement| %>
       <tr>
-        <td><%= image_tag movement.user_avatar, alt: movement.user_name, class: 'avatar' %> <%= movement.user_name %></td>
+        <td><%= image_tag movement.user_avatar, alt: movement.user_name, class: 'avatar' %> <%= user_with_link(movement) %></td>
         <td><%= l(movement.created_at, format: :short ) %></td>
         <td><%= link_to movement.associated_document, movement.associated_document_link %></td>
         <td>$<%= movement.amount %></td>

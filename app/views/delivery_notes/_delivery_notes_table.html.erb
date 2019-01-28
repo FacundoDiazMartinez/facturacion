@@ -16,8 +16,8 @@
       <tr>
         <td><%= delivery_note.number %></td>
         <td><%= l(delivery_note.date) %></td>
-        <td><%= delivery_note.invoice.comp_number %></td>
-        <td><%= delivery_note.user.name %></td>
+        <td><%= link_to delivery_note.invoice.comp_number, edit_invoice_path(delivery_note.invoice_id) %></td>
+        <td><%= link_to delivery_note.user.name, user_path(delivery_note.user_id) %></td>
         <td><%= delivery_note.state %></td>
         <td>
           <%= link_to icon('fas', 'eye').html_safe, delivery_note_path(delivery_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
