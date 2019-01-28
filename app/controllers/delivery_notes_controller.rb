@@ -108,7 +108,6 @@ class DeliveryNotesController < ApplicationController
     @associated = true
     @associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice_id] || @delivery_note.invoice_id).first
     @client = @associated_invoice.client
-    @delivery_note.delivery_note_details.delete_all
     @associated_invoice.invoice_details.each do |id|
       @delivery_note.delivery_note_details.new(
         product_id: id.product_id,
