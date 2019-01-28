@@ -30,22 +30,23 @@ class ReceiptsController < ApplicationController
 
   # GET /receipts/new
   def new
-    @receipt = Receipt.new
+    @receipt = current_user.company.receipts.new()
+    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
 
   # GET /receipts/1/edit
   def edit
+    @client = @receipt.client
   end
 
   # POST /receipts
   # POST /receipts.json
   def create
-    @receipt = Receipt.new(receipt_params)
-
+    @receipt = current_user.company.receipts.new(receipt_params)
+    @client = @receipt.client
     respond_to do |format|
       if @receipt.save
-        format.html { redirect_to @receipt, notice: 'Receipt was successfully created.' }
-        format.json { render :show, status: :created, location: @receipt }
+        format.html { redirect_to receipts_path(), notice: 'El recibo fue creado correctamente.' }
       else
         format.html { render :new }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
@@ -58,7 +59,7 @@ class ReceiptsController < ApplicationController
   def update
     respond_to do |format|
       if @receipt.update(receipt_params)
-        format.html { redirect_to @receipt, notice: 'Receipt was successfully updated.' }
+        format.html { redirect_to @receipt, notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
         format.html { render :edit }
@@ -72,9 +73,15 @@ class ReceiptsController < ApplicationController
   def destroy
     @receipt.destroy
     respond_to do |format|
-      format.html { redirect_to receipts_url, notice: 'Receipt was successfully destroyed.' }
+      format.html { redirect_to receipts_url, notice: 'El recibo fue eliminado correctamente.' }
       format.json { head :no_content }
     end
+  end
+
+  def autocomplete_invoice
+    term = params[:term]
+    invoices = current_user.company.invoices.where("comp_number ILIKE ? AND state = 'Confirmado'", "%#{term}%").order(:comp_number).all
+    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :value => invoice.full_number} }
   end
 
   private
@@ -85,6 +92,6 @@ class ReceiptsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:invoice_id, :client_id, :active, :total, :date, :observation, :company_id)
+      params.require(:receipt).permit(:invoice_id, :client_id, :sale_point_id, :number, :active, :total, :date, :observation, :company_id)
     end
 end

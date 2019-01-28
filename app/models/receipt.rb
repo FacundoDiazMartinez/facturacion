@@ -13,7 +13,7 @@ class Receipt < ApplicationRecord
   after_save :touch_account_movement
   before_save :set_number, on: :create
   before_validation :check_total
-
+  after_initialize :set_number, if: :new_record?
 
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
@@ -80,6 +80,11 @@ class Receipt < ApplicationRecord
         r.save
       end
     end
+
+    def set_number
+      last_receipt = Receipt.where(company_id: company_id).last
+      self.number ||= last_receipt.nil? ? "00000001" : (last_receipt.number.to_i + 1).to_s.rjust(8,padstr= '0')
+    end
   #PROCESOS
 
   #ATRIBUTOS
@@ -103,6 +108,14 @@ class Receipt < ApplicationRecord
       else
         "D"
       end
+    end
+
+    def invoice_comp_number
+      invoice.nil? ? "" : invoice.comp_number
+    end
+
+    def editable?
+      !persisted?
     end
   #ATRIBUTOS
 
