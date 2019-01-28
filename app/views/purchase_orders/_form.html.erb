@@ -74,7 +74,7 @@
         <!-- BOTONES DE ACCION -->
         <center>
           <% if not @purchase_order.new_record? %>
-            <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
+            <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-primary' %>
             <% if not @purchase_order.delivered && @purchase_order.state != "Pendiente de aprobación" %>
               <%= button_tag "#{icon('fas', 'envelope')} Enviar a proveedor".html_safe, type: 'button', class: 'btn btn-info', data:{toggle: 'modal', target: '#sendMailModal'} %>
             <% end -%>
