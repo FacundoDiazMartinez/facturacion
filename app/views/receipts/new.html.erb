@@ -1,5 +1,7 @@
-<h1>New Receipt</h1>
+<div class="p-4">
+	<h1 class="h2"> Nuevo recibo</h1>
 
-<%= render 'form', receipt: @receipt %>
-
-<%= link_to 'Back', receipts_path %>
+	<div id="receipt_form">
+		<%= render 'form', receipt: @receipt %>
+	</div>
+</div>
