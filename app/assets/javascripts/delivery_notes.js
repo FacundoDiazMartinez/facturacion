@@ -21,8 +21,27 @@ function closeDeliveryNote(){
 $(document).on('railsAutocomplete.select', '.delivery_note_associated-invoice-autocomplete_field', function(event, data){
 	form = $(this).parents('form:first');
 	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: data.item.id}, null, "script");
+	if ($("#invoice_comp_number").val() != "") {
+		$('.input-group-text').attr("data-toggle", "");
+			$('.input-group-text').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});
+	}
 });
 
+$(document).on('keyup','.delivery_note_associated-invoice-autocomplete_field', function(){
+	if ($(this).val().length == 0) {
+		$('.input-group-text').attr("data-toggle", "modal");
+		$('.input-group-text').tooltip('dispose');
+	}
+})
+
+// $(document).on('click', '.input-group-text',function(e){
+// 	e.preventDefault();
+// 	if ($("#invoice_comp_number").val() != "") {
+// 		alert("AD")
+// 		$(this).attr("data-toggle", "")
+// 		return false;
+// 	}
+// });
 
 $(document).on("click", "#modal_button_dn", function(){
 	form = $(this).closest("form");
@@ -47,7 +66,7 @@ $(document).on("ready", function(){
 	    },
 	    highlight: function (element) {
 	        $(element).removeClass('is-valid').addClass('is-invalid');
-	    } 
+	    }
 	});
 
 });

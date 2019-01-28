@@ -31,6 +31,7 @@ class BudgetsController < ApplicationController
   def new
     @budget = current_user.company.budgets.new()
     @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+    @budget.expiration_date = Date.today + 30.days
   end
 
   # GET /budgets/1/edit
