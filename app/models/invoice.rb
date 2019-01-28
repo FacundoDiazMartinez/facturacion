@@ -139,23 +139,7 @@ class Invoice < ApplicationRecord
 
 
   	#FUNCIONES
-      def income_payments_attributes=(attributes)
-        attributes.each do |num, c|
-          if c["_destroy"] == "false"
-            payment = self.income_payments.where(id: c[:id]).first_or_initialize
-            payment.credit_card_id = c.delete("credit_card_id")
-            payment.type_of_payment = c.delete("type_of_payment")
-            payment.total = c.delete("total")
-            payment.payment_date = c.delete("payment_date")
-            super
-          else
-            payment = self.income_payments.where(id: c[:id]).first
-            if !payment.nil?
-              payment.destroy
-            end
-          end
-        end
-      end
+      
 
   		def total_left
   			total.to_f - total_pay.to_f

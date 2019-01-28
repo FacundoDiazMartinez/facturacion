@@ -3,7 +3,7 @@ class BudgetDetail < ApplicationRecord
   belongs_to :budget
   belongs_to :depot, optional: true
 
-  after_save :adjust_reserved_stock, if: :saved_change_to_quantity?
+  after_validation :adjust_reserved_stock
 
   #ATRIBUTOS
   	def product_code
@@ -14,7 +14,11 @@ class BudgetDetail < ApplicationRecord
    #PROCEOS
 	   	def adjust_reserved_stock
 	      	if budget.reserv_stock
-	      		dif = previous_changes["quantity"].last - previous_changes["quantity"].first
+            if new_record?
+	      		 dif = quantity - quantity_was + 1
+            else
+              dif = quantity - quantity
+            end
 	        	product.reserve_stock(quantity: dif, depot_id: depot_id)
 	      	end
 	    end
