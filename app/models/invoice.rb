@@ -139,6 +139,7 @@ class Invoice < ApplicationRecord
 
 
   	#FUNCIONES
+
       # def income_payments_attributes=(attributes)
       #   attributes.each do |num, c|
       #     if c["_destroy"] == "false"
@@ -157,6 +158,7 @@ class Invoice < ApplicationRecord
       #     end
       #   end
       # end
+
 
   		def total_left
   			total.to_f - total_pay.to_f
