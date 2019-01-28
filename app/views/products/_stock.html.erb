@@ -15,7 +15,7 @@
         <td><%= stock.state %></td>
         <td><%= stock.quantity %></td>
         <td>
-          <%= link_to icon('fas', 'eye'), depot_path(stock.depot.id), class: 'btn btn-sm btn-outline-secondary' %>
+          <%# link_to icon('fas', 'eye'), depot_path(stock.depot.id), class: 'btn btn-sm btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_product_stock_path(@product.id, stock.id), class: 'btn btn-sm btn-outline-secondary', data:{toggle: 'modal', target: '#stockModal', remote: true} %>
         </td>
       </tr>

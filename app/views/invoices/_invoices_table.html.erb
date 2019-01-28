@@ -55,7 +55,7 @@
         <% @invoices.each do |invoice| %>
           <tr>
             <td><%= invoice.full_number %></td>
-            <td><%= invoice.client.name %></td>
+            <td><%= link_to invoice.client.name, client_path(invoice.client_id) %></td>
             <td class="only-desktop"><%= invoice.tipo %></td>
             <td>$<%= invoice.total %></td>
             <td class="only-desktop"><%= invoice_state(invoice.state) %></td>

@@ -69,4 +69,10 @@ class Depot < ApplicationRecord
       self.stocks.where(state: "Reservado").sum(:quantity)
     end
 #FILTROS DE BUSQUEDA
+
+#FUNCIONES
+  def self.check_at_least_one company_id
+    raise Exceptions::EmptyDepot if Company.find(company_id).depots.empty?
+  end
+#FUNCIONES
 end

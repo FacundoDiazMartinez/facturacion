@@ -68,14 +68,17 @@ class Receipt < ApplicationRecord
     end
 
     def self.create_from_invoice invoice
-      r = Receipt.where(invoice_id: invoice.id).first_or_initialize
-      r.cbte_tipo   = invoice.is_credit_note? ? "99" : "00"
-      r.total       = invoice.total_pay
-      r.date        = invoice.created_at
-      r.company_id  = invoice.company_id
-      r.client_id   = invoice.client_id
-      r.sale_point_id = invoice.sale_point_id
-      r.save
+      if invoice.state == "Confirmado"
+        r = Receipt.where(invoice_id: invoice.id).first_or_initialize
+        r.cbte_tipo   = invoice.is_credit_note? ? "99" : "00"
+        r.total       = invoice.total_pay
+        r.date        = invoice.created_at
+        r.company_id  = invoice.company_id
+        r.client_id   = invoice.client_id
+        r.sale_point_id = invoice.sale_point_id
+        r.user_id     = invoice.user_id
+        r.save
+      end
     end
 
     def set_number

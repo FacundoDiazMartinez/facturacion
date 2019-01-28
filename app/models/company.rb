@@ -115,7 +115,7 @@ class Company < ApplicationRecord
 
 	#Inicio atributos
 		def logo
-			read_attribute("logo") || "/images/default_company.png"
+			super || "/images/default_company.png"
 		end
 
 		def concepto_text

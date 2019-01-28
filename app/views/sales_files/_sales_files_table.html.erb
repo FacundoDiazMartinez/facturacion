@@ -14,7 +14,7 @@
       <% @sales_files.each do |sales_file| %>
       <tr>
         <td><%= sales_file.number %></td>
-        <td><%= sales_file.client.name %></td>
+        <td><%= link_to sales_file.client.name, client_path(sales_file.client_id) %></td>
         <td><%= sales_file.responsable.name %></td>
         <td><%= sales_file.state %></td>
         <td>

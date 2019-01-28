@@ -26,17 +26,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
-    rescue_from ::Exceptions::DailyCashClose do |exception|
-      flash[:alert] = "La caja diaria no esta abierta. Antes de realizar este tipo de transacciones debe abrir caja."
-      redirect_to daily_cashes_path
-    end
+  rescue_from ::Exceptions::DailyCashClose do |exception|
+    session[:return_to] ||= request.path
+    flash[:alert] =  "Primero debe abrir la caja diaria."
+    redirect_to daily_cashes_path
+  end
+
+  rescue_from ::Exceptions::EmptyDepot do |exception|
+    session[:return_to] ||= request.path
+    flash[:alert] = "Primero debe cargar un depósito."
+    redirect_to depots_path()
+  end
 
   protected
   
 
   def configure_permitted_parameters
-    # devise_parameter_sanitizer.permit(:sign_up, keys: [:username])
-    # devise_parameter_sanitizer.permit(:sign_in, keys: [:username])
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :dni, :birthday, :address, :phone, :mobile_phone, :province_id, :locality_id, :postal_code])
   end
 

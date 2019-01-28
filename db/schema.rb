@@ -590,10 +590,12 @@ ActiveRecord::Schema.define(version: 2019_01_28_190350) do
     t.bigint "invoice_id"
     t.bigint "sale_point_id"
     t.string "state", default: "Pendiente"
+    t.bigint "user_id"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
+    t.index ["user_id"], name: "index_receipts_on_user_id"
   end
 
   create_table "role_permissions", force: :cascade do |t|
@@ -817,6 +819,7 @@ ActiveRecord::Schema.define(version: 2019_01_28_190350) do
   add_foreign_key "receipts", "companies"
   add_foreign_key "receipts", "invoices"
   add_foreign_key "receipts", "sale_points"
+  add_foreign_key "receipts", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "roles", "companies"

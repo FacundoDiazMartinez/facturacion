@@ -9,7 +9,8 @@
 					<th scope="col" class="only-desktop">Categoría</th>
 					<th scope="col">Precio</th>
 					<th scope="col" class="only-desktop">Proveedor</th>
-					<th scope="col">Stock</th>
+					<th scope="col">Stock Disponible</th>
+					<!-- <th scope="col">Reservado</th> -->
 					<th scope="col">
 						<div class="btn-group" role="group">
 					    <button id="btnMenuDrop" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -30,10 +31,11 @@
 						<td><%= check_box_tag "product_ids[]", product.id, false, { class: 'checkbox-tag-multiple', onchange: 'abrir(this.value)' } %></td>
 						<td><%= product.code %></td>
 						<td><%= link_to product.name, product %></td>
-						<td class="only-desktop"><%= product.category_name %></td>
+						<td class="only-desktop"><%= category_with_link(product) %></td>
 						<td>$ <%= product.price %></td>
-						<td class="only-desktop"><%= product.supplier_name %></td>
+						<td class="only-desktop"><%= supplier_with_link(product) %></td>
 						<td><%= product.stock_html %></td>
+						<!-- <td><%# product.stocks.where(state: "Reservado").map{|s| s.quantity}.sum() %></td> -->
 						<td><%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
 						<td>
 							<%= link_to icon('fas', 'trash').html_safe, product , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
