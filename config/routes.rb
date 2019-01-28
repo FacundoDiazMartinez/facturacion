@@ -13,7 +13,9 @@ Rails.application.routes.draw do
     get :search_product, on: :collection
     post :make_sale, on: :member
   end
+
   get 'daily_cash_movements/show'
+  
   resources :daily_cashes
   resources :daily_cash_movements
   resources :roles do

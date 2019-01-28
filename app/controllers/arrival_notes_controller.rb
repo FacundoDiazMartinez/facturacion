@@ -47,6 +47,7 @@ class ArrivalNotesController < ApplicationController
         format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: 'El Remito fue creado correctamente.' }
         format.json { render :show, status: :created, location: @arrival_note }
       else
+        pp @arrival_note.errors
         format.html { render :new }
         format.json { render json: @arrival_note.errors, status: :unprocessable_entity }
       end
@@ -55,10 +56,9 @@ class ArrivalNotesController < ApplicationController
 
   def update
     arrival_note_params_array = arrival_note_params       #arrival_note_params es un método así que no se le pueden quitar elementos
-    purchase_order_attributes = arrival_note_params_array.delete("purchase_order_attributes")
-    message = 'El Remito fue actualizado correctamente.'
+    purchase_order_attributes = arrival_note_params_array
     respond_to do |format|
-      if @arrival_note.update(arrival_note_params_array)
+      if @arrival_note.update(arrival_note_params)
         if purchase_order_attributes["state"] == "Finalizada"
           if @arrival_note.purchase_order.update(state: "Finalizada")
             message = 'Remito y su respectiva Orden de Compra fueron cerrados correctamente.'
@@ -66,7 +66,7 @@ class ArrivalNotesController < ApplicationController
             message = 'El Remito fue actualizado correctamente, pero hubo un problema al cerrar la Orden de Compra'
           end
         end
-        format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: message }
+        format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: 'El Remito fue actualizado correctamente.' }
       else
         @arrival_note.state = @arrival_note.state_was
         format.html { render :edit }
@@ -94,7 +94,8 @@ class ArrivalNotesController < ApplicationController
     else
       @arrival_note = ArrivalNote.new
     end
-    @purchase_order = current_user.company.purchase_orders.find(params[:purchase_order_id])
+    @purchase_order = current_user.company.purchase_orders.find(params[:purchase_order_id] || @arrival_note.purchase_order_id)
+    @arrival_note.arrival_note_details.delete_all
     @arrival_note.purchase_order_id = @purchase_order.id
     @purchase_order.purchase_order_details.each do |pod|
       @arrival_note.arrival_note_details.new(product_id: pod.product_id, req_quantity: pod.quantity)

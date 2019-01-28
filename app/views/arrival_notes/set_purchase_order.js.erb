@@ -1,6 +1,7 @@
-<%
-  nested_form_for @arrival_note do |form| 
-    @builder = form
-  end
-%>
-$("#arrival_details").html("<%= j render template: '/arrival_notes/details/index.html.erb', locals:{form: @builder} %>");
+$("#form").html("<%= j render '/arrival_notes/form' %>");
+
+$(".arrival_note_purchase_order_id").html("<%= @purchase_order.id %>");
+$(".arrival_note_purchase_order_state").val("<%= @purchase_order.state %>");
+$("#arrival_note_depot_id").val("<%= params[:depot_id] %>");
+$("#arrival_note_number").val("<%= params[:number] %>");
+$("#arrival_note_state").val("<%= params[:state] %>");
