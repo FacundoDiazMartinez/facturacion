@@ -27,11 +27,11 @@
             <%= form.text_field :date, class: 'form-control datepicker', required: true, disabled: !@receipt.editable? %>
           </div>
           <div class="form-group">
-            <%= form.label :observation, "Observación" %>
-            <%= form.text_area :observation, class: 'form-control', rows: 1 , disabled: !@receipt.editable?%>
+            <%= form.label :sale_point_id, "Punto de venta" %>
+            <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @receipt.sale_point_id), {}, {class: 'form-control', disabled: !@receipt.editable?} %>
           </div>
         </div>
-      <!-- FIN PRIMERA COLUMNA  FALTA TOTAL-->
+      <!-- FIN PRIMERA COLUMNA-->
 
       <!-- SEGUNDA COLUMNA -->
         <div class="col-sm">
@@ -40,14 +40,8 @@
           </div>
           <%= form.hidden_field :client_id, value: @client.id %>
           <div class="form-group">
-            <%= form.label :sale_point_id, "Punto de venta", required: true %>
-            <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @receipt.sale_point_id), {}, {class: 'form-control', disabled: !@receipt.editable?} %>
-          </div>
-          <div class="form-group">
-            <br>
-            <center>
-              <%= save_button %>
-            </center>
+            <%= form.label :state, "Estado" %>
+            <%= form.text_area :state, class: 'form-control', rows: 1 , disabled: true%>
           </div>
         </div>
       <!-- SEGUNDA COLUMNA -->
@@ -59,12 +53,28 @@
             <%= form.text_field :number, class: 'form-control', required: true , disabled: !@receipt.editable?%>
           </div>
           <div class="form-group">
-            <%= form.label :total, "Total: " %>
+            <%= form.label :cbte_tipo, "Tipo de recibo" %>
+            <%= select_tag :expired, options_for_select([['Recibo X', '00'], ['Devolución','99']]),{class: 'form-control', include_blank: "Seleccionar tipo de recibo"} %>
+          </div>
+          <div class="form-group">
+            <%= form.label :total, "Total" %>
             <%= form.number_field :total, class: 'form-control', required: true, disabled: !@receipt.editable? %>
           </div>
         </div>
       <!-- TERCERA COLUMNA -->
     </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <%= form.label :concept, "En concepto de" %>
+          <%= form.text_area :concept, class: 'form-control', rows: 2 , disabled: !@receipt.editable?%>
+        </div>
+      </div>
+    </div>
+    <center>
+      <%= save_button %>
+    </center>
+  </div>
 </div>
 <% end %>
 
