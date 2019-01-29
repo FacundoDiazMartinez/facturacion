@@ -4,9 +4,9 @@
     <%= text_field_tag :delivery_note_client_name, @client.name, class: 'form-control', readonly: true %>
     <div class="input-group-append">
       <% if !@delivery_note.editable? %>
-        <%= link_to icon('far', 'eye').html_safe, delivery_notes_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text'%>
+        <%= link_to icon('far', 'eye').html_safe, delivery_notes_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true }, class: 'input-group-text' %>
       <% else %>
-        <%= link_to icon('far', 'edit').html_safe, edit_delivery_notes_client_path(@client.id, delivery_note_id: @delivery_note.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+        <%= link_to icon('far', 'edit').html_safe, edit_delivery_notes_client_path(@client.id, delivery_note_id: @delivery_note.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text', id: 'editClient'%>
       <% end %>
     </div>
   </div>

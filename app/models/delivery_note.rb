@@ -24,6 +24,7 @@ class DeliveryNote < ApplicationRecord
   validates_presence_of :number, message: "No puede exitir un remito sin numeración."
   validates_presence_of :state, message: "El remito debe poseer un estado."
   validates_inclusion_of :state, in: STATES, message: "El estado es inválido."
+  validates_uniqueness_of :number, scope: :company_id, message: "Ya existe un remito con ese número."
 
   default_scope { where(active: true) }
   after_initialize :set_default_number, if: :new_record?
@@ -67,6 +68,13 @@ class DeliveryNote < ApplicationRecord
 
     def invoice_comp_number
       invoice.nil? ? "" : invoice.comp_number
+    end
+
+    def delivery_note_details_attributes=(attributes)
+      self.delivery_note_details.each do |dnd|
+        dnd.mark_for_destruction
+      end
+      super
     end
   #ATRIBUTOS
 

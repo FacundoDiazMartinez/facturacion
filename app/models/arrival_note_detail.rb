@@ -2,12 +2,11 @@ class ArrivalNoteDetail < ApplicationRecord
   belongs_to :arrival_note
   belongs_to :product
 
-  before_validation :check_product
   after_create      :change_product_stock
   after_validation  :adjust_product_stock, if: Proc.new{|detail| pp detail.quantity_changed? && detail.arrival_note.state != "Anulado" && !detail.new_record?}
   before_destroy    :remove_stock
 
-  accepts_nested_attributes_for :product, reject_if: :all_blank
+
 
   #validates_presence_of     :arrival_note_id, message: "El detalle debe estar vinculado a un remito."
   validates_presence_of     :product_id, message: "El detalle debe estar vinculado a un producto."
@@ -38,27 +37,18 @@ class ArrivalNoteDetail < ApplicationRecord
     def completed
       self.req_quantity.to_f <= self.quantity.to_f
     end
+
+    def product_name
+      product.nil? ? "" : product.name
+    end
+
+    def product_code
+      product.nil? ? "" : product.code
+    end
+
   #ATRIBUTOS
 
   #PROCESOS
-
-    
-
-  	def check_product #Se ejecuta en caso de que el producto se este creando por medio del remito
-      if new_record?
-        product.company_id = arrival_note.company_id
-        product.created_by = arrival_note.user_id
-        product.updated_by = arrival_note.user_id
-        product.save
-      end
-    end
-
-  	def product_attributes=(attributes)
-      if !attributes['id'].blank?
-        self.product = Product.find(attributes['id'])
-      end
-      super
-    end
 
     def change_product_stock
       self.product.add_stock(quantity: self.quantity, depot_id: self.arrival_note.depot_id)

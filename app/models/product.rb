@@ -298,7 +298,7 @@ class Product < ApplicationRecord
     		invalid 	= []
 			(0..spreadsheet.size - 1).each do |i|
 	    		row = Hash[[header, spreadsheet[i]].transpose]
-	    		product = new
+	    		product = where(code: row[:code], name: row[:name]).first_or_initialize
 	    		if categories["#{row[:product_category_name]}"].nil?
 	    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
 	    			if pc.save
@@ -319,18 +319,16 @@ class Product < ApplicationRecord
 	    		product.company_id 			= current_user.company_id
 	    		product.created_by 			= current_user.id
 	    		product.updated_by 			= current_user.id
-	    		if !depot_id.blank?
-	    			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
-	    			stock.quantity = row[:quantity]
-	    			product.stock = stock
-	    		end
-	    		if product.valid?
-	    			products << product
-	    		else
+	    		if !product.save
 	    			invalid << [i, product.name, product.errors.full_messages]
+	    		else
+	    			if !depot_id.blank?
+		    			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
+		    			stock.quantity = row[:stock]
+		    			stock.save
+		    		end
 	    		end
 	    	end
-	    	Product.import products unless !invalid.empty?
     		return_process_result(invalid, current_user)
 		end
 

@@ -36,6 +36,19 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :receipts do
+    get :autocomplete_invoice, on: :collection
+  end
+
+
+  namespace :receipts  do
+    resources :clients do
+      get :autocomplete_document, on: :collection
+    end
+  end
+
+
+
   namespace :delivery_notes do
     resources :clients do
       get :autocomplete_document, on: :collection
@@ -53,6 +66,7 @@ Rails.application.routes.draw do
   resources :arrival_notes do
     resources :arrival_note_details, shallow: true
     get :set_purchase_order, on: :collection
+    get :set_purchase_order, on: :member
     get :generate_pdf, on: :member
     get :autocomplete_purchase_order, on: :collection
     patch :cancel, on: :member
@@ -109,7 +123,6 @@ Rails.application.routes.draw do
   end
   resources :suppliers
   resources :depots
-  resources :receipts
   resources :clients do
     resources :account_movements do
       get :export, on: :collection

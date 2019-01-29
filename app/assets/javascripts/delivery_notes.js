@@ -28,15 +28,15 @@ $(document).on('railsAutocomplete.select', '.delivery_note_associated-invoice-au
 	form = $(this).parents('form:first');
 	$.get(form.attr("action")+'/set_associated_invoice', params, null, "script");
 	if ($("#invoice_comp_number").val() != "") {
-		$('.input-group-text').attr("data-toggle", "");
-			$('.input-group-text').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});
+		$('#editClient').attr("data-toggle", "");
+			$('#editClient').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});
 	}
 });
 
 $(document).on('keyup','.delivery_note_associated-invoice-autocomplete_field', function(){
 	if ($(this).val().length == 0) {
-		$('.input-group-text').attr("data-toggle", "modal");
-		$('.input-group-text').tooltip('dispose');
+		$('#editClient').attr("data-toggle", "modal");
+		$('#editClient').tooltip('dispose');
 	}
 })
 

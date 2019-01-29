@@ -207,7 +207,8 @@ $(document).on("change", ".subtotal", function(){
 	});
 	$("#invoice_total").val(total);
 	total_venta = total;
-	$(this).next("span > strong").html("$" +$(this).val())
+
+	$(this).closest("td").find("strong").html("$" + $(this).val())
 	complete_payments();
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
 });
