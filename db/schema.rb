@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 2019_01_28_190350) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -277,7 +277,7 @@ ActiveRecord::Schema.define(version: 2019_01_28_190350) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -418,7 +418,7 @@ ActiveRecord::Schema.define(version: 2019_01_28_190350) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -589,8 +589,8 @@ ActiveRecord::Schema.define(version: 2019_01_28_190350) do
     t.bigint "client_id"
     t.bigint "invoice_id"
     t.bigint "sale_point_id"
-    t.string "state", default: "Pendiente"
     t.bigint "user_id"
+    t.string "state", default: "Pendiente"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
@@ -629,7 +629,7 @@ ActiveRecord::Schema.define(version: 2019_01_28_190350) do
     t.bigint "responsable_id", null: false
     t.string "observation"
     t.string "number", null: false
-    t.date "init_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

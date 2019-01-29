@@ -23,6 +23,14 @@ class DeliveryNoteDetail < ApplicationRecord
     def product
       Product.unscoped{super}
     end
+
+    def _destroy
+      @_destroy
+    end
+
+    def _destroy=(val)
+      @_destroy = val
+    end
   #ATRIBUTOS
 
   def adjust_product_stock

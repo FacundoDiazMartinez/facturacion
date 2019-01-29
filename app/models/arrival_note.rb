@@ -6,7 +6,7 @@ class ArrivalNote < ApplicationRecord
   has_many :arrival_note_details, dependent: :destroy
   has_many :purchase_order_details, through: :purchase_order
 
-  accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank , allow_destroy: true
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
 
   #before_validation :set_number
@@ -26,6 +26,7 @@ class ArrivalNote < ApplicationRecord
   validates_presence_of :number, message: "No puede exitir un remito sin numeración."
   validates_presence_of :state, message: "El remito debe poseer un estado."
   validates_inclusion_of :state, in: STATES, message: "El estado es inválido."
+  validates_uniqueness_of :number, scope: :company_id, message: "Ya existe un remito con ese número."
 
   before_validation :check_purchase_order_state, if: Proc.new{|po| po.state_changed? && po.state == "Anulado"}
   before_save :set_required_quantities

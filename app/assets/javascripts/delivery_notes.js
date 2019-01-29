@@ -26,7 +26,7 @@ $(document).on('railsAutocomplete.select', '.delivery_note_associated-invoice-au
 		number: $("#delivery_note_number").val()
 	}
 	form = $(this).parents('form:first');
-	$.get(form.attr("action")+'/set_associated_invoice', params, null, "script");
+	$.get(form.attr("action") + '/set_associated_invoice', params, null, "script");
 })
 
 $(document).on("click", "#modal_button_dn", function(){

@@ -94,6 +94,7 @@ class ArrivalNotesController < ApplicationController
     else
       @arrival_note = ArrivalNote.new
     end
+    @arrival_note.arrival_note_details.each{ |detail| detail.mark_for_destruction  }
     @purchase_order = current_user.company.purchase_orders.find(params[:purchase_order_id] || @arrival_note.purchase_order_id)
     @arrival_note.purchase_order_id = @purchase_order.id
     @purchase_order.purchase_order_details.each do |pod|

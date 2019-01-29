@@ -22,27 +22,23 @@
 	</thead>
 	<tbody>
 		<%= form.fields_for :arrival_note_details, wrapper: false do |f| %>
-	      	<tr class="fields">
-	      		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
-
-	      			<td>#<%= pf.hidden_field :id, class: 'product_id' %></td>
-	      			<td><%= pf.autocomplete_field :code, autocomplete_product_code_products_path, class: 'autocomplete_field arrival_note-autocomplete_field form-control', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@arrival_note.editable? %></td>
-					<td>
-						<%= pf.text_field :name, class: 'form-control name', disabled: !@arrival_note.editable?  %>
-						<% if pf.object.new_record? %>
-							<%= pf.hidden_field :price, value: 0.0, class: 'form-control' %>
+			<% if !f.object.marked_for_destruction? %>
+		      	<tr class="fields">
+		      		<td>#<%= f.hidden_field :product_id, class: 'product_id' %></td>
+		      		<td><%= autocomplete_field_tag :code, f.object.product_code, autocomplete_product_code_products_path, class: 'autocomplete_field arrival_note-autocomplete_field form-control', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@arrival_note.editable? %></td>
+					<td><%= text_field_tag :name, f.object.product_name, class: 'form-control name', disabled: !@arrival_note.editable?  %></td>
+					<td><%= f.number_field :req_quantity, class: 'form-control req_quantity', disabled: true %></td>
+					<td><%= f.number_field :quantity, class: 'form-control quantity', disabled: !@arrival_note.editable? %></td>
+					<td><%= f.text_field :observation, class: 'form-control', disabled: !@arrival_note.editable? %></td>
+					<td class="verical-align">
+						<% if @arrival_note.editable? %>
+							<%= f.link_to_remove icon('fas', 'times') %>
 						<% end %>
 					</td>
-				<% end %>
-				<td><%= f.number_field :req_quantity, class: 'form-control req_quantity', disabled: true %></td>
-				<td><%= f.number_field :quantity, class: 'form-control quantity', disabled: !@arrival_note.editable? %></td>
-				<td><%= f.text_field :observation, class: 'form-control', disabled: !@arrival_note.editable? %></td>
-				<td class="verical-align">
-					<% if @arrival_note.editable? %>
-						<%= f.link_to_remove icon('fas', 'times') %>
-					<% end %>
-				</td>
-	      	</tr>
+		      	</tr>
+		    <% end -%>
 	    <% end %>
 	</tbody>
 </table>
+
+<%= @arrival_note.arrival_note_details.map{|detail| detail.marked_for_destruction?} %>

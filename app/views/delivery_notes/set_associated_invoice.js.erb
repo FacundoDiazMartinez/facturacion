@@ -1,12 +1,5 @@
-$("#form").html("<%= j render '/delivery_notes/form' %>");
+<% nested_form_for @delivery_note do |f|
+	@builder = f
+end %>
 
-$("#delivery_note_client_name").val("<%= @delivery_note.client.name %>");
-$("#delivery_note_client_id").val("<%= @delivery_note.client_id %>");
-$("#delivery_note_number").val("<%= params[:number] %>");
-$("#delivery_note_state").val("<%= params[:state] %>");
-$("#delivery_note_date").val("<%= params[:date] %>");
-$("#invoice_client_iva_cond").val("<%= @delivery_note.client.iva_cond %>");
-$("#delivery_note_invoice_id").val("<%= @associated_invoice.id %>")
-$(".delivery_note_associated-invoice-autocomplete_field").val("<%= @associated_invoice.full_number %>")
-
-
+$("#idetails").html("<%= j render template: '/delivery_notes/details/index.html.erb', locals:{form: @builder} %>")

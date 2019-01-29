@@ -36,7 +36,6 @@ class DeliveryNotesController < ApplicationController
   # GET /delivery_notes/1/edit
   def edit
     @client = @delivery_note.client
-    set_associated_invoice
   end
 
   # POST /delivery_notes
@@ -100,14 +99,17 @@ class DeliveryNotesController < ApplicationController
   end
 
   def set_associated_invoice
-    if params[:id].blank?
-      new
-    else
+    if params[:id]
       set_delivery_note
+    else
+      new
     end
+
     @associated = true
     @associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice_id] || @delivery_note.invoice_id).first
     @client = @associated_invoice.client
+    @delivery_note.client_id = @associated_invoice.client_id
+    @delivery_note.delivery_note_details.each{ |dnd| dnd.mark_for_destruction  }
     @associated_invoice.invoice_details.each do |id|
       @delivery_note.delivery_note_details.new(
         product_id: id.product_id,
@@ -115,7 +117,6 @@ class DeliveryNotesController < ApplicationController
         quantity: id.quantity
       )
     end
-    @delivery_note.client_id = @associated_invoice.client_id
   end
 
   def autocomplete_invoice
