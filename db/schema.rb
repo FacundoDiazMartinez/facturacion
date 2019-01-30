@@ -580,7 +580,7 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
     t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
     t.date "date", null: false
-    t.string "observation"
+    t.string "concept"
     t.bigint "company_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

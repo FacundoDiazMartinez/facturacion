@@ -11,9 +11,6 @@ class ReceiptsController < ApplicationController
   # GET /receipts/1.json
   def show
     # la siguiene variable la cree para el pdf:
-    Product.unscoped do
-      @group_details = @receipt.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
-    end
 
     respond_to do |format|
       format.html
@@ -92,6 +89,6 @@ class ReceiptsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:invoice_id, :client_id, :sale_point_id, :number, :active, :total, :date, :observation, :company_id)
+      params.require(:receipt).permit(:invoice_id, :client_id, :sale_point_id, :number, :active, :total, :date, :concept, :company_id)
     end
 end
