@@ -308,7 +308,7 @@ function toggleHeader(){
 
 function toggleTributes(){
 	var display = $("#itributes").css('display');
-	if (display == 'flex'){
+	if (display == 'block'){
 		$("#itributes").hide('fast');
 		$("#tributos").html("").append($("<i class='fa fa-eye'></i>")).button();
 		$("#tributos").append(' Ver tributos');	
