@@ -109,6 +109,17 @@
   </div>
   <!-- PAGOS -->
 
+  <!-- TRIBUTOS -->
+  <% if current_user.company.iva_cond == "Responsable Inscripto" %>
+    <div id="itributes" style="display: none;">
+      <hr>
+      <div class="card shadow">
+        <%= render template: '/invoices/tributes/index.html.erb', locals:{form: form} %>
+      </div>
+    </div>
+  <% end %>
+  <!-- TRIBUTOS -->
+
   <hr>
   <center>
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
