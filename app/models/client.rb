@@ -103,7 +103,7 @@ class Client < ApplicationRecord
 			if client_contacts.empty?
 				return nil
 			else
-				return client_contacts.email
+				return client_contacts.map{|cc| cc.email}.join(", ")
 			end
 		end
 	#ATRIBUTOS
