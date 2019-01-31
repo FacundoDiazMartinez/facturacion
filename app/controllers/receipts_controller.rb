@@ -28,6 +28,7 @@ class ReceiptsController < ApplicationController
   # GET /receipts/new
   def new
     @receipt = current_user.company.receipts.new()
+    @receipt.date = Date.today
     @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
 
@@ -78,7 +79,7 @@ class ReceiptsController < ApplicationController
   def autocomplete_invoice
     term = params[:term]
     invoices = current_user.company.invoices.where("comp_number ILIKE ? AND state = 'Confirmado'", "%#{term}%").order(:comp_number).all
-    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :value => invoice.full_number} }
+    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :total => invoice.imp_total} }
   end
 
   private
