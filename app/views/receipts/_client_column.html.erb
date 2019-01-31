@@ -6,7 +6,7 @@
       <% if !@receipt.editable? %>
         <%= link_to icon('far', 'eye').html_safe, receipts_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
       <% else %>
-        <%= link_to icon('far', 'edit').html_safe, edit_receipts_client_path(@client.id, receipt_id: @receipt.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+        <%= link_to icon('far', 'edit').html_safe, edit_receipts_client_path(@client.id, receipt_id: @receipt.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text',id: 'editReceiptClient' %>
       <% end %>
     </div>
   </div>

@@ -55,7 +55,7 @@ class ArrivalNotesController < ApplicationController
   end
 
   def update
-    arrival_note_params_array = arrival_note_params       #arrival_note_params es un método así que no se le pueden quitar elementos
+    pp arrival_note_params_array = arrival_note_params       #arrival_note_params es un método así que no se le pueden quitar elementos
     purchase_order_attributes = arrival_note_params_array
     respond_to do |format|
       if @arrival_note.update(arrival_note_params)

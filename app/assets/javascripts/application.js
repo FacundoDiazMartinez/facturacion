@@ -75,7 +75,7 @@ $(document).on("keyup", "input.ui-autocomplete-input", function(e){
 
 $(document).on('pjax:complete', function() {
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
-  
+
   $('.toggle').bootstrapToggle();
 
   $('.datepicker').datepicker({
