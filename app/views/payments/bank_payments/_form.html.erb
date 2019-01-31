@@ -1,0 +1,22 @@
+<% nested_form_for @invoice do |form| %>
+  <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+    <% @builder = f %>
+  <% end -%>
+<% end -%>
+<%= @builder.fields_for :bank_payment, @builder.object.build_bank_payment do |cpf| %>
+
+  <div class="form-group">
+    <%= cpf.label :bank_id, "Banco" %>
+    <%= cpf.select :bank_id, current_user.company.banks.map{|cc| [cc.name, cc.id]}, {prompt: "Seleccione..."}, {class: 'form-control'} %>
+  </div>
+
+  <div class="form-group">
+    <%= cpf.label :total, "Total" %>
+    <%= cpf.number_field :total, class: 'form-control', requried: true %>
+  </div>
+
+  <div class="form-group">
+    <%= cpf.label :ticket, "Ticket" %><br>
+    <%= cpf.file_field :total, requried: true %>
+  </div>
+<% end -%>

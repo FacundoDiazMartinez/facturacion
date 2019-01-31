@@ -326,3 +326,42 @@ function toggleTributes(){
 	}
 		
 }
+
+$(document).on("change", ".new_type_of_payment", function(){
+
+	selected_payment = $(this).val();
+	invoice_id = $("#invoice_id_for_payment").val()
+	switch (selected_payment) { 
+		case '0': 
+			getPaymentRequest("/payments/cash_payments/new", invoice_id);
+			break;
+		case '1': 
+			getPaymentRequest("/payments/card_payments/new", invoice_id);
+			break;
+		case '3': 
+			getPaymentRequest("/payments/bank_payments/new", invoice_id);
+			break;
+		case '4': 
+			getPaymentRequest("/payments/cheque_payments/new", invoice_id);
+			break;
+		case '5': 
+			getPaymentRequest("/payments/retention_payments/new", invoice_id);
+			break;
+		case '6': 
+			getPaymentRequest("/payments/account_payments/new", invoice_id);
+			break;
+	}
+})
+
+function getPaymentRequest(url, id) {
+  $.ajax({
+    url: url,
+    data: {invoice_id: id} ,
+    contentType: "application/html",
+    dataType: "html"
+  }).done(function(response) {
+  	console.log(response)
+    $("#payment_detail").html(response)
+  });
+}
+

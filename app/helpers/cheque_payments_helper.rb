@@ -1,0 +1,2 @@
+module ChequePaymentsHelper
+end

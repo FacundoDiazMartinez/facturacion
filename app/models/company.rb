@@ -23,6 +23,7 @@ class Company < ApplicationRecord
 	has_many :budgets
 	has_many :delivery_notes
 	has_many :sales_files
+	has_many :income_payments, through: :invoices
 
 	belongs_to :province
 	belongs_to :locality

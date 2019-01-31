@@ -4,7 +4,7 @@
     </div>
     <div class="ml-auto p-2">
       	<% if @invoice.editable? %>
-        	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, :income_payments, class: 'btn btn-success', data: {target: '#payments'}%>
+        	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button' %>
       	<% end %>
     </div>
 </h3>
@@ -16,27 +16,29 @@
 				<th scope="col">Tipo de pago</th>
 				<th scope="col">Monto</th>
 				<th scope="col">Fecha de pago</th>
-				<th scope="col">Medio</th>
 				<th scope="col"></th>
 			</tr>
 		</thead>
 		<tbody>
-			<%= form.fields_for :income_payments, wrapper: false do |f| %>
-		      	<tr class="fields">
-		      		<td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm type_of_payment', style: 'min-width: 100px;', disabled: !@invoice.editable?} %></td>
-		      		<td class="popup">
-						<%= f.number_field :total, class: 'form-control form-control-sm amount', default: 0.0, disabled: !@invoice.editable? %>
-				    	<span class="popuptext" id="myPopup">Esta intentando cobrar un monto superior.</span>
-					</td>
-		      		<td><%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker', disabled: !@invoice.editable? %></td>
-		      		<td><%= f.select :credit_card_id, options_for_select(current_user.company.credit_cards.map{|cc| [cc.name, cc.id]}), {}, {class: 'form-control credit_card', disabled: f.object.type_of_payment != "1"} %></td>
-		      		<td>
-		      			<% if @invoice.editable? %>
-		      				<%= f.link_to_remove icon('fas', 'trash') %>
-		      			<% end %>
-		      		</td>
-		     	</tr>
-		    <% end %>
+			<% @invoice.income_payments.each do |payment| %>
+				<tr>
+					<td><%= payment.payment_name %></td>
+					<td><%= payment.total %></td>
+					<td><%= payment.payment_date %></td>
+					<td><%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %></td>
+				</tr>
+			<% end -%>
 		</tbody>
 	</table>
 </div>
+
+<div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="payment_modal">
+      	<%= render template: '/invoices/payment/new.html.erb', locals:{form: form} %>
+      </div>
+    </div>
+  </div>
+</div>
+

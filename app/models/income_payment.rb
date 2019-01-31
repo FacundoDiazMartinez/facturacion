@@ -1,4 +1,6 @@
 class IncomePayment < Payment
+	self.table_name = "payments"
+
 	belongs_to :invoice
 	belongs_to :account_movement, optional: true
 
@@ -12,7 +14,7 @@ class IncomePayment < Payment
 	validate :check_max_total
 	validate :check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
 
-	self.table_name = "payments"
+	
 
 	def self.default_scope
     	where(flow: "income", active: true)
@@ -20,9 +22,6 @@ class IncomePayment < Payment
 
  	#VALIDACIONES
  		def check_max_total
- 			pp total
- 			pp invoice
- 			pp invoice.sum_payments
  			errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.") unless (invoice.sum_payments - total_was + total) <= invoice.total
  		end
 

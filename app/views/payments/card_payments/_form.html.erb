@@ -1,0 +1,44 @@
+<% nested_form_for @invoice do |form| %>
+  <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+    <% @builder = f %>
+  <% end -%>
+<% end -%>
+<%= @builder.fields_for :card_payment, @builder.object.build_card_payment do |cpf| %>
+
+  <div class="form-group">
+    <%= cpf.label :credit_card_id, "Tarjeta" %>
+    <%= cpf.select :credit_card_id, current_user.company.credit_cards.map{|cc| [cc.name, cc.id]}, {prompt: "Seleccione..."}, {class: 'form-control'} %>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col">
+        <%= cpf.label :subtotal, "Subtotal" %>
+        <%= cpf.number_field :subtotal, class: 'form-control', requried: true %>
+      </div>
+
+      <div class="col">
+        <%= cpf.label :installments, "Cuotas" %>
+        <%= cpf.number_field :installments, class: 'form-control', requried: true %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col">
+        <%= cpf.label :interest_rate_percentage, "Intereses (%)" %>
+        <%= cpf.number_field :interest_rate_percentage, class: 'form-control', required: true, placeholder: "%" %>
+      </div>
+      <div class="col">
+        <%= cpf.label :interest_rate_amount, "Intereses ($)" %>
+        <%= cpf.number_field :interest_rate_amount, class: 'form-control', required: true, placeholder: "$" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= cpf.label :total, "Total" %>
+    <%= cpf.number_field :total, class: 'form-control', requried: true %>
+  </div>
+<% end -%>

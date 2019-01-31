@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_29_153444) do
+ActiveRecord::Schema.define(version: 2019_01_30_191703) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,15 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
     t.index ["client_id"], name: "index_account_movements_on_client_id"
     t.index ["invoice_id"], name: "index_account_movements_on_invoice_id"
     t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
+  end
+
+  create_table "account_payments", force: :cascade do |t|
+    t.float "total", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
+    t.bigint "payment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_id"], name: "index_account_payments_on_payment_id"
   end
 
   create_table "arrival_note_details", force: :cascade do |t|
@@ -63,6 +72,18 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
     t.index ["depot_id"], name: "index_arrival_notes_on_depot_id"
     t.index ["purchase_order_id"], name: "index_arrival_notes_on_purchase_order_id"
     t.index ["user_id"], name: "index_arrival_notes_on_user_id"
+  end
+
+  create_table "bank_payments", force: :cascade do |t|
+    t.bigint "bank_id"
+    t.bigint "payment_id"
+    t.float "total", default: 0.0, null: false
+    t.string "ticket"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_id"], name: "index_bank_payments_on_bank_id"
+    t.index ["payment_id"], name: "index_bank_payments_on_payment_id"
   end
 
   create_table "banks", force: :cascade do |t|
@@ -113,6 +134,45 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
     t.index ["company_id"], name: "index_budgets_on_company_id"
     t.index ["sales_file_id"], name: "index_budgets_on_sales_file_id"
     t.index ["user_id"], name: "index_budgets_on_user_id"
+  end
+
+  create_table "card_payments", force: :cascade do |t|
+    t.bigint "payment_id"
+    t.bigint "credit_card_id"
+    t.float "subtotal", default: 0.0, null: false
+    t.integer "installments", default: 1, null: false
+    t.float "interest_rate_percentage", default: 0.0, null: false
+    t.float "interest_rate_amount", default: 0.0, null: false
+    t.float "total", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["credit_card_id"], name: "index_card_payments_on_credit_card_id"
+    t.index ["payment_id"], name: "index_card_payments_on_payment_id"
+  end
+
+  create_table "cash_payments", force: :cascade do |t|
+    t.float "total", default: 0.0, null: false
+    t.bigint "payment_id"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_id"], name: "index_cash_payments_on_payment_id"
+  end
+
+  create_table "cheque_payments", force: :cascade do |t|
+    t.string "state", default: "No cobrado", null: false
+    t.date "expiration", default: -> { "CURRENT_DATE" }, null: false
+    t.float "total", default: 0.0, null: false
+    t.text "observation"
+    t.boolean "active", default: true, null: false
+    t.string "origin", default: "Propio", null: false
+    t.string "entity", null: false
+    t.string "number", null: false
+    t.bigint "payment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_id"], name: "index_cheque_payments_on_payment_id"
   end
 
   create_table "client_contacts", force: :cascade do |t|
@@ -598,6 +658,18 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
     t.index ["user_id"], name: "index_receipts_on_user_id"
   end
 
+  create_table "retention_payments", force: :cascade do |t|
+    t.bigint "payment_id"
+    t.boolean "active", default: true, null: false
+    t.float "total", default: 0.0, null: false
+    t.string "number", null: false
+    t.text "observation"
+    t.string "tribute", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_id"], name: "index_retention_payments_on_payment_id"
+  end
+
   create_table "role_permissions", force: :cascade do |t|
     t.bigint "role_id"
     t.bigint "permission_id"
@@ -751,12 +823,15 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
   add_foreign_key "account_movements", "clients"
   add_foreign_key "account_movements", "invoices"
   add_foreign_key "account_movements", "receipts"
+  add_foreign_key "account_payments", "payments"
   add_foreign_key "arrival_note_details", "arrival_notes"
   add_foreign_key "arrival_note_details", "products"
   add_foreign_key "arrival_notes", "companies"
   add_foreign_key "arrival_notes", "depots"
   add_foreign_key "arrival_notes", "purchase_orders"
   add_foreign_key "arrival_notes", "users"
+  add_foreign_key "bank_payments", "banks"
+  add_foreign_key "bank_payments", "payments"
   add_foreign_key "banks", "companies"
   add_foreign_key "budget_details", "budgets"
   add_foreign_key "budget_details", "depots"
@@ -765,6 +840,10 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
   add_foreign_key "budgets", "companies"
   add_foreign_key "budgets", "sales_files"
   add_foreign_key "budgets", "users"
+  add_foreign_key "card_payments", "credit_cards"
+  add_foreign_key "card_payments", "payments"
+  add_foreign_key "cash_payments", "payments"
+  add_foreign_key "cheque_payments", "payments"
   add_foreign_key "client_contacts", "clients"
   add_foreign_key "clients", "companies"
   add_foreign_key "clients", "users"
@@ -832,6 +911,7 @@ ActiveRecord::Schema.define(version: 2019_01_29_153444) do
   add_foreign_key "receipts", "invoices"
   add_foreign_key "receipts", "sale_points"
   add_foreign_key "receipts", "users"
+  add_foreign_key "retention_payments", "payments"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "roles", "companies"

@@ -65,6 +65,7 @@ class InvoicesController < ApplicationController
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Factura actualizada con éxito.' }
         format.json { render :show, status: :ok, location: @invoice }
       else
+        pp @invoice.errors
         format.html { render :edit }
         format.json { render json: @invoice.errors, status: :unprocessable_entity }
       end
@@ -141,7 +142,13 @@ class InvoicesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
       params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired,
-        income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy],
+        income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy, 
+          cash_payment_attributes: [:id, :total],
+          card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+          bank_payment_attributes: [:id, :bank_id, :total],
+          cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
+          retention_payment_attributes: [:id, :number, :total, :observation]
+        ],
         invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :depot_id, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
         product_attributes: [:id, :code, :company_id, :name, :tipo],
         commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],

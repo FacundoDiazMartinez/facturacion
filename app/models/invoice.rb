@@ -34,6 +34,7 @@ class Invoice < ApplicationRecord
     after_save :touch_payments
     after_save :check_receipt
     after_touch :check_receipt
+    after_touch :update_total_pay
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
@@ -276,10 +277,7 @@ class Invoice < ApplicationRecord
         if am_total > 0
           unpaid_invoices = where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
           unpaid_invoices.each do |invoice|
-            pp "ESTA ES EL PAGO DE LA FACTURA"
             payment = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
-            pp payment
-            pp "ESTE ES EL ACC MOV #{account_movement.id}"
             payment.total = am_total > invoice.total_left ? invoice.total_left : am_total
             payment.save
             
@@ -363,6 +361,11 @@ class Invoice < ApplicationRecord
 
       def check_receipt
         Receipt.create_from_invoice(self)
+      end
+
+      def update_total_pay
+        update_column(:total_pay, sum_payments)
+        set_state
       end
 
       def touch_account_movement

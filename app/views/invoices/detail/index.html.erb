@@ -72,7 +72,7 @@
 					<td class="only-desktop"><%= f.hidden_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@invoice.editable? %>
 						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
 
-					<td><%= f.hidden_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: !@invoice.editable? %><span><strong>$0.0</strong></span></td>
+					<td><%= f.hidden_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: !@invoice.editable? %><span><strong>$<%= f.object.subtotal %></strong></span></td>
 					<% if @invoice.editable? %>
 						<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
 					<% end %>

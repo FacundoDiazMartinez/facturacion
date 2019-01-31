@@ -2,15 +2,25 @@ class Payment < ApplicationRecord
   has_one :delayed_job, dependent: :destroy
   has_one :daily_cash_movement, dependent: :destroy
 
+  has_one :cash_payment, dependent: :destroy
+  has_one :card_payment, dependent: :destroy
+  has_one :bank_payment, dependent: :destroy
+  has_one :cheque_payment, dependent: :destroy
+  has_one :retention_payment, dependent: :destroy
+
   after_initialize :set_payment_date
   after_save :save_daily_cash_movement, if: :changed_or_new_record?
 
   default_scope { where(active: true) }
+  accepts_nested_attributes_for :cash_payment, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :card_payment, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :bank_payment, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :cheque_payment, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :retention_payment, reject_if: :all_blank, allow_destroy: true
 
   TYPES = {
   	"0" => "Contado",
   	"1" => "Tarjeta de crédito",
-  	"2" => "Tarjeta de débito",
   	"3" => "Transferencia bancaria",
   	"4" => "Cheque",
   	"5" => "Retenciones",

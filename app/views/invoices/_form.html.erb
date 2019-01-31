@@ -122,13 +122,21 @@
 
   <hr>
   <center>
-    <div hidden><%= check_box_tag :send_to_afip, true %></div>
+    <div hidden><%= check_box_tag :send_to_afip, false %></div>
     <% if @invoice.editable? %>
       <%= save_button %>
     <% end %>
   </center>
 <% end %>
 
+<div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="payment_modal">
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">

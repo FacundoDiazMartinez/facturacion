@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
 
+  resources :payments, only: :destroy
   resources :sales_files, only: [:index, :show]
   resources :price_changes do
     member do
@@ -47,7 +48,15 @@ Rails.application.routes.draw do
     end
   end
 
-
+  namespace :payments do
+    resources :card_payments
+    resources :cash_payments
+    resources :retention_payments
+    resources :debit_payments
+    resources :bank_payments
+    resources :cheque_payments
+    resources :account_payments
+  end
 
   namespace :delivery_notes do
     resources :clients do
@@ -152,6 +161,7 @@ Rails.application.routes.draw do
 
 
   resources :invoices do
+    resources :income_payments, module: :invoices
     resources :invoice_details
     get :autocomplete_product_code, :on => :collection
     get :confirm, on: :member
