@@ -2,7 +2,7 @@ module Subpayment
 	extend ActiveSupport::Concern
 
   included do
-    before_validation :update_payment
+    after_save :update_payment
     after_destroy :update_invoice
   end
 

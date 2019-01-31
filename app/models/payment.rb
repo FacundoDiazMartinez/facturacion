@@ -31,11 +31,31 @@ class Payment < ApplicationRecord
 
   #VALIDACIONES
     def min_total
-      self.mark_for_destruction
+      self.mark_for_destruction unless total > 0
     end
   #VALIDACIONES
 
   #ATRIBUTOS
+    def cash_payment_attributes=(attribute)
+      self.total = attribute["total"]
+    end
+
+    def card_payment_attributes=(attribute)
+      self.total = attribute["total"]
+    end
+    
+    def bank_payment_attributes=(attribute)
+      self.total = attribute["total"]
+    end
+    
+    def cheque_payment_attributes=(attribute)
+      self.total = attribute["total"]
+    end
+    
+    def retention_payment_attributes=(attribute)
+      self.total = attribute["total"]
+    end
+    
     def payment_name
       TYPES[type_of_payment]
     end
