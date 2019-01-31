@@ -16,12 +16,14 @@ class Invoice < ApplicationRecord
     has_many :iva_books, dependent: :destroy
     has_many :delivery_notes, dependent: :destroy
     has_many :commissioners, through: :invoice_details
+    has_many :tributes, dependent: :destroy
 
     has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
 
     accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
+    accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
@@ -210,7 +212,7 @@ class Invoice < ApplicationRecord
 
       def net_amount_sum
         total = 0
-        invoice_details.each do |detail|
+        invoice_details.where(iva_aliquot: ["03", "04", "5", "6", "8", "9"]).each do |detail|
           total += detail.neto
         end
         return total.round(2)
@@ -503,10 +505,28 @@ class Invoice < ApplicationRecord
           cbte_type:      self.cbte_tipo,
           fch_serv_desde: self.fch_serv_desde,
           fch_serv_hasta: self.fch_serv_hasta,
-          due_date:       self.fch_vto_pago
+          due_date:       self.fch_vto_pago,
+          tributos:       self.tributes.map{|t| [t.id, t.desc, t.base_imp, t.alic, t.importe]},
+          cant_reg:       self.invoice_details.count,
+          no_gravado:     self.no_gravado,
+          exento:         self.exento,
+          otros_imp:      self.otros_imp
+
         )
         bill.doc_num = self.client.document_number
         return bill
+      end
+
+      def no_gravado
+        self.invoice_details.where(iva_aliquot: "01").sum(:subtotal).to_f.round(2)
+      end
+
+      def exento
+        self.invoice_details.where(iva_aliquot: "02").sum(:subtotal).to_f.round(2)
+      end
+
+      def otros_imp
+        self.tributes.sum(:importe).to_f.round(2)
       end
 
       def auth_bill bill
@@ -538,6 +558,20 @@ class Invoice < ApplicationRecord
         if not bill.response.errores.nil?
           self.errors.add(:bill, bill.response.errores[:msg])
         end
+      end
+
+      def self.get_tributos company
+        Afip.cuit = "20368642682"
+        Afip.pkey = "#{Rails.root}/app/afip/facturacion.key"
+        Afip.cert = "#{Rails.root}/app/afip/testing.crt"
+        Afip.auth_url = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
+        Afip.service_url = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
+        Afip::AuthData.environment = :test
+        Afip.default_concepto = Afip::CONCEPTOS.key(company.concepto)
+        Afip.default_documento = "CUIT"
+        Afip.default_moneda = company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
+        Afip.own_iva_cond = company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
+        Afip::Bill.get_tributos.map{|t| [t[:desc], t[:id]]}
       end
       #FUNCIONES
 

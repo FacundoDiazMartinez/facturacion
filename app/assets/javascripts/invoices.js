@@ -122,8 +122,11 @@ $(document).on("change", ".iva_aliquot", function(){
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	iva_amount			= $(this).closest("tr.fields").find("input.iva_amount");
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").find('option:selected');
-
-	amount = (parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text())).toFixed(2);
+	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
+		amount = 0.0
+	}else{
+		amount = (parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text())).toFixed(2);
+	}
 	iva_amount.val(amount);
 	updateTooltip22($(this))
 });
@@ -269,3 +272,57 @@ $(document).on("change", ".type_of_payment", function(){
 		$(this).closest("tr.fields").find("select.credit_card").attr("disabled", "disabled");
 	}
 })
+
+$(document).on("change", "select.afip_id", function(){
+	$(this).closest("tr.fields").find("input.desc").val($(this).find('option:selected').text());
+})
+
+$(document).on("change", "input.base_imp", function(){
+	calculateTrib($(this));
+})
+
+$(document).on("change", "input.alic", function(){
+	calculateTrib($(this));
+})
+
+function calculateTrib(e){
+	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
+	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
+	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100));
+}
+
+function toggleHeader(){
+	var display = $(".invoice-header").css('display');
+	if (display == 'flex'){
+		$(".invoice-header").hide('fast');
+		$("#encabezado").html("").append($("<i class='fa fa-eye'></i>")).button();
+		$("#encabezado").append(' Ver encabezado');	
+	} 
+	else{
+		$(".invoice-header").show('fast');
+		$("#encabezado").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+		$("#encabezado").append(' Ocultar encabezado');
+	}
+		
+}
+
+function toggleTributes(){
+	var display = $("#itributes").css('display');
+	if (display == 'block'){
+		$("#itributes").hide('fast');
+		$("#tributos").html("").append($("<i class='fa fa-eye'></i>")).button();
+		$("#tributos").append(' Ver tributos');	
+	} 
+	else{
+		$("#itributes").show('fast');
+		$("#tributos").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+		$("#tributos").append(' Ocultar tributos');
+		$([document.documentElement, document.body]).animate({
+	        scrollTop: $("#itributes").offset().top
+	    }, 500, function(){
+	    	$("#itributes").effect( "shake" )
+	    });
+
+	}
+		
+}

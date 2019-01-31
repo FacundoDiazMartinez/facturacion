@@ -8,7 +8,10 @@
 			<% end %>
 		</div>
 		<div class="col text-right">
-			<button class="btn btn-primary" role="button" onclick="toggleHeader()">Mostrar/Ocultar</button>
+			<button class="btn btn-primary " role="button" onclick="toggleHeader()" id="encabezado"><%= icon('fas' ,'eye-slash') %> Ocultar encabezado</button>
+			<% if current_user.company.iva_cond == "Responsable Inscripto" %>
+				<button class="btn btn-primary " role="button" onclick="toggleTributes()" id="tributos"><%= icon('fas' ,'eye') %> Ver tributos</button>
+			<% end -%>
 			<% if @invoice.receipt_id.blank? %>
 				<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 			<% else %>
@@ -20,15 +23,3 @@
 		<%= render '/invoices/form' %>
 	</div>
 </div>
-
-<script type="text/javascript">
-	function toggleHeader(){
-		var display = $(".invoice-header").css('display');
-		if (display == 'flex'){
-			$(".invoice-header").hide('fast')
-		} 
-		else{
-			$(".invoice-header").show('fast')
-		}
-	}
-</script>

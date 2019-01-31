@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_29_134928) do
+ActiveRecord::Schema.define(version: 2019_01_29_153444) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -669,6 +669,18 @@ ActiveRecord::Schema.define(version: 2019_01_29_134928) do
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
+  create_table "tributes", force: :cascade do |t|
+    t.bigint "invoice_id"
+    t.string "afip_id", null: false
+    t.string "desc", null: false
+    t.float "base_imp", default: 0.0, null: false
+    t.float "alic", default: 0.0, null: false
+    t.float "importe", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_tributes_on_invoice_id"
+  end
+
   create_table "user_activities", force: :cascade do |t|
     t.bigint "user_id"
     t.string "photo", null: false
@@ -829,6 +841,7 @@ ActiveRecord::Schema.define(version: 2019_01_29_134928) do
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"
+  add_foreign_key "tributes", "invoices"
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
