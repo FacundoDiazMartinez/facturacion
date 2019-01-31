@@ -98,6 +98,14 @@ class Client < ApplicationRecord
 		def avatar
 			"/images/default_user.png"
 		end
+
+		def email
+			if client_contacts.empty?
+				return nil
+			else
+				return client_contacts.email
+			end
+		end
 	#ATRIBUTOS
 
 	#PROCESOS

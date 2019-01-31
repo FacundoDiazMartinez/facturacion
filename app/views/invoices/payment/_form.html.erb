@@ -3,7 +3,7 @@
 	<div class="modal-body">
 		<div class="form-group">
 			<%= f.label :type_of_payment, "Tipo de pago" %>
-			 <%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k] unless v == "6"}, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', disabled: !@invoice.editable?} %>
+			 <%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k] unless k == "6"}.compact, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', disabled: !@invoice.editable?} %>
 		</div>
 
 		<div class="form-group">

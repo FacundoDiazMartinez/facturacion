@@ -172,6 +172,7 @@ Rails.application.routes.draw do
     get :change_attributes, on: :member
     get :set_associated_invoice, on: :collection
     get :set_associated_invoice, on: :member
+    get :deliver, on: :member
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
