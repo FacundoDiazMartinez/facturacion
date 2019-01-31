@@ -12,11 +12,13 @@ class Payment < ApplicationRecord
   after_save :save_daily_cash_movement, if: :changed_or_new_record?
 
   default_scope { where(active: true) }
-  accepts_nested_attributes_for :cash_payment, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :card_payment, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :bank_payment, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :cheque_payment, reject_if: :all_blank, allow_destroy: true
-  accepts_nested_attributes_for :retention_payment, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+  accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+  accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+  accepts_nested_attributes_for :cheque_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+  accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+
+  validate :min_total, on: :create
 
   TYPES = {
   	"0" => "Contado",
@@ -26,6 +28,12 @@ class Payment < ApplicationRecord
   	"5" => "Retenciones",
     "6" => "Cuenta Corriente"
   }
+
+  #VALIDACIONES
+    def min_total
+      self.mark_for_destruction
+    end
+  #VALIDACIONES
 
   #ATRIBUTOS
     def payment_name

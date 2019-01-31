@@ -31,6 +31,10 @@ $(document).on('railsAutocomplete.select', '.delivery_note_associated-invoice-au
 		$('#editClient').attr("data-toggle", "");
 			$('#editClient').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});
 	}
+
+	$('#delivery_note_client_name').val(data.item.client.name);
+  $("#delivery_note_client_id").val(data.item.client.id);
+  $("#delivery_note_client_iva_cond").val(data.item.client.iva_cond);
 });
 
 $(document).on('keyup','.delivery_note_associated-invoice-autocomplete_field', function(){
