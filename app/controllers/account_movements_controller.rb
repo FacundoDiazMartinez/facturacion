@@ -102,8 +102,7 @@ class AccountMovementsController < ApplicationController
           "0" => {
             "payment_date" => params[:account_movement][:account_movement_payments_attributes]["0"][:payment_date],
             "type_of_payment" => params[:account_movement][:account_movement_payments_attributes]["0"][:type_of_payment],
-            "total" => params[:account_movement][:total].to_f,
-            "user_id" => current_user.id
+            "total" => params[:account_movement][:total].to_f
           }
         }
       })
