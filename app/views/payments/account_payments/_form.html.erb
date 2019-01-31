@@ -1,0 +1,10 @@
+<% nested_form_for @invoice do |form| %>
+  <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+    <% @builder = f %>
+  <% end -%>
+<% end -%>
+
+<%= @builder.fields_for :account_payments, @builder.object.account_payments.build do |cpf| %>
+  <%= cpf.label :total, "Total" %>
+  <%= cpf.number_field :total, class: 'form-control', requried: true %>
+<% end -%>

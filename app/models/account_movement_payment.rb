@@ -14,6 +14,7 @@ class AccountMovementPayment < Payment
  	end
 
  	#ATRIBUTOS
+ 	
  	#ATRIBUTOS
 
 	#PROCESOS

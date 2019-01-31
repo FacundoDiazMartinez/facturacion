@@ -11,7 +11,7 @@ class Invoices::ClientsController < ApplicationController
 	end
 
 	def update
-		@client 		= current_user.company.clients.find_by_full_document(client_params).first_or_initialize
+		@client = current_user.company.clients.find_by_full_document(client_params).first_or_initialize
 		@client.set_attributes(params["client"].as_json)
 		@client.user_id = current_user.id
 		respond_to do |format|

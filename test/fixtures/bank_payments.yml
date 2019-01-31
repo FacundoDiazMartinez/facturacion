@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  bank: one
+  payment: one
+  total: 1.5
+  ticket: MyString
+  active: false
+
+two:
+  bank: two
+  payment: two
+  total: 1.5
+  ticket: MyString
+  active: false

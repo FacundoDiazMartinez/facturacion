@@ -1,0 +1,23 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  state: MyString
+  expiration: 2019-01-30
+  total: 1.5
+  observation: MyText
+  active: false
+  origin: MyString
+  entity: MyString
+  number: MyString
+  payment: one
+
+two:
+  state: MyString
+  expiration: 2019-01-30
+  total: 1.5
+  observation: MyText
+  active: false
+  origin: MyString
+  entity: MyString
+  number: MyString
+  payment: two

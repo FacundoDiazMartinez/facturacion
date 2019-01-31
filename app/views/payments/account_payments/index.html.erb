@@ -1,0 +1,27 @@
+<div class="page-header">
+  <%= link_to new_account_movement_payment_path, class: 'btn btn-primary' do %>
+    <span class="glyphicon glyphicon-plus"></span>
+    New Account movement payment
+  <% end %>
+  <h1>Listing account_movement_payments</h1>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+            <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <%= content_tag_for(:tr, @account_movement_payments) do |account_movement_payment| %>
+            <td><%= link_to 'Show', account_movement_payment %></td>
+        <td><%= link_to 'Edit', edit_account_movement_payment_path(account_movement_payment) %></td>
+        <td><%= link_to 'Destroy', account_movement_payment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      <% end %>
+    </tbody>
+  </table>
+</div>

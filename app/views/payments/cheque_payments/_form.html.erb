@@ -1,0 +1,50 @@
+<% nested_form_for @invoice do |form| %>
+  <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+    <% @builder = f %>
+  <% end -%>
+<% end -%>
+
+<%= @builder.fields_for :cheque_payment, @builder.object.build_cheque_payment do |cpf| %>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col">
+        <%= cpf.label :state, "Estado" %>
+        <%= cpf.select :state, ChequePayment::STATES, {prompt: "Seleccione..."}, {class: 'form-control'} %>
+      </div>
+      <div class="col">
+        <%= cpf.label :origin, "Origen" %>
+        <%= cpf.select :origin, ChequePayment::ORIGINS, {prompt: "Seleccione..."}, {class: 'form-control'} %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col">
+        <%= cpf.label :entity, "Banco" %>
+        <%= cpf.text_field :entity, class: 'form-control', required: true %>
+      </div>
+      <div class="col">
+        <%= cpf.label :number, "Numeración" %>
+        <%= cpf.text_field :number, class: 'form-control', required: true %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= cpf.label :expiration, "Vencimiento" %><br>
+    <%= cpf.text_field :expiration, class: 'form-control datepicker', requried: true %>
+  </div>
+
+  <div class="form-group">
+    <%= cpf.label :observation, "Observación" %><br>
+    <%= cpf.text_area :observation, class: 'form-control', requried: true %>
+  </div>
+
+  <div class="form-group">
+    <%= cpf.label :total, "Total" %>
+    <%= cpf.number_field :total, class: 'form-control', requried: true %>
+  </div>
+
+<% end -%>

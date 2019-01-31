@@ -1,0 +1,24 @@
+<% nested_form_for @invoice do |form| %>
+  <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+    <% @builder = f %>
+  <% end -%>
+<% end -%>
+
+<%= @builder.fields_for :retention_payment, @builder.object.build_retention_payment do |rpf| %>
+
+  <div class="form-group">
+    <%= rpf.label :number, "Numeración" %>
+    <%= rpf.text_field :number, class: 'form-control', required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= rpf.label :observation, "Observación" %><br>
+    <%= rpf.text_area :observation, class: 'form-control', requried: true %>
+  </div>
+
+  <div class="form-group">
+    <%= rpf.label :total, "Total" %>
+    <%= rpf.number_field :total, class: 'form-control', requried: true %>
+  </div>
+
+<% end -%>
