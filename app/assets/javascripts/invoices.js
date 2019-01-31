@@ -208,7 +208,30 @@ $(document).on("change", ".subtotal", function(){
 	$(".subtotal").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
+	$(".importe").each(function(){
+	    total = total + parseFloat($(this).val());
+	});
 	$("#invoice_total").val(total);
+	$("span#total_left_venta").val(total);
+	total_venta = total;
+
+	$(this).closest("td").find("strong").html("$" + $(this).val())
+	complete_payments();
+	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
+});
+
+$(document).on("change", ".importe", function(){
+	alert(1)
+	var total = parseFloat(0);
+	$(".subtotal").each(function(){
+	    total = total + parseFloat($(this).val());
+	});
+	$(".importe").each(function(){
+	    total = total + parseFloat($(this).val());
+	});
+	alert(2)
+	$("#invoice_total").val(total);
+	$("span#total_left_venta").val(total);
 	total_venta = total;
 
 	$(this).closest("td").find("strong").html("$" + $(this).val())
@@ -288,7 +311,7 @@ $(document).on("change", "input.alic", function(){
 function calculateTrib(e){
 	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
-	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100));
+	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).trigger("change");
 }
 
 function toggleHeader(){
