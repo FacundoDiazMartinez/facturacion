@@ -122,7 +122,7 @@
 
   <hr>
   <center>
-    <div hidden><%= check_box_tag :send_to_afip, false %></div>
+    <div hidden><%= check_box_tag :send_to_afip, true %></div>
     <% if @invoice.editable? %>
       <%= save_button %>
     <% end %>

@@ -27,6 +27,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state
+    after_touch :update_total_pay
     after_save :update_expired, if: Proc.new{|i| i.state == "Confirmado"}
     after_save :touch_commissioners
     after_touch :touch_account_movement
@@ -34,7 +35,6 @@ class Invoice < ApplicationRecord
     after_save :touch_payments
     after_save :check_receipt
     after_touch :check_receipt
-    after_touch :update_total_pay
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
@@ -213,7 +213,7 @@ class Invoice < ApplicationRecord
 
       def net_amount_sum
         total = 0
-        invoice_details.where(iva_aliquot: ["03", "04", "5", "6", "8", "9"]).each do |detail|
+        invoice_details.where(iva_aliquot: ["03", "04", "05", "06"]).each do |detail|
           total += detail.neto
         end
         return total.round(2)
@@ -588,7 +588,7 @@ class Invoice < ApplicationRecord
             comp_number: bill.response.cbte_hasta.to_s.rjust(8,padstr= '0'),
             imp_tot_conc: bill.response.imp_tot_conc,
             imp_op_ex: bill.response.imp_op_ex,
-            imp_trib: bill.response.imp_trib,
+            imp_trib: bill.response.try(:imp_trib) || 0.0,
             imp_neto: bill.response.imp_neto,
             imp_iva: bill.response.try(:imp_iva) || 0,
             imp_total: bill.response.imp_total,

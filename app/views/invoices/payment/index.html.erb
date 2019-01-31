@@ -25,7 +25,11 @@
 					<td><%= payment.payment_name %></td>
 					<td><%= payment.total %></td>
 					<td><%= payment.payment_date %></td>
-					<td><%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %></td>
+					<td>
+						<% unless payment.errors.any? %>
+							<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+						<% end -%>
+					</td>
 				</tr>
 			<% end -%>
 		</tbody>
