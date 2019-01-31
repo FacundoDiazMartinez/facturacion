@@ -79,7 +79,7 @@ class ReceiptsController < ApplicationController
   def autocomplete_invoice
     term = params[:term]
     invoices = current_user.company.invoices.where("comp_number ILIKE ? AND state = 'Confirmado'", "%#{term}%").order(:comp_number).all
-    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :total => invoice.imp_total} }
+    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :total => invoice.imp_total, client: invoice.client.attributes} }
   end
 
   private
