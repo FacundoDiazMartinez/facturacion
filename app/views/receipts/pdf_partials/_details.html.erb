@@ -2,9 +2,15 @@
 <div class="row">
   <div class="container" style="height: 880px;">
     <table class="width_100 TFtable">
-    <tr>
-      <th class="text_left">En concepto de: </th>
-    </tr>
+      <tr>
+        <th class="text_left">Recibi la suma de: </th>
+      </tr>
+      <tr>
+        <td><%= I18n.with_locale(:es) { @receipt.total.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1).to_words } %> centavos.</td>
+      </tr>
+      <tr>
+        <th class="text_left">En concepto de: </th>
+      </tr>
       <tr>
         <td><%= @receipt.concept %></td>
       </tr>
