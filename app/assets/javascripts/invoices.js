@@ -215,6 +215,7 @@ $(document).on("change", ".subtotal", function(){
 
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left);
+	$("#total_left_venta").val(total_left);
 
 	if (total_left > 0 ) {
 		$("#normal").show();
