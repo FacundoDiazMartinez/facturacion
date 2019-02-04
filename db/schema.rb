@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_30_191703) do
+ActiveRecord::Schema.define(version: 2019_01_31_180249) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,21 @@ ActiveRecord::Schema.define(version: 2019_01_30_191703) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["payment_id"], name: "index_account_payments_on_payment_id"
+  end
+
+  create_table "advertisements", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "body"
+    t.string "image1"
+    t.date "delivery_date", null: false
+    t.boolean "active", default: true, null: false
+    t.string "state", default: "No enviado", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.bigint "company_id"
+    t.index ["company_id"], name: "index_advertisements_on_company_id"
+    t.index ["user_id"], name: "index_advertisements_on_user_id"
   end
 
   create_table "arrival_note_details", force: :cascade do |t|
@@ -824,6 +839,8 @@ ActiveRecord::Schema.define(version: 2019_01_30_191703) do
   add_foreign_key "account_movements", "invoices"
   add_foreign_key "account_movements", "receipts"
   add_foreign_key "account_payments", "payments"
+  add_foreign_key "advertisements", "companies"
+  add_foreign_key "advertisements", "users"
   add_foreign_key "arrival_note_details", "arrival_notes"
   add_foreign_key "arrival_note_details", "products"
   add_foreign_key "arrival_notes", "companies"

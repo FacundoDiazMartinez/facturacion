@@ -1,0 +1,41 @@
+<div class="p-4">
+  <%= title_helper "Campañas publicitarias" %>
+  <!-- <%# if can? :create, Advertisements %> -->
+    <%= button_new_helper new_advertisement_path %>
+  <!-- <%# end %> -->
+
+
+  <div class="page-section">
+    <div class="card">
+      <div class="card-header">
+        <%= form_tag advertisements_path(), {class: 'form-inline', id: 'search_form'} do %>
+
+          <!-- BUSCAR POR USUARIO -->
+          <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
+          <div class="input-group mb-2 col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR USUARIO -->
+
+          <!-- BUSCAR POR ESTADO -->
+          <%= label_tag :state, "Estado", class: 'sr-only' %>
+          <div class="input-group mb-2 col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+            </div>
+            <%= select_tag :state, options_for_select(Advertisement::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          </div>
+          <!-- BUSCAR POR ESTADO -->
+      <% end %>
+      </div>
+      <div class="card-body" id="advertisements_table">
+        <%= render 'advertisements_table' %>
+      </div>
+    </div>
+  </div>
+
+
+</div>

@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
 
 
+ resources :advertisements
+
+
   resources :payments, only: :destroy
   resources :sales_files, only: [:index, :show]
   resources :price_changes do
@@ -16,7 +19,7 @@ Rails.application.routes.draw do
   end
 
   get 'daily_cash_movements/show'
-  
+
   resources :daily_cashes
   resources :daily_cash_movements
   resources :roles do
