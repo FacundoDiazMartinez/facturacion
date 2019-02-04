@@ -15,6 +15,7 @@ class Payments::BankPaymentsController < Payments::PaymentsController
   # GET /bank_payments/new
   def new
     @bank_payment = BankPayment.new
+    super
   end
 
   # GET /bank_payments/1/edit

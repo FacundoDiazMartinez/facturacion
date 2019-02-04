@@ -1,6 +1,16 @@
-<% nested_form_for @invoice do |form| %>
-  <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
-    <% @builder = f %>
+<% if @invoice %>
+  <% nested_form_for @invoice do |form| %>
+    <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+      <% @builder = f %>
+    <% end -%>
+  <% end -%>
+<% end -%>
+
+<% if @client %>
+  <% form_for [@client, @account_movement] do |f| %>
+    <%= f.fields_for :account_movement_payments do |pf| %>
+      <% @builder = f %>
+    <% end -%>
   <% end -%>
 <% end -%>
 
@@ -44,7 +54,7 @@
 
   <div class="form-group">
     <%= cpf.label :total, "Total" %>
-    <%= cpf.number_field :total, class: 'form-control', requried: true %>
+    <%= cpf.number_field :total, class: 'form-control subpayment_total', requried: true %>
   </div>
 
 <% end -%>

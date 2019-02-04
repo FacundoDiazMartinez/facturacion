@@ -10,8 +10,6 @@
 			<%= f.label :payment_date, "Fecha" %>
 			<%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker', disabled: !@invoice.editable? %>
 		</div>
-
-		<%= f.hidden_field :flow, value: "income" %>
 		<%= label_tag :amount_left, "Monto faltante:" %>
 		<span id="total_left_venta">$<%= @invoice.total_left %></span>
 		<div id="payment_detail"></div>

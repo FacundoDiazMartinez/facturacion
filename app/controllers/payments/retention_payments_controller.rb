@@ -15,6 +15,7 @@ class Payments::RetentionPaymentsController < Payments::PaymentsController
   # GET /retention_payments/new
   def new
     @retention_payment = RetentionPayment.new
+    super
   end
 
   # GET /retention_payments/1/edit

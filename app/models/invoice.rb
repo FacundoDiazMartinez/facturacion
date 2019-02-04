@@ -406,6 +406,10 @@ class Invoice < ApplicationRecord
         self.invoice_details.sum(:subtotal)
       end
 
+      def sum_tributes
+        self.tributes.sum(:importe)
+      end
+
       def sum_payments
         self.income_payments.sum(:total)
       end

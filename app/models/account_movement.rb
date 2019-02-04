@@ -77,6 +77,10 @@ class AccountMovement < ApplicationRecord
     end
   #FILTROS DE BUSQUEDA
 
+  #ATRIBUTOS
+
+  #ATRIBUTOS
+
   #VALIDACIONES
     def check_pertenence_of_receipt_to_client
       unless self.receipt.nil?

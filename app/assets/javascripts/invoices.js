@@ -212,6 +212,18 @@ $(document).on("change", ".subtotal", function(){
 	    total = total + parseFloat($(this).val());
 	});
 	$("#invoice_total").val(total);
+
+	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
+	$("#total_left").val(total_left);
+
+	if (total_left > 0 ) {
+		$("#normal").show();
+		$("#with_alert").hide();
+	}else{
+		$("#normal").hide();
+		$("#with_alert").show();
+	}
+
 	$("span#total_left_venta").val(total);
 	total_venta = total;
 
@@ -353,33 +365,36 @@ function toggleTributes(){
 $(document).on("change", ".new_type_of_payment", function(){
 
 	selected_payment = $(this).val();
-	invoice_id = $("#invoice_id_for_payment").val()
+	invoice_id 			= $("#invoice_id_for_payment").val();
+	client_id 			= $("#client_id_for_payment").val();
+	account_movement_id = $("#account_movement_id_for_payment").val();
+	data = {invoice_id: invoice_id, client_id: client_id, account_movement_id: account_movement_id}
 	switch (selected_payment) { 
 		case '0': 
-			getPaymentRequest("/payments/cash_payments/new", invoice_id);
+			getPaymentRequest("/payments/cash_payments/new", data);
 			break;
 		case '1': 
-			getPaymentRequest("/payments/card_payments/new", invoice_id);
+			getPaymentRequest("/payments/card_payments/new", data);
 			break;
 		case '3': 
-			getPaymentRequest("/payments/bank_payments/new", invoice_id);
+			getPaymentRequest("/payments/bank_payments/new", data);
 			break;
 		case '4': 
-			getPaymentRequest("/payments/cheque_payments/new", invoice_id);
+			getPaymentRequest("/payments/cheque_payments/new", data);
 			break;
 		case '5': 
-			getPaymentRequest("/payments/retention_payments/new", invoice_id);
+			getPaymentRequest("/payments/retention_payments/new", data);
 			break;
 		case '6': 
-			getPaymentRequest("/payments/account_payments/new", invoice_id);
+			getPaymentRequest("/payments/account_payments/new", data);
 			break;
 	}
 })
 
-function getPaymentRequest(url, id) {
+function getPaymentRequest(url, data) {
   $.ajax({
     url: url,
-    data: {invoice_id: id} ,
+    data: data ,
     contentType: "application/html",
     dataType: "html"
   }).done(function(response) {
@@ -388,3 +403,6 @@ function getPaymentRequest(url, id) {
   });
 }
 
+$(document).on("click", "#with_alert", function(){
+	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
+})

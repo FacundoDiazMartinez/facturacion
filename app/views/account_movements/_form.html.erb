@@ -2,14 +2,12 @@
   <h4 class="text-center"><%= icon('fas', 'money-bill-alt') %> Ingrese los datos del pago</h4>
   <%= form_for [@client, @account_movement] do |f| %>
     <%= error_explanation @account_movement %>
-    <div class="form-group">
-      <%= f.label :total, "Total" %>
-      <%= f.number_field :total, class: 'form-control' %>
-    </div>
-
     <%= f.hidden_field :haber, value: true %>
     <%= f.hidden_field :debe, value: false %>
     <%= f.hidden_field :cbte_tipo, value: "Recibo X" %>
+
+    <% hidden_field_tag :client_id_for_payment, @client.id %>
+    <% hidden_field_tag :account_movement_id_for_payment, @account_movement.id %>
 
     <%= f.fields_for :receipt do |rf| %>
       <div class="fields">
@@ -17,7 +15,7 @@
           <%= rf.label :sale_point_id, "Punto de venta" %>
           <%= rf.select :sale_point_id, current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, {}, {class: 'form-control form-control-sm', style: 'min-width: 100px;'} %>
         </div>
-
+        <%= rf.hidden_field :total, id: "receipt_total" %>
         <%= rf.hidden_field :client_id, value: @client.id %>
 
       </div>
@@ -27,12 +25,13 @@
       <div class="fields">
         <div class="form-group">
           <%= pf.label :type_of_payment, "Tipo" %>
-          <%= pf.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control', style: 'min-width: 100px;'} %>
+          <%= pf.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', style: 'min-width: 100px;'} %>
         </div>
         <div class="form-group">
           <%= pf.label :payment_date, "Fecha" %>
           <%= pf.text_field :payment_date, class: 'form-control datepicker' %>
         </div>
+        <div id="payment_detail"></div>
       </div>
     <% end -%>
     <center><%= save_button %></center>
