@@ -31,6 +31,9 @@ gem 'jbuilder', '~> 2.5'
 gem 'barby', '~> 0.6.6'
 gem 'chunky_png'
 
+#GEMA WYSIWYG
+gem "wysiwyg-rails"
+
 #GEMA DE WICKED PDFKit
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'

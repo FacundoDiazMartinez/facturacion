@@ -18,6 +18,7 @@
 //= require jquery.validate.localization/messages_es
 //= require main-mockup
 //= require private_pub
+//= require froala_editor.min.js
 //= require jquery_nested_form
 //= require invoices
 //= require users
@@ -31,6 +32,41 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require_tree .
 //= require autocomplete-rails
+
+
+
+// IDIOMA WYSIWYG:
+//= require languages/es.js
+
+
+// -----------------------------------------PLUGINS ADICIONALES WYSIWYG:
+//= require plugins/align.min.js
+//= require plugins/char_counter.min.js
+//= require plugins/code_beautifier.min.js
+//= require plugins/code_view.min.js
+//= require plugins/colors.min.js
+//= require plugins/entities.min.js
+//= require plugins/font_family.min.js
+//= require plugins/font_size.min.js
+//= require plugins/fullscreen.min.js
+//= require plugins/help.min.js
+//= require plugins/inline_class.min.js
+//= require plugins/inline_style.min.js
+//= require plugins/line_breaker.min.js
+//= require plugins/line_height.min.js
+//= require plugins/link.min.js
+//= require plugins/lists.min.js
+//= require plugins/paragraph_format.min.js
+//= require plugins/paragraph_style.min.js
+//= require plugins/quick_insert.min.js
+//= require plugins/quote.min.js
+//= require plugins/table.min.js
+//= require plugins/special_characters.min.js
+//= require plugins/url.min.js
+
+//= require third_party/image_aviary.min.js
+//= require third_party/image_tui.min.js
+// -----------------------------------------FIN PLUGINS ADICIONALES WYSIWYG
 
 $(document).ready(function() {
 
@@ -65,6 +101,7 @@ $(document).ready(function() {
       startView: 2
   });
 });
+
 
 $(document).on("keyup", "input.ui-autocomplete-input", function(e){
   target = $($(this).data("id-element"))
@@ -145,6 +182,47 @@ $(document).on('pjax:complete', function() {
     });
   });
 });
+
+$(document).on("ready", function(){
+  $('.directUpload').find("input:file").each(function(i, elem) {
+    var fileInput    = $(elem);
+    var form         = $(fileInput.parents('form:first'));
+    var submitButton = form.find('input[type="submit"]');
+    fileInput.fileupload({
+      fileInput:       fileInput,
+      url:             form.data('url'),
+      type:            'POST',
+      autoUpload:       true,
+      formData:         form.data('form-data'),
+      paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
+      dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
+      replaceFileInput: true,
+      start: function (e) {
+        submitButton.prop('disabled', true);
+        $('.caption').slideDown(250); //.fadeIn(250)
+      },
+      done: function(e, data) {
+        submitButton.prop('disabled', false);
+        // extract key and generate URL from response
+        var key   = $(data.jqXHR.responseXML).find("Key").text();
+        var url   = 'https://' + form.data('host') + '/litecode.facturacion/' + key;
+
+        // create hidden field
+        if (!$('#hidden_photo').length){
+          var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, id: 'hidden_photo' })
+        }else {
+          $("#hidden_photo").val(url);
+        }
+        form.append(input);
+        $("#image").attr("src", url);
+        $('.caption').slideUp(250); //.fadeIn(250)
+      },
+      fail: function(e, data) {
+        submitButton.prop('disabled', false);
+      }
+    });
+  });
+})
 
 
 

@@ -10,7 +10,6 @@ class DeliveryNotesController < ApplicationController
   # GET /delivery_notes/1
   # GET /delivery_notes/1.json
   def show
-
     @group_details = @delivery_note.delivery_note_details.includes(:product).in_groups_of(20, fill_with= nil)
 
     respond_to do |format|

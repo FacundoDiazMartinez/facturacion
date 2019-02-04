@@ -21,9 +21,9 @@
         <td><%= delivery_note.state %></td>
         <td>
           <%= link_to icon('fas', 'eye').html_safe, delivery_note_path(delivery_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'edit'), edit_delivery_note_path(delivery_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, ArrivalNote %>
+          <%= link_to icon('fas', 'edit'), edit_delivery_note_path(delivery_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, DeliveryNote %>
           <% if (delivery_note.state != "Anulado" && delivery_note.state != "Finalizado") %>
-            <%= link_to icon('fas', 'trash'), delivery_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, ArrivalNote %>
+            <%= link_to icon('fas', 'trash'), delivery_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, DeliveryNote %>
           <% end %>
         </td>
       </tr>

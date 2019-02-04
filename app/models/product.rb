@@ -148,12 +148,12 @@ class Product < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
-	  	def full_name
-	  		"#{tipo}: #{code} - #{name}"
-	  	end
+  	def full_name
+  		"#{tipo}: #{code} - #{name}"
+  	end
 
-	  	def photo
-			read_attribute("photo") || "/images/default_product.jpg"
+  	def photo
+	    read_attribute("photo") || "/images/default_product.jpg"
 		end
 
 		def category_name

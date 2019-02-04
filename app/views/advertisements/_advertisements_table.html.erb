@@ -1,0 +1,33 @@
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Generado por</th>
+        <th>Fecha</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+
+
+    <tbody>
+      <% @advertisements.each do |advertisement| %>
+      <tr>
+        <td><%= advertisement.user %></td>
+        <td><%= l(advertisement.delivery_date) %></td>
+        <td><%= advertisement.state %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe, advertisement_path(advertisement.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit'), edit_advertisement_path(advertisement), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, Advertisement %>
+          <% if (advertisement.state != "Anulado" && advertisement.state != "Enviado") %>
+            <%= link_to icon('fas', 'trash'), advertisement, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, Advertisement %>
+          <% end %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+    
+  </table>
+
+  <%= paginate @advertisements %>
+</div>
