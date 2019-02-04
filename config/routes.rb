@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
 
 
- resources :advertisements
+ resources :advertisements do
+   patch :cancel, on: :member
+ end
 
 
   resources :payments, only: :destroy

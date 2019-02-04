@@ -1,5 +1,5 @@
 class Advertisement < ApplicationRecord
-  
+
   belongs_to :user,optional: true
   belongs_to :company,optional: true
 
@@ -29,6 +29,17 @@ class Advertisement < ApplicationRecord
       end
     end
   #FILTROS DE BUSQUEDA
+
+  #ATRIBUTOS
+  def image1
+    read_attribute("image1") || "/images/default_product.jpg"
+  end
+  #ATRIBUTOS
+
+  #FUNCIONES
+  def editable?
+    state == "No enviado" || new_record?
+  end
 
 
 end

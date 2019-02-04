@@ -1,100 +1,68 @@
-<%= nested_form_for @advertisement do |form| %>
+<%= form_for @advertisement, html:{class: 'directUpload', data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host}} do |form| %>
   <%= error_explanation @advertisement %>
-  <!-- HEADER -->
+
     <div class="card">
       <div class="card-body">
+
         <div class="row">
-
-          <!-- PRIMERA COLUMNA -->
-            <div class="col-sm">
-              <div class="form-group">
-                <%= form.label :invoice_id, "Factura" %>
-                <%= autocomplete_field_tag :invoice_comp_number, params[:invoice_comp_number] || form.object.invoice_comp_number, autocomplete_invoice_delivery_notes_path, class: 'form-control delivery_note_associated-invoice-autocomplete_field', id_element: "#delivery_note_invoice_id", placeholder: "Número de Factura", disabled: !@delivery_note.editable?, required: true %>
-                <%= form.hidden_field :invoice_id %>
-              </div>
-              <div class="form-group">
-                <%= form.label :date, "Fecha" %>
-                <%= form.text_field :date, class: 'form-control datepicker', required: true, disabled: !@delivery_note.editable? %>
-              </div>
+          <div class="col-sm">
+            <div class="form-group">
+              <%= form.label :state %>
+              <%= form.text_field :state, class: 'form-control', disabled: true %>
             </div>
-          <!-- PRIMERA COLUMNA -->
-
-          <!-- SEGUNDA COLUMNA -->
-            <div class="col-sm">
-              <div id="client_form">
-                <%= render 'client_column' %>
-              </div>
-              <%= form.hidden_field :client_id, value: @client.id %>
+          </div>
+          <div class="col-sm">
+            <div class="form-group">
+              <%= form.label :delivery_date %>
+              <%= form.text_field :delivery_date, class: 'form-control datepicker', required: true, disabled: !@advertisement.editable? %>
             </div>
-          <!-- SEGUNDA COLUMNA -->
-
-          <!-- TERCERA COLUMNA -->
-            <div class="col-sm">
-              <div class="form-group">
-                <%= form.label :number, "Número de remito" %>
-                <%= form.text_field :number, class: 'form-control', disabled: !@delivery_note.editable?, required: true %>
-              </div>
-              <div class="form-group">
-                <%= form.label :state, "Estado" %>
-                <%= text_field_tag :state, form.object.state, class: 'form-control', disabled: true %>
-              </div>
-
-            </div>
-          <!-- TERCERA COLUMNA -->
+          </div>
         </div>
+
+        <div class="form-group">
+          <%= form.label :title %>
+          <%= form.text_field :title, class: 'form-control', required: true, disabled: !@advertisement.editable? %>
+        </div>
+        <div class="form-group">
+          <%= form.label :body %>
+          <%= form.text_area :body, class: 'form-control', disabled: !@advertisement.editable?%>
+        </div>
+
+        <div class="form-group">
+          <div class="col-md-4 offset-md-4">
+            <center>
+              <%= form.label :image1 %>
+            </center>
+            <div class="card mb-4 card-shadow">
+              <div class="comp_container caption captionload">
+                <img src="/images/load.gif" width="100%">
+              </div>
+              <img class="card-img-top" src="<%= @advertisement.image1 %>" alt="Añadir foto" id="image" width="40%">
+              <div hidden>
+                <%= form.file_field :image1, :class => 'form-control', id: 'file_input' %>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
 
         <center>
-          <% if @delivery_note.state == "Finalizado" && current_user.has_stock_management_role? && @delivery_note.persisted? %>
-            <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_delivery_note_path(@delivery_note.id), method: :patch, class: 'btn btn-danger' %>
+          <% if @advertisement.state == "No enviado" && current_user.has_advertisement_management_role? && @advertisement.persisted? %>
+            <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-danger' %>
+            <%= button_tag "#{icon('fas', 'envelope ')} Enviar".html_safe, type: 'button', onclick: 'sendAdvertisement()', class: 'btn btn-primary' %>
           <% end %>
-          <% if @delivery_note.state == "Pendiente" && current_user.has_stock_management_role? && @delivery_note.persisted? %>
-            <%= button_tag "#{icon('fas', 'lock ')} Cerrar remito".html_safe, type: 'button', onclick: 'closeDeliveryNote()', class: 'btn btn-primary' %>
+          <% if !@advertisement.persisted? %>
+            <%= save_button_lock %>
           <% end %>
         </center>
+
       </div>
     </div>
-  <!-- HEADER -->
 
-  <!-- DETALLES -->
-    <div class="card" id="arrival_details">
-      <div class="card-body" id="idetails">
-        <%= render template: '/delivery_notes/details/index.html.erb', locals:{form: form} %>
-      </div>
-    </div>
-  <!-- DETALLES -->
-
-  <%= render '/delivery_notes/details/search_product' %>
-  <center>
-    <% if (@delivery_note.state != "Anulado" && @delivery_note.state != "Finalizado") || @delivery_note.new_record? %>
-      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'button', id: "modal_button_dn", class: 'btn btn-primary' %>
-    <% end %>
-  </center>
-
-  <div class="modal fade bd-example-modal-lg" id="deliveryNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'save') %> Guardar remito</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <div class="text-center">
-              <%= form.hidden_field :state, class: 'delivery_note_purchase_order_state' %>
-              <p>Cerrar el remito implica que su estado pasará a "Finalizado" y no podrá editarlo posteriormente. ¿Desea cerrarlo? </p>
-              <%= button_tag "#{icon('fas', 'lock')} Cerrar remito".html_safe, type: 'button', onclick: 'closeDeliveryNote()', class: 'btn btn-info' %>
-              <%= button_tag "#{icon('fas', 'lock-open')} Mantener así".html_safe, type: 'submit', class: 'btn btn-info' %>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Volver</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 <% end %>
+
 
 <div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -104,3 +72,16 @@
     </div>
   </div>
 </div>
+
+<!-- Include the language file. -->
+
+<script>
+  $(function() {
+    $('#advertisement_body').froalaEditor({
+      language: 'es'
+    })
+  });
+</script>
+
+<!-- Initialize the editor. -->
+<script> $(function() { $('#advertisement_body').froalaEditor() }); </script>

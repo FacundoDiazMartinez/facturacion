@@ -107,6 +107,12 @@ es:
         iva_cond: "Condición ante I.V.A."
         comp_number: "Nº comprobante"
         associated_invoice: "Factura asociada Nº"
+      advertisement:
+        title: "Título"
+        body: "Cuerpo"
+        image1: "Imágen"
+        delivery_date: "Fecha de envío"
+        state: "Estado"
       product:
         photo: "Imagen"
         product_category_id: "Categoría"
