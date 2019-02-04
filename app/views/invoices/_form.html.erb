@@ -83,6 +83,8 @@
             <center>
               <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
                 <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
+              <% else %>
+                <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
               <% end %>
             </center>
           </div>
@@ -147,6 +149,33 @@
   </div>
 </div>
 
+<% if @invoice.state == "Confirmado" || @invoice.state == "Anulado" %>
+  <div class="modal fade bd-example-modal-lg" id="sendClientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'users').html_safe %> Enviar factura a <%= @client.name %></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <%= form_tag deliver_invoice_path(),method: :get do %>
+          <div class="modal-body">
+            <h5>Enviar la factura Nº <%= @invoice.full_number %></h5>
+            <div class="form-group">
+              <%= label_tag :email, "Email" %>
+              <%= email_field_tag :email, @client.email, class: 'form-control', required: true %>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <%= save_button %>
+          </div>
+        <% end -%>
+      </div>
+    </div>
+  </div>
+<% end -%>
 <%= render '/invoices/detail/search_product' %>
 
 <script>

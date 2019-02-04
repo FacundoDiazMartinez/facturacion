@@ -1,6 +1,6 @@
 class InvoicesController < ApplicationController
   load_and_authorize_resource
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy]
+  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver]
 
   # GET /invoices
   # GET /invoices.json
@@ -80,6 +80,11 @@ class InvoicesController < ApplicationController
       format.html { redirect_to invoices_url, notice: 'Factura eliminada. Tambien se eliminaron todos sus documentos asociados.' }
       format.json { head :no_content }
     end
+  end
+
+  def deliver
+    InvoiceMailer.send_to_client(@invoice, params[:email]).deliver
+    redirect_to edit_invoice_path(@invoice.id), notice: "Email enviado."
   end
 
   def autocomplete_product_code
