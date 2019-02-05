@@ -32,10 +32,11 @@ class IncomePayment < Payment
 
  	#ATRIBUTOS
  		def credit_card_id=(credit_card_id)
- 			@card_id = credit_card_id
+ 			@credit_card_id = credit_card_id
  		end
 
  		def credit_card_id
+ 			@credit_card_id
  		end
  	#ATRIBUTOS
 
@@ -58,7 +59,7 @@ class IncomePayment < Payment
  		end
 
  		def change_credit_card_balance
- 			CreditCard.find(@card_id).update_balance_from_payment(self)
+ 			CreditCard.find(@credit_card_id).update_balance_from_payment(self)
  		end
 	#PRECESOS
 end

@@ -225,7 +225,7 @@ $(document).on("change", ".subtotal", function(){
 		$("#with_alert").show();
 	}
 
-	$("span#total_left_venta").val(total);
+	$("span#total_left_venta").text("$" + total);
 	total_venta = total;
 
 	$(this).closest("td").find("strong").html("$" + $(this).val())
@@ -399,7 +399,6 @@ function getPaymentRequest(url, data) {
     contentType: "application/html",
     dataType: "html"
   }).done(function(response) {
-  	console.log(response)
     $("#payment_detail").html(response)
   });
 }
@@ -407,3 +406,5 @@ function getPaymentRequest(url, data) {
 $(document).on("click", "#with_alert", function(){
 	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
 })
+
+

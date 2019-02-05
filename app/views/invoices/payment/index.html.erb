@@ -22,16 +22,18 @@
 		</thead>
 		<tbody>
 			<% @invoice.income_payments.each do |payment| %>
-				<tr>
-					<td><%= payment.payment_name %></td>
-					<td><%= payment.total %></td>
-					<td><%= payment.payment_date %></td>
-					<td>
-						<% unless payment.errors.any? %>
-							<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-						<% end -%>
-					</td>
-				</tr>
+				<% if payment.errors.empty? %>
+					<tr>
+						<td><%= payment.payment_name %></td>
+						<td><%= payment.total %></td>
+						<td><%= payment.payment_date %></td>
+						<td>
+							<% unless (payment.errors.any? || payment.id.blank?) %>
+								<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+							<% end -%>
+						</td>
+					</tr>
+				<% end -%>
 			<% end -%>
 		</tbody>
 	</table>

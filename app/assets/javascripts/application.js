@@ -32,10 +32,6 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require_tree .
 //= require autocomplete-rails
-
-
-
-// IDIOMA WYSIWYG:
 //= require languages/es.js
 
 

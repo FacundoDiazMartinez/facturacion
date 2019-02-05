@@ -10,9 +10,18 @@ module Subpayment
     payment.update(total: self.total)
   end
 
+  def destroy
+    if self.payment.active
+      self.payment.destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
+    end
+  end
+
   def update_invoice
   	if not self.payment.invoice_id.blank?
-  		self.payment.invoice.touch
+  		Invoice.find(self.payment.invoice_id).touch
   	end
   end
 end

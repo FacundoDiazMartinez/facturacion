@@ -39,6 +39,7 @@ class Invoice < ApplicationRecord
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
     after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
+    after_save :update_payment_belongs
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -162,7 +163,6 @@ class Invoice < ApplicationRecord
       #   end
       # end
 
-
   		def total_left
   			total.to_f - total_pay.to_f
   		end
@@ -272,6 +272,14 @@ class Invoice < ApplicationRecord
   	#FUNCIONES
 
     #PROCESOS
+
+      def update_payment_belongs
+        income_payments.each do |p|
+          p.update_column(:user_id, self.user_id) unless !p.user_id.blank?
+          p.update_column(:company_id, self.company_id) unless !p.company_id.blank?
+        end
+      end
+
       def self.paid_unpaid_invoices client, account_movement
         am_total = -client.saldo.to_f
         if am_total > 0
