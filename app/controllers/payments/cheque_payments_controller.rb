@@ -16,7 +16,7 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
   def new
     @cheque_payment = ChequePayment.new
     super
-
+  end
   # GET /cheque_payments/1/edit
   def edit
   end
