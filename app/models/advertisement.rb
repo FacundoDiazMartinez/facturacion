@@ -15,7 +15,7 @@ class Advertisement < ApplicationRecord
 
     def self.search_by_user name
       if not name.blank?
-        where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
+        where("LOWER(users.first_name || ' ' || users.last_name) ILIKE LOWER(?)", "%#{name}%")
       else
         all
       end
@@ -40,6 +40,14 @@ class Advertisement < ApplicationRecord
   def editable?
     state == "No enviado" || new_record?
   end
+  #FUNCIONES
+
+  #PROCESOS
+  def destroy
+    update_column(:active, false)
+    run_callbacks :destroy
+  end
+  #PROCESOS
 
 
 end
