@@ -152,6 +152,10 @@ class Product < ApplicationRecord
   		"#{tipo}: #{code} - #{name}"
   	end
 
+    def measurement_unit
+      read_attribute("measurement_unit") || "7"
+    end
+
   	def photo
 	    read_attribute("photo") || "/images/default_product.jpg"
 		end
