@@ -52,6 +52,7 @@ class Invoice < ApplicationRecord
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
     validate :cbte_tipo_inclusion
     validate :at_least_one_detail
+    validate :fch_ser_if_service
 
     #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
@@ -138,6 +139,13 @@ class Invoice < ApplicationRecord
 
         # when updating an existing invoice: Making sure that at least one detail would exist
         return errors.add :base, "Debe tener al menos un concepto" if invoice_details.reject{|invoice_detail| invoice_detail._destroy == true}.empty?
+      end
+
+      def fch_ser_if_service
+        unless concepto == "Productos"
+          errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") unless !self.fch_serv_desde.blank?
+          errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") unless !self.fch_serv_hasta.blank?
+        end
       end
     #VALIDACIONES
 
