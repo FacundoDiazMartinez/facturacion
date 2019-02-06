@@ -145,6 +145,7 @@ class Invoice < ApplicationRecord
         unless concepto == "Productos"
           errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") unless !self.fch_serv_desde.blank?
           errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") unless !self.fch_serv_hasta.blank?
+          errors.add(:fch_vto_pago, "Debe ingresar la fecha de vencimiento ") unless !self.fch_vto_pago.blank?
         end
       end
     #VALIDACIONES

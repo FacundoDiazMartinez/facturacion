@@ -140,17 +140,15 @@ function calculateSubtotal(subtotal){
 	subtotal.val(total);
 
 	var inv_total = parseFloat(0);
-	$(".subtotal").each(function(i){
-
+	$(".subtotal:visible").each(function(i){
 	    inv_total = inv_total + parseFloat($(this).val());
 	});
-	$(".importe").each(function(){
+	$(".importe:visible").each(function(){
 	    inv_total = inv_total + parseFloat($(this).val());
 	});
 	$("#invoice_total").val(total);
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left);
-	$("#total_left_venta").val(total_left);
 
 	if (total_left > 0 ) {
 		$("#normal").show();
@@ -160,7 +158,7 @@ function calculateSubtotal(subtotal){
 		$("#with_alert").show();
 	}
 
-	$("span#total_left_venta").text("$" + inv_total);
+	$("span#total_left_venta").text("$" + total_left);
 
 	subtotal.closest("td").find("strong").html("$" + subtotal.val())
 	complete_payments();

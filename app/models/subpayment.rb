@@ -20,6 +20,7 @@ module Subpayment
   end
 
   def update_invoice
+    pp self.payment
   	if not self.payment.invoice_id.blank?
   		Invoice.find(self.payment.invoice_id).touch
   	end
