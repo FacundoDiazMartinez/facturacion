@@ -153,7 +153,7 @@ class Product < ApplicationRecord
   	end
 
     def measurement_unit
-      read_attribute("measurement_unit") || "7"
+      read_attribute("measurement_unit").blank? ? "7" : read_attribute("measurement_unit")
     end
 
   	def photo
