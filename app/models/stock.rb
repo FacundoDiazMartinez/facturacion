@@ -60,4 +60,8 @@ class Stock < ApplicationRecord
     Depot.unscoped{super}
   end
 
+  def depot_name
+    depot_id.blank? ? "-" : depot.name
+  end
+
 end

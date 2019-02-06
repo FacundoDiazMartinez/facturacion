@@ -11,7 +11,7 @@
   <tbody>
     <% @stocks.each do |stock| %>
       <tr>
-        <td><%= link_to stock.depot.name, depot_path(stock.depot.id) %></td>
+        <td><%= stock.depot_name %></td>
         <td><%= stock.state %></td>
         <td><%= stock.quantity %></td>
         <td>
