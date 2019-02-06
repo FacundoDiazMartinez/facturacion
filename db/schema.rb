@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_05_164751) do
+ActiveRecord::Schema.define(version: 2019_02_05_194443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -729,6 +729,14 @@ ActiveRecord::Schema.define(version: 2019_02_05_164751) do
     t.index ["company_id"], name: "index_sales_files_on_company_id"
   end
 
+  create_table "sended_advertisements", force: :cascade do |t|
+    t.bigint "advertisement_id"
+    t.text "clients_data", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["advertisement_id"], name: "index_sended_advertisements_on_advertisement_id"
+  end
+
   create_table "stocks", force: :cascade do |t|
     t.bigint "product_id"
     t.bigint "depot_id"
@@ -941,6 +949,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_164751) do
   add_foreign_key "sale_points", "companies"
   add_foreign_key "sales_files", "clients"
   add_foreign_key "sales_files", "companies"
+  add_foreign_key "sended_advertisements", "advertisements"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"

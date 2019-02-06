@@ -8,7 +8,7 @@
   <div class="page-section">
     <div class="card">
       <div class="card-header">
-        <%= form_tag advertisements_path(), {class: 'form-inline', id: 'search_form'} do %>
+        <%= form_tag advertisements_path(), class: 'form-inline', id: 'search_form', method: :get do %>
 
           <!-- BUSCAR POR USUARIO -->
           <%= label_tag :user_name, "Usuario", class: 'sr-only' %>

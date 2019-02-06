@@ -2,8 +2,10 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th>Generado por</th>
-        <th>Fecha</th>
+        <th>Número</th>
+        <th>Editado por</th>
+        <th>Fecha actualización</th>
+        <th>Fecha de envío</th>
         <th>Estado</th>
         <th></th>
       </tr>
@@ -13,20 +15,22 @@
     <tbody>
       <% @advertisements.each do |advertisement| %>
       <tr>
-        <td><%= advertisement.user %></td>
+        <td><%= advertisement.id %></td>
+        <td><%= advertisement.user.name %></td>
+        <td><%= advertisement.updated_at.strftime("%d/%m/%Y") %></td>
         <td><%= l(advertisement.delivery_date) %></td>
         <td><%= advertisement.state %></td>
         <td>
-          <%= link_to icon('fas', 'eye').html_safe, advertisement_path(advertisement.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'edit'), edit_advertisement_path(advertisement), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, Advertisement %>
+          <%= link_to icon('fas', 'eye').html_safe, advertisement_path(advertisement.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <% if (advertisement.state != "Anulado" && advertisement.state != "Enviado") %>
+            <%= link_to icon('fas', 'edit'), edit_advertisement_path(advertisement), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, Advertisement %>
             <%= link_to icon('fas', 'trash'), advertisement, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, Advertisement %>
           <% end %>
         </td>
       </tr>
       <% end %>
     </tbody>
-    
+
   </table>
 
   <%= paginate @advertisements %>
