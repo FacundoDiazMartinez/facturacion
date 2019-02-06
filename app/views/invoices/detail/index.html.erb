@@ -64,7 +64,7 @@
 			              	<%= render '/invoices/detail/commissioner_fields', f: f %>
 			            </td>
 			        <% end %>
-					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"tooltip"}, min: 0, step: 1, disabled: !@invoice.editable? %></td>
+					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"tooltip"}, min: 0, step: :any, disabled: !@invoice.editable? %></td>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
 						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control form-control-sm iva_aliquot', data: {toggle:"tooltip"}, style: 'width: 100px;', disabled: !@invoice.editable?} %>
