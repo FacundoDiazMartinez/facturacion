@@ -1,6 +1,7 @@
 class Payments::CashPaymentsController < Payments::PaymentsController
   before_action :set_cash_payment, only: [:show, :edit, :update, :destroy]
   before_action :set_s3_direct_post, only: [:new]
+  layout :false
 
   # GET /cash_payments
   # GET /cash_payments.json

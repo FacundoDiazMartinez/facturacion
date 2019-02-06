@@ -39,6 +39,7 @@ class Invoice < ApplicationRecord
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     before_validation :check_if_confirmed
     after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
+    after_save :update_payment_belongs
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -51,6 +52,7 @@ class Invoice < ApplicationRecord
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
     validate :cbte_tipo_inclusion
     validate :at_least_one_detail
+    validate :fch_ser_if_service
 
     #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
@@ -138,6 +140,13 @@ class Invoice < ApplicationRecord
         # when updating an existing invoice: Making sure that at least one detail would exist
         return errors.add :base, "Debe tener al menos un concepto" if invoice_details.reject{|invoice_detail| invoice_detail._destroy == true}.empty?
       end
+
+      def fch_ser_if_service
+        unless concepto == "Productos"
+          errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") unless !self.fch_serv_desde.blank?
+          errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") unless !self.fch_serv_hasta.blank?
+        end
+      end
     #VALIDACIONES
 
 
@@ -161,7 +170,6 @@ class Invoice < ApplicationRecord
       #     end
       #   end
       # end
-
 
   		def total_left
   			total.to_f - total_pay.to_f
@@ -272,6 +280,14 @@ class Invoice < ApplicationRecord
   	#FUNCIONES
 
     #PROCESOS
+
+      def update_payment_belongs
+        income_payments.each do |p|
+          p.update_column(:user_id, self.user_id) unless !p.user_id.blank?
+          p.update_column(:company_id, self.company_id) unless !p.company_id.blank?
+        end
+      end
+
       def self.paid_unpaid_invoices client, account_movement
         am_total = -client.saldo.to_f
         if am_total > 0
@@ -514,7 +530,7 @@ class Invoice < ApplicationRecord
           fch_serv_hasta: self.fch_serv_hasta,
           due_date:       self.fch_vto_pago,
           tributos:       self.tributes.map{|t| [t.id, t.desc, t.base_imp, t.alic, t.importe]},
-          cant_reg:       self.invoice_details.count,
+          cant_reg:       1,
           no_gravado:     self.no_gravado,
           exento:         self.exento,
           otros_imp:      self.otros_imp

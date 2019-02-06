@@ -32,10 +32,6 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require_tree .
 //= require autocomplete-rails
-
-
-
-// IDIOMA WYSIWYG:
 //= require languages/es.js
 
 
@@ -240,7 +236,7 @@ function setProduct(product, index, depot_id){
   $("#"+index).find("input.code").val(product["code"]);
   $("#"+index).find("input.name").val(product["name"]);
   $("#"+index).find("input.name").prop('title', product["name"]);
-  $("#"+index).find("input.price").val(product["price"]);
+  $("#"+index).find("input.price").val(product["net_price"]);
   $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
   $("#"+index).find("input.subtotal").val(product["price"]);
   $("#"+index).find("input.supplier_code").val(product["supplier_code"]);

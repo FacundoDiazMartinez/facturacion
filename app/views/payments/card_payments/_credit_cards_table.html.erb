@@ -1,0 +1,31 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Tarjeta</th>
+      <th scope="col">Total</th>
+      <th scope="col">Cuotas</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Flujo</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @card_payments.each do |card_payment| %>
+      <tr>
+        <td><%= card_payment.credit_card.name %></td>
+        <td>$<%= card_payment.total %></td>
+        <td><%= card_payment.installments %></td>
+        <td><%= l(card_payment.payment.payment_date) %></td>
+        <td><%= flow_type(card_payment.payment.flow) %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe,  payments_card_payment_path(card_payment, invoice_id: card_payment.payment.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_payments_card_payment_path(card_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash').html_safe, payments_card_payment_path(card_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @card_payments %>

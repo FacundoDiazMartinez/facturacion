@@ -500,9 +500,13 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
     t.bigint "purchase_order_id"
     t.bigint "account_movement_id"
     t.boolean "generated_by_system", default: false, null: false
+    t.bigint "company_id"
+    t.bigint "user_id"
     t.index ["account_movement_id"], name: "index_payments_on_account_movement_id"
+    t.index ["company_id"], name: "index_payments_on_company_id"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["purchase_order_id"], name: "index_payments_on_purchase_order_id"
+    t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
   create_table "permissions", force: :cascade do |t|
@@ -907,8 +911,10 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
   add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "account_movements"
+  add_foreign_key "payments", "companies"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "purchase_orders"
+  add_foreign_key "payments", "users"
   add_foreign_key "permissions", "friendly_names"
   add_foreign_key "price_changes", "companies"
   add_foreign_key "price_changes", "product_categories"

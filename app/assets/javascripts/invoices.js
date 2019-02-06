@@ -54,7 +54,8 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	//})
 	//console.log($(this).closest("tr.fields").find("select.iva_aliquot option:selected").html()),
 
-	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+	// subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 });
 
@@ -72,7 +73,7 @@ $(document).on("change", ".price, .quantity", function(){
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
-	iva_aliquot 		= $(this).closest("tr.fields").find("input.iva_aliquot");
+	iva_aliquot 		= $(this).closest("tr.fields").find("select.iva_aliquot");
 	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
 	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
 
@@ -81,11 +82,11 @@ $(document).on("change", ".price, .quantity", function(){
 		bonus_amount.val(b_amount);
 	}
 
-	total = ((parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val())).toFixed(2);
+	// total = ((parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val())).toFixed(2);
 
-	subtotal.val(total);
-	subtotal.trigger("change");
-
+	// subtotal.val(total);
+	// subtotal.trigger("change");
+	iva_aliquot.trigger("change")
 });
 
 $(document).on("change", ".bonus_percentage", function(){
@@ -108,28 +109,62 @@ $(document).on("change", ".bonus_amount", function(){
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 
 	total 				= parseFloat(price.val()) * parseFloat(quantity.val());
-	b_percentage = (parseFloat(bonus_amount.val()) * 100 / parseFloat(total)).toFixed(2);
+	b_percentage 		= (parseFloat(bonus_amount.val()) * 100 / parseFloat(total)).toFixed(2);
 	bonus_percentage.val(b_percentage);
 
-	total = parseFloat(total) - parseFloat(bonus_amount.val()).toFixed(2);
-	subtotal.val(total.toFixed(2));
 	custom_bonus = true; //Aquí indicamos que el usuario está estableciendo un monto específico que debe respetarse siempre
-	subtotal.trigger("change");
+	calculateSubtotal(subtotal);
 });
 
 $(document).on("change", ".iva_aliquot", function(){
-
-	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+	net_price 			= $(this).closest("tr.fields").find("input.price");
 	iva_amount			= $(this).closest("tr.fields").find("input.iva_amount");
 	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").find('option:selected');
+	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		amount = 0.0
 	}else{
-		amount = (parseFloat(subtotal.val()) / (1 + parseFloat(iva_aliquot.text())) * parseFloat(iva_aliquot.text())).toFixed(2);
+		amount = ( net_price.val() * parseFloat( iva_aliquot.text() ) ).toFixed(2);
 	}
 	iva_amount.val(amount);
 	updateTooltip22($(this))
+	calculateSubtotal(subtotal);
 });
+
+function calculateSubtotal(subtotal){
+	net_price 			= subtotal.closest("tr.fields").find("input.price");
+	quantity 			= subtotal.closest("tr.fields").find("input.quantity");
+	iva_amount			= subtotal.closest("tr.fields").find("input.iva_amount");
+	bonus_amount		= subtotal.closest("tr.fields").find("input.bonus_amount");
+	total = (( ( parseFloat( net_price.val() ) + parseFloat( iva_amount.val() ) ) * parseFloat( quantity.val() ) ) - parseFloat( bonus_amount.val() )).toFixed(2)
+	subtotal.val(total);
+
+	var inv_total = parseFloat(0);
+	$(".subtotal").each(function(i){
+
+	    inv_total = inv_total + parseFloat($(this).val());
+	});
+	$(".importe").each(function(){
+	    inv_total = inv_total + parseFloat($(this).val());
+	});
+	$("#invoice_total").val(total);
+	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
+	$("#total_left").val(total_left);
+	$("#total_left_venta").val(total_left);
+
+	if (total_left > 0 ) {
+		$("#normal").show();
+		$("#with_alert").hide();
+	}else{
+		$("#normal").hide();
+		$("#with_alert").show();
+	}
+
+	$("span#total_left_venta").text("$" + inv_total);
+
+	subtotal.closest("td").find("strong").html("$" + subtotal.val())
+	complete_payments();
+}
 
 function autocomplete_field() {
 	$('.autocomplete_field').on('railsAutocomplete.select', function(event, data){
@@ -198,43 +233,46 @@ $(document).on('nested:fieldAdded', function(event){
 
 $(document).on('nested:fieldRemoved', function(event){
 	 var field = event.field;
-	 field.find("input.amount").val(0); //Ponemos en 0 el field que acabamos de eliminar (ya que no se elimina, se setea con display: none) para que funcione bien el complete_payments
-	 field.find("input.subtotal").val(0).trigger("change");
+	 net_price 			= field.find("input.price").val(0);
+	 quantity 			= field.find("input.quantity").val(0);
+	 iva_amount			= field.find("input.iva_amount").val(0);
+	 bonus_amount		= field.find("input.bonus_amount").val(0);
+	 subtotal 			= field.find("input.subtotal")
+	 calculateSubtotal(subtotal)
 })
 
 
-$(document).on("change", ".subtotal", function(){
-	var total = parseFloat(0);
-	$(".subtotal").each(function(){
-	    total = total + parseFloat($(this).val());
-	});
-	$(".importe").each(function(){
-	    total = total + parseFloat($(this).val());
-	});
-	$("#invoice_total").val(total);
+// $(document).on("change", ".subtotal", function(){
+// 	var total = parseFloat(0);
+// 	$(".subtotal").each(function(){
+// 	    total = total + parseFloat($(this).val());
+// 	});
+// 	$(".importe").each(function(){
+// 	    total = total + parseFloat($(this).val());
+// 	});
+// 	$("#invoice_total").val(total);
 
-	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
-	$("#total_left").val(total_left);
-	$("#total_left_venta").val(total_left);
+// 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
+// 	$("#total_left").val(total_left);
+// 	$("#total_left_venta").val(total_left);
 
-	if (total_left > 0 ) {
-		$("#normal").show();
-		$("#with_alert").hide();
-	}else{
-		$("#normal").hide();
-		$("#with_alert").show();
-	}
+// 	if (total_left > 0 ) {
+// 		$("#normal").show();
+// 		$("#with_alert").hide();
+// 	}else{
+// 		$("#normal").hide();
+// 		$("#with_alert").show();
+// 	}
 
-	$("span#total_left_venta").val(total);
-	total_venta = total;
+// 	$("span#total_left_venta").text("$" + total);
+// 	total_venta = total;
 
-	$(this).closest("td").find("strong").html("$" + $(this).val())
-	complete_payments();
-	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
-});
+// 	$(this).closest("td").find("strong").html("$" + $(this).val())
+// 	complete_payments();
+// 	// iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
+// });
 
 $(document).on("change", ".importe", function(){
-	alert(1)
 	var total = parseFloat(0);
 	$(".subtotal").each(function(){
 	    total = total + parseFloat($(this).val());
@@ -242,7 +280,6 @@ $(document).on("change", ".importe", function(){
 	$(".importe").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
-	alert(2)
 	$("#invoice_total").val(total);
 	$("span#total_left_venta").val(total);
 	total_venta = total;
@@ -399,7 +436,6 @@ function getPaymentRequest(url, data) {
     contentType: "application/html",
     dataType: "html"
   }).done(function(response) {
-  	console.log(response)
     $("#payment_detail").html(response)
   });
 }
@@ -407,3 +443,5 @@ function getPaymentRequest(url, data) {
 $(document).on("click", "#with_alert", function(){
 	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
 })
+
+

@@ -266,9 +266,9 @@ class Product < ApplicationRecord
 		end
 
 	    def destroy
-      	update_column(:active, false)
-      	run_callbacks :destroy
-      	freeze
+	      	update_column(:active, false)
+	      	run_callbacks :destroy
+	      	freeze
 	    end
 
 	    def rollback_delivered_stock attrs={}

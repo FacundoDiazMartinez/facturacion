@@ -1,4 +1,7 @@
 class Payment < ApplicationRecord
+  belongs_to :user, optional: true
+  belongs_to :company, optional: true
+
   has_one :delayed_job, dependent: :destroy
   has_one :daily_cash_movement, dependent: :destroy
 
@@ -38,22 +41,28 @@ class Payment < ApplicationRecord
   #ATRIBUTOS
     def cash_payment_attributes=(attribute)
       self.total = attribute["total"]
+      super
     end
 
     def card_payment_attributes=(attribute)
       self.total = attribute["total"]
+      self.credit_card_id = attribute["credit_card_id"]
+      super
     end
     
     def bank_payment_attributes=(attribute)
       self.total = attribute["total"]
+      super
     end
     
     def cheque_payment_attributes=(attribute)
       self.total = attribute["total"]
+      super
     end
     
     def retention_payment_attributes=(attribute)
       self.total = attribute["total"]
+      super
     end
     
     def payment_name
@@ -70,15 +79,15 @@ class Payment < ApplicationRecord
       end
     end
 
-    def user_id
-      if !invoice_id.nil?
-        invoice.user_id
-      elsif !purchase_order_id.nil?
-        purchase_order.user_id
-      else
-        nil
-      end
-    end
+    # def user_id
+    #   if !invoice_id.nil?
+    #     invoice.user_id
+    #   elsif !purchase_order_id.nil?
+    #     purchase_order.user_id
+    #   else
+    #     nil
+    #   end
+    # end
 
     def company
       if !invoice_id.nil?
