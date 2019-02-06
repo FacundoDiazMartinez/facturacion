@@ -124,7 +124,7 @@
 
   <hr>
   <center>
-    <div hidden><%= check_box_tag :send_to_afip, true %></div>
+    <div hidden><%= check_box_tag :send_to_afip %></div>
     <% if @invoice.editable? %>
       <%= save_button %>
     <% end %>

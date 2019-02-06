@@ -140,13 +140,13 @@ function calculateSubtotal(subtotal){
 	subtotal.val(total);
 
 	var inv_total = parseFloat(0);
-	$(".subtotal:visible").each(function(i){
+	$("tr.fields:visible > td > input.subtotal").each(function(){
 	    inv_total = inv_total + parseFloat($(this).val());
 	});
-	$(".importe:visible").each(function(){
+	$("tr.fields:visible > td > input.importe").each(function(){
 	    inv_total = inv_total + parseFloat($(this).val());
 	});
-	$("#invoice_total").val(total);
+	$("#invoice_total").val(inv_total);
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left);
 
@@ -230,12 +230,8 @@ $(document).on('nested:fieldAdded', function(event){
 });
 
 $(document).on('nested:fieldRemoved', function(event){
-	 var field = event.field;
-	 net_price 			= field.find("input.price").val(0);
-	 quantity 			= field.find("input.quantity").val(0);
-	 iva_amount			= field.find("input.iva_amount").val(0);
-	 bonus_amount		= field.find("input.bonus_amount").val(0);
-	 subtotal 			= field.find("input.subtotal")
+	 var field 	= event.field;
+	 subtotal 	= field.find("input.subtotal")
 	 calculateSubtotal(subtotal)
 })
 
