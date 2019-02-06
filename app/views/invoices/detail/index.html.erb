@@ -58,7 +58,7 @@
 					<td>
 						<%= f.select :depot_id,current_user.company.depots.map{|d| [d.name, d.id]}, {include_blank: "Seleccione..."}, {class: 'form-control form-control-sm depot_id', disabled: !@invoice.editable?, style: 'max-width: 100px;'} %>
 					</td>
-					<td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?, style: 'width: 100px;'} %></td>
+					<td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, 7),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?, style: 'width: 100px;'} %></td>
 			        <% if @invoice.editable? %>
 			            <td class="text-center">
 			              	<%= render '/invoices/detail/commissioner_fields', f: f %>
