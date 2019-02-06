@@ -18,7 +18,6 @@
 //= require jquery.validate.localization/messages_es
 //= require main-mockup
 //= require private_pub
-//= require froala_editor.min.js
 //= require jquery_nested_form
 //= require invoices
 //= require users
