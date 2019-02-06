@@ -59,7 +59,7 @@
     <center>
       <% if @advertisement.state == "No enviado" && current_user.has_advertisement_management_role? && @advertisement.persisted? %>
         <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-danger' %>
-        <%= button_tag "#{icon('fas', 'envelope ')} Enviar".html_safe, type: 'button', onclick: 'sendAdvertisement()', class: 'btn btn-primary' %>
+        <%= link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, send_email_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-primary' %>
       <% end %>
     </center>
 

@@ -2,6 +2,7 @@ class Advertisement < ApplicationRecord
 
   belongs_to :user,optional: true
   belongs_to :company,optional: true
+  has_one :sended_advertisement, dependent: :destroy
 
   STATES = ["No enviado", "Enviado", "Anulado"]
 

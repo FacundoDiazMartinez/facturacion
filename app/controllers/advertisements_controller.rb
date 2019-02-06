@@ -1,5 +1,5 @@
 class AdvertisementsController < ApplicationController
-  before_action :set_advertisement, only: [:show, :edit, :update, :destroy, :cancel]
+  before_action :set_advertisement, only: [:show, :edit, :update, :destroy, :cancel, :send_email]
   before_action :set_s3_direct_post, only: [:new, :edit, :create, :update]
 
   def index
@@ -60,6 +60,18 @@ class AdvertisementsController < ApplicationController
         format.html { render :edit }
       end
     end
+  end
+
+  def send_email
+    AdvertisingMailer.advertising_email(current_user,@advertisement).deliver_now
+    # respond_to do |format|
+    #   if @advertisement.update(state: "Enviado")
+    #     format.html { redirect_to advertisements_path, notice: 'La publicidad se envió correctamente.' }
+    #   else
+    #     format.html { render :edit }
+    #   end
+    # end
+    redirect_to advertisements_path, notice: 'La publicidad se envió correctamente.'
   end
 
   private
