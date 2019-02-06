@@ -32,37 +32,6 @@
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
 //= require_tree .
 //= require autocomplete-rails
-//= require languages/es.js
-
-
-// -----------------------------------------PLUGINS ADICIONALES WYSIWYG:
-//= require plugins/align.min.js
-//= require plugins/char_counter.min.js
-//= require plugins/code_beautifier.min.js
-//= require plugins/code_view.min.js
-//= require plugins/colors.min.js
-//= require plugins/entities.min.js
-//= require plugins/font_family.min.js
-//= require plugins/font_size.min.js
-//= require plugins/fullscreen.min.js
-//= require plugins/help.min.js
-//= require plugins/inline_class.min.js
-//= require plugins/inline_style.min.js
-//= require plugins/line_breaker.min.js
-//= require plugins/line_height.min.js
-//= require plugins/link.min.js
-//= require plugins/lists.min.js
-//= require plugins/paragraph_format.min.js
-//= require plugins/paragraph_style.min.js
-//= require plugins/quick_insert.min.js
-//= require plugins/quote.min.js
-//= require plugins/table.min.js
-//= require plugins/special_characters.min.js
-//= require plugins/url.min.js
-
-//= require third_party/image_aviary.min.js
-//= require third_party/image_tui.min.js
-// -----------------------------------------FIN PLUGINS ADICIONALES WYSIWYG
 
 $(document).ready(function() {
 
