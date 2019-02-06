@@ -7,6 +7,7 @@ class IncomePayment < Payment
 	after_save :set_total_pay_to_invoice
 	after_save :set_notification
 	after_save :touch_invoice, if: Proc.new{ |ip| !ip.generated_by_system }
+	after_destroy :set_total_pay_to_invoice
 	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_validation :set_flow
 
@@ -41,11 +42,20 @@ class IncomePayment < Payment
  	#ATRIBUTOS
 
 	#PROCESOS
+
 		def touch_invoice
 			invoice.touch
 		end
+
+		def destroy
+	      	update_column(:active, false)
+	      	set_total_pay_to_invoice
+	      	run_callbacks :destroy
+	      	freeze
+	    end
 		
 		def set_total_pay_to_invoice
+			pp "ANTOASODASODAOSDAOSDOASD"
 			sum = invoice.sum_payments
 	  		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
 	  	end
