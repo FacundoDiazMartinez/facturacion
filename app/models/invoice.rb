@@ -554,13 +554,7 @@ class Invoice < ApplicationRecord
       end
 
       def auth_bill bill
-
-        begin
-          bill.authorize
-        rescue 
-          error.add(:base, "Error interno de AFIP, intente nuevamente más tarde.")
-        end
-
+        bill.authorize
         if not bill.authorized?
           afip_errors(bill)
         else
@@ -570,7 +564,11 @@ class Invoice < ApplicationRecord
       end
 
       def get_cae
-        auth_bill(set_bill)
+        begin
+          auth_bill(set_bill)
+        rescue 
+          error.add(:base, "Error interno de AFIP, intente nuevamente más tarde.")
+        end
       end
 
       def afip_errors(bill)
@@ -595,6 +593,7 @@ class Invoice < ApplicationRecord
         Afip.default_documento = "CUIT"
         Afip.default_moneda = company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
         Afip.own_iva_cond = company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
+        Afip::AuthData.environment = :test
         begin
           Afip::Bill.get_tributos.map{|t| [t[:desc], t[:id]]}
         rescue 
