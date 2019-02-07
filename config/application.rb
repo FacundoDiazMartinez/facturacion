@@ -30,3 +30,4 @@ module Facturacion
     end
   end
 end
+require 'Afip'

@@ -29,6 +29,8 @@ class Product < ApplicationRecord
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
   	after_create :create_price_history
 
+  	before_save :check_iva_aliquot, :check_net_price
+
   	accepts_nested_attributes_for :stocks, reject_if: :all_blank, allow_destroy: true
 
 
@@ -148,16 +150,21 @@ class Product < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
-  	def full_name
-  		"#{tipo}: #{code} - #{name}"
-  	end
 
-    def measurement_unit
-      read_attribute("measurement_unit") || 7
-    end
+  		def simple_iva_aliquot
+  			Afip::ALIC_IVA.map{|k,v| v unless k != iva_aliquot}.compact.join().to_f
+  		end
 
-  	def photo
-	    read_attribute("photo") || "/images/default_product.jpg"
+	  	def full_name
+	  		"#{tipo}: #{code} - #{name}"
+	  	end
+
+	    def measurement_unit
+	      read_attribute("measurement_unit").blank? ? "7" : read_attribute("measurement_unit")
+	    end
+
+  		def photo
+	    	read_attribute("photo") || "/images/default_product.jpg"
 		end
 
 		def category_name
@@ -199,16 +206,26 @@ class Product < ApplicationRecord
 
 	#ATRIBUTOS VIRTUALES
 	def price_modification=(new_price)
-    @price_modification = new_price
-    if (new_price.to_s.ends_with? "%" )
-    	self.price += (self.price * (new_price.to_d/100)).round(2)
-    else
-    	self.price = new_price
-    end
+	    @price_modification = new_price
+	    if (new_price.to_s.ends_with? "%" )
+	    	self.price += (self.price * (new_price.to_d/100)).round(2)
+	    else
+	    	self.price = new_price
+	    end
 	end
 	#ATRIBUTOS VIRTUALES
 
 	#PROCESOS
+		def check_iva_aliquot
+			self.iva_aliquot = "05" if self.iva_aliquot.blank?
+		end
+
+		def check_net_price
+			if net_price.to_f == 0.0
+				self.net_price = (price.to_f / (1 + simple_iva_aliquot.to_f)).round(2)
+			end
+		end
+
 		def self.create params
 			product = Product.where(company_id: company_id, code: code, name: name).first_or_initialize
 			if product.new_record?
