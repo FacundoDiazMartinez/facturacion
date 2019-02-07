@@ -16,7 +16,7 @@
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :delivery_date %>
-              <%= form.text_field :delivery_date, class: 'form-control datepicker', required: true, disabled: !@advertisement.editable?, autocomplete: "off" %>
+              <%= form.text_field :delivery_date, class: 'form-control datepicker', placeholder: 'Deje en blanco para enviarlo de inmediato.', required: true, disabled: !@advertisement.editable?, autocomplete: "off" %>
             </div>
           </div>
         </div>
