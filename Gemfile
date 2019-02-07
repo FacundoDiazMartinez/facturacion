@@ -32,7 +32,7 @@ gem 'barby', '~> 0.6.6'
 gem 'chunky_png'
 
 #GEMA WYSIWYG
-gem 'tinymce-rails'
+gem 'summernote-rails', '~> 0.8.10.0'
 
 #GEMA DE WICKED PDFKit
 gem 'wicked_pdf'
