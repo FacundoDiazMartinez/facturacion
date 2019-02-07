@@ -591,12 +591,6 @@ class Invoice < ApplicationRecord
       end
 
       def self.get_tributos company
-        Afip.cuit = "20368642682"
-        Afip.pkey = "#{Rails.root}/app/afip/facturacion.key"
-        Afip.cert = "#{Rails.root}/app/afip/testing.crt"
-        Afip.auth_url = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
-        Afip.service_url = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
-        Afip::AuthData.environment = :test
         Afip.default_concepto = Afip::CONCEPTOS.key(company.concepto)
         Afip.default_documento = "CUIT"
         Afip.default_moneda = company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
