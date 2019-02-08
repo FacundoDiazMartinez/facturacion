@@ -32,7 +32,7 @@ class Advertisement < ApplicationRecord
 
   #ATRIBUTOS
   def image1
-    read_attribute("image1") || "/images/default_product.jpg"
+    read_attribute("image1") || "/images/select_image.png"
   end
 
   def delivery_date

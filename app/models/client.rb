@@ -126,7 +126,7 @@ class Client < ApplicationRecord
 		end
 
 		def update_debt
-			last_acc_mov 	= account_movements.last 
+			last_acc_mov 	= account_movements.last
 			last_saldo 		= last_acc_mov.nil? ? 0.0 : last_acc_mov.saldo #En caso de que no exista ningun movimiento, creo el saldo en 0.0
   			update_column(:saldo, last_saldo)
   			Invoice.paid_unpaid_invoices self, last_acc_mov
@@ -158,6 +158,14 @@ class Client < ApplicationRecord
 
 		def birthday
 			read_attribute("birthday") || "Sin registrar"
+		end
+
+		def has_email?
+		  if self.client_contacts.any?
+		  	return true
+			else
+				return false
+		  end
 		end
 
 		def check_if_expired

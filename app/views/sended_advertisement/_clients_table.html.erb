@@ -1,5 +1,5 @@
 <div class="table-responsive">
-  <table class="table table-hover">
+  <table class="table table-hover" id="clients_table">
     <thead>
       <tr>
         <th>Enviar</th>
@@ -11,7 +11,7 @@
 
 
     <tbody>
-      <% Client.all.each do |client| %>
+      <% @clients.each do |client| %>
       <tr>
         <td><%= check_box_tag 'client_ids[]', client.id %></td>
         <td><%= client.name %></td>
@@ -23,8 +23,9 @@
 
   </table>
   <center>
-    <% link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, sended_advertisement_path(:client_ids => client_ids[]), method: :post, class: 'btn btn-primary' %>
+    <% link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, sended_advertisement_path(@advertisement.id), method: :post, class: 'btn btn-primary' %>
+    <!-- :client_ids => client_ids[] -->
   </center>
 
-  <%# paginate Client.all %>
+  <%= paginate @clients %>
 </div>
