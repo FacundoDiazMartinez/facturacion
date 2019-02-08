@@ -33,7 +33,9 @@
                 <div class="comp_container caption captionload">
                   <img src="/images/load.gif">
                 </div>
-                <img class="card-img-top" src="<%= @advertisement.image1 %>" alt="Añadir foto" id="image">
+                <center>
+                  <img class="card-img-top" src="<%= @advertisement.image1 %>" style="height:390px; width:auto; max-width:800px;" alt="Añadir foto" id="image">
+                </center>
                 <div hidden>
                   <%= form.file_field :image1, :class => 'form-control', id: 'file_input' %>
                 </div>
@@ -43,7 +45,7 @@
           <div class="col-md-8">
             <div class="form-group">
               <%= form.label :body %>
-              <%= form.text_area :body, class: 'form-control summernote', style: "z-index: -100;", disabled: !@advertisement.editable?%>
+              <%= form.text_area :body, class: 'form-control summernote', disabled: !@advertisement.editable?%>
             </div>
           </div>
         </div>
