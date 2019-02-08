@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
 
 
+
+
+ resources :sended_advertisement do
+ end
+
  resources :advertisements do
    patch :cancel, on: :member
    patch :send_email, on: :member

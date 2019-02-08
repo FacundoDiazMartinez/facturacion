@@ -16,7 +16,7 @@
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :delivery_date %>
-              <%= form.text_field :delivery_date, class: 'form-control datepicker', placeholder: 'Deje en blanco para enviarlo de inmediato.', required: true, disabled: !@advertisement.editable?, autocomplete: "off" %>
+              <%= form.text_field :delivery_date, class: 'form-control datepicker', placeholder: 'Deje en blanco para enviarlo de inmediato.', disabled: !@advertisement.editable?, autocomplete: "off" %>
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@
     <center>
       <% if @advertisement.state == "No enviado" && current_user.has_advertisement_management_role? && @advertisement.persisted? %>
         <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-danger' %>
-        <%= link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, send_email_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-primary' %>
+        <%= link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, new_sended_advertisement_path(:ad => @advertisement.id), method: :get, class: 'btn btn-primary' %>
       <% end %>
     </center>
 
