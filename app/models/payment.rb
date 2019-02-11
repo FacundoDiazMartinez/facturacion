@@ -1,6 +1,7 @@
 class Payment < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :company, optional: true
+  belongs_to :client, optional: true #TODO VINCULAR
 
   has_one :delayed_job, dependent: :destroy
   has_one :daily_cash_movement, dependent: :destroy
@@ -22,6 +23,7 @@ class Payment < ApplicationRecord
   accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
 
   validate :min_total, on: :create
+  validates_numericality_of :total, greater_than: 0.0, message: "El monto pagado debe ser mayor 0."
 
   TYPES = {
   	"0" => "Contado",

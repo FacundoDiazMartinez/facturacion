@@ -29,7 +29,9 @@ class AccountMovementsController < ApplicationController
   # POST /account_movements.json
   def create
 
-    @account_movement = @client.account_movements.new(extra_params)
+    @account_movement = @client.account_movements.new(account_movement_params)
+    @account_movement.user_id = current_user.id
+    @account_movement.company_id = current_user.company_id
     respond_to do |format|
       if @account_movement.save
         format.html { redirect_to client_account_movements_path(@client.id), notice: 'Movimiento generado correctamente.' }
@@ -95,26 +97,5 @@ class AccountMovementsController < ApplicationController
           retention_payment_attributes: [:id, :number, :total, :observation]
         ]
       )
-    end
-
-    def extra_params
-      new_params = account_movement_params
-      new_params.merge!({
-        "receipt_attributes" => {
-          "client_id" => @client.id,
-          "company_id" => current_user.company_id,
-          "user_id" => current_user.id,
-          "date" => Date.today,
-          "total" => params["account_movement"]["receipt_attributes"]["total"],
-          "sale_point_id" => params["account_movement"]["receipt_attributes"]["sale_point_id"]
-        },
-        "account_movement_payments_attributes" =>{
-          "0" =>{
-            "type_of_payment" => params["account_movement"]["type_of_payment"],
-            "payment_date" => params["account_movement"]["payment_date"],
-            "total" => params["account_movement"]["total"].to_f
-          }
-        }
-      })
     end
 end

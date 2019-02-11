@@ -7,33 +7,44 @@
     <div class="card card-fluid">
 
       <div class="card-header">
-        <%= form_tag daily_cashes_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR DISPONIBILIDAD-->
+        <%= form_tag payments_card_payments_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <!-- BUSCAR POR TARJETA-->
           <div class="input-group col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'user') %></div>
             </div>
             <%= select_tag :card, options_for_select(current_user.company.credit_cards.map{|u| [u.name, u.id]}), {prompt: 'Buscar por tarjeta...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
-          <!-- BUSCAR POR DISPONIBILIDAD-->
+          <!-- BUSCAR POR TARJETA-->
+
+          <!-- BUSCAR POR CLIENTE -->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+            </div>
+            <%= text_field_tag :client, params[:client], class: 'form-control datepicker', placeholder: 'Buscar por cliente...', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR CLIENTE -->
 
           <!-- BUSCAR POR FECHA -->
           <div class="input-group col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
             </div>
-            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha', onchange: 'remoteSubmit("#search_form")' %>
+            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha...', onchange: 'remoteSubmit("#search_form")' %>
           </div>
           <!-- BUSCAR POR FECHA -->
         <% end %>
       </div>
 
-      <div id="credit_cards_table" class="card-body">
+      <div class="card-body">
         <% current_user.company.credit_cards.each do |cc| %>
           <h5><strong>Saldo <%= cc.name %>:</strong> $ <%= cc.current_amount %></h5>
         <% end -%>
         <!-- MOVIMIENTOS ASOCIADOS -->
-        <%= render 'credit_cards_table' %>
+        <div id="credit_cards_table">
+          <%= render 'credit_cards_table' %>
+        </div>
         <!-- MOVIMIENTOS ASOCIADOS -->
       </div>
       

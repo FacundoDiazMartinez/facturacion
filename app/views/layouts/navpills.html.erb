@@ -37,32 +37,32 @@
 			</li>
 
 			<li class="nav-item">
-	    	<%= link_to "<span class='nav-span'>Recibos</span> #{icon('fas', 'file-invoice')}".html_safe, receipts_path, class: 'nav-link', title: 'Recibos' if can? :read, Receipt  %>
-	  	</li>
+		    	<%= link_to "<span class='nav-span'>Recibos</span> #{icon('fas', 'file-invoice')}".html_safe, receipts_path, class: 'nav-link', title: 'Recibos' if can? :read, Receipt  %>
+		  	</li>
 
-	  	<li class="nav-item">
-	    	<%= link_to "<span class='nav-span'>Clientes</span> #{icon('fas', 'briefcase')}".html_safe, clients_path, class: 'nav-link', title: 'Clientes' if can? :read, Client %>
-	  	</li>
+		  	<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Clientes</span> #{icon('fas', 'briefcase')}".html_safe, clients_path, class: 'nav-link', title: 'Clientes' if can? :read, Client %>
+		  	</li>
 
-	  	<li class="nav-item">
-	    	<%= link_to "<span class='nav-span'>Productos</span> #{icon('fas', 'cubes')}".html_safe, products_path, class: 'nav-link', title: 'Productos' if can? :read, Product %>
-	  	</li>
+		  	<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Productos</span> #{icon('fas', 'cubes')}".html_safe, products_path, class: 'nav-link', title: 'Productos' if can? :read, Product %>
+		  	</li>
 
-	  	<li class="nav-item">
-	    	<%= link_to "<span class='nav-span'>Servicios</span> #{icon('fas', 'hands-helping')}".html_safe, services_path, class: 'nav-link', title: 'Servicios' if can? :read, Service %>
-	  	</li>
+		  	<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Servicios</span> #{icon('fas', 'hands-helping')}".html_safe, services_path, class: 'nav-link', title: 'Servicios' if can? :read, Service %>
+		  	</li>
 
-	  	<li class="nav-item">
-	    	<%= link_to "<span class='nav-span'>Depósitos</span> #{icon('fas', 'archive')}".html_safe, depots_path, class: 'nav-link', title: 'Depósitos' if can? :read, Depot %>
-	  	</li>
+		  	<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Depósitos</span> #{icon('fas', 'archive')}".html_safe, depots_path, class: 'nav-link', title: 'Depósitos' if can? :read, Depot %>
+		  	</li>
 
-	  	<li class="nav-item">
-	  		<%= link_to "<span class='nav-span'>Proveedores</span> #{icon('fas', 'plane')}".html_safe, suppliers_path, class: 'nav-link', title: "Proveedores" if can? :read, Supplier %>
-	  	</li>
+		  	<li class="nav-item">
+		  		<%= link_to "<span class='nav-span'>Proveedores</span> #{icon('fas', 'plane')}".html_safe, suppliers_path, class: 'nav-link', title: "Proveedores" if can? :read, Supplier %>
+		  	</li>
 
-	  	<li class="nav-item">
-	    	<%= link_to "<span class='nav-span'>Libro I.V.A.</span> #{icon('fas', 'book')}".html_safe, iva_books_path, class: 'nav-link', title: 'Libro I.V.A.' if can? :read, IvaBook %>
-	  	</li>
+		  	<li class="nav-item">
+		    	<%= link_to "<span class='nav-span'>Libro I.V.A.</span> #{icon('fas', 'book')}".html_safe, iva_books_path, class: 'nav-link', title: 'Libro I.V.A.' if can? :read, IvaBook %>
+		  	</li>
 
 		  	<li class="nav-item">
 		    	<%= link_to "<span class='nav-span'>Caja diaria</span> #{icon('fas', 'money-bill-alt')}".html_safe, daily_cashes_path, class: 'nav-link', title: 'caja diaria' %>
@@ -73,9 +73,10 @@
 		  	</li>
 
 		  	<li class="nav-item dropdown">
-    			<%= link_to "<span class='nav-span'>Contabilidad</span> #{icon('fas', 'book')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
-   				<div class="dropdown-menu">
-   					<%= link_to "<span class='nav-span'>Tarjetas</span> #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), class: 'dropdown-item', title: "Información de tarjetas de crédito" %>
+				<%= link_to "<span class='nav-span'>Contabilidad</span> #{icon('fas', 'book')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
+				<div class="dropdown-menu">
+					<%= link_to "<span class='nav-span'>Tarjetas</span> #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), class: 'dropdown-item', title: "Información de tarjetas de crédito" %>
+					<%= link_to "<span class='nav-span'>Cheques</span> #{icon('fas', 'file-signature')}".html_safe, payments_cheque_payments_path(), class: 'dropdown-item', title: "Información de tarjetas de crédito" %>
 				</div>
 			</li>
 		</ul>

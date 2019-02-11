@@ -15,14 +15,6 @@ class CardPayment < ApplicationRecord
 	  			all 
 	  		end
 	  	end
-
-	  	def self.search_by_date date
-	  		if !date.blank?
-	  			where("DATE(payments.payment_date) = ?", date)
-	  		else
-	  			all 
-	  		end
-	  	end
 	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS
