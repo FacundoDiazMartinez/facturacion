@@ -1,0 +1,126 @@
+<div class="p-4">
+  	
+  <%= title_helper "Permisos del Rol: #{@role.name}" %>
+
+	<div class="page-section">
+	<div class="col-6">
+	    <div class="card card-fluid">
+			<div class="card-header">
+				<ul class="nav nav-tabs">
+				  <li class="nav-item">
+				    <%= link_to "Asignados", role_role_permissions_path(view: 'role_permissions'), onclick: "changeActive('#role_permissions')", id: "role_permissions", remote: true, class: 'nav-link permission_tab active' %>
+				  </li>
+				  <li class="nav-item" >
+				    <%= link_to "Lista de permisos", role_role_permissions_path(view: 'permissions'), onclick: "changeActive('#permissions')", remote: true, id: "permissions", class: 'nav-link permission_tab' %>
+				  </li>
+				</ul>
+
+			</div>
+			<div class="card-body">
+				<div id="permissions_wrapper">
+					<%= render 'role_permissions' %>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+<div class="modal fade bd-example-modal-lg" id="newRolePermissionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="new_permission">
+      </div>
+    </div>
+  </div>
+</div>
+
+<style media="screen">
+	  .nav-tabs.nav-justified {
+	    margin-bottom: 0px !important;
+	  }
+	ul {
+		text-align:left;
+		list-style: none;
+		padding-left: 0px;
+	}
+
+	#accordion-list .panel-collapse li {
+		padding: 10px 20px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	li.panel-heading {
+		border-bottom: 1px solid #ddd !important;
+	}
+
+	.panel {
+		border-radius: 0px !important;
+	}
+	.panel-group {
+		margin-bottom: 0px;
+	}
+
+	a.permission_tab {
+		color: black !important;
+	}
+
+	a.permission_tab:hover {
+		background: rgba(0, 0, 0, 0.5) !important;
+	}
+
+	a.permission_tab:active {
+		background: rgba(0, 0, 0, 0.5) !important;
+	}
+
+	#permissions_wrapper {
+		border: 1px solid #ddd;
+		border-top: none;
+		box-sizing: border-box;
+	}
+</style>
+
+<script type="text/javascript">
+  function changeTabPanel(klass){
+    $('a.permission_tab.').removeClass('active');
+    $('a.permission_tab. ' + klass).addClass('active');
+  }
+
+  function changeActive(id) {
+  	  current_active = $(".active");
+  	  console.log(current_active);
+	  a = $(id);
+	  console.log(a);
+	  current_active.removeClass("active");
+	  a.addClass("active ");
+  }
+
+    function toggleAssociation(role_id, permission_id, i) {
+  $.ajax({
+          url: "/roles/" + role_id + "/role_permissions/toggle_association",
+          dataType: 'script',
+          type: "POST",
+          data: {
+            role_id: role_id,
+            permission_id: permission_id,
+            collapse_id: i
+          },
+          cache: false,
+          success: function(data) {
+            //$([document.documentElement, document.body]).animate({
+            //    scrollTop: $('li#list_permission_id_' + permission_id).offset().top -100
+            //}, 'fast');
+            //$('li#permission_id_' + permission_id).hide();
+  			$("#notice").html("<%= error_for_modal_js('Asignado / revocado correctamente', 'success') %>");
+          },
+          error: function(data){
+          	$("#notice").html("<%= error_for_modal_js('Error al revocar / asignar permiso', 'danger') %>");
+              if (data.status == 401 ){
+                  alert("---");
+              } else {
+                  alert("Error")
+              }
+          }
+      });
+}
+
+</script>

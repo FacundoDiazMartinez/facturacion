@@ -1,0 +1,46 @@
+<% if !(@role.name == "Administrador") %>
+<div class="card-group" id="accordion-list" role="tablist" aria-multiselectable="false">
+  <ul class="card card-fluid">
+  <% @friendly_names.each_with_index do |fn, i| %>
+    <li role="presentation" class="card-header" role="tab">
+        <a role="button" class="collapsible" data-toggle="collapse" href="#permission_collapse_<%= i %>" data-parent="#accordion-list" aria-expanded="false" aria-controls="permission_collapse_<%= i %>">
+          <%= fn %>
+        </a>
+      </li>
+      <div id="permission_collapse_<%= i %>" class="card-collapse collapse" role="tabpanel">
+        <ul class="card-body">
+          <% permission_collapse = @permissions.map{ |p| p if p.friendly_name.name == params[:friendly_name] }.compact.sort_by{ |p| p[:description] } %>
+          <% if !permission_collapse.blank? %>
+            <% permission_collapse.each_with_index do |permission, j| %>
+                <li id="list_permission_id_<%= permission[:id] %>">
+                  <div class="row">
+                    <div class="col">
+                    <%= permission[:description] %>
+                    </div>
+                    <div class="float-right">
+                      <% if can? :create, RolePermission %>
+                        <a href="#" class="btn btn-sm btn-icon btn-outline-secondary" onclick="toggleAssociation(<%= "#{@role.id}, #{permission[:id]}, #{i}" %>)"> <%= icon('fas', 'plus') %></a>
+                      <% end -%>
+                    </div>
+                  </div>
+                  <hr>
+
+                </li>
+            <% end %>
+          <% else %>
+            <div class="row">
+              <center>No hay permisos disponibles para asignar en esta categoria</center>
+            </div>
+          <% end %>
+        </ul>
+      </div>
+  <% end %>
+  </ul>
+</div>
+<% else %>
+  <center>
+    <h3>Este rol posee todos los permisos</h3>
+  </center>
+<% end %>
+
+

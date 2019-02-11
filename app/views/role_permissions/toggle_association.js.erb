@@ -1,0 +1,10 @@
+$("#role_permissions_wrapper").html("<%= j render 'role_permissions' %>");
+$("#permissions_wrapper").html("<%= j render 'permissions' %>");
+
+$("#permissions_wrapper").ready(function(){
+	$("#role_p_collapse_<%= params[:collapse_id] %>").collapse('toggle');
+	$("#permission_collapse_<%= params[:collapse_id] %>").collapse('toggle');
+	//"<%# params[:collapse_id] = nil %>"
+	$("#friendly_name_tag").val("<%= params[:friendly_name] %>")
+	remoteSubmit("#permissions_tag");
+});	

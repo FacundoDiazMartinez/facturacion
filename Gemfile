@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-#ruby '2.5.1'
+ruby '2.5.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.1'
@@ -32,7 +32,7 @@ gem 'barby', '~> 0.6.6'
 gem 'chunky_png'
 
 #GEMA WYSIWYG
-gem 'tinymce-rails'
+gem 'summernote-rails', '~> 0.8.10.0'
 
 #GEMA DE WICKED PDFKit
 gem 'wicked_pdf'

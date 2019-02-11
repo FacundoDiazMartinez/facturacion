@@ -1,0 +1,2 @@
+module SendedAdvertisementHelper
+end

@@ -9,8 +9,7 @@ class RolePermissionsController < ApplicationController
   # GET /role_permissions.json
   def index
     @friendly_names = Permission.joins(:friendly_name).includes(:friendly_name).order("friendly_names.name").all.map{ |p| [p.friendly_name.name]}.uniq.reduce(:+).compact
-
-    @role_permissions = @role.permissions.all.includes(:permission)
+    @role_permissions = @role.permissions.all.includes(:friendly_name)
     @permissions = Permission.all.includes(:friendly_name).map{ |p| p unless @role_permissions.map{ |rp| rp.id}.include?(p.id)}.compact
   end
 
@@ -65,7 +64,14 @@ class RolePermissionsController < ApplicationController
       else
         ## si no existe se guarda
         RolePermission.generate_new_role_permission(@role, @permission)
+
       end
+    end
+    respond_to do |format|
+      format.js {
+        index    
+        render :toggle_association
+      }
     end
   end
 

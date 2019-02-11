@@ -3,6 +3,7 @@
     <thead>
       <tr>
         <th>Número</th>
+        <th>Título</th>
         <th>Editado por</th>
         <th>Fecha actualización</th>
         <th>Fecha de envío</th>
@@ -16,9 +17,10 @@
       <% @advertisements.each do |advertisement| %>
       <tr>
         <td><%= advertisement.id %></td>
+        <td><%= advertisement.title %></td>
         <td><%= advertisement.user.name %></td>
         <td><%= advertisement.updated_at.strftime("%d/%m/%Y") %></td>
-        <td><%= l(advertisement.delivery_date) %></td>
+        <td><%= advertisement.delivery_date %></td>
         <td><%= advertisement.state %></td>
         <td>
           <%= link_to icon('fas', 'eye').html_safe, advertisement_path(advertisement.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>

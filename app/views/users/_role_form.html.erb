@@ -5,6 +5,7 @@
   </button>
 </div>
 <%= nested_form_for @user  do |f| %>
+
   <div class="modal-body">
     <center>
       <%= f.link_to_add "#{icon('fas', 'plus')} Agregar rol".html_safe ,:user_roles, class: 'btn btn-primary', data:{target: '#user_roles_fields'} %>
@@ -25,6 +26,7 @@
       <% end %>
     </div>
   </div>
+
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
     <%= save_button %>

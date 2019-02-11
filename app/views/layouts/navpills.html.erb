@@ -13,8 +13,13 @@
 		    	<% end %>
 		  	</li>
 
-			<li class="nav-item">
-				<%= link_to "<span class='nav-span'> Personal</span> #{icon('fas', 'users')}".html_safe, users_path, class: 'nav-link' if can? :read, User %>
+			<li class="nav-item dropdown">
+				<%= link_to "<span class='nav-span'> Personal</span> #{icon('fas', 'users')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, User %>
+				<div class="dropdown-menu">
+				<%= link_to "<span class='nav-span'> Roles</span> #{icon('fas', 'user-tie')}".html_safe, roles_path, class: 'dropdown-item', title: "Roles" if can? :read, Role %>
+				<%= link_to "<span class='nav-span'> Personal</span> #{icon('fas', 'users')}".html_safe, users_path, class: 'dropdown-item', title: "Personal" if can? :read, User %>
+				</div>
+
 			</li>
 
 		  	<li class="nav-item dropdown">
@@ -28,7 +33,7 @@
 			</li>
 
 		  	<li class="nav-item dropdown">
-    			<%= link_to "<span class='nav-span'>Compras</span> #{icon('fas', 'shopping-cart')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
+    			<%= link_to "<span class='nav-span'>Compras</span> #{icon('fas', 'shopping-cart')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, PurchaseOrder %>
    				<div class="dropdown-menu">
    					<%= link_to "<span class='nav-span'>Ordenes de compra</span> #{icon('fas', 'shopping-cart')}".html_safe, purchase_orders_path, class: 'dropdown-item', title: "Ordenes de compra" if can? :read, PurchaseOrder %>
    					<%= link_to "<span class='nav-span'>Remitos</span> #{icon('fas', 'file-alt')}".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos" if can? :read, ArrivalNote %>

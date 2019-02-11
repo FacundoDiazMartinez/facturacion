@@ -4,7 +4,7 @@ class CreateAdvertisements < ActiveRecord::Migration[5.2]
       t.string :title, null: false
       t.text :body
       t.string :image1
-      t.date :delivery_date, null: false
+      t.date :delivery_date
       t.boolean :active, default: true, null: false
       t.string :state, default: "No enviado", null: false
 

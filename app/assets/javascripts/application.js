@@ -29,6 +29,7 @@
 //= require activestorage
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
+
 //= require_tree .
 //= require autocomplete-rails
 

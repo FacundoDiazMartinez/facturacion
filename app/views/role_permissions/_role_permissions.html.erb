@@ -1,24 +1,44 @@
-<% if (@role.id != 1) %>
-<div class="card-group" id="accordion-list" role="tablist" aria-multiselectable="false">
+<% if !(@role.name == "Administrador") %>
+<div id="accordion-list" class="accordion">
   <ul class="card card-fluid">
+    <%= hidden_field_tag :friendly_name_tag %>
+    <%= hidden_field_tag :friendly_name_position_id_tag, params[:collapse_id] %>
     <% @friendly_names.each_with_index do |fn, i| %>
-      <li role="presentation" class="card-header" role="tab">
-        <a role="button" class="collapsible" data-toggle="collapse" href="#collapse_<%= i %>" data-parent="#accordion-list" aria-expanded="false" aria-controls="collapse_<%= i %>">
-          <%= fn %>
-        </a>
-      </li>
-      <div id="collapse_<%= i %>" class="card-collapse collapse" role="tabpanel">
-        <ul class="card-body">
-          <% @role_permissions.map{ |p| p if p.friendly_name.name == fn }.compact.sort_by{ |p| p[:description] }.each_with_index do |permission, j| %>
-              <li id="permission_id_<%= permission[:id] %>">
-                <%= permission[:description] %>
-                <div class="float-right">
-                  <% if can? :destroy, RolePermission %>
-                    <a href="#" onclick="toggleAssociation(<%= "#{@role.id}, #{permission[:id]}" %>)">Revocar</a>
-                  <% end %>
-                </div>
-              </li>
-              <br>
+      <% roles_each = @role_permissions.map{ |p| p if p.friendly_name.name == fn }.compact.sort_by{ |p| p[:description] } %>
+      <a role="button" data-toggle="collapse" data-target="#role_p_collapse_<%= i %>" aria-expanded="false" aria-controls="role_p_collapse_<%= i %>" onclick="fillVarsAndToggle('<%= fn %>', <%= i %>)">
+        <li role="presentation" class="card-header" >
+          <div class="row">
+            <div class="col-10" style="text-align: center;">
+              <strong> <%= fn.upcase %> </strong>
+            </div>
+            <div class="col-2" style="text-align: right;">
+              <span class="badge badge-pill badge-dark"><%= roles_each.count %></span>
+            </div>
+          </div>
+        </li>
+      </a>
+      <div id="role_p_collapse_<%= i %>" class="card-collapse collapse" data-parent="#accordion-list">
+        <ul class="card-body">          
+          <% if !roles_each.blank? %>
+            <% roles_each.each_with_index do |permission, j| %>
+                <li id="role_permission_id_<%= permission[:id] %>" class="permission_list">
+                  <div class="row">
+                    <div class="col-10" style="text-align: center;">
+                      <%= permission[:description] %>
+                    </div>
+                    <div class="col-2" style="text-align: right;">
+                      <% if can? :destroy, RolePermission %>
+                        <a href="#" class="btn btn-sm btn-icon btn-outline-secondary" onclick="toggleAssociation(<%= "#{@role.id}, #{permission[:id]}, #{i}, '#{fn}'"%>)"><%= icon('fas', 'trash') %></a>
+                      <% end %>
+                    </div>
+                  </div>
+                </li>
+                <hr>
+            <% end %>
+          <% else %>
+            <div class="row">
+              <center>No hay permisos disponibles para revocar en esta categoria</center>
+            </div>
           <% end %>
         </ul>
       </div>
@@ -27,34 +47,27 @@
 </div>
 <% else %>
   <center>
-    <h3>Este rol posee todos los permisos</h3>
+    <h4>Este rol posee todos los permisos</h4>
   </center>
 <% end %>
 
 
 <script type="text/javascript">
-function toggleAssociation(role_id, permission_id) {
-  $.ajax({
-          url: "/roles/" + role_id + "/role_permissions/toggle_association",
-          type: "POST",
-          data: {
-            role_id: role_id,
-            permission_id: permission_id
-          },
-          cache: false,
-          success: function(data) {
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $('li#permission_id_' + permission_id).offset().top -100
-            }, 'fast');
-            $('li#permission_id_' + permission_id).hide();
-          },
-          error: function(data){
-              if (data.status == 401 ){
-                  alert("---");
-              } else {
-                  alert("Error")
-              }
-          }
-      });
-}
+
+  function fillVarsAndToggle(friendly_name, position) {
+      
+    //checkToggles(position);
+  
+    if ($('#role_p_collapse_' + position).hasClass("show"))
+    {
+      $("#permissions_wrapper").html("<center> <h4> Seleccione una categoria </h4> </center>");
+    }
+    else {
+      $("#friendly_name_tag").val(friendly_name); 
+      $("#friendly_name_position_id_tag").val(position);  
+      remoteSubmit("#permissions_tag");
+    }
+
+  }
+
 </script>
