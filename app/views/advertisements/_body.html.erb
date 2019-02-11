@@ -1,5 +1,5 @@
 <div class="card">
-  <div class="card-body">
+  <div class="card-body shadow">
     <div id="title">
         <b>Título: </b> <%= @advertisement.title %> - <b>Estado: </b> <%= @advertisement.state %>
       <hr>
@@ -20,6 +20,6 @@
 <center>
   <% if @advertisement.state == "No enviado" && current_user.has_advertisement_management_role? && @advertisement.persisted? %>
     <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-danger' %>
-    <%= button_tag "#{icon('fas', 'envelope ')} Enviar".html_safe, type: 'button', onclick: 'sendAdvertisement()', class: 'btn btn-primary' %>
+    <%= link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, new_sended_advertisement_path(:ad => @advertisement.id), method: :get, class: 'btn btn-primary' %>
   <% end %>
 </center>

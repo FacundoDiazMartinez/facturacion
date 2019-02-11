@@ -11,6 +11,8 @@ class SendedAdvertisementsController < ApplicationController
   def create
     advertisement = current_user.company.advertisements.find(params[:sended_advertisement][:advertisement_id])
     @sended_advertisement = advertisement.sended_advertisement.new(sended_advertisements_params)
+    pp @sended_advertisement
+    pp "////////////////////////////////////////////////////////"
     respond_to do |format|
       if @sended_advertisement.save
         format.html { redirect_to advertisements_path, notice: 'La publicidad fue enviada con éxito.' }

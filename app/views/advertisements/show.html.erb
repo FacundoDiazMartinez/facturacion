@@ -3,4 +3,23 @@
   <div id="form">
   	<%= render 'body', advertisement: @advertisement %>
   </div>
+
+  <% if @advertisement.sended_advertisement.any? %>
+    <% @advertisement.sended_advertisement.each do |s| %>
+
+    <div class="card">
+      <div class="card-body shadow">
+      <b>Enviado el:</b> <%= s.created_at %>
+        <br>
+        <b>Destinatarios:</b>
+        <% s.clients_data.split(',').each do |c| %>
+          <% Client.find(c).client_contacts.each do |contact| %>
+            <%= contact.name %> < <%= contact.email %> > -
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <% end %>
+  <% end %>
 </div>

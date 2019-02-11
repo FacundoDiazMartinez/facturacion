@@ -22,63 +22,20 @@
 <% end %>
 
 
-
-
-
-
 <script>
-var idsArray = [];
 
-$(document).on('ready',function(){
- initialize();
-})
+  var idsArray = [];
 
-$(document).on('pjax:complete', function() {
- initialize();
-})
-
-
-function initialize() {
-
-}
-
-$(document).on("change", "input", function(){
-  if ($(this).is(":checked")) {
-    idsArray.push($(this).val());
-  } else {
-    // idsArray.remove($(this).val());
-    var index = idsArray.indexOf($(this).val());
-    idsArray.splice(index, 1);
-  }
-  $("#sended_advertisement_clients_data").val(idsArray.join(", "));
-})
-
-function sendByEmail() {
-
-  // $.ajax({
-  //   type: "Post",
-  //   url: "<%= sended_advertisements_path %>",
-  //   data: {data: idsArray, ad: "<%= @advertisement.id %>"},
-  //   datatype :'html',    //give datatype here
-  //   success: function(data){
-  //     console.log("*************************************");
-  //     console.log(data);
-  //     $(document).html(data);   //provide target div id here
-  //   }
-  // });
-
-  $.post("<%= sended_advertisements_path %>", {data: idsArray, ad: "<%= @advertisement.id %>"},null,"json").done(function(data){
-    console.log("*************************************");
-    console.log(data);
-    // window.location.replace(data);
-    // alert("asd");
-    // $("body").html(data);
-    if(data.redirectUrl) {
-      alert('Only Numerical data allowed');
-      window.location.href = data.redirectUrl;
+  $(document).on("change", "input", function(){
+    if ($(this).is(":checked")) {
+      idsArray.push($(this).val());
+    } else {
+      // idsArray.remove($(this).val());
+      var index = idsArray.indexOf($(this).val());
+      idsArray.splice(index, 1);
     }
-  });
-}
+    $("#sended_advertisement_clients_data").val(idsArray.join(", "));
+  })
 
 
 </script>
