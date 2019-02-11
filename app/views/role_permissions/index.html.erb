@@ -1,28 +1,41 @@
-<div class="p-4">
-  <%= title_helper "Permisos del rol #{@role.name}" %>
-		
-	<div class="page-section">
-	    <div class="card card-fluid">
-			<div class="card-header">
-				<ul class="nav nav-tabs">
-				  <li class="nav-item">
-				    <%= link_to "Asignados", role_role_permissions_path(view: 'role_permissions'), onclick: "changeActive('#role_permissions')", id: "role_permissions", remote: true, class: 'nav-link active' %>
-				  </li>
-				  <li class="nav-item" >
-				    <%= link_to "Lista de permisos", role_role_permissions_path(view: 'permissions'), onclick: "changeActive('#permissions')", remote: true, id: "permissions", class: 'nav-link' %>
-				  </li>
-				</ul>
 
-			</div>
-			<div class="card-body">
-				<div id="permissions_wrapper">
-					<%= render 'role_permissions' %>
+	<div class="p-4">
+	  	
+	  <%= title_helper "Permisos del Rol: #{@role.name}" %>
+	  	<div id="notice">
+	  		
+	  	</div>
+		<div class="page-section">
+			<%= form_tag role_role_permissions_path(@role), id: 'permissions_tag', remote: true do %>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-xs-12">
+					    <div class="card card-fluid">
+							<div class="card-header">
+								<center><strong>ASIGNADOS</strong></center>
+							</div>
+							<div class="card-body">
+								<div id="role_permissions_wrapper">
+									<%= render 'role_permissions' %>
+								</div>
+							</div>		
+						</div>
+					</div>
+
+					<div class="col-lg-6 col-md-6 col-xs-12">
+					    <div class="card card-fluid">
+							<div class="card-header">
+								<center><strong>PERMISOS A ASIGNAR</strong></center>
+							</div>
+							<div id="permissions_wrapper" class="card-body">
+								<%= render 'permissions' %>
+							</div>		
+						</div>
+					</div>
 				</div>
-			</div>
+			<% end %>
 		</div>
-
 	</div>
-</div>
+
 <div class="modal fade bd-example-modal-lg" id="newRolePermissionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -31,39 +44,6 @@
     </div>
   </div>
 </div>
-
-<style media="screen">
-  .nav-tabs.nav-justified {
-    margin-bottom: 0px !important;
-  }
-	ul {
-		text-align:left;
-		list-style: none;
-		padding-left: 0px;
-	}
-
-	#accordion-list .panel-collapse li {
-		padding: 10px 20px;
-		border-bottom: 1px solid #ddd;
-	}
-
-	li.panel-heading {
-		border-bottom: 1px solid #ddd !important;
-	}
-
-	.panel {
-		border-radius: 0px !important;
-	}
-	.panel-group {
-		margin-bottom: 0px;
-	}
-
-	#permissions_wrapper {
-		border: 1px solid #ddd;
-		border-top: none;
-		box-sizing: border-box;
-	}
-</style>
 
 <script type="text/javascript">
   function changeTabPanel(klass){
@@ -80,4 +60,39 @@
 	  a.addClass("active ");
   }
 
+  function toggleAssociation(role_id, permission_id, i, friendly_name) {
+  $.ajax({
+          url: "/roles/" + role_id + "/role_permissions/toggle_association",
+          dataType: 'script',
+          type: "POST",
+          data: {
+            role_id: role_id,
+            permission_id: permission_id,
+            collapse_id: i,
+            friendly_name: friendly_name
+          },
+          cache: false,
+          success: function(data) {
+            //$([document.documentElement, document.body]).animate({
+            //    scrollTop: $('li#list_permission_id_' + permission_id).offset().top -100
+            //}, 'fast');
+            //$('li#permission_id_' + permission_id).hide();
+  			$("#notice").html("<%= error_for_modal_js('Asignado / revocado correctamente', 'success') %>");
+          },
+          error: function(data){
+			$("#notice").html("<%= error_for_modal_js('Error al revocar / asignar permiso', 'danger') %>");
+			if (data.status == 401 ){
+			  alert("---");
+			} else {
+			  //alert("Error")
+			}
+          }
+      });
+}
+
 </script>
+
+<style media="screen">
+	
+
+</style>

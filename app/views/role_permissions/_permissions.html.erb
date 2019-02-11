@@ -1,54 +1,53 @@
-<div class="card-group" id="accordion-list" role="tablist" aria-multiselectable="false">
-  <ul class="card card-fluid">
-    <% @friendly_names.each_with_index do |fn, i| %>
-      <li role="presentation" class="card-header" role="tab">
-        <a role="button" class="collapsible" data-toggle="collapse" href="#collapse_<%= i %>" data-parent="#accordion-list" aria-expanded="false" aria-controls="collapse_<%= i %>">
-          <%= fn %>
-        </a>
-      </li>
-      <div id="collapse_<%= i %>" class="card-collapse collapse" role="tabpanel">
-        <ul class="card-body">
-          <% @permissions.map{ |p| p if p.friendly_name.name == fn }.compact.sort_by{ |p| p[:description] }.each_with_index do |permission, j| %>
 
-              <li id="permission_id_<%= permission[:id] %>">
-                <%= permission[:description] %>
-                <div class="float-right">
-                  <% if can? :create, RolePermission %>
-                    <a href="#" onclick="toggleAssociation(<%= "#{@role.id}, #{permission[:id]}" %>)">Asignar</a>
-                  <% end -%>
-                </div>
+
+<% if !(@role.name == "Administrador") %>
+  <% if !params[:friendly_name_tag].blank? %>
+  <% permission_collapse = @permissions.map{ |p| p if p.friendly_name.name == params[:friendly_name_tag] }.compact.sort_by{ |p| p[:description] } %>
+  <ul class="card card-fluid">  
+      <div role="presentation" class="card-header" role="tab" >
+        <div class="row">
+          <div class="col-10" style="text-align: center;">   
+            <strong> <%= params[:friendly_name_tag].upcase %> </strong>
+          </div>   
+          <div class="col-2" style="text-align: right">
+            <span class="badge badge-pill badge-dark"><%= permission_collapse.count %></span>
+          </div>
+        </div>
+      </div>
+      <div id="permission_collapse_<%= params[:friendly_name_position_id_tag] %>">
+        <ul class="card-body">          
+          <% if !permission_collapse.blank? %>
+            <% permission_collapse.each_with_index do |permission, j| %>
+                <li id="list_permission_id_<%= permission[:id] %>" class="permission_list">
+                  <div class="row">
+                    <div class="col-10" style="text-align: center;">
+                    <%= permission[:description] %>
+                    </div>
+                    <div class="col-2" style="text-align: right;">
+                      <% if can? :create, RolePermission %>
+                        <a href="#" class="btn btn-sm btn-icon btn-outline-secondary" onclick="toggleAssociation(<%= @role.id %>, <%= permission[:id] %>, <%= params[:friendly_name_position_id_tag] %>, '<%= params[:friendly_name_tag].to_s %>')"> <%= icon('fas', 'plus') %></a>
+                      <% end -%>
+                    </div>
+                  </div>
+                </li>
                 <hr>
-              </li>
+            <% end %>
+          <% else %>
+            <div class="row">
+              <center>No hay permisos disponibles para asignar en esta categoria</center>
+            </div>
           <% end %>
         </ul>
       </div>
-    <% end %>
   </ul>
-</div>
+  <% else %>
+    <center>
+    <h4>Seleccione una categoría</h4>
+  </center>
+  <% end %>
+<% else %>
+  <center>
+      <h4>Este rol posee todos los permisos</h4>
+    </center>
+<% end -%>
 
-<script type="text/javascript">
-function toggleAssociation(role_id, permission_id) {
-  $.ajax({
-          url: "/roles/" + role_id + "/role_permissions/toggle_association",
-          type: "POST",
-          data: {
-            role_id: role_id,
-            permission_id: permission_id
-          },
-          cache: false,
-          success: function(data) {
-            $([document.documentElement, document.body]).animate({
-                scrollTop: $('li#permission_id_' + permission_id).offset().top -100
-            }, 'fast');
-            $('li#permission_id_' + permission_id).hide();
-          },
-          error: function(data){
-              if (data.status == 401 ){
-                  alert("---");
-              } else {
-                  alert("Error")
-              }
-          }
-      });
-}
-</script>

@@ -1,3 +1,79 @@
 // Place all the styles related to the role_permissions controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+  	
+	ul.card  {
+		text-align:left;
+		list-style: none;
+		padding-left: 0px;
+	}
+
+
+	li.card-header {
+		list-style: none;
+	}
+
+	#accordion-list .panel-collapse li {
+		padding: 10px 20px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	li.panel-heading {
+		border-bottom: 1px solid #ddd !important;
+	}
+
+	.panel {
+		border-radius: 0px !important;
+	}
+	.panel-group {
+		margin-bottom: 0px;
+	}
+
+	a.permission_tab {
+		color: black !important;
+	}
+
+	a.permission_tab:hover {
+		background: rgba(0, 0, 0, 0.5) !important;
+	}
+
+	a.permission_tab:active {
+		background: rgba(0, 0, 0, 0.5) !important;
+	}
+
+	#permissions_wrapper {
+		border: 1px solid #ddd;
+		border-top: none;
+		box-sizing: border-box;
+	}
+
+	#role_permissions_wrapper {
+		border: 1px solid #ddd;
+		border-top: none;
+		box-sizing: border-box;
+	}
+
+	a.collapsible {
+		color: black !important;
+
+	}
+
+	li.card-header:hover {
+		background: rgba(0, 0, 0, 0.5) !important;
+
+	}
+
+	li.permission_list {
+		text-align:left;
+		list-style: none;
+		margin-left: 5px;
+		margin-right: 5px;
+	}
+
+	span.badge {
+		font-size: 95% !important;
+	}
+
+
+	
