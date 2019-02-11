@@ -6,10 +6,14 @@
     <% @friendly_names.each_with_index do |fn, i| %>
       <% roles_each = @role_permissions.map{ |p| p if p.friendly_name.name == fn }.compact.sort_by{ |p| p[:description] } %>
       <a role="button" data-toggle="collapse" data-target="#role_p_collapse_<%= i %>" aria-expanded="false" aria-controls="role_p_collapse_<%= i %>" onclick="fillVarsAndToggle('<%= fn %>', <%= i %>)">
-        <li role="presentation" class="card-header" style="text-align: center;">
-          <strong> <%= fn.upcase %> </strong>
-          <div class="float-right">
-            <span class="badge badge-pill badge-dark"><%= roles_each.count %></span>
+        <li role="presentation" class="card-header" >
+          <div class="row">
+            <div class="col-10" style="text-align: center;">
+              <strong> <%= fn.upcase %> </strong>
+            </div>
+            <div class="col-2" style="text-align: right;">
+              <span class="badge badge-pill badge-dark"><%= roles_each.count %></span>
+            </div>
           </div>
         </li>
       </a>
@@ -19,10 +23,10 @@
             <% roles_each.each_with_index do |permission, j| %>
                 <li id="role_permission_id_<%= permission[:id] %>" class="permission_list">
                   <div class="row">
-                    <div class="col">
+                    <div class="col-10" style="text-align: center;">
                       <%= permission[:description] %>
                     </div>
-                    <div class="float-right">
+                    <div class="col-2" style="text-align: right;">
                       <% if can? :destroy, RolePermission %>
                         <a href="#" class="btn btn-sm btn-icon btn-outline-secondary" onclick="toggleAssociation(<%= "#{@role.id}, #{permission[:id]}, #{i}, '#{fn}'"%>)"><%= icon('fas', 'trash') %></a>
                       <% end %>
@@ -43,7 +47,7 @@
 </div>
 <% else %>
   <center>
-    <h3>Este rol posee todos los permisos</h3>
+    <h4>Este rol posee todos los permisos</h4>
   </center>
 <% end %>
 

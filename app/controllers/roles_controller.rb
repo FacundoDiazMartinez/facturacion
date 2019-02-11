@@ -5,7 +5,7 @@ class RolesController < ApplicationController
   # GET /roles.json
   def index
     @roles = Role.all.paginate(per_page: 10, page: params[:page])
-  
+
     ####asdasd@gmail.com
     ##admin123
   end
@@ -31,7 +31,7 @@ class RolesController < ApplicationController
     @role.company_id = current_user.company_id
     respond_to do |format|
       if @role.save
-        format.html { redirect_to users_path, notice: 'Rol creado exitosamente' }
+        format.html { redirect_to roles_path, notice: 'Rol creado exitosamente' }
         format.json { render :show, status: :created, location: @role }
       else
         format.html { render :new }

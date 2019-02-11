@@ -1,12 +1,17 @@
 
-<% if !params[:friendly_name_tag].blank? %>
-  <% if !(@role.name == "Administrador") %>
+
+<% if !(@role.name == "Administrador") %>
+  <% if !params[:friendly_name_tag].blank? %>
   <% permission_collapse = @permissions.map{ |p| p if p.friendly_name.name == params[:friendly_name_tag] }.compact.sort_by{ |p| p[:description] } %>
   <ul class="card card-fluid">  
-      <div role="presentation" class="card-header" role="tab" style="text-align: center;">
-        <strong> <%= params[:friendly_name_tag].upcase %> </strong>
-        <div class="float-right">
-          <span class="badge badge-pill badge-dark"><%= permission_collapse.count %></span>
+      <div role="presentation" class="card-header" role="tab" >
+        <div class="row">
+          <div class="col-10" style="text-align: center;">   
+            <strong> <%= params[:friendly_name_tag].upcase %> </strong>
+          </div>   
+          <div class="col-2" style="text-align: right">
+            <span class="badge badge-pill badge-dark"><%= permission_collapse.count %></span>
+          </div>
         </div>
       </div>
       <div id="permission_collapse_<%= params[:friendly_name_position_id_tag] %>">
@@ -15,18 +20,17 @@
             <% permission_collapse.each_with_index do |permission, j| %>
                 <li id="list_permission_id_<%= permission[:id] %>" class="permission_list">
                   <div class="row">
-                    <div class="col">
+                    <div class="col-10" style="text-align: center;">
                     <%= permission[:description] %>
                     </div>
-                    <div class="float-right">
+                    <div class="col-2" style="text-align: right;">
                       <% if can? :create, RolePermission %>
                         <a href="#" class="btn btn-sm btn-icon btn-outline-secondary" onclick="toggleAssociation(<%= @role.id %>, <%= permission[:id] %>, <%= params[:friendly_name_position_id_tag] %>, '<%= params[:friendly_name_tag].to_s %>')"> <%= icon('fas', 'plus') %></a>
                       <% end -%>
                     </div>
                   </div>
-                  <hr>
-
                 </li>
+                <hr>
             <% end %>
           <% else %>
             <div class="row">
@@ -38,12 +42,12 @@
   </ul>
   <% else %>
     <center>
-      <h4>Este rol posee todos los permisos</h4>
-    </center>
+    <h4>Seleccione una categoría</h4>
+  </center>
   <% end %>
 <% else %>
   <center>
-    <h4>Seleccione una categoría</h4>
-  </center>
+      <h4>Este rol posee todos los permisos</h4>
+    </center>
 <% end -%>
 
