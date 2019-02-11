@@ -50,7 +50,7 @@ $(document).on("change", "input", function(){
     var index = idsArray.indexOf($(this).val());
     idsArray.splice(index, 1);
   }
-  $("#sended_advertisement_clients_data").val(idsArray);
+  $("#sended_advertisement_clients_data").val(idsArray.join(", "));
 })
 
 function sendByEmail() {
