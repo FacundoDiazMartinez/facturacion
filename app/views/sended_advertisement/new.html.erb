@@ -12,9 +12,19 @@
   </div>
 </div>
 
-<center>
-  <%= button_tag "#{icon('fas', 'envelope')} Enviar".html_safe, type: 'button', onclick: 'sendByEmail()', class: 'btn btn-primary' %>
-</center>
+<%= form_for @sended_advertisement do |form| %>
+
+  <%= hidden_field_tag :emails %>
+  <%= form.hidden_field :advertisement_id %>
+  <center>
+    <%= button_tag "#{icon('fas', 'envelope')} Enviar".html_safe, type: 'submit', class: 'btn btn-primary' %>
+  </center>
+<% end %>
+
+
+
+
+
 
 <script>
 var idsArray = [];
@@ -40,12 +50,33 @@ $(document).on("change", "input", function(){
     var index = idsArray.indexOf($(this).val());
     idsArray.splice(index, 1);
   }
+  $("#emails").val(idsArray);
 })
 
 function sendByEmail() {
-  $.post("<%= sended_advertisement_index_path %>", {data: idsArray, ad: "<%= @advertisement.id %>"}).done(function(data){
+
+  // $.ajax({
+  //   type: "Post",
+  //   url: "<%= sended_advertisement_index_path %>",
+  //   data: {data: idsArray, ad: "<%= @advertisement.id %>"},
+  //   datatype :'html',    //give datatype here
+  //   success: function(data){
+  //     console.log("*************************************");
+  //     console.log(data);
+  //     $(document).html(data);   //provide target div id here
+  //   }
+  // });
+
+  $.post("<%= sended_advertisement_index_path %>", {data: idsArray, ad: "<%= @advertisement.id %>"},null,"json").done(function(data){
+    console.log("*************************************");
     console.log(data);
-    $(document).html(data);
+    // window.location.replace(data);
+    // alert("asd");
+    // $("body").html(data);
+    if(data.redirectUrl) {
+      alert('Only Numerical data allowed');
+      window.location.href = data.redirectUrl;
+    }
   });
 }
 
