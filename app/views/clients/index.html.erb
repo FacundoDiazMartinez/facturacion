@@ -26,6 +26,22 @@
             <%= text_field_tag :document_number, params[:document_number], class: 'form-control', placeholder: 'Buscar por documento', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
           <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <!-- BUSCAR POR VENCIMIENTO -->
+            <div class="input-group col">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><%= icon('fas', 'list') %></div>
+              </div>
+              <%= select_tag :expired, options_for_select([['Vencido', true], ['No vencido',false]]),{class: 'form-control', include_blank: "Seleccionar (Vencimiento)" , onchange: 'remoteSubmit("#search_form")'} %>
+            </div>
+          <!-- BUSCAR POR VENCIMIENTO -->
+          <!-- BUSCAR POR CTA. CTE. -->
+            <div class="input-group col">
+              <div class="input-group-prepend">
+                <div class="input-group-text"><%= icon('fas', 'list') %></div>
+              </div>
+              <%= select_tag :valid_for_account, options_for_select([['Habilitado', true], ['No habilitado',false]]),{class: 'form-control', include_blank: "Seleccionar (Cta.Cte.)" , onchange: 'remoteSubmit("#search_form")'} %>
+            </div>
+          <!-- BUSCAR POR CTA. CTE. -->
         <% end %>
       </div>
       <div class="card-body">

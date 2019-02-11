@@ -13,6 +13,9 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+//= require jquery.validate
+//= require jquery.pjax
+//= require jquery.validate.localization/messages_es
 //= require main-mockup
 //= require private_pub
 //= require jquery_nested_form
@@ -26,12 +29,14 @@
 //= require activestorage
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
+//= require summernote/summernote-bs4.min
+//= require summernote/lang/summernote-es-ES
 //= require_tree .
 //= require autocomplete-rails
 
 $(document).ready(function() {
 
-  //$(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]');
+  $(document).pjax('a:not([data-remote]):not([data-behavior]):not([data-skip-pjax])', '[data-pjax-container]');
 
   $('btn').on('click', function() {
     var $this = $(this);
@@ -45,11 +50,12 @@ $(document).ready(function() {
     }, 2000);
   });
 
-  $("#image").on("click", function(){
-    document.getElementById('file_input').click();
+  $(document).on("click","#image", function(){
+    $('#file_input').click();
   })
 
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+
 
   $('.toogle').bootstrapToggle();
 
@@ -62,6 +68,27 @@ $(document).ready(function() {
   });
 });
 
+
+$(document).on("keyup", "input.ui-autocomplete-input", function(e){
+  target = $($(this).data("id-element"))
+  if (target.length != 0){
+    target.val("")
+  }
+});
+
+$(document).on('pjax:complete', function() {
+  $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+
+  $('.toggle').bootstrapToggle();
+
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoclose: true,
+      startView: 2
+  });
+})
 
 function remoteSubmit(form_id){
   form = $(form_id);
@@ -81,7 +108,7 @@ function reloadLocality(province, dropdown){
   });
 };
 
-$(function() {
+$(document).on('pjax:complete', function() {
   $('.directUpload').find("input:file").each(function(i, elem) {
     var fileInput    = $(elem);
     var form         = $(fileInput.parents('form:first'));
@@ -122,6 +149,47 @@ $(function() {
   });
 });
 
+$(document).on("ready", function(){
+  $('.directUpload').find("input:file").each(function(i, elem) {
+    var fileInput    = $(elem);
+    var form         = $(fileInput.parents('form:first'));
+    var submitButton = form.find('input[type="submit"]');
+    fileInput.fileupload({
+      fileInput:       fileInput,
+      url:             form.data('url'),
+      type:            'POST',
+      autoUpload:       true,
+      formData:         form.data('form-data'),
+      paramName:        'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
+      dataType:         'XML',  // S3 returns XML if success_action_status is set to 201
+      replaceFileInput: true,
+      start: function (e) {
+        submitButton.prop('disabled', true);
+        $('.caption').slideDown(250); //.fadeIn(250)
+      },
+      done: function(e, data) {
+        submitButton.prop('disabled', false);
+        // extract key and generate URL from response
+        var key   = $(data.jqXHR.responseXML).find("Key").text();
+        var url   = 'https://' + form.data('host') + '/litecode.facturacion/' + key;
+
+        // create hidden field
+        if (!$('#hidden_photo').length){
+          var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url, id: 'hidden_photo' })
+        }else {
+          $("#hidden_photo").val(url);
+        }
+        form.append(input);
+        $("#image").attr("src", url);
+        $('.caption').slideUp(250); //.fadeIn(250)
+      },
+      fail: function(e, data) {
+        submitButton.prop('disabled', false);
+      }
+    });
+  });
+})
+
 
 
 function populateSelect(data, dropdown){
@@ -133,15 +201,18 @@ function populateSelect(data, dropdown){
 	});
 };
 
-function setProduct(product, index){
+function setProduct(product, index, depot_id){
   $("#"+index).find("input.product_id").val(product["id"]);
   $("#"+index).find("input.code").val(product["code"]);
   $("#"+index).find("input.name").val(product["name"]);
   $("#"+index).find("input.name").prop('title', product["name"]);
-  $("#"+index).find("input.price").val(product["price"]);
+  $("#"+index).find("input.price").val(product["net_price"]);
   $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
   $("#"+index).find("input.subtotal").val(product["price"]);
+  $("#"+index).find("input.supplier_code").val(product["supplier_code"]);
+  $("#"+index).find("select.depot_id").val(depot_id);
   $("#"+index).find("input.prodPrice").val(product["cost_price"]).trigger("change");
+
 
   subtotal = $("#"+index).find("input.subtotal");
   $("#search_product_modal").modal('hide')

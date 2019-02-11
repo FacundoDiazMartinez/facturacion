@@ -10,43 +10,79 @@
       </ul>
     </div>
   <% end %>
+<%= form.hidden_field :company_id, value: current_user.company_id %>
 
-  <div class="field">
-    <%= form.label :invoice_id %>
-    <%= form.text_field :invoice_id %>
-  </div>
+<div class="card shadow">
+  <div class="card-body">
+    <div class="row">
+      <!-- PRIMERA COLUMNA -->
+        <div class="col-sm">
+          <div class="form-group">
+            <%= form.label :invoice_id, "Factura" %>
+            <%= autocomplete_field_tag :invoice_comp_number, params[:invoice_comp_number] || form.object.invoice_comp_number, autocomplete_invoice_receipts_path, class: 'form-control receipt_associated-invoice-autocomplete_field', id_element: "#receipt_invoice_id", placeholder: "Número de Factura", disabled: !@receipt.editable? %>
+            <%= form.hidden_field :invoice_id %>
+          </div>
+          <div class="form-group">
+            <%= form.label :date, "Fecha" %>
+            <%= form.text_field :date, class: 'form-control datepicker', required: true, disabled: !@receipt.editable? %>
+          </div>
+          <div class="form-group">
+            <%= form.label :sale_point_id, "Punto de venta" %>
+            <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @receipt.sale_point_id), {}, {class: 'form-control', disabled: !@receipt.editable?} %>
+          </div>
+        </div>
+      <!-- FIN PRIMERA COLUMNA-->
 
-  <div class="field">
-    <%= form.label :client_id %>
-    <%= form.text_field :client_id %>
-  </div>
+      <!-- SEGUNDA COLUMNA -->
+        <div class="col-sm">
+          <div id="client_form">
+            <%= render 'client_column' %>
+          </div>
+          <%= form.hidden_field :client_id, value: @client.id %>
+          <div class="form-group">
+            <%= form.label :state, "Estado" %>
+            <%= form.text_area :state, class: 'form-control', rows: 1 , disabled: true%>
+          </div>
+        </div>
+      <!-- SEGUNDA COLUMNA -->
 
-  <div class="field">
-    <%= form.label :active %>
-    <%= form.check_box :active %>
+      <!-- TERCERA COLUMNA -->
+        <div class="col-sm">
+          <div class="form-group">
+            <%= form.label :number, "Número de recibo" %>
+            <%= form.text_field :number, class: 'form-control', required: true , disabled: !@receipt.editable?%>
+          </div>
+          <div class="form-group">
+            <%= form.label :cbte_tipo, "Tipo de recibo" %>
+            <%= select_tag :expired, options_for_select([['Recibo X', '00'], ['Devolución','99']]),{class: 'form-control', include_blank: "Seleccionar tipo de recibo"} %>
+          </div>
+          <div class="form-group">
+            <%= form.label :total, "Total" %>
+            <%= form.number_field :total, class: 'form-control', required: true, disabled: !@receipt.editable? %>
+          </div>
+        </div>
+      <!-- TERCERA COLUMNA -->
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-group">
+          <%= form.label :concept, "En concepto de" %>
+          <%= form.text_area :concept, class: 'form-control', rows: 2 , disabled: !@receipt.editable?%>
+        </div>
+      </div>
+    </div>
+    <center>
+      <%= save_button %>
+    </center>
   </div>
-
-  <div class="field">
-    <%= form.label :total %>
-    <%= form.text_field :total %>
-  </div>
-
-  <div class="field">
-    <%= form.label :date %>
-    <%= form.date_select :date %>
-  </div>
-
-  <div class="field">
-    <%= form.label :observation %>
-    <%= form.text_field :observation %>
-  </div>
-
-  <div class="field">
-    <%= form.label :company_id %>
-    <%= form.text_field :company_id %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+</div>
 <% end %>
+
+<div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="client_modal">
+      </div>
+    </div>
+  </div>
+</div>

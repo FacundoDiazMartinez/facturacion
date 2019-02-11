@@ -1,15 +1,19 @@
 class InvoiceDetail < ApplicationRecord
   belongs_to :invoice
   belongs_to :product, optional: true
+  belongs_to :depot, optional: true
 
-  has_many :commissioners
+  has_many :commissioners, dependent: :destroy
 
   accepts_nested_attributes_for :product, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :commissioners, reject_if: :all_blank, allow_destroy: true
 
   before_validation :check_product
-
+  before_validation :calculate_iva_amount, if: Proc.new{|detail| !detail.iva_aliquot.blank?}
   after_save :set_total_to_invoice
+  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed?}
+  after_destroy :remove_reserved_stock
+
 
   default_scope {where(active: true)}
 
@@ -29,6 +33,7 @@ class InvoiceDetail < ApplicationRecord
   validates_inclusion_of :iva_aliquot, in: Afip::ALIC_IVA.map{|k,v| k}, message: "Alícuota de I.V.A. inválida."
   validates_numericality_of :iva_amount, greater_than_or_equal_to: 0.0, message: "El monto I.V.A. debe ser mayor o igual a 0."
   validates_presence_of :iva_amount, message: "Debe especificar una alicuota de I.V.A." #Se pone asi pq el monto se calcula en base a la alicuota
+
 
   # TABLA
   #   create_table "invoice_details", force: :cascade do |t|
@@ -54,37 +59,63 @@ class InvoiceDetail < ApplicationRecord
 
   #PROCESOS
     def check_product
-      if new_record?
-        product.company_id = invoice.company_id
-        product.updated_by = invoice.user_id
-        product.created_by = invoice.user_id
+        product.company_id          = invoice.company_id
+        product.updated_by          = invoice.user_id
+        product.created_by          = invoice.user_id
+        product.price             ||= price_per_unit
+        product.measurement_unit  ||= measurement_unit
         product.save
-        if not product.errors.any?
-          self.price_per_unit   = product.price
-          pp self.measurement_unit = product.measurement_unit
-
-        end
-      end
     end
 
-    #def destroy
-      #update_column(:active,false)
-    #end
-
     def set_total_to_invoice
-      invoice.update_attribute(:total, invoice.sum_details)
+      invoice.update_attribute(:total, invoice.sum_details + invoice.sum_tributes)
     end
 
     def product_attributes=(attributes)
-      if !attributes['id'].blank?
-        self.product            = Product.unscoped.find(attributes['id'])
-        self.measurement_unit   = self.product.measurement_unit
-      end
+      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id], active: true).first_or_initialize
+      self.product = prod
+      attributes.delete(:id) unless product.persisted?
       super
     end
 
+    # def commissioners_attributes=(attributes)
+    #   attributes.each do |num,c|
+    #     if c["_destroy"] == "false"
+    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first_or_initialize
+    #       com.percentage = c["percentage"]
+    #       com.total_commission = 0
+    #     else
+    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first
+    #       if !com.nil?
+    #         com.destroy
+    #       end
+    #     end
+    #   end
+    # end
+
     def product
       Product.unscoped{super}
+    end
+
+    def product_depots
+      product.nil? ? [] : product.depots.map{|p| [p.name, p.id]}
+    end
+
+    def remove_reserved_stock
+      self.product.rollback_reserved_stock(quantity: quantity, depot_id: depot_id)
+    end
+
+    def reserve_stock
+      if quantity_change.nil? || new_record?
+        self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
+      else
+        dif = quantity_change.first.to_f - quantity_change.second.to_f
+        self.product.rollback_reserved_stock(quantity: dif, depot_id: depot_id)
+      end
+    end
+
+    def calculate_iva_amount
+      self.iva_amount =  (subtotal.to_f / (1 + iva.to_f) * iva.to_f).round(2)
     end
 
   #PROCESOS

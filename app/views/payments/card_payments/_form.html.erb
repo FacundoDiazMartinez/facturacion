@@ -1,0 +1,21 @@
+<% if @invoice %>
+  <% nested_form_for @invoice do |form| %>
+    <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+      <% @builder = f %>
+    <% end -%>
+  <% end -%>
+<% end -%>
+
+<% if @client %>
+  <% form_for [@client, @account_movement] do |f| %>
+    <%= f.fields_for :account_movement_payments do |pf| %>
+      <% @builder = f %>
+    <% end -%>
+  <% end -%>
+<% end -%>
+
+<%= @builder.fields_for :card_payment, @builder.object.build_card_payment do |cpf| %>
+
+  <%= render '/payments/card_payments/shared_form', cpf: cpf %>
+
+<% end -%>

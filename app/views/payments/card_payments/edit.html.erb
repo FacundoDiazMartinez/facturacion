@@ -1,0 +1,9 @@
+<%= form_for @card_payment, url: payments_card_payment_path() do |f| %>
+	<div class="modal-body">
+		<%= render 'shared_form', cpf: f %>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+		<%= save_button %>
+	</div>
+<% end -%>

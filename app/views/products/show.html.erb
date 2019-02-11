@@ -55,10 +55,18 @@
 								<li class="list-group-item d-flex justify-content-between lh-condensed">
 					            	<div>
 					              		<strong class="my-0">
-					                		Código
+					                		Código interno
 					              		</strong>
 					            	</div>
 					            	<span><%= @product.code %></span>
+					          	</li>
+					          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+					            	<div>
+					              		<strong class="my-0">
+					                		Código de proveedor
+					              		</strong>
+					            	</div>
+					            	<span><%= @product.supplier_code %></span>
 					          	</li>
 								<li class="list-group-item d-flex justify-content-between lh-condensed">
 					            	<div>
@@ -66,7 +74,7 @@
 					                		Stock
 					              		</strong>
 					           		</div>
-					            	<span><%= @product.available_stock %></span>
+					            	<span><%= @product.stock_html %></span>
 					          	</li>
 							</ul>
 						</div>
@@ -123,16 +131,35 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- STOCK -->
+	<div class="container-fluid">
+		<p class="text-muted">Stock</p>
+		<div class="row">
+			<div class="col-md-12 col-xs-12">
+				<div class="card card-shadow mb-4">
+					<div class="card-body" id="stock">
+			        	<%= render 'stock' %>
+			        </div>
+			    </div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade bd-example-modal-lg" id="stockModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  	<div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<h5 class="modal-title"><%= icon('fas', 'edit') %> Editar stock de <%= @product.name %></h5>
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          			<span aria-hidden="true">&times;</span>
+        		</button>
+      		</div>
+      		<div id="stock_modal"></div>
+      	</div>
+  	</div>
+
+	<!-- STOCK -->
+
 </div>
 
-<!-- DESCRIPCIÓN -->
-	<!-- <div class="row">
-      <div class="col-sm-12" style="margin-top: 30px;">
-      	<h3>Stock </h3>
-	    <div class="card">
-        		<div class="card-body shadow" id="stock">
-        			<%= render 'stock' %>
-        		</div>
-        	</div>
-      </div>
-	</div> -->
+

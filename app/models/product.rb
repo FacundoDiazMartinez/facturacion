@@ -2,8 +2,8 @@ class Product < ApplicationRecord
 
   	belongs_to :product_category, optional: true
   	belongs_to :company
-  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User"
-  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User"
+  	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User", optional: true
+  	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User", optional: true
   	belongs_to :supplier, optional: true
   	has_many   :stocks
   	has_many   :depots, through: :stocks
@@ -16,8 +16,8 @@ class Product < ApplicationRecord
   	has_many   :product_price_histories
 
     scope :active, -> { where(active: true) }
-    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador."
-    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."
+    validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active
+    validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
   	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
@@ -28,6 +28,10 @@ class Product < ApplicationRecord
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
   	after_create :create_price_history
+
+  	before_save :check_iva_aliquot, :check_net_price
+
+  	accepts_nested_attributes_for :stocks, reject_if: :all_blank, allow_destroy: true
 
 
   	MEASUREMENT_UNITS = {
@@ -98,7 +102,15 @@ class Product < ApplicationRecord
 
 		def self.search_by_category category
 			if not category.blank?
-				joins(:product_category).where("product_categories.name ILIKE? ", "%#{category}%")
+				joins(:product_category).where("product_categories.id = ? ", category)
+			else
+				all
+			end
+		end
+
+		def self.search_by_product_category_id category_id
+			unless category_id.blank?
+				where(product_category_id: category_id)
 			else
 				all
 			end
@@ -112,6 +124,14 @@ class Product < ApplicationRecord
 			end
 		end
 
+		def self.search_by_supplier_id supplier_id
+			unless supplier_id.blank?
+				where(supplier_id: supplier_id)
+			else
+				all
+			end
+		end
+
 		def self.search_with_stock stock
 			if stock == "on"
 				joins(:stocks).where("stocks.state = 'Disponible'")
@@ -119,23 +139,40 @@ class Product < ApplicationRecord
 				all
 			end
 		end
+
+		def self.search_by_depot depot_id
+			if !depot_id.blank?
+				joins(stocks: :depot).where("depots.id = ?", depot_id)
+			else
+				all
+			end
+		end
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
+
+  		def simple_iva_aliquot
+  			Afip::ALIC_IVA.map{|k,v| v unless k != iva_aliquot}.compact.join().to_f
+  		end
+
 	  	def full_name
 	  		"#{tipo}: #{code} - #{name}"
 	  	end
 
-	  	def photo
-			read_attribute("photo") || "/images/default_product.jpg"
+	    def measurement_unit
+	      read_attribute("measurement_unit").blank? ? "7" : read_attribute("measurement_unit")
+	    end
+
+  		def photo
+	    	read_attribute("photo") || "/images/default_product.jpg"
 		end
 
 		def category_name
 			product_category.nil? ? "Sin categoría" : product_category.name
 		end
 
-		def available_stock
-			stocks.where(state: "Disponible").count
+		def set_available_stock
+			update_column(:available_stock, self.stocks.where(state: "Disponible").sum(:quantity))
 		end
 
 		def iva
@@ -153,20 +190,42 @@ class Product < ApplicationRecord
 		def supplier_name
 			supplier_id.nil? ? "Sin proveedor" : supplier.name
 		end
+
+		def stock_html
+			if !minimum_stock.blank?
+				if available_stock <= minimum_stock
+					return "<div class='text-danger'>#{available_stock}</div>".html_safe
+				else
+					return "<div class='text-success'>#{available_stock}</div>".html_safe
+				end
+			else
+				return "<div class='text-success'>#{available_stock}</div>".html_safe
+			end
+		end
 	#ATRIBUTOS
 
-  # ATRIBUTOS VIRTUALES
-  def price_modification=(new_price)
-    @price_modification = new_price
-    if (new_price.to_s.ends_with? "%" )
-      self.price += (self.price * (new_price.to_d/100)).round(2)
-    else
-      self.price = new_price
-    end
-  end
-  # ATRIBUTOS VIRTUALES
+	#ATRIBUTOS VIRTUALES
+	def price_modification=(new_price)
+	    @price_modification = new_price
+	    if (new_price.to_s.ends_with? "%" )
+	    	self.price += (self.price * (new_price.to_d/100)).round(2)
+	    else
+	    	self.price = new_price
+	    end
+	end
+	#ATRIBUTOS VIRTUALES
 
 	#PROCESOS
+		def check_iva_aliquot
+			self.iva_aliquot = "05" if self.iva_aliquot.blank?
+		end
+
+		def check_net_price
+			if net_price.to_f == 0.0
+				self.net_price = (price.to_f / (1 + simple_iva_aliquot.to_f)).round(2)
+			end
+		end
+
 		def self.create params
 			product = Product.where(company_id: company_id, code: code, name: name).first_or_initialize
 			if product.new_record?
@@ -198,81 +257,122 @@ class Product < ApplicationRecord
 			s.save
 		end
 
+		def deliver_product attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: attrs[:from]).first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			if s.save
+				d = self.stocks.where(depot_id: attrs[:depot_id], state: "Despachado").first_or_initialize
+				d.quantity = d.quantity.to_f + attrs[:quantity].to_f
+				d.save
+			end
+		end
+
+		def reserve_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+			s.quantity = s.quantity.to_f + attrs[:quantity].to_f
+			if s.save
+				remove_stock attrs
+			else
+				pp s.errors
+			end
+		end
+
+		def rollback_reserved_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			s.save
+			if s.save
+				add_stock attrs
+			end
+		end
+
 	    def destroy
-	      update_column(:active,false)
+	      	update_column(:active, false)
+	      	run_callbacks :destroy
+	      	freeze
 	    end
 
-    #IMPORTAR EXCEL o CSV
-    def self.save_excel file, supplier_id, current_user
-    	#TODO Añadir created_by y updated_by
-      	spreadsheet = open_spreadsheet(file)
-      	excel = []
-      	(2..spreadsheet.last_row).each do |r|
-      		excel << spreadsheet.row(r)
-      	end
-      	header = self.permited_params
-      	categories = {}
-      	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-      	delay.load_products(excel, header, categories, current_user, supplier_id)
+	    def rollback_delivered_stock attrs={}
+			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			if s.save
+				add_stock attrs
+			end
 		end
 
-		def self.load_products spreadsheet, header, categories, current_user, supplier_id
+    	#IMPORTAR EXCEL o CSV
+	    def self.save_excel file, supplier_id, current_user, depot_id
+	    	#TODO Añadir created_by y updated_by
+	    	spreadsheet = open_spreadsheet(file)
+	    	excel = []
+	    	(2..spreadsheet.last_row).each do |r|
+	    		excel << spreadsheet.row(r)
+	    	end
+	    	header = self.permited_params
+	    	categories = {}
+	    	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
+	    	delay.load_products(excel, header, categories, current_user, supplier_id, depot_id)
+	    end
+
+		def self.load_products spreadsheet, header, categories, current_user, supplier_id, depot_id
 			products 	= []
-    	invalid 	= []
+    		invalid 	= []
 			(0..spreadsheet.size - 1).each do |i|
-    		row = Hash[[header, spreadsheet[i]].transpose]
-    		product = new
-    		if categories["#{row[:product_category_name]}"].nil?
-    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
-    			if pc.save
-    				product_category_id = pc.id
-    				categories["#{row[:product_category_name]}"] = product_category_id
-    			else
-    				pp pc.errors
-    			end
-    		end
-    		product.supplier_id 		= supplier_id
-    		product.product_category_id = categories["#{row[:product_category_name]}"]
-    		product.code 				= row[:code]
-    		product.name 				= row[:name]
-    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
-    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
-    		product.price 				= row[:price].round(2) unless row[:price].nil?
-    		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
-    		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
-    		product.company_id 			= current_user.company_id
-    		product.created_by 			= current_user.id
-    		product.updated_by 			= current_user.id
-    		if product.valid?
-    			product.save!
-    		else
-    			pp product.errors
-    			invalid << i
-    		end
-    	end
-    	return_process_result(invalid, current_user)
+	    		row = Hash[[header, spreadsheet[i]].transpose]
+	    		product = where(code: row[:code], name: row[:name]).first_or_initialize
+	    		if categories["#{row[:product_category_name]}"].nil?
+	    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
+	    			if pc.save
+	    				product_category_id = pc.id
+	    				categories["#{row[:product_category_name]}"] = product_category_id
+	    			end
+	    		end
+	    		product.supplier_id 		= supplier_id
+	    		product.product_category_id = categories["#{row[:product_category_name]}"]
+	    		product.code 				= row[:code]
+	    		product.supplier_code 		= row[:supplier_code]
+	    		product.name 				= row[:name]
+	    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
+	    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
+	    		product.price 				= row[:price].round(2) unless row[:price].nil?
+	    		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
+	    		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
+	    		product.company_id 			= current_user.company_id
+	    		product.created_by 			= current_user.id
+	    		product.updated_by 			= current_user.id
+	    		if !product.save
+	    			invalid << [i, product.name, product.errors.full_messages]
+	    		else
+	    			if !depot_id.blank?
+		    			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
+		    			stock.quantity = row[:stock]
+		    			stock.save
+		    		end
+	    		end
+	    	end
+    		return_process_result(invalid, current_user)
 		end
 
-    def self.return_process_result invalid, user
-      if invalid.any?
-        {
-          'result' => false,
-          'message' => 'Uno o mas productos no pudieron importarse.',
-          'product_with_errors' => invalid
-        }
-        Notification.create_for_failed_import invalid, user
-      else
-        {
-          'result' => true,
-          'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
-          'product_with_errors' => []
-        }
-        Notification.create_for_success_import user
-      end
-    end
+	    def self.return_process_result invalid, user
+	      if invalid.any?
+	        {
+	          'result' => false,
+	          'message' => 'Uno o mas productos no pudieron importarse.',
+	          'product_with_errors' => invalid
+	        }
+	        Notification.create_for_failed_import invalid, user
+	      else
+	        {
+	          'result' => true,
+	          'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
+	          'product_with_errors' => []
+	        }
+	        Notification.create_for_success_import user
+	      end
+	    end
 
 		def self.permited_params
-		    [:product_category_name, :code, :name, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit]
+		    [:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit, :stock]
 		end
 
 		def self.open_spreadsheet(file)

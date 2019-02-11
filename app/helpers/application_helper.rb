@@ -13,9 +13,7 @@ module ApplicationHelper
 	    return html.html_safe
 	end
 
-
 	def error_explanation object=nil
-
 		@object = object
 		if not object.nil?
 			content_tag :div do
@@ -63,6 +61,10 @@ module ApplicationHelper
 		button_tag "Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
 	end
 
+	def save_button_lock
+		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
+	end
+
 	def back_button icon = nil
 		given_icon ||= 'chevron-left'
 		link_to "#{icon('fas', given_icon)} Volver".html_safe, :back, :class => 'btn btn-danger', :style => 'color:#fff'
@@ -92,10 +94,10 @@ module ApplicationHelper
 	def boolean_to_icon bool
 		if bool
 			icon = 'check-square'
-			"<span style='color: green;'> #{icon('fas', icon)} </span>".html_safe
+			"<span class='text-success'> #{icon('fas', icon)} </span>".html_safe
 		else
 			icon = 'minus-square'
-			"<span style='color: red;'> #{icon('fas', icon)} </span>".html_safe
+			"<span class='text-danger'> #{icon('fas', icon)} </span>".html_safe
 		end
 	end
 

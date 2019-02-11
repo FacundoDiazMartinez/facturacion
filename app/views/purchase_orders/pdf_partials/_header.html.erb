@@ -3,20 +3,7 @@
     <div class="border">
       <table class="width_100">
         <tr>
-          <td style="width: 50%;"><h2 class="text_size_25">IMÁGEN EMPRESA</h2></td>
-          <td style="width: 50%;">
-            <table class="width_100">
-              <tr>
-                  <td class="text_right"><small>Original acompaña factura/Copia queda en Compras</small></td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <div class="border">
-      <table class="width_100">
-        <tr>
+          <td><%= wicked_pdf_image_tag @purchase_order.company.logo.gsub('https', 'http') ,:height => "90"%></td>
           <td class="width_75"><h1 class="text_size_25 text_center">ORDEN DE COMPRA</h1></td>
           <td class="width_25">
             <table class="width_100">
@@ -47,16 +34,14 @@
         E-mail: <%=@purchase_order.company.email %> - CUIT: <%=@purchase_order.company.cuit %>
         <center>
       </div>
-
     </div>
 
 <!--ENCABEZADO DATOS PROVEEDOR -->
 
     <div class=" border">
-
       <table class="width_100">
         <tr>
-          <td> <b>Departamento de Emisión: COMPRAS </b></td>
+          <td><b>Departamento de Emisión: COMPRAS </b></td>
 
           <td><b>Proveedor N°:</b> <%=@purchase_order.supplier.id %></td>
         </tr>
@@ -72,8 +57,6 @@
 
           <td ><b>Dirección: </b><%= @purchase_order.supplier.address %></td>
         </tr>
-
       </table>
-
     </div>
   <!-- FIN DEL ENCABEZADO -->

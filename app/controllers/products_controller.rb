@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
   # GET /products
   # GET /products.json
   def index
-    @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order(updated_at: :desc).paginate(page: params[:page], per_page: 15)
+    @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order(name: :asc).paginate(page: params[:page], per_page: 15)
   end
 
   # GET /products/1
@@ -25,22 +25,22 @@ class ProductsController < ApplicationController
 
   def edit_multiple
     if params[:product_ids] && params[:product_ids].any?
-    @products = Product.find(params[:product_ids])
+      @products = Product.find(params[:product_ids])
     else
       redirect_to products_path(view: 'list'), alert: "Debe seleccionar al menos 1 producto."
     end
   end
 
   def update_multiple
-      @products = Product.find(params[:product_ids])
-      @products.reject! do |product|
-        product.update_attributes(update_multiple_product_params.reject { |k,v| v.blank? } )
-      end
-      if @products.empty?
-        redirect_to products_path(view: 'list'), notice: "#{ params[:product_ids].count.to_s } productos fueron actualizados."
-      else
-        render "edit_multiple"
-      end
+    @products = Product.find(params[:product_ids])
+    @products.reject! do |product|
+      product.update_attributes(update_multiple_product_params.reject { |k,v| v.blank? })
+    end
+    if @products.empty?
+      redirect_to products_path(view: 'list'), notice: "#{ params[:product_ids].count.to_s } productos fueron actualizados."
+    else
+      render "edit_multiple"
+    end
   end
 
   # POST /products
@@ -92,17 +92,17 @@ class ProductsController < ApplicationController
   end
 
   def import
-    #result = Product.save_excel(params[:file], params[:supplier_id], current_user)
+    result = Product.save_excel(params[:file], params[:supplier_id], current_user, params[:depot_id])
     respond_to do |format|
-        flash[:success] = 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.'
-        format.html {redirect_to products_path}
+      format.html { redirect_to products_path, notice: 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.' }
     end
   end
 
   def export
-    @products = params[:empty] ? [] : current_user.company.products #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
+    #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
+    @products = params[:empty] ? [] : current_user.company.products
     respond_to do |format|
-      format.xlsx {response.headers['Content-Disposition'] = 'attachment; filename="productos.xlsx"'}
+      format.xlsx { response.headers['Content-Disposition'] = 'attachment; filename="productos.xlsx"' }
     end
   end
 
@@ -119,10 +119,14 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:code, :name, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit, :supplier_id)
+      params.require(:product).permit(:code, :name, :supplier_code, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit, :supplier_id, :minimum_stock, :recommended_stock, stocks_attributes: [:id, :state, :quantity, :depot_id, :_destroy])
     end
 
     def update_multiple_product_params
       params[:product].permit(:price_modification, :active)
+    end
+
+    def update_prices_product_params
+
     end
 end

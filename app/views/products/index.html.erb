@@ -4,14 +4,14 @@
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group">
         <!-- Categorias -->
-          <%= link_to "#{icon('fas', 'dollar-sign')} Lista de precios".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
+        <%= link_to "#{icon('fas', 'dollar-sign')} Lista de precios".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
         <!-- Categorias -->
         <!-- Categorias -->
-          <%= link_to "#{icon('fas', 'list')} Categorías".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
+        <%= link_to "#{icon('fas', 'list')} Categorías".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
         <!-- Categorias -->
         <!-- Importar y exportar productos -->
-          <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(format: :xlsx), class: 'btn btn-sm btn-outline-secondary', title: 'Exportar productos a una hoja de cálculo' if can? :export, Product %>
-          <%= link_to "#{icon('fas','upload')} Importar".html_safe, "#", class: 'btn btn-sm btn-outline-secondary', title: 'Importar productos desde una hoja de cálculo', data:{toggle: 'modal', target: '#importModal'} if can? :import, Product %>
+        <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(format: :xlsx), class: 'btn btn-sm btn-outline-secondary', title: 'Exportar productos a una hoja de cálculo' if can? :export, Product %>
+        <%= link_to "#{icon('fas','upload')} Importar".html_safe, "#", class: 'btn btn-sm btn-outline-secondary', title: 'Importar productos desde una hoja de cálculo', data:{toggle: 'modal', target: '#importModal'} if can? :import, Product %>
         <!-- Importar y exportar productos -->
       </div>
     </div>
@@ -88,8 +88,4 @@
 
 <%= render 'import' %>
 
-<script type="text/javascript">
-	function clearPagination() {
-		$('#page').val(1);
-	}
-</script>
+<%= javascript_include_tag "product_prices.js" %>

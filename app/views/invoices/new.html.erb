@@ -1,7 +1,17 @@
 <div class="p-4">
-	<h1 class="h2"> Nueva Factura</h1>
+	<div class="row">
+		<div class="col-8">
+			<h1 class="h2"> Nueva Factura</h1>
+		</div>
+		<div class="col-4 text-right">
+			<button class="btn btn-primary " role="button" onclick="toggleHeader()" id="encabezado"><%= icon('fas' ,'eye-slash') %> Ocultar encabezado</button>
+			<% if current_user.company.iva_cond == "Responsable Inscripto" %>
+				<button class="btn btn-primary " role="button" onclick="toggleTributes()" id="tributos"><%= icon('fas' ,'eye') %> Ver tributos</button>
+			<% end -%>
+		</div>
+	</div>
 
 	<div id="invoice_form">
-		<%= render 'form' %>
+		<%= render '/invoices/form' %>
 	</div>
 </div>

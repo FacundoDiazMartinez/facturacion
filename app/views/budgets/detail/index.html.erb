@@ -1,0 +1,73 @@
+<h3 class="d-flex mb-2">
+    <div class="p-2">
+      	Conceptos
+    </div>
+    <div class="ml-auto p-2">
+      	<% if @budget.editable? %>
+        	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :budget_details, class: 'btn btn-success', data: {target: '#details'} %>
+      	<% end %>
+    </div>
+</h3>
+<div class="table-responsive">
+	<table class="table table-striped budget-table" id="details">
+		<thead>
+			<tr>
+        <th></th>
+				<th scope="col">Código</th>
+				<th scope="col">Concepto</th>
+				<th scope="col">Depósito</th>
+				<th scope="col">Precio</th>
+				<th scope="col" style="width:10%;"class="only-desktop">Medida</th>
+				<th scope="col" style="width:1%;">Cantidad</th>
+				<th scope="col" style="width:7%;" class="only-desktop">Desc.(%)</th>
+				<th scope="col" style="width:7%;" class="only-desktop">Desc.($)</th>
+				<th scope="col" style="width:9%;">Subtotal</th>
+				<th scope="col"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<%= form.fields_for :budget_details, wrapper: false do |f| %>
+		    	<tr class="fields" id="<%= f.index %>">
+					<td>
+              <% if @budget.editable? %>
+                	<%= link_to icon('fas', 'search'), search_product_budgets_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
+              <% else %>
+                  #
+              <% end %>
+			  			<%= f.hidden_field :product_id, class: 'product_id' %>
+			  		</td>
+			  		<td>
+			  			<%= autocomplete_field_tag :product, f.object.product_code, autocomplete_product_code_budgets_path, class: 'budget_detail-autocomplete_field form-control form-control-sm code', disabled: !@budget.editable?, style: 'width: 120px;' %>
+			  		</td>
+			  		<td>
+			  			<%= f.text_field :product_name, class: 'form-control form-control-sm name', placeholder: "Concepto", disabled: !@budget.editable? %>
+			  		</td>
+			  		<td>
+			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id', disabled: !@budget.editable?} %>
+			  		</td>
+					<td>
+						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: !@budget.editable?, style: 'width: 90px;' %>
+					</td>
+					<td class="only-desktop">
+						<%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@budget.editable?} %>
+					</td>
+					<td>
+						<%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@budget.editable? %>
+					</td>
+					<td class="only-desktop">
+						<%= f.number_field :bonus_percentage,  class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@budget.editable? %>
+					</td>
+					<td class="only-desktop">
+						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@budget.editable? %>
+					</td>
+					<td>
+						<%= f.number_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: !@budget.editable? %>
+					</td>
+					<% if @budget.editable? %>
+						<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
+					<% end %>
+	    		</tr>
+		    <% end %>
+		</tbody>
+	</table>
+</div>

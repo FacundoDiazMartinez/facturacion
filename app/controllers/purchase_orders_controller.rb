@@ -1,5 +1,5 @@
 class PurchaseOrdersController < ApplicationController
-  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :approve]
+  before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :approve, :add_payment]
 
   # GET /purchase_orders
   # GET /purchase_orders.json
@@ -30,6 +30,7 @@ class PurchaseOrdersController < ApplicationController
   # GET /purchase_orders/new
   def new
     @purchase_order = PurchaseOrder.new
+    Depot.check_at_least_one current_user.company_id
   end
 
   # GET /purchase_orders/1/edit
@@ -39,12 +40,12 @@ class PurchaseOrdersController < ApplicationController
   # POST /purchase_orders
   # POST /purchase_orders.json
   def create
+    @purchase_orders = current_user.company.purchase_orders.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("purchase_orders.created_at DESC").paginate(page: params[:page])
     @purchase_order = current_user.company.purchase_orders.new(purchase_order_params)
     @purchase_order.user_id = current_user.id
     respond_to do |format|
       if @purchase_order.save
-        format.html { redirect_to @purchase_order, notice: 'La órden de compra fue creada exitosamente.' }
-        format.json { render :show, status: :created, location: @purchase_order }
+        format.html { redirect_to edit_purchase_order_path(@purchase_order.id), notice: 'La órden de compra fue creada exitosamente.' }
       else
         format.html { render :new }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }
@@ -56,14 +57,16 @@ class PurchaseOrdersController < ApplicationController
   # PATCH/PUT /purchase_orders/1.json
   def update
     respond_to do |format|
-      if @purchase_order.update(purchase_order_params)
-        format.html { redirect_to @purchase_order, notice: 'La órden de compra fue actualizada exitosamente.' }
-        format.json { render :show, status: :ok, location: @purchase_order }
+      if @purchase_order.update(purchase_order_params, params[:send_mail], params[:email])
+        format.html { redirect_to edit_purchase_order_path(@purchase_order.id), notice: 'La órden de compra fue actualizada exitosamente.' }
       else
         format.html { render :edit }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def add_payment
   end
 
   # DELETE /purchase_orders/1
@@ -89,14 +92,14 @@ class PurchaseOrdersController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.cost_price} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.cost_price, supplier_code: product.supplier_code} }
   end
 
   def approve
     respond_to do |format|
       if current_user.has_purchase_management_role?
         @purchase_order.update_column(:state, "Aprobado")
-        format.html {redirect_to @purchase_order, notice: "La orden de compra fue aprobada."}
+        format.html {redirect_to '/purchase_orders', notice: "La orden de compra fue aprobada."}
       else
         format.html {render :edit, notice: "No tiene los provilegios necesarios para aprobar la orden de compra."}
       end
@@ -127,6 +130,6 @@ class PurchaseOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_order_params
-      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :user_id, :shipping, :shipping_cost, :company_id, purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :name, :price]])
+      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :total_pay, :created_at, :user_id, :shipping, :shipping_cost, :company_id, expense_payments_attributes: [:id, :type_of_payment, :total, :_destroy], purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :supplier_code, :cost_price, :name, :price]])
     end
 end

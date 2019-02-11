@@ -4,8 +4,9 @@
       <tr>
         <th scope="col">Nombre</th>
         <th scope="col">Documento</th>
-        <th scope="col">E-mail</th>
+        <th scope="col">Vencimiento</th>
         <th scope="col">Saldo</th>
+        <th scope="col">Cta. corriente</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -15,12 +16,14 @@
       <tr>
         <td><%= client.name %></td>
         <td><%= client.full_document %></td>
-        <td><%= client.email %></td>
+        <td><%= boolean_to_icon client.check_if_expired %></td>
         <td>$ <%= client.saldo %></td>
-        <td class="text-right">
+        <td>
           <% if client.valid_for_account %>
             <%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <% end -%>
+        </td>
+        <td class="text-right">
           <%= link_to icon('fas', 'eye'), client, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, Client %>
 
           <% if can? :manage, Client %>

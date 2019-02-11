@@ -23,7 +23,7 @@
         <td rowspan="5" class="right_border"></td>
         <td rowspan="5" style="width: 25px;"></td>
         <td>
-          <b>Punto de Venta: <%= @receipt.invoice.sale_point.fill_name %> - Comp.Nro: <%= @receipt.number %> </b>
+          <b>Punto de Venta: <%= @receipt.sale_point.fill_name %> - Comp.Nro: <%= @receipt.number %> </b>
         </td>
       </tr>
 
@@ -59,20 +59,14 @@
   <div class="container border">
     <table class="width_100">
     <tr>
-      <td><b>CUIT: </b><%= @receipt.invoice.client.document_number %></td>
-      <td><b>Cliente / Razón Social: </b> <%= @receipt.invoice.client.name %></td>
+      <td><b>CUIT: </b><%= @receipt.client.document_number %></td>
+      <td><b>Cliente / Razón Social: </b> <%= @receipt.client.name %></td>
       <td></td>
     </tr>
 
     <tr>
-      <td><b>Condicion frente al IVA: </b><%= @receipt.invoice.client.iva_cond %></td>
-      <td><b>Domicilio: </b> <%= @receipt.invoice.client.address %></td>
-      <td></td>
-    </tr>
-
-    <tr>
-      <td><b>Medios de pago: </b><%= @receipt.invoice.all_payments_string %></td>
-      <td></td>
+      <td><b>Condicion frente al IVA: </b><%= @receipt.client.iva_cond %></td>
+      <td><b>Domicilio: </b> <%= @receipt.client.address %></td>
       <td></td>
     </tr>
   </table>

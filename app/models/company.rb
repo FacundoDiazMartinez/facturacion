@@ -4,8 +4,9 @@ class Company < ApplicationRecord
 	has_many :clients
 	has_many :invoices
 	has_many :product_categories
+	has_many :price_changes
 	has_many :products
-	has_many :receipts, through: :invoices
+	has_many :receipts
 	has_many :depots
 	has_many :suppliers
 	has_many :purchase_orders
@@ -15,12 +16,24 @@ class Company < ApplicationRecord
 	has_many :roles
 	has_many :services
 	has_many :user_activities, through: :users
+	has_many :daily_cashes
+	has_many :daily_cash_movements, through: :daily_cashes
+	has_many :banks
+	has_many :credit_cards
+	has_many :budgets
+	has_many :delivery_notes
+	has_many :sales_files
+	has_many :income_payments, through: :invoices
+	has_many :advertisements
+	has_many :card_payments, through: :credit_cards
 
 	belongs_to :province
 	belongs_to :locality
 
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
+
+	after_save :create_default_deposit, if: :new_record?
 
 	CONCEPTOS = ["Productos", "Servicios", "Productos y Servicios"]
 
@@ -40,12 +53,14 @@ class Company < ApplicationRecord
 	validates_numericality_of :cuit, message: "El C.U.I.T. debe contener únicamente números."
 	validate :date_less_than_today
 	validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-	validates_length_of :cbu, minimum: 22, maximum: 22, allow_blank: true, message: "C.B.U. inválido. Verifique por favor. Cantidad mínima de caracteres = 22."
-	validates_length_of :cuit, minimum: 11, maximum: 11, allow_blank: true, message: "C.U.I.T. inválido. Verifique por favor. Cantidad mínima de caracteres = 11."
+	validates_length_of :cbu, minimum: 22, maximum: 22, allow_blank: true, message: "C.B.U. inválido. Verifique por favor. Cantidad necesaria de caracteres = 22."
+	validates_length_of :cuit, minimum: 11, maximum: 11, allow_blank: true, message: "C.U.I.T. inválido. Verifique por favor. Cantidad necesaria de caracteres = 11."
 	validates_inclusion_of :concepto, in: ::Afip::CONCEPTOS.values, message: "Concepto inválido."
-	
+
 
 	accepts_nested_attributes_for :sale_points, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :banks, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :credit_cards, allow_destroy: true, reject_if: :all_blank
 
 	# TABLA
 	# 	create_table "companies", force: :cascade do |t|
@@ -103,7 +118,7 @@ class Company < ApplicationRecord
 
 	#Inicio atributos
 		def logo
-			read_attribute("logo") || "/images/default_company.png"
+			super || "/images/default_company.png"
 		end
 
 		def concepto_text
@@ -120,4 +135,10 @@ class Company < ApplicationRecord
 			roles.map{|r| [r.name, r.users.map{|u| [u.name, u.id]}]}
 		end
 	#FUNCIONES
+
+	#PROCESOS
+		def create_default_deposit
+			self.depots.create(name: "Central", stock_count: 0, filled: false, location: address)
+		end
+	#PROCESOS
 end

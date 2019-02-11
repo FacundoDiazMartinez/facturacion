@@ -1,0 +1,109 @@
+<%= error_explanation @budget %>
+<%= error_explanation @invoice %>
+
+<%= nested_form_for(@budget, html: { class: "form-horizontal" }) do |f| %>
+  <div class="card shadow">
+    <div class="card-body">
+      <div class="row">
+
+        <!--Columna izquierda -->
+        <div class="col-6">
+          <div id="client_form">
+            <%= render 'client_column' %>
+          </div>
+          <%= f.hidden_field :client_id, value: @client.id %>
+          <% if @budget.persisted? %>
+            <div class="row">
+              <div class="col-6">
+                <div class="form-group">
+                  <%= f.label :total, "Total" %>
+                  <%= f.number_field :total, class: "form-control", disabled: true %>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <%= f.label :state, "Estado" %>
+                  <%= f.text_field :state, class: "form-control", disabled: true %>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <div class="form-group">
+              <%= f.label :total, "Total" %>
+              <%= f.number_field :total, class: "form-control", disabled: true %>
+            </div>
+          <% end %>
+        </div>
+        <!--Columna izquierda -->
+
+
+        <!--Columna derecha -->
+        <div class="col-6">
+          <div class="row">
+            <div class="col-6">
+              <div class="form-group">
+                <%= f.label :expiration_date, "Fecha de vencimiento" %>
+                <%= f.text_field :expiration_date, class: "form-control datepicker", autocomplete: "off", disabled: !@budget.editable? %>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <%= f.label :reserv_stock, "¿Reservar stock?" %> <br>
+                <%= f.check_box :reserv_stock, data:{toggle: 'toggle', on: "Si", off: "No"}, disabled: !@budget.editable? %>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :number, "Número" %>
+            <%= f.text_field :number, class: 'form-control', disabled: !@budget.editable? %>
+          </div>
+        </div>
+        <!--Columna derecha -->
+
+      </div>
+
+      <% if @budget.persisted? && (@budget.state == "Válido" || @budget.state == "Vencido") %>
+        <hr>
+
+        <div class="row text-center">
+          <div class="col-4"></div>
+          <div class="col-4">
+            <%= link_to "#{icon('fas', 'check-square')} Confirmar venta".html_safe, make_sale_budget_path(@budget.id), method: :post, class: 'btn btn-success' %>
+          </div>
+          <div class="col-4"></div>
+        </div>
+      <% end -%>
+
+    </div>
+  </div>
+
+  <hr>
+  <!-- PRODUCTOS -->
+  <div class="card shadow" id="idetails">
+    <%= render template: '/budgets/detail/index.html.erb', locals:{form: f} %>
+  </div>
+  <!-- PRODUCTOS -->
+
+  <hr>
+  <center>
+    <% if @budget.editable? %>
+      <%= save_button %>
+    <% end %>
+  </center>
+<% end %>
+
+<%= render '/budgets/detail/search_product' %>
+<div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="client_modal">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>

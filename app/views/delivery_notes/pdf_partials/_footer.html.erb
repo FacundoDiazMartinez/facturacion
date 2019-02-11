@@ -1,0 +1,25 @@
+<!-- PIE DE PAGINA -->
+<div class="row footer_bottom">
+  <center>
+    <% if @delivery_note.state != "Finalizado" %>
+      **************** <b>Estado: [<%= @delivery_note.state %>]</b> ****************
+      <br>
+      <br>
+    <% end %>
+  </center>
+  <div class="container border">
+    <table class="width_100">
+      <tr>
+        <td class="text_center"> <%= @delivery_note.company.name %> - <%= @delivery_note.company.address %> </td>
+      </tr>
+    </table>
+  </div>
+
+
+</div>
+<br>
+<div class="text_center">
+  Página <%= page_number %> de <%= total_pages%>
+</div>
+
+<!-- FIN PIE DE PAGINA -->

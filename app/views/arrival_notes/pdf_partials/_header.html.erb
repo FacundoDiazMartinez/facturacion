@@ -3,26 +3,14 @@
     <div class="border">
       <table class="width_100">
         <tr>
-          <td style="width: 50%;"><h2 class="text_size_25">IMÁGEN EMPRESA</h2></td>
-          <td style="width: 50%;">
-            <table class="width_100">
-              <tr>
-                  <td class="text_right"><small>Original regresa a empresa/Copia para el cliente</small></td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <div class="border">
-      <table class="width_100">
-        <tr>
-          <td class="width_75"><h1 class="text_size_25 text_center">REMITO</h1></td>
+          <td class="width_25">N° <%= @arrival_note.number %></td>
+          <% if @arrival_note.state == 'Anulado' %>
+            <td class="width_50"><h1 class="text_size_25 text_center">REMITO ANULADO</h1></td>
+          <% else %>
+            <td class="width_50"><h1 class="text_size_25 text_center">REMITO </h1></td>
+          <% end %>
           <td class="width_25">
-            <table class="width_100">
-              <tr>
-                <td>N° <%= @arrival_note.number %></td>
-              </tr>
+            <table >
               <tr>
                 <td>Fecha: <%= @arrival_note.created_at.strftime("%d/%m/%Y") %></td>
               </tr>

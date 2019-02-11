@@ -1,0 +1,30 @@
+<div class="form-group">
+  <%= form.label :purchase_order_id, "Orden de compra" %>
+  <%= autocomplete_field_tag :purchase_order_id, form.object.purchase_order_number, autocomplete_purchase_order_arrival_notes_path, class: 'form-control arrival_note-purchase_order-autocomplete_field', id_element: ".arrival_note_purchase_order_id", placeholder: "Número de Orden de Compra aprobada", disabled: !@arrival_note.editable?, required: true %>
+</div>
+<div class="modal fade bd-example-modal-lg" id="purchaseOrderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'save') %> Guardar remito</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <%= form.fields_for :purchase_order, (form.object.build_purchase_order unless !form.object.purchase_order_id.blank?) do |f| %>
+          <div class="text-center">
+            <%= f.hidden_field :id, class: 'arrival_note_purchase_order_id' %>
+            <%= f.hidden_field :state, class: 'arrival_note_purchase_order_state' %>
+            <p>Se va a cargar un remito asociado a la orden de compra Nº: <b> <%= @arrival_note.purchase_order.number %></b>. ¿Desea cerrarla?</p>
+            <%= button_tag "#{icon('fas', 'lock')} Cerrar orden".html_safe, type: 'button', onclick: 'closePurchaseOrder()', class: 'btn btn-info' %>
+            <%= button_tag "#{icon('fas', 'lock-open')} No cerrar orden".html_safe, type: 'submit', class: 'btn btn-info' %>
+          </div>
+        <% end -%>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

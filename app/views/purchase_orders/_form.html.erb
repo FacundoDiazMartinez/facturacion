@@ -27,9 +27,21 @@
             </div>
 
             <div class="form-group">
-              <%= form.label :state %>
-              <%= form.text_field :state, class: 'form-control', readonly: true %>
+              <%= form.label :total_pay, "Total pagado" %>
+              <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
             </div>
+
+            <div class="form-group">
+              <%= form.label :state %>
+              <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?)}%>
+            </div>
+
+          </div>
+          <!-- SEGUNDA COLUMNA -->
+
+
+          <!-- TERCERA COLUMNA -->
+          <div class="col-sm">
 
             <div class="form-group">
               <%= form.label :budget %>
@@ -40,13 +52,6 @@
                 </div>
               </div>
             </div>
-          </div>
-          <!-- SEGUNDA COLUMNA -->
-
-
-          <!-- TERCERA COLUMNA -->
-          <div class="col-sm">
-
             <div class="form-group">
               <%= form.label :created_at %>
               <%= form.text_field :created_at, class: 'form-control', readonly: true %>
@@ -55,7 +60,7 @@
               <%= form.label :shipping, "¿Incluye transporte?" %>
               <div class="row">
                 <div class="col-2">
-                  <%= form.check_box :shipping, data:{toggle: 'toggle', on: "Si", off: "No"} %>
+                  <%= form.check_box :shipping, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle' %>
                 </div>
                 <div class="col-10">
                   <%= form.number_field :shipping_cost, class: 'form-control', placeholder: "Precio del transporte", style: "display: #{@purchase_order.shipping ? 'block' : 'none'};" %>
@@ -69,11 +74,17 @@
         <!-- BOTONES DE ACCION -->
         <center>
           <% if not @purchase_order.new_record? %>
-            <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_purchase_order_path(@purchase_order.id), class: 'btn btn-primary' %>
+            <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-primary' %>
+            <% if not @purchase_order.delivered && @purchase_order.state != "Pendiente de aprobación" %>
+              <%= button_tag "#{icon('fas', 'envelope')} Enviar a proveedor".html_safe, type: 'button', class: 'btn btn-info', data:{toggle: 'modal', target: '#sendMailModal'} %>
+            <% end -%>
           <% end %>
-          <% if !@purchase_order.state == "Aprobado" && !@purchase_order.new_record?%>
+          <% if @purchase_order.state != PurchaseOrder::STATES[1] && !@purchase_order.new_record? && @purchase_order.state != PurchaseOrder::STATES[3]%>
             <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-success' %>
           <% end %>
+          <% if @purchase_order.delivered %>
+            <p class="text-muted">Presupuesto enviado</p>
+          <% end -%>
         </center>
         <!-- BOTONES DE ACCION -->
       </div>
@@ -81,10 +92,6 @@
   <!-- HEADER -->
 
   <!-- DETALLE -->
-  <p class="text-muted">
-    Conceptos asociados
-    <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
-  </p>
   <div class="card card-shadow">
     <div class="card-body">
       <%= render template: '/purchase_orders/details/index.html.erb', locals:{form: form} %>
@@ -92,10 +99,24 @@
   </div>
   <!-- DETALLE -->
 
+  <!-- PAGOS -->
+  <!-- <div class="card card-shadow">
+    <div class="card-body">
+      <%# render template: '/purchase_orders/payments/index.html.erb', locals:{form: form} %>
+    </div>
+  </div> -->
+  <!-- PAGOS -->
+
   <%= render '/purchase_orders/details/search_product' %>
+  <% if @purchase_order.persisted? %>
+    <%= render template: '/purchase_orders/send_mail.html.erb' %>
+  <% end %>
+
 
   <center>
-    <%= save_button %>
+    <% if @purchase_order.editable? %>
+      <%= save_button %>
+    <% end %>
   </center>
 
 <% end %>

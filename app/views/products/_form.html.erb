@@ -29,7 +29,7 @@
                 <%= f.text_field :name, :class => 'form-control', required: true %>
               </div>
               <div class="form-group col-md-4">
-                <%= f.label :code, "Código*" %>
+                <%= f.label :code, "Código interno*" %>
                 <%= f.text_field :code, :class => 'form-control', required: true %>
               </div>
               <div class="form-group col-md-4">
@@ -44,16 +44,7 @@
             </div>
 
             <div class="form-row">
-              <div class="form-group col-md-6">
-                <%= f.label :product_category_id, "Categoría" %>
-                <div class="input-group mb-3" id="category">
-                  <%= f.select :product_category_id, current_user.company.product_categories.all.map{|pc| [pc.name, pc.id]}, {include_blank: "Sin categoría"}, {:class => 'form-control'} %>
-                  <div class="input-group-append p-0">
-                    <%= link_to icon('fas', 'plus'), new_product_category_path(), data:{remote: true, toggle: 'modal', target: '#product_category_modal'}, class: 'btn btn-success' %>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group col-md-6">
+              <div class="form-group col-md-4">
                 <%= f.label :supplier_id, "Proveedor" %>
                 <div class="input-group mb-3" id="supplier">
                   <%= f.select :supplier_id, current_user.company.suppliers.all.map{|pc| [pc.name, pc.id]}, {include_blank: "Sin proveedor"}, {:class => 'form-control'} %>
@@ -61,6 +52,30 @@
                     <%= link_to icon('fas', 'plus'), new_supplier_path(), data:{remote: true, toggle: 'modal', target: '#supplier_modal'}, class: 'btn btn-success' %>
                   </div>
                 </div>
+              </div>
+              <div class="form-group col-md-4">
+                <%= f.label :product_category_id, "Categoría" %>
+                <div class="input-group mb-3" id="category">
+                  <%= f.select :product_category_id, current_user.company.product_categories.all.order("name ASC").map{|pc| [pc.name, pc.id]}, {include_blank: "Sin categoría"}, {:class => 'form-control'} %>
+                  <div class="input-group-append p-0">
+                    <%= link_to icon('fas', 'plus'), new_product_category_path(), data:{remote: true, toggle: 'modal', target: '#product_category_modal'}, class: 'btn btn-success' %>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group col-md-4">
+                <%= f.label :supplier_code, "Código de provedor" %>
+                <%= f.text_field :supplier_code, :class => 'form-control' %>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <%= f.label :minimum_stock, "Stock mínimo" %>
+                <%= f.number_field :minimum_stock, class: 'form-control', placeholder: "Se alertará al alcanzar este valor." %>
+              </div>
+              <div class="form-group col-md-6">
+                <%= f.label :recommended_stock, "Stock recomendado" %>
+                <%= f.number_field :recommended_stock, class: 'form-control', placeholder: "Parámetro guia para nueva orden de compra." %>
               </div>
             </div>
 

@@ -4,7 +4,7 @@ class ProductCategoriesController < ApplicationController
   # GET /product_categories
   # GET /product_categories.json
   def index
-    @product_categories = current_user.company.product_categories.search_by_name(params[:name]).search_by_supplier(params[:supplier]).paginate(page: params[:page], per_page: 5)
+    @product_categories = current_user.company.product_categories.search_by_name(params[:name]).search_by_supplier(params[:supplier]).order(name: "ASC").paginate(page: params[:page], per_page: 5)
   end
 
   # GET /product_categories/1

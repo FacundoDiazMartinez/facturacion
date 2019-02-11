@@ -1,0 +1,75 @@
+<%= form_with model: advertisement, local: true, class: 'directUpload', data: { 'form-data' => (@s3_direct_post.fields), 'url' => @s3_direct_post.url, 'host' => URI.parse(@s3_direct_post.url).host} do |form| %>
+  <div id="errors">
+
+  </div>
+
+    <div class="card">
+      <div class="card-body">
+
+        <div class="row">
+          <div class="col-sm">
+            <div class="form-group">
+              <%= form.label :state %>
+              <%= form.text_field :state, class: 'form-control', disabled: true %>
+            </div>
+          </div>
+          <div class="col-sm">
+            <div class="form-group">
+              <%= form.label :delivery_date %>
+              <%= form.text_field :delivery_date, class: 'form-control datepicker', placeholder: 'Deje en blanco para enviarlo de inmediato.', required: true, disabled: !@advertisement.editable?, autocomplete: "off" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <%= form.label :title %>
+          <%= form.text_field :title, class: 'form-control', required: true, disabled: !@advertisement.editable? %>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <%= form.label :image1 %>
+              <div class="card mb-4 card-shadow" >
+                <div class="comp_container caption captionload">
+                  <img src="/images/load.gif">
+                </div>
+                <img class="card-img-top" src="<%= @advertisement.image1 %>" alt="Añadir foto" id="image">
+                <div hidden>
+                  <%= form.file_field :image1, :class => 'form-control', id: 'file_input' %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="form-group">
+              <%= form.label :body %>
+              <%= form.text_area :body, class: 'form-control summernote', style: "z-index: -100;", disabled: !@advertisement.editable?%>
+            </div>
+          </div>
+        </div>
+
+        <center>
+          <% if @advertisement.editable? %>
+            <%= save_button_lock %>
+          <% end %>
+        </center>
+
+      </div>
+    </div>
+    <center>
+      <% if @advertisement.state == "No enviado" && current_user.has_advertisement_management_role? && @advertisement.persisted? %>
+        <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-danger' %>
+        <%= link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, send_email_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-primary' %>
+      <% end %>
+    </center>
+
+<% end %>
+
+<div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="client_modal">
+      </div>
+    </div>
+  </div>
+</div>

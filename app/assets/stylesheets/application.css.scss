@@ -12,8 +12,10 @@
  *
  *= require_tree .
  *= require_self
+ *= require bootstrap-datepicker
  */
 
+@import "datepicker";
 @import "autocomplete";
 @import "bootstrap";
 @import "bootstrap-toggle";
@@ -28,6 +30,10 @@
 @import "notifications";
 @import "sidebar";
 @import "invoice";
+@import "client";
+@import "summernote-bs4";
+@import "summernote-custom-theme.min";
+
 
 
 
@@ -36,6 +42,13 @@
 	src:url('/fonts/montserrat-font/Montserrat-Regular.ttf');
 	font-weight: normal;
 	font-style: normal;
+}
+
+.company_logo {
+  -webkit-filter: drop-shadow(0px 0px 5px #FFF);
+  filter: drop-shadow(0px 0px 5px #FFF);
+  max-height: 30px;
+  width: auto;
 }
 
 .hidden{
@@ -291,8 +304,18 @@ td.verical-align{
 
 }
 
+.margins_top_right_left_1rem {
+  margin-top: 1rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
+
 .right-nav{
   right: 0px;
   left: auto !important;
   text-align: center;
+}
+
+.custom-file-label::after{
+  content: "Buscar" !important;
 }

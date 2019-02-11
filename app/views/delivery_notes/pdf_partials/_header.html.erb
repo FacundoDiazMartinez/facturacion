@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="row">
+    <div class="border">
+      <table class="width_100">
+        <tr>
+          <td><%= wicked_pdf_image_tag @delivery_note.company.logo.gsub('https', 'http') ,:height => "80"%></td>
+          <td class="width_75"><h1 class="text_size_25 text_center">REMITO DE VENTA</h1></td>
+          <td class="width_25">
+            <table class="width_100">
+              <tr>
+                <td>N° <%= @delivery_note.number %>
+                  <% if @delivery_note.state != "Finalizado" %>
+                  <b> [<%= @delivery_note.state %>] </b>
+                  <% end %>
+                </td>
+              </tr>
+              <tr>
+                <td>Fecha: <%= @delivery_note.created_at %></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!--ENCABEZADO DATOS EMPRESA -->
+
+    <div class=" border">
+      <div>
+        <center>
+          <%= @delivery_note.company.province.name %>, <%=@delivery_note.company.address %> - Teléfono: <%=@delivery_note.company.contact_number %>
+        </center>
+      </div>
+      <div>
+        <center>
+        E-mail: <%=@delivery_note.company.email %> - CUIT: <%=@delivery_note.company.cuit %>
+        <center>
+      </div>
+    </div>
+
+<!--ENCABEZADO DATOS CLIENTE -->
+
+    <div class=" border">
+      <table class="width_100">
+        <tr>
+          <td><b>Departamento de Emisión: VENTAS </b></td>
+
+          <td><b>Cliente N°:</b> <%=@delivery_note.client.id %></td>
+        </tr>
+
+        <tr>
+          <td><b>Cliente Razón Social:</b> <%= @delivery_note.client.name %></td>
+          <% unless @delivery_note.client.client_contacts.blank? %>
+            <td><b>Tel: </b> <%= @delivery_note.client.client_contacts.first.phone.blank? ? @delivery_note.client.client_contact.first.phone : " " %></td>
+          <% end %>
+        </tr>
+
+        <tr>
+          <% unless @delivery_note.client.client_contacts.blank? %>
+            <td><b>E-mail: </b> <%= @delivery_note.client.client_contacts.first.email? ? @delivery_note.client.client_contact.first.email : " " %></td>
+          <% end %>
+
+          <td ><b>Dirección: </b><%= @delivery_note.client.address %></td>
+        </tr>
+      </table>
+    </div>
+  <!-- FIN DEL ENCABEZADO -->

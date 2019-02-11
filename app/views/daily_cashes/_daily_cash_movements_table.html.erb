@@ -1,0 +1,35 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Responsable</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Documento asociado</th>
+      <th scope="col">Monto</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Flujo</th>
+      <th scope="col">Balance</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @daily_cash_movements.each do |movement| %>
+      <tr>
+        <td><%= image_tag movement.user_avatar, alt: movement.user_name, class: 'avatar' %> <%= user_with_link(movement) %></td>
+        <td><%= l(movement.created_at, format: :short ) %></td>
+        <td><%= link_to movement.associated_document, movement.associated_document_link %></td>
+        <td>$<%= movement.amount %></td>
+        <td><%= movement.movement_type %></td>
+        <td><%= flow_type(movement.flow) %></td>
+        <td>$<%= movement.current_balance %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe, movement, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: "#dailyCashMovementModal", toggle: "modal", remote: true} %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_daily_cash_movement_path(movement.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: "#dailyCashMovementModal", toggle: "modal", remote: true} %>
+          <%= link_to icon('fas', 'trash').html_safe, movement, method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @daily_cash_movements %>

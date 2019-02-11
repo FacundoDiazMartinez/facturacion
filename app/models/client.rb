@@ -20,7 +20,6 @@ class Client < ApplicationRecord
 	validates :document_number, length: { minimum: 6, message: 'Numero de documento inválido, verifique.' }, 	if: Proc.new{|c| ['en tramite', 'DNI'].include?(Afip::DOCUMENTOS.key(c.document_type))}
 	validates_uniqueness_of :document_number, scope: [:company_id, :document_type], message: 'Ya existe un cliente con ese documento.', if: Proc.new{|c| not c.default_client?}
 	validates_presence_of :name, message: "Debe especificar el nombre del cliente."
-	validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
 	validates_inclusion_of :document_type, in: Afip::DOCUMENTOS.values, message: "Tipo de documento inválido."
 	validates_inclusion_of :iva_cond, in: IVA_COND, message: "Condición frente a I.V.A. inválida."
 	validates_numericality_of :saldo, message: "Saldo inválido. Revise por favor."
@@ -58,26 +57,54 @@ class Client < ApplicationRecord
 		end
 
 		def self.search_by_name name
-    	if !name.nil?
-      	where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
-    	else
-      	all
-    	end
-    end
+			if !name.nil?
+	  			where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
+			else
+	  			all
+			end
+		end
 
-    def self.search_by_document document_number
-      	if !document_number.blank?
-        	where("document_number ILIKE ?", "#{document_number}%")
-      	else
-        	all
-      	end
-    end
+	    def self.search_by_document document_number
+	      	if !document_number.blank?
+	        	where("document_number ILIKE ?", "#{document_number}%")
+	      	else
+	        	all
+	      	end
+	    end
+
+	    def self.search_by_expired expired
+	    	unless expired.blank?
+	    		joins(:invoices).distinct.where("invoices.expired = ?", expired)
+	    	else
+	    		all
+	    	end
+	    end
+
+	    def self.search_by_valid_for_account valid
+	    	unless valid.blank?
+	    		where("clients.valid_for_account = ?", valid)
+	    	else
+	    		all
+	    	end
+	    end
 
 	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS
 		def iva_cond_sym
 			iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
+		end
+
+		def avatar
+			"/images/default_user.png"
+		end
+
+		def email
+			if client_contacts.empty?
+				return nil
+			else
+				return client_contacts.map{|cc| cc.email}.join(", ")
+			end
 		end
 	#ATRIBUTOS
 
@@ -95,7 +122,14 @@ class Client < ApplicationRecord
 		end
 
 		def set_update_activity
-			UserActivity.create_for_updated_client self
+			UserActivity.create_for_updated_client self unless !changed?
+		end
+
+		def update_debt
+			last_acc_mov 	= account_movements.last 
+			last_saldo 		= last_acc_mov.nil? ? 0.0 : last_acc_mov.saldo #En caso de que no exista ningun movimiento, creo el saldo en 0.0
+  			update_column(:saldo, last_saldo)
+  			Invoice.paid_unpaid_invoices self, last_acc_mov
 		end
 	#PROCESOS
 
@@ -124,6 +158,11 @@ class Client < ApplicationRecord
 
 		def birthday
 			read_attribute("birthday") || "Sin registrar"
+		end
+
+		def check_if_expired
+			suma = Invoice.where(client_id: self.id, expired: true).count
+			return ( suma > 0 ) ? true : false
 		end
 	#FUNCIONES
 end

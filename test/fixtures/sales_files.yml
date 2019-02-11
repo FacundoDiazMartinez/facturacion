@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  company: one
+  responsable_id: 
+  observation: MyString
+  init_date: 2019-01-10
+  final_date: 2019-01-10
+
+two:
+  company: two
+  responsable_id: 
+  observation: MyString
+  init_date: 2019-01-10
+  final_date: 2019-01-10

@@ -1,0 +1,49 @@
+<h3 class="d-flex mb-2">
+    <div class="p-2">
+      	Conceptos
+    </div>
+    <div class="ml-auto p-2">
+      	<% if @delivery_note.editable? %>
+        	<%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :delivery_note_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
+      	<% end %>
+    </div>
+</h3>
+<table class="table table-striped" id="details">
+	<thead>
+		<tr>
+			<th></th>
+			<th scope="col">Código</th>
+			<th scope="col">Producto</th>
+			<th scope="col">Cantidad entregada</th>
+			<th scope="col">Depósito</th>
+			<th scope="col">Observación</th>
+			<th scope="col"></th>
+		</tr>
+	</thead>
+	<tbody>
+		<%= form.fields_for :delivery_note_details, wrapper: false do |f| %>
+			<% if !f.object.marked_for_destruction? %>
+		      	<tr class="fields" id="<%= f.index %>">
+					<td>
+			        <% if @delivery_note.editable? %>
+			            <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
+			        <% else %>
+			            #
+			        <% end %>
+					<%= f.hidden_field :product_id, class: 'product_id' %>
+					</td>
+		      		<td><%= autocomplete_field_tag :code, f.object.product_code, autocomplete_product_code_products_path, class: 'delivery_note-autocomplete_field form-control code', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@delivery_note.editable? %></td>
+		      		<td><%= text_field_tag :name, f.object.product_name, class: 'form-control name', disabled: !@delivery_note.editable?  %></td>
+					<td><%= f.number_field :quantity, class: 'form-control quantity', disabled: !@delivery_note.editable? %></td>
+					<td><%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}),{prompt: "Seleccione..."}, {class: 'form-control depot_id', disabled: !@delivery_note.editable?} %></td>
+					<td><%= f.text_field :observation, class: 'form-control', disabled: !@delivery_note.editable? %></td>
+					<td class="verical-align">
+						<% if @delivery_note.editable? %>
+							<%= f.link_to_remove icon('fas', 'times') %>
+						<% end %>
+					</td>
+		      	</tr>
+		    <% end -%>
+	    <% end %>
+	</tbody>
+</table>

@@ -1,0 +1,59 @@
+<div class="p-4">
+  <%= title_helper 'Presupuestos' %>
+  <%= button_new_helper(new_budget_path()) %>
+
+  <div class="page-section">
+    <div class="card card-fluid navbar-expand-lg">
+      <button class="navbar-toggler btn btn-light btn-lg btn-block" type="button" data-toggle="collapse" data-target="#filtros">
+        <%= icon('fas', 'search') %> Ver filtros
+      </button>
+      <div class="card-header collapse navbar-collapse" id="filtros">
+        <%= form_tag budgets_path(), {class: 'form-inline', style: 'width: 100%', id: 'search_form'} do %>
+          <div class="row" style="width: 100%;">
+            <div class="col-10">
+              <div class="row">
+                <!-- BUSCAR POR CLIENTE -->
+                <div class="col-12 col-md-4 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'user') %></div>
+                    </div>
+                    <%= text_field_tag :client_name, params[:client_name], class: 'form-control', placeholder: 'Buscar por cliente', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR CLIENTE -->
+
+                <!-- BUSCAR POR NÚMERO -->
+                <div class="col-12 col-md-4 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('fas', 'search') %></div>
+                    </div>
+                    <%= text_field_tag :number, params[:number], class: 'form-control', placeholder: 'Buscar por número', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR NÚMERO -->
+
+                <!-- BUSCAR POR USUARIO -->
+                <div class="col-12 col-md-4 mt-1 mb-1">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+                    </div>
+                    <%= text_field_tag :user_name, params[:user_name], placeholder: 'Buscar por creador', class: 'form-control', onkeyup: 'remoteSubmit("#search_form")' %>
+                  </div>
+                </div>
+                <!-- BUSCAR POR USUARIO -->
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+      <div class="card-body">
+        <div id="budgets_table">
+          <%= render 'budgets_table' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

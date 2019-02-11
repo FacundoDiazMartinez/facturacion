@@ -50,10 +50,12 @@
   jQuery.railsAutocomplete.fn.extend = jQuery.railsAutocomplete.extend = jQuery.extend;
   jQuery.railsAutocomplete.fn.extend({
     init: function(e) {
+      jQuery(e).after("<div class='autocomplete-target' style='min-width: "+ jQuery(e).width() +"px !important;'></div>")
       e.delimiter = jQuery(e).attr('data-delimiter') || null;
       e.min_length = jQuery(e).attr('data-min-length') || jQuery(e).attr('min-length') || 2;
-      e.append_to = jQuery(e).attr('data-append-to') || null;
+      e.append_to = jQuery(e).next(".autocomplete-target") || null;
       e.autoFocus = jQuery(e).attr('data-auto-focus') || false;
+
       function split( val ) {
         return val.split( e.delimiter );
       }

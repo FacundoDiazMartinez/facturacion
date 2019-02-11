@@ -7,12 +7,14 @@ class User < ApplicationRecord
   has_many :roles, through: :user_roles
 	has_many :permissions, through: :user_roles
   has_many :arrival_notes
+	has_many :advertisements
   has_many :purchase_invoices
   has_many :pull_notifications, foreign_key: "receiver_id", class_name: "Notification"
   has_many :push_notifications, foreign_key: "sender_id", class_name: "Notification"
   has_many :user_activities
   has_many :client
   has_many :commissioners
+  has_many :daily_cash_movements
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable, :trackable,
@@ -32,7 +34,7 @@ class User < ApplicationRecord
       if !name.nil?
         where("LOWER(first_name ||' ' || last_name) LIKE LOWER(?)", "%#{name}%")
       else
-        all 
+        all
       end
     end
 
@@ -40,7 +42,7 @@ class User < ApplicationRecord
       if !document_number.blank?
         where("dni::text ILIKE ?", "#{document_number}%")
       else
-        all 
+        all
       end
     end
 
@@ -50,7 +52,7 @@ class User < ApplicationRecord
       elsif state == "No aprobados"
         where(approved: false, admin: false)
       else
-        all 
+        all
       end
     end
   #FILTROS DE BUSQUEDA
@@ -65,7 +67,7 @@ class User < ApplicationRecord
 
 
   	def set_company company_id
-  		update_columns(company_id: company_id, admin: true) 	  
+  		update_columns(company_id: company_id, admin: true)
     end
 
   	def has_company?
@@ -83,6 +85,10 @@ class User < ApplicationRecord
     def has_stock_management_role?
       return true
     end
+
+		def has_advertisement_management_role?
+			return true
+		end
 
 		def role_label
 			if self.has_management_role?
@@ -131,15 +137,9 @@ class User < ApplicationRecord
     end
 
     def set_admin_if_owner
-      if self.company_id.nil? 
+      if self.company_id.nil?
         self.admin = true
       end
     end
-
-		def birthday
-			if not super.blank?
-				I18n.l(super)
-			end
-	  end
 
 end

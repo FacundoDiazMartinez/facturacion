@@ -1,5 +1,4 @@
-$(function() {
-	$('#purchase_order_shipping').change(function() {
+$(document).on("change", '#purchase_order_shipping', function() {
 		if ($(this).prop('checked')){
 			$("#purchase_order_shipping_cost").show("");
 			$("#purchase_order_shipping_cost").val("0.0");
@@ -7,8 +6,7 @@ $(function() {
 			$("#purchase_order_shipping_cost").hide();
 			$("#purchase_order_shipping_cost").val("0.0");
 		}
-    });
-});
+  });
 
 $(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
@@ -20,9 +18,10 @@ $(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field',
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.prodPrice").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+  	$(this).closest("tr.fields").find("input.supplier_code").val(data.item.supplier_code);
 		$(this).closest("tr.fields").find("input.prodSubtotal").val(data.item.price);
 
-		subtotal 			= $(this).closest("tr.fields").find("input.prodSubtotal");
+		subtotal = $(this).closest("tr.fields").find("input.prodSubtotal");
 		subtotal.trigger("change");
 });
 
@@ -48,5 +47,42 @@ $(document).on("change", '.prodSubtotal', function(){
 	$(".prodSubtotal").each(function(){
 	  sumaTotales = parseFloat(sumaTotales) + parseFloat($(this).val());
 	});
+	sumaTotales = parseFloat(sumaTotales) +  parseFloat($("#purchase_order_shipping_cost").val())
 	$('#purchase_order_total').val(sumaTotales);
 });
+
+$(document).on("change", '#purchase_order_shipping_cost', function(){
+	$(".prodSubtotal").trigger("change");
+})
+
+$(document).on("click", "#save_btn", function(){
+	var suma = parseFloat(0);
+	$(".purchase_order_payment_amount").each(function(){  /// calculamos la suma total en sector pagos
+		suma = parseFloat(suma) + parseFloat($(this).val());
+	});
+	if (suma > parseFloat($("#faltante").text())) {
+		return window.confirm("Los pagos superan el monto faltante. ¿Desea continuar de todas formas?");
+	}
+});
+
+$(document).on('nested:fieldAdded', function(event){
+
+  $('.datepicker').datepicker({
+      language: "es",
+      dateFormat: "dd/mm/yyyy",
+      todayHighlight: true,
+      autoClose: true,
+      autoSize: true
+  });
+
+	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
+});
+
+
+$(document).on('hidden.bs.modal', "#sendMailModal", function (e) {
+	$("input#send_mail").val("false")
+})
+
+$(document).on('shown.bs.modal', "#sendMailModal", function (e) {
+	$("input#send_mail").val("true")
+})

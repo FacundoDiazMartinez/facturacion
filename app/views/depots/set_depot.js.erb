@@ -1,8 +1,14 @@
-'<% if not @depot.errors.any? %>'
+<% if not @depot.errors.any? %>
 	$("#depotModal").modal('hide');
 	$('#depotModal').on('hidden.bs.modal', function (e) {
-	  	$("#depots_table").html("<%= j render '/depots/depots_table' %>");
+		<% if session[:return_to].blank? %>
+  		$("#depots_table").html("<%= j render '/depots/depots_table' %>");
+		<% else %>
+			<% flash[:notice] = "Ahora puede continuar con la operación." %>
+			var new_path = '<%= session.delete(:return_to) %>';
+			document.location.href = new_path;
+		<% end %>
 	});
-'<% else %>'
+<% else %>
 	$("#depot_errors").html("<%= j error_explanation(@depot) %>");
-'<% end %>'
+<% end %>

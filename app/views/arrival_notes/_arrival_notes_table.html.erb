@@ -3,6 +3,7 @@
     <thead>
       <tr>
         <th>Número</th>
+        <th>Fecha</th>
         <th>Orden de compra</th>
         <th>Generado por</th>
         <th>Estado</th>
@@ -14,13 +15,16 @@
       <% @arrival_notes.each do |arrival_note| %>
       <tr>
         <td><%= arrival_note.number %></td>
-        <td><%= arrival_note.purchase_order.number %></td>
-        <td><%= arrival_note.user.name %></td>
+        <td><%= arrival_note.created_at.strftime("%d/%m/%Y")%></td>
+        <td><%= link_to arrival_note.purchase_order.number, edit_purchase_order_path(arrival_note.purchase_order_id) %></td>
+        <td><%= link_to arrival_note.user.name, user_path(arrival_note.user_id) %></td>
         <td><%= arrival_note.state %></td>
         <td>
-          <%= link_to icon('fas', 'eye'), arrival_note, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, ArrivalNote %>
+          <%= link_to icon('fas', 'eye').html_safe, arrival_note_path(arrival_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_arrival_note_path(arrival_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, ArrivalNote %>
-          <%= link_to icon('fas', 'trash'), arrival_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, ArrivalNote %>
+          <% if (arrival_note.state != "Anulado" && arrival_note.state != "Finalizado") %>
+            <%= link_to icon('fas', 'trash'), arrival_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, ArrivalNote %>
+          <% end %>
         </td>
       </tr>
       <% end %>

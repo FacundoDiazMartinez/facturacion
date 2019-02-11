@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  payment: one
+  credit_card: one
+  subtotal: 1.5
+  installments: 1
+  total: 1.5
+
+two:
+  payment: two
+  credit_card: two
+  subtotal: 1.5
+  installments: 1
+  total: 1.5

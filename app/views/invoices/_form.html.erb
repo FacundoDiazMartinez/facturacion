@@ -1,8 +1,8 @@
 <%= nested_form_for @invoice do |form| %>
-
-<%= error_explanation @invoice %>
+  <%= form.hidden_field :budget_id %>
+  <%= error_explanation @invoice %> 
   <!-- HEADER -->
-    <div class="card shadow">
+    <div class="card shadow  invoice-header">
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
@@ -23,19 +23,19 @@
                 </div>
               </div>
 
-                <div class="form-group row">
-                  <%= form.label :total_pay, class:'col-4 col-form-label col-form-label-sm' %>
-                  <div class="col-8">
-                    <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
-                  </div>
+              <div class="form-group row">
+                <%= form.label :total_pay, class:'col-4 col-form-label col-form-label-sm' %>
+                <div class="col-8">
+                  <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
                 </div>
+              </div>
 
-                <div class="form-group row">
-                  <%= label_tag :total_left, "Monto faltante", class:'col-4 col-form-label col-form-label-sm' %>
-                  <div class="col-8">
-                    <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
-                  </div>
+              <div class="form-group row">
+                <%= label_tag :total_left, "Monto faltante", class:'col-4 col-form-label col-form-label-sm' %>
+                <div class="col-8">
+                  <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
                 </div>
+              </div>
             </div>
           <!-- SEGUNDA COLUMNA -->
 
@@ -67,30 +67,34 @@
         <div class="row" id="dynamic_attributes">
           <%= render '/invoices/dynamic_attributes', form: form %>
         </div>
-        <hr>
+        <hr class="invoice-header">
 
       <!-- BOTONES DE ACCION -->
-      <div class="row">
-        <div class="col-12 col-md-4">
-          <div class="form-group row">
-            <%= form.label :observation, "Observación", class:'col-4 col-form-label col-form-label-sm' %>
-            <div class="col-8">
-              <%= form.text_field :observation, class: 'form-control', disabled: !@invoice.editable? %>
+        <div class="row">
+          <div class="col-12 col-md-4">
+            <div class="form-group row">
+              <%= form.label :observation, "Observación", class:'col-4 col-form-label col-form-label-sm' %>
+              <div class="col-8">
+                <%= form.text_field :observation, class: 'form-control', disabled: !@invoice.editable? %>
+              </div>
             </div>
           </div>
+          <div class="col-4 col-md-4">
+            <center>
+              <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
+                <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
+              <% else %>
+                <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
+              <% end %>
+            </center>
+          </div>
+          <div class="col-2 offset-md-2">
+            
+          </div>
         </div>
-        <div class="col-12 col-md-4">
-          <center>
-            <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
-              <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
-            <% end %>
-          </center>
-        </div>
-        <div class="col-12 col-md-4"></div>
+        <!-- BOTONES DE ACCION -->
       </div>
-      <!-- BOTONES DE ACCION -->
     </div>
-  </div>
   <!-- HEADER -->
 
   <hr>
@@ -107,6 +111,17 @@
   </div>
   <!-- PAGOS -->
 
+  <!-- TRIBUTOS -->
+  <% if current_user.company.iva_cond == "Responsable Inscripto" %>
+    <div id="itributes" style="display: none;">
+      <hr>
+      <div class="card shadow">
+        <%= render template: '/invoices/tributes/index.html.erb', locals:{form: form} %>
+      </div>
+    </div>
+  <% end %>
+  <!-- TRIBUTOS -->
+
   <hr>
   <center>
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
@@ -116,6 +131,14 @@
   </center>
 <% end %>
 
+<div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="payment_modal">
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -126,10 +149,38 @@
   </div>
 </div>
 
+<% if @invoice.state == "Confirmado" || @invoice.state == "Anulado" %>
+  <div class="modal fade bd-example-modal-lg" id="sendClientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'users').html_safe %> Enviar factura a <%= @client.name %></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <%= form_tag deliver_invoice_path(),method: :get do %>
+          <div class="modal-body">
+            <h5>Enviar la factura Nº <%= @invoice.full_number %></h5>
+            <div class="form-group">
+              <%= label_tag :email, "Email" %>
+              <%= email_field_tag :email, @client.email, class: 'form-control', required: true %>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            <%= save_button %>
+          </div>
+        <% end -%>
+      </div>
+    </div>
+  </div>
+<% end -%>
 <%= render '/invoices/detail/search_product' %>
 
 <script>
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
+
 </script>

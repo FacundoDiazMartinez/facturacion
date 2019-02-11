@@ -1,0 +1,35 @@
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Fecha</th>
+        <th>Factura asociada</th>
+        <th>Generado por</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @delivery_notes.each do |delivery_note| %>
+      <tr>
+        <td><%= delivery_note.number %></td>
+        <td><%= l(delivery_note.date) %></td>
+        <td><%= link_to delivery_note.invoice.comp_number, edit_invoice_path(delivery_note.invoice_id) %></td>
+        <td><%= link_to delivery_note.user.name, user_path(delivery_note.user_id) %></td>
+        <td><%= delivery_note.state %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe, delivery_note_path(delivery_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit'), edit_delivery_note_path(delivery_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, DeliveryNote %>
+          <% if (delivery_note.state != "Anulado" && delivery_note.state != "Finalizado") %>
+            <%= link_to icon('fas', 'trash'), delivery_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, DeliveryNote %>
+          <% end %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @delivery_notes %>
+</div>

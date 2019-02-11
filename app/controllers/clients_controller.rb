@@ -5,7 +5,7 @@ class ClientsController < ApplicationController
   # GET /clients
   # GET /clients.json
   def index
-    @clients = current_user.company.clients.search_by_name(params[:name]).search_by_document(params[:document_number]).paginate(per_page: 10, page: params[:page])
+    @clients = current_user.company.clients.includes(:invoices).search_by_name(params[:name]).search_by_expired(params[:expired]).search_by_document(params[:document_number]).search_by_valid_for_account(params[:valid_for_account]).paginate(per_page: 10, page: params[:page])
   end
 
   # GET /clients/1
@@ -67,6 +67,6 @@ class ClientsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_params
-      params.require(:client).permit(:name, :phone, :mobile_phone, :email, :address, :document_type, :document_number, :birthday, :iva_cond, :valid_for_account, :recharge, :payment_day, :observation, client_contacts_attributes: [:id, :name, :email, :_destroy])
+      params.require(:client).permit(:name, :address, :document_type, :document_number, :iva_cond, :valid_for_account, :recharge, :payment_day, :observation, client_contacts_attributes: [:id, :name, :email, :charge, :phone, :mobile_phone, :_destroy])
     end
 end

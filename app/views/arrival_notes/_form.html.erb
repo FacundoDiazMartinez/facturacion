@@ -6,14 +6,14 @@
         <div class="row">
           <!-- PRIMERA COLUMNA -->
             <div class="col-sm">
-              <div class="form-group">
-                <%= form.label :purchase_order_id, "Orden de compra" %>
-                <%= autocomplete_field_tag :purchase_order_id, params[:purchase_order_id], autocomplete_purchase_order_arrival_notes_path, class: 'form-control', id_element: "#arrival_note_purchase_order_id", placeholder: "Número de Orden de Compra", disabled: !@arrival_note.editable? %>
-                <%= form.hidden_field :purchase_order_id %>
-              </div>
+              <%= render '/arrival_notes/purchase_order', form: form %>
               <div class="form-group">
                 <%= form.label :depot_id, "Almacén receptor" %>
-                <%= form.select :depot_id, current_user.company.depots.map{|d| [d.name, d.id]}, {prompt: "Seleccione..."}, {class: 'form-control', disabled: !@arrival_note.editable?} %>
+                <% if @arrival_note.editable? %>
+                  <%= form.select :depot_id, current_user.company.depots.map{|d| [d.name, d.id]}, {prompt: "Selecciones..."}, {class: 'form-control', required: true} %>
+                <% else %>
+                  <%= form.text_field :depot_id, value: @arrival_note.depot.name, readonly: true, class: 'form-control' %>
+                <% end -%>
               </div>
             </div>
           <!-- PRIMERA COLUMNA -->
@@ -21,11 +21,11 @@
             <div class="col-sm">
               <div class="form-group">
                 <%= form.label :number, "Número de remito" %>
-                <%= form.text_field :number, class: 'form-control', required: true, disabled: !@arrival_note.editable? %>
+                <%= form.text_field :number, class: 'form-control', disabled: !@arrival_note.editable?, required: true %>
               </div>
               <div class="form-group">
                 <%= form.label :state, "Estado" %>
-                <%= form.select :state, ArrivalNote::STATES, {}, {class: 'form-control', disabled: true} %>
+                <%= form.select :state, @arrival_note.array_of_state_values, {}, {class: 'form-control', disabled: !@arrival_note.editable?} %>
               </div>
 
             </div>
@@ -33,7 +33,7 @@
         </div>
 
         <center>
-          <% if @arrival_note.state == "Finalizado" && current_user.has_stock_management_role? %>
+          <% if @arrival_note.state == "Finalizado" && current_user.has_stock_management_role?  && @arrival_note.purchase_order.state != "Finalizada" %>
             <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_arrival_note_path(@arrival_note.id), method: :patch, class: 'btn btn-danger' %>
           <% end %>
         </center>
@@ -42,20 +42,16 @@
   <!-- HEADER -->
 
   <!-- DETALLES -->
-    <% if @arrival_note.editable? %>
-      <p class="text-muted">
-        Conceptos asociados
-        <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :arrival_note_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
-      </p>
-    <% end %>
-
     <div class="card" id="arrival_details">
-      <div class="card-body">
+      <div class="card-body" id="idetails">
         <%= render template: '/arrival_notes/details/index.html.erb', locals:{form: form} %>
       </div>
     </div>
   <!-- DETALLES -->
     <center>
-      <%= save_button %>
+      <% if  (@arrival_note.state != "Anulado" && @arrival_note.state != "Finalizado") %>
+          <%= button_tag "#{icon('fas', 'save')} Guardar remito".html_safe, type: 'button', id: 'modal_button_an', class: 'btn btn-primary' %>
+      <% end %>
     </center>
+
 <% end %>

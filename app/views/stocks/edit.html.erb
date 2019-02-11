@@ -1,0 +1,32 @@
+<%= nested_form_for @product do |form| %>
+	<div class="modal-body">
+		<div id="stock_fields">
+			<%= form.fields_for :stocks, wrapper: false do |f|%>
+				<div class="fields form-row mb-3">
+					<div class="col">
+						<%= f.label :depot_id, "Depósito" %>
+						<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {}, {class: 'form-control'} %>
+					</div>
+					<div class="col">
+						<%= f.label :state, "Estado" %>
+						<%= f.select :state, Stock::STATES, {}, {class: 'form-control'} %>
+					</div>
+					<div class="col">
+						<%= f.label :quantity, "Cantidad" %>
+						<%= f.number_field :quantity, required: true, class: 'form-control' %>
+					</div>
+				</div>
+			<% end -%>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col text-center mb-3">
+				<%= form.link_to_add "Agregar estado", :stocks, class: 'btn btn-success', data:{target: "#stock_fields"} %>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary float-right" data-dismiss="modal">Cerrar</button>
+			<button type="submit" class="btn btn-primary float-right">Guardar</button>
+		</div>
+	</div>
+<% end -%>

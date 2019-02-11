@@ -107,6 +107,12 @@ es:
         iva_cond: "Condición ante I.V.A."
         comp_number: "Nº comprobante"
         associated_invoice: "Factura asociada Nº"
+      advertisement:
+        title: "Título"
+        body: "Cuerpo"
+        image1: "Imágen"
+        delivery_date: "Fecha de envío"
+        state: "Estado"
       product:
         photo: "Imagen"
         product_category_id: "Categoría"
@@ -155,7 +161,10 @@ es:
         name:  "Nombre"
         location: "Ubicación"
         stock_count: "Stock actual"
-
+      daily_cash:
+        initial_amount: "Monto de apertura"
+        final_amount: "Monto de cierre"
+        state: "Estado"
     errors:
       messages:
         record_invalid: "La validación falló: %{errors}"
@@ -368,6 +377,6 @@ es:
     formats:
       default: "%d/%m/%Y a las %H:%M:%S %Z"
       long: "%A, %d de %B de %Y a las %I:%M %p"
-      short: "%d de %b a las %H:%M hrs"
+      short: "%d/%m/%Y - %H:%M"
       only_date: "%d/%m/%Y"
     pm: pm

@@ -1,6 +1,7 @@
-<h1>Editing Delivery Note</h1>
+<div class="p-4">
+	<%= title_helper "Editar Remito Nº #{@delivery_note.number.to_s}" %>
 
-<%= render 'form', delivery_note: @delivery_note %>
-
-<%= link_to 'Show', @delivery_note %> |
-<%= link_to 'Back', delivery_notes_path %>
+	<div id="form">
+		<%= render 'form', arrival_note: @arrival_note %>
+	</div>
+</div>

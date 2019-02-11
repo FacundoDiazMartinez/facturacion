@@ -1,28 +1,28 @@
-$(document).ready(function(){
-	$("#service_cost_price").on("change", function(){
+
+	$(document).on("change", "#service_cost_price", function(){
 		setPrecioNetoForService();
 	});
 
-	$("#service_gain_margin").on("change", function(){
+	$(document).on("change", "#service_gain_margin", function(){
 		setPrecioNetoForService();
 	});
 
-	$("#service_iva_aliquot").on("change", function(){
+	$(document).on("change", "#service_iva_aliquot", function(){
 		setPrecioFinalForService();
 	});
 
-	$("#service_net_price").on("change", function(){
+	$(document).on("change", "#service_net_price", function(){
 		setPrecioFinalForService();
 	});
 
-	$("#service_price").on("change", function(){
+	$(document).on("change", "#service_price", function(){
 		setCostPriceForService();
 	});
 
 	$(document).on('change', '#service_product_category_id', function(){
 		$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIvaForService(data)}, "script")
 	})
-});
+
 	
 function setPrecioNetoForService(){
 	var costo 		= parseFloat($("#service_cost_price").val());

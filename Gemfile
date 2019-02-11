@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.1'
+#ruby '2.5.1'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.1'
@@ -31,10 +31,15 @@ gem 'jbuilder', '~> 2.5'
 gem 'barby', '~> 0.6.6'
 gem 'chunky_png'
 
+#GEMA WYSIWYG
+gem 'summernote-rails', '~> 0.8.10.0'
+
 #GEMA DE WICKED PDFKit
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 
+#Validaciones
+gem 'jquery-validation-rails'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
@@ -76,14 +81,13 @@ gem 'jquery-ui-rails'
 gem 'rails-jquery-autocomplete'
 
 #Datepicker
-gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails', :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'
+gem 'bootstrap-datepicker-rails'#, :require => 'bootstrap-datepicker-rails', :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'
 
 #Workers
 gem 'delayed_job_active_record'
 
 #Push notifications
 gem 'private_pub'
-gem "thin"
 
 #Consultas automaticas en AJAX
 gem 'pjax_rails'
@@ -98,6 +102,8 @@ gem 'rubyzip', '>= 1.2.1'
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'
 gem 'zip-zip'
+
+gem 'numbers_and_words'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

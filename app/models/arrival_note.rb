@@ -1,15 +1,21 @@
 class ArrivalNote < ApplicationRecord
-  belongs_to :company
-  belongs_to :purchase_order
-  belongs_to :user
-  belongs_to :depot
-  has_many :arrival_note_details
+  belongs_to :company, optional: true
+  belongs_to :purchase_order, optional: true
+  belongs_to :user, optional: true
+  belongs_to :depot, optional: true
+  has_many :arrival_note_details, dependent: :destroy
+  has_many :purchase_order_details, through: :purchase_order
 
-  accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank, allow_destroy: true
- 
-  before_validation :set_number
-  before_save :set_state, on: :create
-  after_save  :remove_stock, if: Proc.new{|an| an.saved_change_to_state? && state == "Anulado"}
+  accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank , allow_destroy: true
+  accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
+
+  #before_validation :set_number
+  # after_save :set_state
+  after_save :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
+  after_initialize :set_default_number, if: :new_record?
+
+
+  default_scope { where(active: true) }
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -20,6 +26,10 @@ class ArrivalNote < ApplicationRecord
   validates_presence_of :number, message: "No puede exitir un remito sin numeración."
   validates_presence_of :state, message: "El remito debe poseer un estado."
   validates_inclusion_of :state, in: STATES, message: "El estado es inválido."
+  validates_uniqueness_of :number, scope: :company_id, message: "Ya existe un remito con ese número."
+
+  before_validation :check_purchase_order_state, if: Proc.new{|po| po.state_changed? && po.state == "Anulado"}
+  before_save :set_required_quantities
 
   #TABLA
     # create_table "arrival_notes", force: :cascade do |t|
@@ -39,45 +49,95 @@ class ArrivalNote < ApplicationRecord
     # end
   #TABLA
 
+  #ATRIBUTOS
+    def purchase_order_attributes=(attributes)
+      self.purchase_order_id = attributes["id"]
+      super
+    end
+
+    def purchase_order_number
+      purchase_order.nil? ? "" : purchase_order.number
+    end
+  #ATRIBUTOS
+
 
   #FILTROS DE BUSQUEDA
     def self.search_by_purchase_order number
       if not number.blank?
-        where("purchase_orders.number = ?", number)
+        where("purchase_orders.number ILIKE ?", "%#{number}%")
       else
-        all 
+        all
       end
     end
 
-    def self.search_by_user name 
+    def self.search_by_user name
       if not name.blank?
         where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
       else
-        all 
+        all
       end
    end
 
-    def self.search_by_state state 
+    def self.search_by_state state
       if not state.blank?
         where(state: state)
       else
-        all 
+        all
       end
     end
   #FILTROS DE BUSQUEDA
 
   #PROCESOS
-    def set_number
-      self.number = self.number.to_s.rjust(8,padstr= '0') 
+
+    def set_default_number
+      last_an = ArrivalNote.where(company_id: company_id).last
+      self.number ||= last_an.nil? ? "00000001" : (last_an.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
 
-    def set_state
-      self.state = "Finalizado"
-    end
+    # def set_number
+    #   self.number = self.number.to_s.rjust(8,padstr= '0')
+    # end
+
+    # def set_state
+    #   if !arrival_note_details.map(&:completed).include?(false)
+    #     update_column(:state, "Finalizado") unless state == "Anulado"
+    #   else
+    #     update_column(:state, "Pendiente") unless state == "Anulado"
+    #   end
+    # end
 
     def remove_stock
       arrival_note_details.each do |detail|
         detail.remove_stock
+      end
+    end
+
+    def destroy
+      if self.state == "Finalizado"
+        errors.add(:state, "No puede eliminar un remito finalizado.")
+        return false
+      else
+        update_column(:active, false)
+        run_callbacks :destroy
+        freeze
+      end
+    end
+
+    def check_purchase_order_state
+      if purchase_order.state == "Finalizada"
+        errors.add(:state, "No es posible modificar estado de remito porque la Órden de Compra ya está finalizada.")
+        self.state = state_was
+      end
+    end
+
+    def set_required_quantities
+      arrival_note_details.each do |a|
+        det = purchase_order_details.find_by_product_id(a.product_id)
+        unless det.nil?
+          a.req_quantity = det.quantity
+        else
+          a.req_quantity = 0.to_f
+        end
       end
     end
   #PROCESOS
@@ -85,6 +145,18 @@ class ArrivalNote < ApplicationRecord
   #FUNCIONES
     def editable?
       state == "Pendiente"
+    end
+
+    def array_of_state_values
+      if editable?
+        STATES.reject{|x| x == "Anulado"}
+      else
+        STATES
+      end
+    end
+
+    def depot
+      Depot.unscoped{super}
     end
   #FUNCIONES
 end

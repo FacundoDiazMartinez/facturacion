@@ -1,44 +1,4 @@
-<% if params[:view] == "list" %>
-  <div class="table-responsive">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th>Nº</th>
-          <th scope="col">Cliente</th>
-          <th scope="col" class="only-desktop">Tipo</th>
-          <th scope="col">Total</th>
-          <th scope="col" class="only-desktop">Estado</th>
-          <th scope="col" class="only-desktop">Fecha</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <% @invoices.each do |invoice| %>
-          <tr>
-            <td><%= invoice.full_number %></td>
-            <td><%= invoice.client.name %></td>
-            <td class="only-desktop"><%= invoice.tipo %></td>
-            <td>$<%= invoice.total %></td>
-            <td class="only-desktop"><%= invoice_state(invoice.state) %></td>
-            <td class="only-desktop"><%= invoice.cbte_fch %></td>
-            <td>
-              <%  if ! invoice.editable? %>
-                <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-              <% end %>
-            </td>
-            <td>
-              <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-            </td>
-            <%  if invoice.editable? %>
-              <td><%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
-            <% end -%>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-<% else %>
+<% if params[:view] == "table" %>
   <div class="row">
     <% @invoices.each do |invoice| %>
       <div class="col-md-6 col-lg-4 col-sm-12">
@@ -51,7 +11,6 @@
               <strong>Tipo:</strong> <%= invoice.tipo %><br>
               <strong>Estado:</strong> <%= invoice_state(invoice.state) %><br>
               <i><%= icon('fas', 'clock') %> <%= invoice.cbte_fch %></i><br>
-
             </div>
           </li>
           <li>
@@ -76,6 +35,47 @@
         </ul>
       </div>
     <% end -%>
+  </div>
+<% else %>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Nº</th>
+          <th scope="col">Cliente</th>
+          <th scope="col" class="only-desktop">Tipo</th>
+          <th scope="col">Total</th>
+          <th scope="col" class="only-desktop">Estado</th>
+          <th scope="col" class="only-desktop">Fecha</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @invoices.each do |invoice| %>
+          <tr>
+            <td><%= invoice.full_number %></td>
+            <td><%= link_to invoice.client.name, client_path(invoice.client_id) %></td>
+            <td class="only-desktop"><%= invoice.tipo %></td>
+            <td>$<%= invoice.total %></td>
+            <td class="only-desktop"><%= invoice_state(invoice.state) %></td>
+            <td class="only-desktop"><%= invoice.cbte_fch %></td>
+            <td>
+              <%  if ! invoice.editable? %>
+                <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <% else %>
+                <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <% end %>
+            </td>
+            <%  if invoice.editable? %>
+              <td><%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+            <% else %>
+              <td><%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+            <% end -%>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 <% end -%>
 <%= paginate @invoices %>

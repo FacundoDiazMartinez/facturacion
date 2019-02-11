@@ -1,5 +1,5 @@
 class Invoices::ClientsController < ApplicationController
-	#before_action :set_invoice, only: [:edit, :update]
+	before_action :set_invoice, only: [:update]  #Se necesita un invoice porque al renderizar el client_column pregunta si el invoice es editable
 	before_action :set_client, only: [:edit, :update]
 
 	def show
@@ -7,11 +7,11 @@ class Invoices::ClientsController < ApplicationController
 	end
 
 	def edit
-		
+
 	end
 
 	def update
-		@client 		= current_user.company.clients.find_by_full_document(client_params).first_or_initialize
+		@client = current_user.company.clients.find_by_full_document(client_params).first_or_initialize
 		@client.set_attributes(params["client"].as_json)
 		@client.user_id = current_user.id
 		respond_to do |format|
@@ -25,6 +25,12 @@ class Invoices::ClientsController < ApplicationController
 	    end
 	end
 
+	def autocomplete_name
+		term = params[:term]
+    	clients = current_user.company.clients.where('LOWER(name) ILIKE ?', "%#{term}%").all
+    	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
+	end
+
 	def autocomplete_document
 		term = params[:term]
     	clients = current_user.company.clients.where('document_number ILIKE ?', "%#{term}%").all
@@ -34,7 +40,11 @@ class Invoices::ClientsController < ApplicationController
 	protected
 
 		def set_invoice
-			@invoice = current_user.company.invoices.find(params[:invoice_id])
+			if params[:invoice_id].blank?
+				@invoice = Invoice.new
+			else
+				@invoice = current_user.company.invoices.find(params[:invoice_id])
+			end
 		end
 
 		def set_client

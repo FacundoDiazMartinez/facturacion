@@ -8,6 +8,12 @@
 	  	$.each(options, function(i, option) {
 		    $('#invoice_cbte_tipo').append( new Option(option[0],option[1]) );
 		});
+		addRechargeToDetails();
+		"<% if @client.saldo.to_f < 0.0 && @client.valid_for_account %>"
+			$("#saldo_disponible").html("Saldo disponible en cuenta corriente: $<%= -@client.saldo.to_f %>");
+		"<% else %>"
+			$("#saldo_disponible").html("");
+		"<% end %>"
 	});
 '<% else %>'
 	$("#client_errors").html("<%= j error_explanation(@client) %>");

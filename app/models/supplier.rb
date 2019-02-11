@@ -4,6 +4,7 @@ class Supplier < ApplicationRecord
   has_many 	 :purchase_invoices
   has_many   :product_categories
   has_many   :products
+  has_many   :price_changes
 
   after_validation   :set_create_activity, on: :create
   after_validation   :set_update_activity, on: :update
