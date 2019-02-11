@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2019_02_07_171823) do
     t.string "title", null: false
     t.text "body"
     t.string "image1"
-    t.date "delivery_date", null: false
+    t.date "delivery_date"
     t.boolean "active", default: true, null: false
     t.string "state", default: "No enviado", null: false
     t.datetime "created_at", null: false

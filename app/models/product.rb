@@ -225,7 +225,7 @@ class Product < ApplicationRecord
 	#PROCESOS
 		def check_category_products_count
 			if product_category_id_changed?
-				ProductCategory.find(product_category_id_change.first).change_products_count(-1) unless product_category_id_change.first.nil?#Actualiza la vieja categoría
+				ProductCategory.find(product_category_id_change.first).change_products_count(-1) unless product_category_id_change.first.nil? #Actualiza la vieja categoría
 				self.product_category.change_products_count(1) #Actualiza la nueva categoria
 			end
 		end

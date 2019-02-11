@@ -1,10 +1,6 @@
 Rails.application.routes.draw do
 
 
-
-
- resources :sended_advertisement
-
  resources :advertisements do
    patch :cancel, on: :member
    patch :send_email, on: :member
@@ -73,6 +69,8 @@ Rails.application.routes.draw do
       get :autocomplete_document, on: :collection
     end
   end
+
+  resources :sended_advertisements
 
   resources :notifications, only: [:index, :show]
   resources :iva_books do
