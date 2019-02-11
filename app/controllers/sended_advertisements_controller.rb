@@ -1,4 +1,4 @@
-class SendedAdvertisementController < ApplicationController
+class SendedAdvertisementsController < ApplicationController
   before_action :set_advertisement, only: [:show, :new]
   layout :false, only: :create
 
@@ -10,7 +10,10 @@ class SendedAdvertisementController < ApplicationController
 
   def create
     clients = params[:emails]
-    AdvertisingMailer.advertising_email(clients,@advertisement).deliver_now
+    @advertisement = current_user.company.advertisements.find(params[:advertisement_id])
+    pp "/////////////////////////////////////////////////"
+    pp @advertisement
+    AdvertisingMailer.advertising_email(clients.split(','),@advertisement).deliver_now
     @sended_advertisement = @advertisement.sended_advertisement.new(clients_data: clients.map(&:inspect).join(','))
     @sended_advertisement.save
 

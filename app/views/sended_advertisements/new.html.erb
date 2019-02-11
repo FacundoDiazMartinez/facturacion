@@ -51,13 +51,14 @@ $(document).on("change", "input", function(){
     idsArray.splice(index, 1);
   }
   $("#emails").val(idsArray);
+  console.log($("#emails").val());
 })
 
 function sendByEmail() {
 
   // $.ajax({
   //   type: "Post",
-  //   url: "<%= sended_advertisement_index_path %>",
+  //   url: "<%= sended_advertisements_path %>",
   //   data: {data: idsArray, ad: "<%= @advertisement.id %>"},
   //   datatype :'html',    //give datatype here
   //   success: function(data){
@@ -67,7 +68,7 @@ function sendByEmail() {
   //   }
   // });
 
-  $.post("<%= sended_advertisement_index_path %>", {data: idsArray, ad: "<%= @advertisement.id %>"},null,"json").done(function(data){
+  $.post("<%= sended_advertisements_path %>", {data: idsArray, ad: "<%= @advertisement.id %>"},null,"json").done(function(data){
     console.log("*************************************");
     console.log(data);
     // window.location.replace(data);

@@ -3,7 +3,7 @@ Rails.application.routes.draw do
 
 
 
- resources :sended_advertisement
+ resources :sended_advertisements
 
  resources :advertisements do
    patch :cancel, on: :member
