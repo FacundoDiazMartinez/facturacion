@@ -2,13 +2,12 @@ class Advertisement < ApplicationRecord
 
   belongs_to :user,optional: true
   belongs_to :company,optional: true
-  has_one :sended_advertisement, dependent: :destroy
+  has_many :sended_advertisement, dependent: :destroy
 
   STATES = ["No enviado", "Enviado", "Anulado"]
 
   validates_presence_of :title, message: "Debe ingresar el título de la publicidad."
   validates_presence_of :active
-  validates_presence_of :delivery_date, message: "Debe ingresar fecha de envío."
 
   default_scope { where(active: true) }
 
@@ -33,7 +32,16 @@ class Advertisement < ApplicationRecord
 
   #ATRIBUTOS
   def image1
-    read_attribute("image1") || "/images/default_product.jpg"
+    read_attribute("image1") || "/images/select_image.png"
+  end
+
+  def delivery_date
+    dd = read_attribute("delivery_date")
+    if not dd.blank?
+      I18n.l(dd)
+    else
+      return dd
+    end
   end
   #ATRIBUTOS
 

@@ -1,0 +1,31 @@
+<div class="table-responsive">
+  <table class="table table-hover" id="clients_table">
+    <thead>
+      <tr>
+        <th>Enviar</th>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Documento</th>
+      </tr>
+    </thead>
+
+
+    <tbody>
+      <% @clients.each do |client| %>
+      <tr>
+        <td><%= check_box_tag 'client_ids[]', client.id %></td>
+        <td><%= client.name %></td>
+        <td><%= client.address %></td>
+        <td><%= client.document_number %></td>
+      </tr>
+      <% end %>
+    </tbody>
+
+  </table>
+  <center>
+    <% link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, sended_advertisement_path(@advertisement.id), method: :post, class: 'btn btn-primary' %>
+    <!-- :client_ids => client_ids[] -->
+  </center>
+
+  <%= paginate @clients %>
+</div>

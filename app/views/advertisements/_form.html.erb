@@ -16,7 +16,7 @@
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :delivery_date %>
-              <%= form.text_field :delivery_date, class: 'form-control datepicker', placeholder: 'Deje en blanco para enviarlo de inmediato.', required: true, disabled: !@advertisement.editable?, autocomplete: "off" %>
+              <%= form.text_field :delivery_date, class: 'form-control datepicker', placeholder: 'Deje en blanco para enviarlo de inmediato.', disabled: !@advertisement.editable?, autocomplete: "off" %>
             </div>
           </div>
         </div>
@@ -33,7 +33,9 @@
                 <div class="comp_container caption captionload">
                   <img src="/images/load.gif">
                 </div>
-                <img class="card-img-top" src="<%= @advertisement.image1 %>" alt="Añadir foto" id="image">
+                <center>
+                  <img class="card-img-top" src="<%= @advertisement.image1 %>" style="height:auto; width:auto; max-width:100%; max-height:288px" alt="Añadir foto" id="image">
+                </center>
                 <div hidden>
                   <%= form.file_field :image1, :class => 'form-control', id: 'file_input' %>
                 </div>
@@ -43,7 +45,7 @@
           <div class="col-md-8">
             <div class="form-group">
               <%= form.label :body %>
-              <%= form.text_area :body, class: 'form-control summernote', style: "z-index: -100;", disabled: !@advertisement.editable?%>
+              <%= form.text_area :body, class: 'form-control summernote', disabled: !@advertisement.editable?%>
             </div>
           </div>
         </div>
@@ -59,7 +61,7 @@
     <center>
       <% if @advertisement.state == "No enviado" && current_user.has_advertisement_management_role? && @advertisement.persisted? %>
         <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-danger' %>
-        <%= link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, send_email_advertisement_path(@advertisement.id), method: :patch, class: 'btn btn-primary' %>
+        <%= link_to "#{icon('fas', 'envelope ')} Enviar".html_safe, new_sended_advertisement_path(:ad => @advertisement.id), method: :get, class: 'btn btn-primary' %>
       <% end %>
     </center>
 
