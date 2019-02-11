@@ -1,0 +1,33 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Número</th>
+      <th scope="col">Cliente</th>
+      <th scope="col">Total</th>
+      <th scope="col">Banco</th>
+      <th scope="col">Fecha</th>
+      <th scope="col">Flujo</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cheque_payments.each do |cheque_payment| %>
+      <tr>
+        <td><%= cheque_payment.number %></td>
+        <td><%= cheque_payment.client.name %></td>
+        <td>$<%= cheque_payment.total %></td>
+        <td><%= cheque_payment.entity %></td>
+        <td><%= l(cheque_payment.payment.payment_date) %></td>
+        <td><%= flow_type(cheque_payment.payment.flow) %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe,  payments_cheque_payment_path(cheque_payment, invoice_id: cheque_payment.payment.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_payments_cheque_payment_path(cheque_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash').html_safe, payments_cheque_payment_path(cheque_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @cheque_payments %>

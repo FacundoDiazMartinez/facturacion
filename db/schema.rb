@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_05_194443) do
+ActiveRecord::Schema.define(version: 2019_02_07_171823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
 
   create_table "cheque_payments", force: :cascade do |t|
     t.string "state", default: "No cobrado", null: false
-    t.date "expiration", default: -> { "('now'::text)::date" }, null: false
+    t.date "expiration", default: -> { "CURRENT_DATE" }, null: false
     t.float "total", default: 0.0, null: false
     t.text "observation"
     t.boolean "active", default: true, null: false
@@ -352,7 +352,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -493,7 +493,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -502,7 +502,9 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
     t.boolean "generated_by_system", default: false, null: false
     t.bigint "company_id"
     t.bigint "user_id"
+    t.bigint "client_id"
     t.index ["account_movement_id"], name: "index_payments_on_account_movement_id"
+    t.index ["client_id"], name: "index_payments_on_client_id"
     t.index ["company_id"], name: "index_payments_on_company_id"
     t.index ["invoice_id"], name: "index_payments_on_invoice_id"
     t.index ["purchase_order_id"], name: "index_payments_on_purchase_order_id"
@@ -720,7 +722,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
     t.bigint "responsable_id", null: false
     t.string "observation"
     t.string "number", null: false
-    t.date "init_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -911,6 +913,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_194443) do
   add_foreign_key "iva_books", "purchase_invoices"
   add_foreign_key "localities", "provinces"
   add_foreign_key "payments", "account_movements"
+  add_foreign_key "payments", "clients"
   add_foreign_key "payments", "companies"
   add_foreign_key "payments", "invoices"
   add_foreign_key "payments", "purchase_orders"

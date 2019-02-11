@@ -25,12 +25,12 @@
 //= require popper
 //= require bootstrap
 //= require bootstrap-toggle
+//= require summernote/summernote-bs4.min
 //= require z.jquery.fileupload
 //= require activestorage
 //= require bootstrap-datepicker/core
 //= require bootstrap-datepicker/locales/bootstrap-datepicker.es.js
-//= require summernote/summernote-bs4.min
-//= require summernote/lang/summernote-es-ES
+
 //= require_tree .
 //= require autocomplete-rails
 

@@ -1,10 +1,11 @@
 class Payments::ChequePaymentsController < Payments::PaymentsController
   before_action :set_cheque_payment, only: [:show, :edit, :update, :destroy]
+  layout :false, only: :new
 
   # GET /cheque_payments
   # GET /cheque_payments.json
   def index
-    @cheque_payments = ChequePayment.all
+    @cheque_payments = current_user.company.cheque_payments.joins(:payment).search_by_number(params[:number]).search_by_client(params[:client]).search_by_date(params[:date]).paginate(page: params[:page], per_page: 10)
   end
 
   # GET /cheque_payments/1

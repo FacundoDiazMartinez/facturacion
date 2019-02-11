@@ -9,10 +9,11 @@ class IncomePayment < Payment
 	after_save :touch_invoice, if: Proc.new{ |ip| !ip.generated_by_system }
 	after_destroy :set_total_pay_to_invoice
 	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
+	before_save :check_company_id
+	before_save :check_client_id
 	before_validation :set_flow
 
-	validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
-	validate :check_max_total
+	validate :check_max_total, if: Proc.new{|ip| !ip.invoice_id.blank? }
 	validate :check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
 
 	
@@ -23,11 +24,20 @@ class IncomePayment < Payment
 
  	#VALIDACIONES
  		def check_max_total
+ 			pp self
  			errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.") unless (invoice.sum_payments - total_was + total) <= invoice.total
  		end
 
  		def check_available_saldo
  			errors.add(:total, "No posee el saldo suficiente en su cuenta corriente.") unless total.to_f <= -invoice.client.saldo.to_f
+ 		end
+
+ 		def check_company_id
+ 			self.company_id = invoice.company_id
+ 		end
+
+ 		def check_client_id
+ 			self.client_id = invoice.client_id
  		end
  	#VALIDACIONES
 

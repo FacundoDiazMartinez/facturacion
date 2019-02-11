@@ -43,5 +43,9 @@ class ProductCategory < ApplicationRecord
     run_callbacks :destroy
     freeze
   end
+
+  def change_products_count(quantity)
+    update_column(:products_count, self.products_count.to_f + quantity.to_f)
+  end
   #PREOCEOS
 end

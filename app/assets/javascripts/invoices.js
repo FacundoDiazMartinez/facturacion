@@ -401,6 +401,7 @@ $(document).on("change", ".new_type_of_payment", function(){
 	client_id 			= $("#client_id_for_payment").val();
 	account_movement_id = $("#account_movement_id_for_payment").val();
 	data = {invoice_id: invoice_id, client_id: client_id, account_movement_id: account_movement_id}
+	console.log(data)
 	switch (selected_payment) { 
 		case '0': 
 			getPaymentRequest("/payments/cash_payments/new", data);

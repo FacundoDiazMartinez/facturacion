@@ -14,7 +14,7 @@
 
 <%= form_for @sended_advertisement do |form| %>
 
-  <%= hidden_field_tag :emails %>
+  <%= form.hidden_field :clients_data %>
   <%= form.hidden_field :advertisement_id %>
   <center>
     <%= button_tag "#{icon('fas', 'envelope')} Enviar".html_safe, type: 'submit', class: 'btn btn-primary' %>
@@ -50,8 +50,7 @@ $(document).on("change", "input", function(){
     var index = idsArray.indexOf($(this).val());
     idsArray.splice(index, 1);
   }
-  $("#emails").val(idsArray);
-  console.log($("#emails").val());
+  $("#sended_advertisement_clients_data").val(idsArray.join(", "));
 })
 
 function sendByEmail() {

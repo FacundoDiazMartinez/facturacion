@@ -5,7 +5,7 @@ class Product < ApplicationRecord
   	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User", optional: true
   	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User", optional: true
   	belongs_to :supplier, optional: true
-  	has_many   :stocks
+  	has_many   :stocks, dependent: :destroy
   	has_many   :depots, through: :stocks
   	has_many   :invoice_details
   	has_many   :invoice, through: :invoice_details
@@ -13,7 +13,7 @@ class Product < ApplicationRecord
   	has_many   :purchase_orders, through: :purchase_order_details
   	has_many   :arrival_note_details
   	has_many   :arrival_note, through: :arrival_note_details
-  	has_many   :product_price_histories
+  	has_many   :product_price_histories, dependent: :destroy
 
     scope :active, -> { where(active: true) }
     validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active
@@ -27,9 +27,9 @@ class Product < ApplicationRecord
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
-  	after_create :create_price_history
+  	after_create :create_price_history, :user_activity_for_create
 
-  	before_save :check_iva_aliquot, :check_net_price
+  	before_save :check_iva_aliquot, :check_net_price, :check_category_products_count
 
   	accepts_nested_attributes_for :stocks, reject_if: :all_blank, allow_destroy: true
 
@@ -150,6 +150,13 @@ class Product < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
+  		def updated_by=(updated_by)
+  			@updated_by = updated_by
+  		end
+
+  		def updated_by
+  			@updated_by
+  		end
 
   		def simple_iva_aliquot
   			Afip::ALIC_IVA.map{|k,v| v unless k != iva_aliquot}.compact.join().to_f
@@ -216,6 +223,17 @@ class Product < ApplicationRecord
 	#ATRIBUTOS VIRTUALES
 
 	#PROCESOS
+		def check_category_products_count
+			if product_category_id_changed?
+				ProductCategory.find(product_category_id_change.first).change_products_count(-1) unless product_category_id_change.first.nil? #Actualiza la vieja categoría
+				self.product_category.change_products_count(1) #Actualiza la nueva categoria
+			end
+		end
+
+		def user_activity_for_create
+			UserActivity.create_new_product(self)
+		end
+
 		def check_iva_aliquot
 			self.iva_aliquot = "05" if self.iva_aliquot.blank?
 		end
@@ -236,13 +254,13 @@ class Product < ApplicationRecord
 		end
 
 		def add_price_history
-			old_price = saved_changes[:price].first.to_f
-			percentage = (price * 100 / old_price).to_f.round(2) - 100
-			self.product_price_histories.create(price: price, percentage: percentage, created_by: created_by)
+			old_price = saved_changes[:net_price].first.to_f
+			percentage = (net_price * 100 / old_price).to_f.round(2) - 100
+			self.product_price_histories.create(price: net_price, percentage: percentage, created_by: created_by)
 		end
 
 		def create_price_history
-			self.product_price_histories.create(price: price, percentage: 0, created_by: created_by)
+			self.product_price_histories.create(price: net_price, percentage: 0, created_by: created_by)
 		end
 
 		def add_stock attrs={}
@@ -287,7 +305,7 @@ class Product < ApplicationRecord
 		end
 
 	    def destroy
-	      	update_column(:active, false)
+	      	update_columns(active: false, updated_by: updated_by)
 	      	run_callbacks :destroy
 	      	freeze
 	    end

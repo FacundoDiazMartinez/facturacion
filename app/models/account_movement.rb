@@ -12,6 +12,7 @@ class AccountMovement < ApplicationRecord
   after_save  :update_debt
   after_destroy :update_debt
   after_destroy :destroy_receipt
+  before_validation :check_receipt_attributes
 
   validate :check_pertenence_of_receipt_to_client
 
@@ -155,9 +156,32 @@ class AccountMovement < ApplicationRecord
         "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{receipt.number}"
       end
     end
+
+    def user_id=(user_id)
+      @user_id = user_id
+    end
+
+    def user_id
+      @user_id
+    end
+
+    def company_id=(company_id)
+      @company_id = company_id
+    end
+
+    def company_id
+      @company_id
+    end
   #ATRIBUTOS
 
   #PROCESOS
+    def check_receipt_attributes
+      self.receipt.client_id  = self.client_id
+      self.receipt.user_id    = self.user_id
+      self.receipt.company_id = self.company_id
+      self.receipt.date       = Date.today
+      self.total              = self.receipt.total
+    end
 
     def destroy_receipt
       self.receipt.destroy unless receipt.nil?
