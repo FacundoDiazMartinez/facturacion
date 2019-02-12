@@ -9,5 +9,6 @@ class SendedAdvertisement < ApplicationRecord
 
   def upadte_advertisement_state
     self.advertisement.update_column(:state, "Enviado")
+    self.advertisement.update_column(:delivery_date, Date.today)
   end
 end
