@@ -1,7 +1,22 @@
 $("#clients_table").html("<%= j render 'clients_table' %>");
-table= document.getElementById('mytable');
-$('input:checkbox', table).each(function() {
-  if (idsArray.indexOf($(this).val()) != -1) {
-    $(this).prop('checked', true);
+
+alert(idsArray);
+$('input:checkbox').each(function( index ) {
+  if (index == 0) {
+    if (true) {
+      if (idsArray[index] == "all_checked") {
+        $(this).prop('checked', true);
+      } else {
+        $(this).prop('checked', false);
+      }
+    }
+  } else {
+    client_id = parseInt($(this).val());
+    if (idsArray.indexOf(client_id) != -1) {
+      $(this).prop('checked', true);
+      alert(client_id);
+      alert(idsArray.indexOf(client_id));
+    }
   }
+
 });

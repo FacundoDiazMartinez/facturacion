@@ -26,15 +26,48 @@
 
   var idsArray = [];
 
-  $(document).on("change", "input", function(){
+  $(document).on("change", "#client_ids", function(){
     if ($(this).is(":checked")) {
       idsArray.push($(this).val());
     } else {
-      // idsArray.remove($(this).val());
       var index = idsArray.indexOf($(this).val());
       idsArray.splice(index, 1);
+
+      // Si estaba seleccionado el #select_all, lo borramos del array
+      if (idsArray[0] == "all_checked") {
+        idsArray.splice(0, 1);
+      }
+      $('#select_all').prop('checked', false);
+
     }
     $("#sended_advertisement_clients_data").val(idsArray.join(", "));
+  })
+
+  $(document).on("change", "#select_all", function(){
+    if ($(this).is(":checked")) {
+      $('#clients_table #client_ids').each(function(){
+        $(this).prop('checked', true);
+      });
+      // meter todos los clientes al array
+      idsArray.push($(this).val());
+      <% @unpaginated_clients.each do |c| %>
+        idsArray.push(<%= c.id.to_s %>);
+      <% end %>
+
+      // Guardamos en :clients_data del formulario, el array de clientes pero sin el id del checkbox de seleccionar todos (esto no modifica el contenido del array)
+      $("#sended_advertisement_clients_data").val(idsArray.filter(function(elem){
+          return elem != "all_checked";
+        }).join(", "));
+
+      alert (idsArray);
+
+    } else {
+      $('#clients_table #client_ids').each(function(){
+        $(this).prop('checked', false);
+        idsArray = [];
+      });
+      $("#sended_advertisement_clients_data").val(idsArray.join(", "));
+    }
   })
 
 

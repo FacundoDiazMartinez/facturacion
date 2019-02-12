@@ -102,7 +102,7 @@ class ProductsController < ApplicationController
     #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
     @products = params[:empty] ? [] : current_user.company.products
     respond_to do |format|
-      format.xlsx { response.headers['Content-Disposition'] = 'attachment; filename="productos.xlsx"' }
+      format.xlsx
     end
   end
 
