@@ -71,6 +71,7 @@ Rails.application.routes.draw do
   end
 
   resources :sended_advertisements
+  post '/sended_advertisements/new', to: 'sended_advertisements#create', as: 'create_sended_advertisement'
 
   resources :notifications, only: [:index, :show]
   resources :iva_books do

@@ -1,0 +1,81 @@
+<div class="p-4">
+  <%= title_helper 'Seleccione destinatarios' %>
+</div>
+
+<div id="form">
+  <div class="page-section">
+    <div class="card">
+      <div class="card-body" id="clients_table">
+        <%= render 'clients_table' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= form_for @sended_advertisement, url: create_sended_advertisement_path do |form| %>
+  <div id="errors"></div>
+  <%= form.hidden_field :clients_data %>
+  <%= form.hidden_field :advertisement_id %>
+  <center>
+    <%= button_tag "#{icon('fas', 'envelope')} Enviar".html_safe, type: 'submit', class: 'btn btn-primary', id:'send_button', disabled: false %>
+  </center>
+<% end %>
+
+
+<script>
+
+  var idsArray = [];
+
+  $(document).on("change", "#client_ids", function(){
+    if ($(this).is(":checked")) {
+      idsArray.push($(this).val());
+      $('#send_button').prop('disabled', false);
+    } else {
+      var index = idsArray.indexOf(parseInt($(this).val())); //obtenemos el index dentro del array del elemento que estamos destildando
+      idsArray.splice(index, 1);
+
+      // Si estaba seleccionado el #select_all, lo borramos del array
+      if (idsArray[0] == "all_checked") {
+        idsArray.splice(0, 1);
+      }
+      $('#select_all').prop('checked', false);
+
+      if (idsArray.length == 0) {  // Si esta todo deseleccionado deshabilitamos el boton
+        $('#send_button').prop('disabled', true);
+      }
+    }
+    $("#sended_advertisement_clients_data").val(idsArray.join(", ")); // Guardamos en :clients_data del formulario, el array de clientes
+  })
+
+  $(document).on("change", "#select_all", function(){
+    if ($(this).is(":checked")) {
+      $('#clients_table #client_ids').each(function(){
+        $(this).prop('checked', true); //tildamos todos los checkbox de la tabla
+      });
+
+      // meter todos los clientes al array
+      idsArray = []; //limpiamos el array
+      idsArray.push($(this).val());
+      <% @unpaginated_clients.each do |c| %>
+        idsArray.push(<%= c.id.to_s %>);
+      <% end %>
+
+      // Guardamos en :clients_data del formulario, el array de clientes pero sin el id del checkbox de seleccionar todos (esto no modifica el contenido del array)
+      $("#sended_advertisement_clients_data").val(idsArray.filter(function(elem){
+          return elem != "all_checked";
+        }).join(", "));
+
+      $('#send_button').prop('disabled', false);
+
+    } else {
+      $('#clients_table #client_ids').each(function(){  // se destilda todo y se borran los datos del array
+        $(this).prop('checked', false);
+        idsArray = [];
+      });
+      $("#sended_advertisement_clients_data").val(idsArray.join(", "));
+
+      $('#send_button').prop('disabled', true);
+    }
+  })
+
+</script>

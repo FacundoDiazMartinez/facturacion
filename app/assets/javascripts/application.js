@@ -25,6 +25,7 @@
 //= require popper
 //= require bootstrap
 //= require bootstrap-toggle
+//= require summernote/summernote-bs4.min
 //= require z.jquery.fileupload
 //= require activestorage
 //= require bootstrap-datepicker/core

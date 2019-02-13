@@ -3,4 +3,46 @@
   <div id="form">
   	<%= render 'body', advertisement: @advertisement %>
   </div>
+
+  <div class="row">
+
+    <% if @advertisement.sended_advertisement.any? %>
+      <% @advertisement.sended_advertisement.each do |s| %>
+        <div class="col-md-4">
+          <%= link_to s, data: {toggle: 'modal', target: '#sendedAdvertisementModal', remote: true}, class: 'link-to-text-color-black'  do %>
+            <div class="card mb-4 card-shadow", style="height: 90%;">
+              <div class="card-body">
+                <b>Enviado el:</b> <%= s.created_at %>
+                <br>
+                <b>Destinatarios:</b>
+                <% s.clients_data.split(',').each do |c| %>
+                  <% Client.find(c).client_contacts.each do |contact| %>
+                    <%= contact.name %> < <%= contact.email %> > -
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="sendedAdvertisementModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        	<h5 class="modal-title" id="clientModalTitle"><%= icon('far', 'eye') %> Publicidad enviada</h5>
+        	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          	<span aria-hidden="true">&times;</span>
+        	</button>
+      </div>
+      <div id="sended_advertisement_modal">
+      </div>
+      <div class="modal-footer">
+        	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
 </div>
