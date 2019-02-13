@@ -1,8 +1,7 @@
 $("#clients_table").html("<%= j render 'clients_table' %>");
 
-alert(idsArray);
 $('input:checkbox').each(function( index ) {
-  if (index == 0) {
+  if (index == 0) { // Si se trata del checkbox del header decidimos si va tildado o no
     if (true) {
       if (idsArray[index] == "all_checked") {
         $(this).prop('checked', true);
@@ -10,12 +9,10 @@ $('input:checkbox').each(function( index ) {
         $(this).prop('checked', false);
       }
     }
-  } else {
+  } else { // Para todo lo demás.. existe mastercard.. na mentira, si el id del checkbox se encuentra en el array se marca como tildado
     client_id = parseInt($(this).val());
     if (idsArray.indexOf(client_id) != -1) {
       $(this).prop('checked', true);
-      alert(client_id);
-      alert(idsArray.indexOf(client_id));
     }
   }
 
