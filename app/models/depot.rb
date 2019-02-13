@@ -80,5 +80,6 @@ class Depot < ApplicationRecord
   def change_stock(quantity)
     self.update_column(:stock_count, self.stock_count + quantity)
   end
+
 #PROCESOS
 end

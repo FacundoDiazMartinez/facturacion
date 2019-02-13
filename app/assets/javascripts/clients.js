@@ -13,3 +13,10 @@ $(document).on('railsAutocomplete.select', '.client-autocomplete_field', functio
 	});
   	
 });
+
+$(document).on("keyup click", ".client_name", function(){
+	if ($(this).val().length == 0) {
+		$(".client_iva_con").val("Responsable Inscripto");
+		$(".client_document").val("80");
+	}
+})

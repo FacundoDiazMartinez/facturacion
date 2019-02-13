@@ -1,18 +1,4 @@
-<% if @invoice %>
-  <% nested_form_for @invoice do |form| %>
-    <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
-      <% @builder = f %>
-    <% end -%>
-  <% end -%>
-<% end -%>
-
-<% if @client %>
-  <% form_for [@client, @account_movement] do |f| %>
-    <%= f.fields_for :account_movement_payments do |pf| %>
-      <% @builder = f %>
-    <% end -%>
-  <% end -%>
-<% end -%>
+<%= render '/payments/shared_builder' %>
 
 <%= @builder.fields_for :bank_payment, @builder.object.build_bank_payment do |cpf| %>
 

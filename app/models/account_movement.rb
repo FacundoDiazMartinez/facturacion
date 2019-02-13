@@ -8,11 +8,12 @@ class AccountMovement < ApplicationRecord
   has_many :invoice_details, through: :invoices
 
   before_save :set_saldo_to_movements
+  before_validation  :set_total_if_subpayments, :set_attrs_to_receipt
   before_destroy :fix_saldo
   after_save  :update_debt
   after_destroy :update_debt
   after_destroy :destroy_receipt
-  before_validation :check_receipt_attributes
+  #before_validation :check_receipt_attributes
 
   validate :check_pertenence_of_receipt_to_client
 
@@ -109,6 +110,8 @@ class AccountMovement < ApplicationRecord
     end
 
   	def set_saldo_to_movements
+      pp total
+      pp total_was
   		debe_dif 	= debe ? (total - total_was) : 0.0
   		haber_dif	= haber ? (total - total_was) : 0.0
       total_dif = debe_dif + haber_dif
@@ -175,6 +178,25 @@ class AccountMovement < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
+
+    def set_attrs_to_receipt
+      pp "ACA NO ESNTRO"
+      unless receipt.nil?
+        pp "ENTRO COMO DEBE SER"
+        pp self.client.company_id
+        self.receipt.company_id = self.client.company_id
+        self.receipt.date = Date.today
+      end
+    end
+
+    def set_total_if_subpayments
+      if self.account_movement_payments.any? && new_record?
+        self.total = 0
+        self.account_movement_payments.each{|amp| self.total += amp.total unless amp.generated_by_system}
+        self.amount_available = self.total
+      end
+    end
+
     def check_receipt_attributes
       self.receipt.client_id  = self.client_id
       self.receipt.user_id    = self.user_id

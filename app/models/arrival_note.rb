@@ -9,7 +9,7 @@ class ArrivalNote < ApplicationRecord
   accepts_nested_attributes_for :arrival_note_details, reject_if: :all_blank , allow_destroy: true
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
 
-  #before_validation :set_number
+  after_validation :check_state
   # after_save :set_state
   after_save :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
   after_initialize :set_default_number, if: :new_record?
@@ -88,6 +88,11 @@ class ArrivalNote < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   #PROCESOS
+    def check_state
+      if self.errors.any?
+        self.state = "Pendiente"
+      end
+    end
 
     def set_default_number
       last_an = ArrivalNote.where(company_id: company_id).last

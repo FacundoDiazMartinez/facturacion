@@ -42,7 +42,7 @@ class Payment < ApplicationRecord
 
   #ATRIBUTOS
     def cash_payment_attributes=(attribute)
-      self.total = attribute["total"]
+      self.total = attribute["total"].to_f
       super
     end
 

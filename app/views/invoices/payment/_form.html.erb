@@ -1,5 +1,5 @@
 <%= form.fields_for :income_payments, form.object.income_payments.build do |f| %>
-	<% hidden_field_tag :invoice_id_for_payment, f.object.id %>
+	<%= hidden_field_tag :invoice_id_for_payment, f.object.id %>
 	<div class="modal-body">
 		<div class="form-group">
 			<%= f.label :type_of_payment, "Tipo de pago" %>

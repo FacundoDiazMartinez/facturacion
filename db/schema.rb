@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_07_171823) do
+ActiveRecord::Schema.define(version: 2019_02_12_191406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -586,8 +586,10 @@ ActiveRecord::Schema.define(version: 2019_02_07_171823) do
     t.float "available_stock", default: 0.0, null: false
     t.string "measurement_unit", default: "7", null: false
     t.string "supplier_code"
+    t.bigint "product_id"
     t.index ["company_id"], name: "index_products_on_company_id"
     t.index ["product_category_id"], name: "index_products_on_product_category_id"
+    t.index ["product_id"], name: "index_products_on_product_id"
     t.index ["supplier_id"], name: "index_products_on_supplier_id"
   end
 
@@ -668,13 +670,11 @@ ActiveRecord::Schema.define(version: 2019_02_07_171823) do
     t.string "number"
     t.string "cbte_tipo", default: "00", null: false
     t.bigint "client_id"
-    t.bigint "invoice_id"
     t.bigint "sale_point_id"
     t.bigint "user_id"
     t.string "state", default: "Pendiente"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
-    t.index ["invoice_id"], name: "index_receipts_on_invoice_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
     t.index ["user_id"], name: "index_receipts_on_user_id"
   end
@@ -929,6 +929,7 @@ ActiveRecord::Schema.define(version: 2019_02_07_171823) do
   add_foreign_key "product_price_histories", "products"
   add_foreign_key "products", "companies"
   add_foreign_key "products", "product_categories"
+  add_foreign_key "products", "products"
   add_foreign_key "products", "suppliers"
   add_foreign_key "purchase_invoices", "arrival_notes"
   add_foreign_key "purchase_invoices", "companies"
@@ -942,7 +943,6 @@ ActiveRecord::Schema.define(version: 2019_02_07_171823) do
   add_foreign_key "purchase_orders", "users"
   add_foreign_key "receipts", "clients"
   add_foreign_key "receipts", "companies"
-  add_foreign_key "receipts", "invoices"
   add_foreign_key "receipts", "sale_points"
   add_foreign_key "receipts", "users"
   add_foreign_key "retention_payments", "payments"

@@ -2,12 +2,6 @@
     <div class="p-2">
       	Pagos
     </div>
-    <div class="ml-auto p-2">
-      	<% if @invoice.editable? %>
-        	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
-        	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-success', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
-      	<% end %>
-    </div>
 </h3>
 <div id="saldo_disponible" class="text-muted ml-4"></div>
 <div class="table-responsive-sm">
@@ -38,7 +32,14 @@
 		</tbody>
 	</table>
 </div>
-
+<% if @invoice.editable? %>
+	<center>
+		<div class="m-2">
+		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
+		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-success', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
+		</div>
+	</center>
+<% end %>
 <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">

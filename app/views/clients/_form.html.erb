@@ -3,13 +3,13 @@
   <div class="row">
     <div class="col">
       <%= f.label :name, "Nombre *" %>
-      <%= f.text_field :name, class: 'form-control form-control-sm', required: true %>
+      <%= f.text_field :name, class: 'form-control form-control-sm client_name', required: true %>
     </div>
     <div class="col">
       <%= f.label :document_number, "Documento *" %>
       <div class="input-group">
         <div class="input-group-prepend">
-          <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text'} %>
+          <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text client_document'} %>
         </div>
         <%= f.text_field :document_number, class: 'form-control form-control-sm', required: true %>
       </div>
@@ -21,7 +21,7 @@
   <div class="row">
     <div class="col">
       <%= f.label :iva_cond, "Condición I.V.A. *" %>
-      <%= f.select :iva_cond, [["Responsable Inscripto"],["Responsable Monotributo"], ["Consumidor Final"], ["Excento"]],{},{class:'form-control form-control-sm'} %>
+      <%= f.select :iva_cond, options_for_select(Client::IVA_COND, "Responsable Inscripto"),{},{class: 'form-control form-control-sm client_iva_con'} %>
     </div>
     <div class="col">
       <%= f.label :address, "Dirección" %>

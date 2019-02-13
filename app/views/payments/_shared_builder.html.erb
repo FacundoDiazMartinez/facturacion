@@ -1,0 +1,13 @@
+<% if @client %>
+  <% nested_form_for [@client, @account_movement] do |f| %>
+    <% f.fields_for :account_movement_payments, f.object.account_movement_payments.build do |pf| %>
+      <% @builder = pf %>
+    <% end -%>
+  <% end -%>
+<% else %>
+  <% nested_form_for @invoice do |form| %>
+    <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+      <% @builder = f %>
+    <% end -%>
+  <% end -%>
+<% end -%>
