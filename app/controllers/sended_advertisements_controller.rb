@@ -2,6 +2,10 @@ class SendedAdvertisementsController < ApplicationController
   before_action :set_advertisement, only: [:new]
   before_action :set_clients, only: [:new, :create]
 
+  def index
+    redirect_to new_sended_advertisement_path(ad: 2)
+  end
+
   def new
     @sended_advertisement =  @advertisement.sended_advertisement.new()
   end
@@ -13,6 +17,7 @@ class SendedAdvertisementsController < ApplicationController
       if @sended_advertisement.save
         format.html { redirect_to advertisements_path, notice: 'La publicidad fue enviada con éxito.' }
       else
+        set_clients
         format.html { render :new }
       end
     end
