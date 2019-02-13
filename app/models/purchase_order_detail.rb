@@ -18,6 +18,7 @@ class PurchaseOrderDetail < ApplicationRecord
   	def check_product
       if new_record?
         product.company_id = purchase_order.company_id
+        product.updated_by = purchase_order.user_id
         product.save
         if not product.errors.any?
           self.price   = product.cost_price

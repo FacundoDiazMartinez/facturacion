@@ -5,6 +5,8 @@ class Product < ApplicationRecord
   	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User", optional: true
   	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User", optional: true
   	belongs_to :supplier, optional: true
+  	belongs_to :parent, foreign_key: "product_id", class_name: "Product", optional: true
+  	has_many   :childs, ->(product) { where product_id: product.id }, class_name: "Product"
   	has_many   :stocks, dependent: :destroy
   	has_many   :depots, through: :stocks
   	has_many   :invoice_details
@@ -150,6 +152,10 @@ class Product < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
+  		def parent_code
+  			parent.nil? ? "" : parent.code	
+  		end
+
   		def updated_by=(updated_by)
   			@updated_by = updated_by
   		end
@@ -320,7 +326,6 @@ class Product < ApplicationRecord
 
     	#IMPORTAR EXCEL o CSV
 	    def self.save_excel file, supplier_id, current_user, depot_id
-	    	#TODO Añadir created_by y updated_by
 	    	spreadsheet = open_spreadsheet(file)
 	    	excel = []
 	    	(2..spreadsheet.last_row).each do |r|
@@ -335,9 +340,10 @@ class Product < ApplicationRecord
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id, depot_id
 			products 	= []
     		invalid 	= []
+    		pp spreadsheet.size
 			(0..spreadsheet.size - 1).each do |i|
 	    		row = Hash[[header, spreadsheet[i]].transpose]
-	    		product = where(code: row[:code], name: row[:name]).first_or_initialize
+	    		product = where(code: row[:code]).first_or_initialize
 	    		if categories["#{row[:product_category_name]}"].nil?
 	    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
 	    			if pc.save
@@ -359,7 +365,7 @@ class Product < ApplicationRecord
 	    		product.created_by 			= current_user.id
 	    		product.updated_by 			= current_user.id
 	    		if !product.save
-	    			invalid << [i, product.name, product.errors.full_messages]
+	    			invalid << [i, product.errors.messages.values]
 	    		else
 	    			if !depot_id.blank?
 		    			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
@@ -395,10 +401,10 @@ class Product < ApplicationRecord
 
 		def self.open_spreadsheet(file)
 		    case File.extname(file.original_filename)
-		    when ".csv" then Roo::Csv.new(file.path)
-		    when ".xls" then Roo::Spreadsheet.open(file.path, extension: :xlsx)
-		    when ".xlsx" then Roo::Excelx.new(file.path)
-		    else raise "Unknown file type: #{file.original_filename}"
+			    when ".csv" then Roo::Csv.new(file.path)
+			    when ".xls" then Roo::Spreadsheet.open(file.path, extension: :xlsx)
+			    when ".xlsx" then Roo::Excelx.new(file.path)
+			    else raise "Tipo de archivo desconocido: #{file.original_filename}"
 		    end
 		end
 		#IMPORTAR EXCEL o CSV

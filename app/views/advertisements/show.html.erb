@@ -7,7 +7,7 @@
   <div class="row">
 
     <% if @advertisement.sended_advertisement.any? %>
-      <% @advertisement.sended_advertisement.each do |s| %>
+      <% @advertisement.sended_advertisement.order(created_at: :desc).each do |s| %>
         <div class="col-md-4">
           <%= link_to s, data: {toggle: 'modal', target: '#sendedAdvertisementModal', remote: true}, class: 'link-to-text-color-black'  do %>
             <div class="card mb-4 card-shadow", style="height: 90%;">

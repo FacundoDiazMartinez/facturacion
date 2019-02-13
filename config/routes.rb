@@ -70,7 +70,9 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :sended_advertisements
+  resources :sended_advertisements do
+  get :get_all_clients, on: :collection
+  end
 
   resources :notifications, only: [:index, :show]
   resources :iva_books do

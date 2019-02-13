@@ -1,6 +1,7 @@
 var total_venta = parseFloat(0);
 var rest = parseFloat(0);
 var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
+var index = {};
 
 $( document ).ready(function() {
 	autocomplete_field();
@@ -227,6 +228,7 @@ $(document).on('nested:fieldAdded', function(event){
 	      autoclose: true,
 	      startView: 2
 	});
+	toogleConceptInTable()
 });
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -439,4 +441,27 @@ $(document).on("click", "#with_alert", function(){
 	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
 })
 
+function hideConcept(text){
+	var current_index = $('th:contains("'+ text +'")').index();
+	if (index[current_index] == "hide"){
+		index[current_index] = "show"
+		$("table#details > thead > tr").find('th').eq(current_index).show()
+	}else{
+		index[current_index] = "hide"
+		$("table#details > thead > tr").find('th').eq(current_index).hide()
+		
+	}
+	toogleConceptInTable()
+}
 
+function toogleConceptInTable(){
+	$.each(index, function(j, i){
+		$("table#details > tbody > tr").each(function(){
+			if(i == "hide"){
+				$(this).find('td').eq(j).hide()
+			}else{
+				$(this).find('td').eq(j).show()
+			}
+		})
+	})
+}

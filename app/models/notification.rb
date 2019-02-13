@@ -58,16 +58,18 @@ class Notification < ApplicationRecord
 		end
 
 		def self.invalid_table invalids
-			"<table class='table table-striped'>
+			result = <<-HTML
+			<table class='table table-striped'>
 				<thead>
 					<th>Fila</th>
-					<th>Producto</th>
 					<th>Errores</th>
 				</thead>
 				<tbody>
-					#{invalids.map{|i, name, e| '<tr><td>' + (i + 1).to_s + '</td><td>' + name + '</td><td>' + e.join('') + '</td></tr>'}.reject { |c| c.blank? }.join('')}
+					#{invalids.map{|i, e| '<tr><td>' + (i + 1).to_s + '</td><td>' + e.join(' ') + '</td></tr>'}.reject { |c| c.blank? }.join(' ')}
 				</tbody>
-			</table>".html_safe
+			</table>
+			HTML
+			return result
 		end
 	#FUNCIONES
 end
