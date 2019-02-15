@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_12_191406) do
+ActiveRecord::Schema.define(version: 2019_02_13_165441) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
 
   create_table "cheque_payments", force: :cascade do |t|
     t.string "state", default: "No cobrado", null: false
-    t.date "expiration", default: -> { "('now'::text)::date" }, null: false
+    t.date "expiration", default: -> { "CURRENT_DATE" }, null: false
     t.float "total", default: 0.0, null: false
     t.text "observation"
     t.boolean "active", default: true, null: false
@@ -352,7 +352,7 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -438,12 +438,10 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
     t.text "observation"
     t.bigint "sales_file_id"
     t.bigint "budget_id"
-    t.bigint "receipt_id"
     t.boolean "expired", default: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
-    t.index ["receipt_id"], name: "index_invoices_on_receipt_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
     t.index ["sales_file_id"], name: "index_invoices_on_sales_file_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
@@ -493,7 +491,7 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -659,6 +657,16 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
     t.index ["user_id"], name: "index_purchase_orders_on_user_id"
   end
 
+  create_table "receipt_details", force: :cascade do |t|
+    t.bigint "receipt_id"
+    t.bigint "invoice_id"
+    t.float "total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_receipt_details_on_invoice_id"
+    t.index ["receipt_id"], name: "index_receipt_details_on_receipt_id"
+  end
+
   create_table "receipts", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.float "total", default: 0.0, null: false
@@ -722,7 +730,7 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
     t.bigint "responsable_id", null: false
     t.string "observation"
     t.string "number", null: false
-    t.date "init_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -904,7 +912,6 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
   add_foreign_key "invoices", "budgets"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
-  add_foreign_key "invoices", "receipts"
   add_foreign_key "invoices", "sale_points"
   add_foreign_key "invoices", "sales_files"
   add_foreign_key "invoices", "users"
@@ -941,6 +948,8 @@ ActiveRecord::Schema.define(version: 2019_02_12_191406) do
   add_foreign_key "purchase_orders", "companies"
   add_foreign_key "purchase_orders", "suppliers"
   add_foreign_key "purchase_orders", "users"
+  add_foreign_key "receipt_details", "invoices"
+  add_foreign_key "receipt_details", "receipts"
   add_foreign_key "receipts", "clients"
   add_foreign_key "receipts", "companies"
   add_foreign_key "receipts", "sale_points"

@@ -6,8 +6,9 @@ class Receipt < ApplicationRecord
 
   has_one  :account_movement
   has_many :account_movement_payments, through: :account_movement
-  has_many :invoices
-  has_many :invoice_details, through: :invoices
+  has_many :receipt_details
+  has_many :invoices, through: :receipt_details
+  # has_many :invoice_details, through: :invoices
 
   after_save :touch_account_movement
   before_validation :set_number, on: :create
@@ -17,6 +18,9 @@ class Receipt < ApplicationRecord
 
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
+
+  #accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
 
   CBTE_TIPO = {
@@ -57,9 +61,18 @@ class Receipt < ApplicationRecord
     
   #VALIDACIONES
 
+  #ATRIBUTOS
+    def account_movement_payments
+      super.where.not(type_of_payment: "6")
+    end
+
+  #ATRIBUTOS
+
   #PROCESOS
+
+
   	def touch_account_movement
-  		AccountMovement.create_from_receipt(self)
+  		AccountMovement.create_from_receipt(self) #unless total_without_invoices <= 0
   	end
 
     def set_number
@@ -69,24 +82,30 @@ class Receipt < ApplicationRecord
 
     def self.create_from_invoice invoice
       if invoice.state == "Confirmado"
-        r = invoice.receipt || Receipt.new 
-        r.cbte_tipo   = invoice.is_credit_note? ? "99" : "00"
-        r.total       = invoice.total_pay
-        r.date        = invoice.created_at
-        r.company_id  = invoice.company_id
-        r.client_id   = invoice.client_id
-        r.sale_point_id = invoice.sale_point_id
-        r.user_id     = invoice.user_id
-        if r.save
-          invoice.update_column(:receipt_id, r.id)
+        if invoice.receipts.empty?
+          r = Receipt.new
+          r.cbte_tipo   = invoice.is_credit_note? ? "99" : "00"
+          r.total       = invoice.total_pay
+          r.date        = invoice.created_at
+          r.company_id  = invoice.company_id
+          r.client_id   = invoice.client_id
+          r.sale_point_id = invoice.sale_point_id
+          r.user_id     = invoice.user_id
+          ReceiptDetail.save_from_invoice(r, invoice) unless !r.save
+        else
+          invoice.receipts.each do |r|
+            r.total      += invoice.saved_change_to_total_pay.last - invoice.saved_change_to_total_pay.first
+            r.user_id     = invoice.user_id
+            ReceiptDetail.save_from_invoice(r, invoice) unless !r.save
+          end
         end
       end
     end
 
-    # def set_number
-    #   last_receipt = Receipt.where(company_id: company_id).last
-    #   self.number ||= last_receipt.nil? ? "00000001" : (last_receipt.number.to_i + 1).to_s.rjust(8,padstr= '0')
-    # end
+    def set_total
+      self.total = total_without_invoices
+    end
+
   #PROCESOS
 
   #ATRIBUTOS
@@ -117,7 +136,7 @@ class Receipt < ApplicationRecord
     end
 
     def editable?
-      !persisted?
+      state == "Pendiente"
     end
   #ATRIBUTOS
 

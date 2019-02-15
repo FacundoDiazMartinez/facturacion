@@ -16,8 +16,8 @@ class AccountMovementsController < ApplicationController
   # GET /account_movements/new
   def new
     @account_movement = AccountMovement.new
-    @account_movement.build_receipt(client_id: @client.id)
-    @account_movement.account_movement_payments.build
+    #@account_movement.build_receipt(client_id: @client.id)
+    #@account_movement.account_movement_payments.build
     DailyCash.current_daily_cash current_user.company_id
   end
 

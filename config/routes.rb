@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   end
 
   resources :receipts do
+    resources :account_movements
     get :autocomplete_invoice, on: :collection
   end
 
@@ -141,11 +142,13 @@ Rails.application.routes.draw do
   end
   resources :suppliers
   resources :depots
+
   resources :clients do
     resources :account_movements do
       get :export, on: :collection
     end
   end
+
   resources :product_categories
   resources :companies
 

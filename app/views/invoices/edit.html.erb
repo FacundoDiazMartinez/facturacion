@@ -13,10 +13,10 @@
 				<button class="btn btn-primary " role="button" onclick="toggleTributes()" id="tributos"><%= icon('fas' ,'eye') %> Ver tributos</button>
 			<% end -%>
 			<% if ["01", "06", "11"].include?(@invoice.cbte_tipo) %>
-				<% if @invoice.receipt_id.blank?  %>
+				<% if @invoice.delivery_notes.last.nil?  %>
 					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 				<% else %>
-					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.receipt_id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
+					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.delivery_note.last.id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 				<% end -%>
 			<% end -%>
 		</div>

@@ -6,7 +6,7 @@ class Invoice < ApplicationRecord
     belongs_to :invoice, foreign_key: :associated_invoice, optional: true
     belongs_to :budget, optional: true
     belongs_to :sales_file, optional: true
-    belongs_to :receipt, optional: true
+  
 
     default_scope { where(active: true) }
 
@@ -18,6 +18,8 @@ class Invoice < ApplicationRecord
     has_many :delivery_notes, dependent: :destroy
     has_many :commissioners, through: :invoice_details
     has_many :tributes, dependent: :destroy
+    has_many :receipt_details
+    has_many :receipts, through: :receipt_details
 
     has_one  :account_movement, dependent: :destroy
 
@@ -286,15 +288,15 @@ class Invoice < ApplicationRecord
 
       def self.paid_unpaid_invoices client
         client.account_movements.where("account_movements.amount_available > 0.0").each do |account_movement|
+          pp account_movement
           if account_movement.amount_available > 0
-            unpaid_invoices = where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
-            unpaid_invoices.each do |invoice|
-              payment = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
-              payment.total = account_movement.amount_available.to_f > invoice.total_left.to_f ? invoice.total_left.to_f : account_movement.amount_available.to_f
-              payment.save
-              pp payment.errors
-              
-              account_movement.update_column(:amount_available, account_movement.amount_available -= payment.total)
+            unpaid_invoices = self.where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
+            unpaid_invoices.each_with_index do |invoice, index|
+              pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
+              pay.total = account_movement.amount_available.to_f > invoice.total_left.to_f ? invoice.total_left.to_f : account_movement.amount_available.to_f
+              if pay.save
+                account_movement.update_column(:amount_available, account_movement.amount_available -= pay.total)
+              end
               break if account_movement.amount_available == 0
             end
           end
