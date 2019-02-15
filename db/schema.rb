@@ -438,12 +438,10 @@ ActiveRecord::Schema.define(version: 2019_02_14_160652) do
     t.text "observation"
     t.bigint "sales_file_id"
     t.bigint "budget_id"
-    t.bigint "receipt_id"
     t.boolean "expired", default: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
-    t.index ["receipt_id"], name: "index_invoices_on_receipt_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
     t.index ["sales_file_id"], name: "index_invoices_on_sales_file_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
@@ -657,6 +655,16 @@ ActiveRecord::Schema.define(version: 2019_02_14_160652) do
     t.index ["company_id"], name: "index_purchase_orders_on_company_id"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"
     t.index ["user_id"], name: "index_purchase_orders_on_user_id"
+  end
+
+  create_table "receipt_details", force: :cascade do |t|
+    t.bigint "receipt_id"
+    t.bigint "invoice_id"
+    t.float "total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_receipt_details_on_invoice_id"
+    t.index ["receipt_id"], name: "index_receipt_details_on_receipt_id"
   end
 
   create_table "receipts", force: :cascade do |t|
@@ -904,7 +912,6 @@ ActiveRecord::Schema.define(version: 2019_02_14_160652) do
   add_foreign_key "invoices", "budgets"
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
-  add_foreign_key "invoices", "receipts"
   add_foreign_key "invoices", "sale_points"
   add_foreign_key "invoices", "sales_files"
   add_foreign_key "invoices", "users"
@@ -941,6 +948,8 @@ ActiveRecord::Schema.define(version: 2019_02_14_160652) do
   add_foreign_key "purchase_orders", "companies"
   add_foreign_key "purchase_orders", "suppliers"
   add_foreign_key "purchase_orders", "users"
+  add_foreign_key "receipt_details", "invoices"
+  add_foreign_key "receipt_details", "receipts"
   add_foreign_key "receipts", "clients"
   add_foreign_key "receipts", "companies"
   add_foreign_key "receipts", "sale_points"

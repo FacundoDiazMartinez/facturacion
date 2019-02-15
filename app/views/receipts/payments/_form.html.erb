@@ -1,0 +1,29 @@
+<div class="m-4">
+  <h4 class="text-center"><%= icon('fas', 'money-bill-alt') %> Ingrese los datos del pago</h4>
+  <%= form.fields_for :account_movement, @account_movement do |f| %>
+
+    <%= f.hidden_field :haber, value: true %>
+    <%= f.hidden_field :debe, value: false %>
+
+    <%= hidden_field_tag :receipt_id_for_payment, @receipt.id %>
+
+    <%= f.fields_for :account_movement_payments, @account_movement.account_movement_payments.build() do |amp| %>
+
+      <div class="fields">
+        <div class="form-group">
+          <%= amp.label :type_of_payment, "Tipo" %>
+          <%= amp.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', style: 'min-width: 100px;'} %>
+        </div>
+        <div class="form-group">
+          <%= amp.label :payment_date, "Fecha" %>
+          <%= amp.text_field :payment_date, class: 'form-control datepicker' %>
+        </div>
+        <div id="payment_detail"></div>
+      </div>
+
+    <% end -%>
+
+    <center><%= save_button %></center>
+
+  <% end -%>
+</div>

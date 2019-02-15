@@ -1,13 +1,22 @@
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
-  $('#receipt_total').val(data.item.total);
-  // console.log(data.item.client);
-	if ($("#invoice_comp_number").val() != "") {
+  	$(this).closest('div.fields').find('input.invoice_total').val(data.item.total);
+  	$(this).closest('div.fields').find('input.invoice_id').val(data.item.id);
+  	var current_total = parseFloat($("#receipt_total").val())
+  	$("#receipt_total").val(current_total + data.item.total)
+
+  	var no_invoices_associated = false
+
+	$(".invoice_id").each(function(){
+		no_invoices_associated = $(this).val().length == 0
+		return no_invoices_associated
+	})
+
+	if (!no_invoices_associated){
 		$('#editReceiptClient').attr("data-toggle", "");
-			$('#editReceiptClient').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});
+		$('#editReceiptClient').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});
 	}
-  $('#receipt_client_name').val(data.item.client.name);
-  $("#receipt_client_id").val(data.item.client.id);
-  $("#invoice_client_iva_cond").val(data.item.client.iva_cond);
+
+   
 
 });
 
@@ -16,4 +25,12 @@ $(document).on('keyup','.receipt_associated-invoice-autocomplete_field', functio
 		$('#editReceiptClient').attr("data-toggle", "modal");
 		$('#editReceiptClient').tooltip('dispose');
 	}
+})
+
+
+$(document).on('nested:fieldRemoved', function(event){
+	var field 		= event.field;
+	delete_total 	= field.find("input.invoice_total").val()
+	var current_total = parseFloat($("#receipt_total").val())
+  	$("#receipt_total").val(current_total - delete_total)
 })

@@ -1,0 +1,50 @@
+<div class="card shadow">
+    <div class="card-body">
+
+    	<h3 class="d-flex mb-2">
+		    <div class="p-2">
+		      	Pagos
+		    </div>
+		</h3>
+
+		<div class="table-responsive-sm">
+			<table class="table table-striped receipt-table" id="payments" style="width: 100%;">
+				<thead>
+					<tr>
+						<th scope="col">Tipo de pago</th>
+						<th scope="col">Monto</th>
+						<th scope="col">Fecha de pago</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<% @receipt.account_movement_payments.each do |payment| %>
+						<% if payment.errors.empty? %>
+							<tr>
+								<td><%= payment.payment_name %></td>
+								<td><%= payment.total %></td>
+								<td><%= payment.payment_date %></td>
+								<td><%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank?) %></td>
+							</tr>
+						<% end -%>
+					<% end -%>
+				</tbody>
+			</table>
+		</div>
+
+		<center><div class="m-2">
+	    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button' %>
+		</div></center>
+	</div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="payment_modal">
+      	<%= render template: '/receipts/payments/new.html.erb', locals:{form: form} %>
+      </div>
+    </div>
+  </div>
+</div>
+
