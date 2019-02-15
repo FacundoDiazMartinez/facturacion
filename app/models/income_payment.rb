@@ -1,13 +1,13 @@
 class IncomePayment < Payment
 	self.table_name = "payments"
 
-	belongs_to :invoice,touch: false
+	belongs_to :invoice
 	belongs_to :account_movement, optional: true
 
 	after_save :set_total_pay_to_invoice
 	after_save :set_notification
-	after_save :touch_invoice, if: Proc.new{ |ip| !ip.generated_by_system }
-	after_destroy :set_total_pay_to_invoice, :set_amount_available_to_account_movement
+	after_save :touch_invoice, unless: :generated_by_system
+	after_destroy :set_amount_available_to_account_movement
 	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_save :check_company_id
 	before_save :check_client_id
@@ -56,6 +56,7 @@ class IncomePayment < Payment
 		end
 
 		def touch_invoice
+			pp "TOUCH INVOICE"
 			invoice.touch
 		end
 
@@ -65,10 +66,10 @@ class IncomePayment < Payment
 	      	run_callbacks :destroy
 	      	freeze
 	    end
-		
+
 		def set_total_pay_to_invoice
 			sum = invoice.sum_payments
-	  		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
+	  		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
 	  	end
 
 	  	def set_notification

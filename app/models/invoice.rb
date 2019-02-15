@@ -287,17 +287,16 @@ class Invoice < ApplicationRecord
       end
 
       def self.paid_unpaid_invoices client
-        client.account_movements.where("account_movements.amount_available > 0.0").each do |account_movement|
-          pp account_movement
-          if account_movement.amount_available > 0
+        client.account_movements.where("account_movements.amount_available > 0.0").each do |am|
+          if am.amount_available > 0
             unpaid_invoices = self.where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
             unpaid_invoices.each_with_index do |invoice, index|
-              pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
-              pay.total = account_movement.amount_available.to_f > invoice.total_left.to_f ? invoice.total_left.to_f : account_movement.amount_available.to_f
-              if pay.save
-                account_movement.update_column(:amount_available, account_movement.amount_available -= pay.total)
-              end
-              break if account_movement.amount_available == 0
+              pp "ENTROOOOOOOOOOOOOOOOO INDEX #{index}"
+              pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
+              pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
+              pay.save
+              am.update_column(:amount_available, am.amount_available - pay.total)
+              break if am.amount_available < 1
             end
           end
         end

@@ -49,7 +49,7 @@ class ReceiptsController < ApplicationController
       if @receipt.save
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue creado correctamente.' }
       else
-        #build_account_movement
+        build_account_movement
         format.html { render :new }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
       end
@@ -103,8 +103,8 @@ class ReceiptsController < ApplicationController
     def receipt_params
       params.require(:receipt).permit(:invoice_id, :client_id, :sale_point_id, :number, :active, :total, :date, :concept, :company_id,
        receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
-       account_movement_attributes: [:id, :total, :debe, :haber, 
-         account_movement_payments_attributes: [:id, :payment_date, :type_of_payment, 
+       account_movement_attributes: [:id, :total, :debe, :haber,
+         account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
             cash_payment_attributes: [:id, :total],
             card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
             bank_payment_attributes: [:id, :bank_id, :total],

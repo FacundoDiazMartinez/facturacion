@@ -18,12 +18,12 @@ class AccountMovementPayment < Payment
  	end
 
  	#ATRIBUTOS
- 	
+
  	#ATRIBUTOS
 
 	#PROCESOS
 		def check_total_from_account_movement
-			self.total = self.account_movement.total
+			#self.total = self.account_movement.total
 		end
 
 		def set_total_to_receipt
@@ -41,7 +41,7 @@ class AccountMovementPayment < Payment
  		def check_client_id
  			self.client_id = self.account_movement.client_id
  		end
- 		
+
     	def set_flow
  			self.flow = "income"
  		end

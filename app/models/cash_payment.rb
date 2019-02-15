@@ -1,4 +1,4 @@
 class CashPayment < ApplicationRecord
-	#include Subpayment
+	include Subpayment
   	belongs_to :payment
 end
