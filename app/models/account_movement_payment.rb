@@ -23,7 +23,7 @@ class AccountMovementPayment < Payment
 
 	#PROCESOS
 		def check_total_from_account_movement
-			self.total = self.account_movement.total
+			#self.total = self.account_movement.total
 		end
 
 		def set_total_to_receipt

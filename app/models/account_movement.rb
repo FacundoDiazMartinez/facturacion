@@ -7,7 +7,8 @@ class AccountMovement < ApplicationRecord
   has_many :invoices, through: :account_movement_payments
   has_many :invoice_details, through: :invoices
 
-  before_save         :set_saldo_to_movements, :set_total_if_subpayments
+  before_save         :set_saldo_to_movements
+  before_save :set_total_if_subpayments
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
   after_save          :update_debt
@@ -129,7 +130,6 @@ class AccountMovement < ApplicationRecord
     		end
     		#client.update_debt
       end
-      pp "SET SALDO TO MOVEMENTS"
   	end
 
   	def update_debt
@@ -192,15 +192,8 @@ class AccountMovement < ApplicationRecord
 
     def set_total_if_subpayments
       if self.account_movement_payments.any?
-        self.total = 0
-        self.account_movement_payments.each do |amp| 
-          if amp.generated_by_system
-            self.total -= amp.total
-          else
-            self.total += amp.total
-          end
-        end
-        self.amount_available = self.total
+        self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
+        self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
       end
       pp "SET TOTAL IF SUBPAYMENTS"
     end
