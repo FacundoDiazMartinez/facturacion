@@ -2,7 +2,6 @@ class SendedAdvertisementsController < ApplicationController
   before_action :set_advertisement, only: [:new]
   before_action :set_clients, only: [:new, :create, :index]
 
-
   def new
     @sended_advertisement =  @advertisement.sended_advertisement.new()
   end
@@ -22,6 +21,10 @@ class SendedAdvertisementsController < ApplicationController
 
   def show
     @sended_advertisement = current_user.company.sended_advertisements.find(params[:id])
+  end
+
+  def get_all_clients
+    render json: current_user.company.clients.all.map{|a| a.id if a.has_email?}.compact
   end
 
   private
