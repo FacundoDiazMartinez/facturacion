@@ -931,12 +931,9 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-<<<<<<< HEAD
-=======
     pry-byebug (3.6.0)
       byebug (~> 10.0)
       pry (~> 0.10)
->>>>>>> 3c03bd3f7b910a26b4234482662ed2ec01a4ffcf
     public_suffix (3.0.3)
     puma (3.12.0)
     rack (2.0.6)
