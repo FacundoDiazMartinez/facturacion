@@ -27,11 +27,11 @@ class Depot < ApplicationRecord
 
   #FILTROS DE BUSQUEDA
   	def self.search_by_name name
-      	if !name.nil?
-        	where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
-      	else
-        	all 
-      	end
+    	if !name.nil?
+      	where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
+    	else
+      	all 
+    	end
     end
 
     def self.search_by_availability state
@@ -75,4 +75,11 @@ class Depot < ApplicationRecord
     raise Exceptions::EmptyDepot if Company.find(company_id).depots.empty?
   end
 #FUNCIONES
+
+#PROCESOS
+  def change_stock(quantity)
+    self.update_column(:stock_count, self.stock_count + quantity)
+  end
+
+#PROCESOS
 end

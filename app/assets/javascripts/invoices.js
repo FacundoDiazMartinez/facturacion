@@ -1,6 +1,7 @@
 var total_venta = parseFloat(0);
 var rest = parseFloat(0);
 var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
+var index = {};
 
 $( document ).ready(function() {
 	autocomplete_field();
@@ -227,6 +228,7 @@ $(document).on('nested:fieldAdded', function(event){
 	      autoclose: true,
 	      startView: 2
 	});
+	toogleConceptInTable()
 });
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -394,34 +396,6 @@ function toggleTributes(){
 		
 }
 
-$(document).on("change", ".new_type_of_payment", function(){
-
-	selected_payment = $(this).val();
-	invoice_id 			= $("#invoice_id_for_payment").val();
-	client_id 			= $("#client_id_for_payment").val();
-	account_movement_id = $("#account_movement_id_for_payment").val();
-	data = {invoice_id: invoice_id, client_id: client_id, account_movement_id: account_movement_id}
-	switch (selected_payment) { 
-		case '0': 
-			getPaymentRequest("/payments/cash_payments/new", data);
-			break;
-		case '1': 
-			getPaymentRequest("/payments/card_payments/new", data);
-			break;
-		case '3': 
-			getPaymentRequest("/payments/bank_payments/new", data);
-			break;
-		case '4': 
-			getPaymentRequest("/payments/cheque_payments/new", data);
-			break;
-		case '5': 
-			getPaymentRequest("/payments/retention_payments/new", data);
-			break;
-		case '6': 
-			getPaymentRequest("/payments/account_payments/new", data);
-			break;
-	}
-})
 
 function getPaymentRequest(url, data) {
   $.ajax({
@@ -438,4 +412,27 @@ $(document).on("click", "#with_alert", function(){
 	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
 })
 
+function hideConcept(text){
+	var current_index = $('th:contains("'+ text +'")').index();
+	if (index[current_index] == "hide"){
+		index[current_index] = "show"
+		$("table#details > thead > tr").find('th').eq(current_index).show()
+	}else{
+		index[current_index] = "hide"
+		$("table#details > thead > tr").find('th').eq(current_index).hide()
+		
+	}
+	toogleConceptInTable()
+}
 
+function toogleConceptInTable(){
+	$.each(index, function(j, i){
+		$("table#details > tbody > tr").each(function(){
+			if(i == "hide"){
+				$(this).find('td').eq(j).hide()
+			}else{
+				$(this).find('td').eq(j).show()
+			}
+		})
+	})
+}

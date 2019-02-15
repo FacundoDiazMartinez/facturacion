@@ -1,14 +1,122 @@
-<div class="page-header">
-  <%= link_to cheque_payments_path, class: 'btn btn-default' do %>
-    <span class="glyphicon glyphicon-list-alt"></span>
-    Back
-  <% end %>
-  <%= link_to edit_cheque_payment_path(@cheque_payment), class: 'btn btn-primary' do %>
-    <span class="glyphicon glyphicon-pencil"></span>
-    Edit
-  <% end %>
-  <h1>Show cheque_payment</h1>
+<div class="modal-body">
+	<div class="card-shadow mb-4">
+		<ul class="list-group">
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Número:
+              		</strong>
+            	</div>
+            	<span><%= @cheque_payment.number %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Monto:
+              		</strong>
+            	</div>
+            	<span>$<%= @cheque_payment.total %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Cliente:
+              		</strong>
+            	</div>
+            	<span><%= @cheque_payment.client.name %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Vencimiento:
+              		</strong>
+            	</div>
+            	<span><%= l(@cheque_payment.expiration) %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Origen:
+              		</strong>
+            	</div>
+            	<span><%= @cheque_payment.origin %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Banco:
+              		</strong>
+            	</div>
+            	<span><%= @cheque_payment.entity %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Observación:
+              		</strong>
+            	</div>
+            	<span><%= @cheque_payment.observation %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Total:
+              		</strong>
+            	</div>
+            	<span>$<%= @cheque_payment.total %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Fecha:
+              		</strong>
+            	</div>
+            	<span><%= @cheque_payment.payment.payment_date %></span>
+          	</li>
+          	<li class="list-group-item d-flex justify-content-between lh-condensed">
+            	<div>
+              		<strong class="my-0">
+                		Generado por:
+              		</strong>
+            	</div>
+            	<span><%= @cheque_payment.generator_name %></span>
+          	</li>
+        </ul>
+    </div>
+    <div class="card-shadow mb-4">
+        <hr>
+        <div class="m-4">
+	        <p class="text-muted">Factura asociada</p>
+	        <ul class="list-unstyled rounded">
+	          	<li class="media">
+	            	<img class="mr-3" src="/images/invoice.png" alt="Factura">
+	            	<div class="media-body">
+	              		<h5 class="mt-0 mb-1"><%= @invoice.nombre_comprobante %> a <%= @invoice.client_name %></h5>
+	              		<strong>Nº:</strong> <%= @invoice.full_number %><br>
+	              		<strong>Tipo:</strong> <%= @invoice.tipo %><br>
+	              		<strong>Estado:</strong> <%= invoice_state(@invoice.state) %><br>
+	              		<i><%= icon('fas', 'clock') %> <%= @invoice.cbte_fch %></i><br>
+	            	</div>
+	          	</li>
+	          	<li>
+	            	<div class="row">
+	              		<div class="col-md-9" style="padding: 5px 0px 0px 15px;">
+	                  		<h5>Total: <span class="text-info">$<%= @invoice.total %></span></h5>
+	              		</div>
+	              		<div class="col-md-3 float-right">
+		                	<div class="row">
+		                  		<%  if !@invoice.editable? %>
+		                    		<%= link_to icon('fas', 'eye').html_safe, invoice_path(@invoice.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
+		                  		<% end %>
+		                  		<%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(@invoice.id), class: 'btn btn-link' %>
+		                  		<%  if @invoice.editable? %>
+		                    		<%= link_to icon('fas', 'trash').html_safe, @invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-link' %>
+		                  		<% end -%>
+		                	</div>
+		              	</div>
+	            	</div>
+	          	</li>
+	        </ul>
+	    </div>
+	</div>
 </div>
-
-<dl class="dl-horizontal">
-</dl>

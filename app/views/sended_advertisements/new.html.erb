@@ -1,0 +1,25 @@
+<div class="p-4">
+  <%= title_helper 'Seleccione destinatarios' %>
+</div>
+
+<div id="form">
+  <div class="page-section">
+    <div class="card">
+      <div class="card-body" id="clients_table">
+        <%= render 'clients_table' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= form_for @sended_advertisement do |form| %>
+  <div id="errors"></div>
+  <%= form.hidden_field :clients_data %>
+  <%= form.hidden_field :advertisement_id %>
+  <center>
+    <%= button_tag "#{icon('fas', 'envelope')} Enviar".html_safe, type: 'submit', class: 'btn btn-primary', id:'send_button', disabled: true %>
+  </center>
+<% end %>
+
+
+<!-- El funcionamiento del paginate con los checkbox esta definido en el sended_advertisement.js y en el new.js.erb -->

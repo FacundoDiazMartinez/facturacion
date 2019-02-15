@@ -6,8 +6,8 @@
     <%= f.hidden_field :debe, value: false %>
     <%= f.hidden_field :cbte_tipo, value: "Recibo X" %>
 
-    <% hidden_field_tag :client_id_for_payment, @client.id %>
-    <% hidden_field_tag :account_movement_id_for_payment, @account_movement.id %>
+    <%= hidden_field_tag :client_id_for_payment, @client.id %>
+    <%= hidden_field_tag :account_movement_id_for_payment, @account_movement.id %>
 
     <%= f.fields_for :receipt do |rf| %>
       <div class="fields">
