@@ -1,16 +1,15 @@
 
 var checked_ids = [];
 
-$(document).on("change", "#client_ids", function(){
-  manageArray(parseInt($(this).val()));
+function item_checked(item_value){
+  manageArray(parseInt(item_value));
   $("#sended_advertisement_clients_data").val(checked_ids.join(", ")); // Guardamos en :clients_data del formulario, el array de clientes
-})
+}
 
-function manageArray(value) {
-  var index = checked_ids.indexOf(parseInt(value));
-
+function manageArray(item_value) {
+  var index = checked_ids.indexOf(parseInt(item_value));
   if (index == -1) {
-    checked_ids.push(value);
+    checked_ids.push(item_value);
     $('#send_button').prop('disabled', false);
   } else {
     checked_ids.splice(index, 1);
@@ -25,13 +24,12 @@ function manageArray(value) {
   }
 }
 
-$(document).on("change", "#select_all", function(){
-  if ($(this).is(":checked")) {
+function all_checked(item_value){
+  var index = checked_ids.indexOf(parseInt(item_value));
+  if (index == -1) {
     $('#clients_table #client_ids').each(function(){
       $(this).prop('checked', true); //tildamos todos los checkbox de la tabla
     });
-
-
     checked_ids = []; //limpiamos el array
     $.get("/sended_advertisements/get_all_clients",{},function(data){ // Traemos los ids de TODOS los clientes sin paginar
       checked_ids = jQuery.parseJSON(data); // Ingresamos todos los clientes al array
@@ -52,7 +50,7 @@ $(document).on("change", "#select_all", function(){
 
     $('#send_button').prop('disabled', true);
   }
-})
+}
 
 function setChecked() {
   $('input:checkbox').each(function( index ) {
