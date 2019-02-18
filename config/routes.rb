@@ -132,7 +132,7 @@ Rails.application.routes.draw do
     post :import, on: :collection
   end
 
-  resources :users, only: [:index, :show, :update] do
+  resources :users, only: [:index, :show, :update, :destroy] do
     get :autocomplete_company_code, :on => :collection
     patch :approve, on: :member
     patch :disapprove, on: :member

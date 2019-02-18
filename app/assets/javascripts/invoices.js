@@ -19,7 +19,7 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
-function updateTooltip22(element) { 
+function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
 	$(element).tooltip('dispose');
 	$(element).tooltip({
@@ -28,6 +28,11 @@ function updateTooltip22(element) {
 	});
 }
 
+$(document).on('keypress', function(e){
+	if (e.keyCode == 13) {
+    return false;
+  }
+})
 
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
@@ -35,6 +40,10 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
 	}
+
+	form = $(this).parents('form:first');
+	alert(form.attr('id'));
+
 	var recharge = parseFloat($("#client_recharge").val() * -1);
 
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
@@ -70,7 +79,7 @@ $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field',
 })
 
 $(document).on("change", ".price, .quantity", function(){
-	
+
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
@@ -365,14 +374,14 @@ function toggleHeader(){
 	if (display == 'flex'){
 		$(".invoice-header").hide('fast');
 		$("#encabezado").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#encabezado").append(' Ver encabezado');	
-	} 
+		$("#encabezado").append(' Ver encabezado');
+	}
 	else{
 		$(".invoice-header").show('fast');
 		$("#encabezado").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
 		$("#encabezado").append(' Ocultar encabezado');
 	}
-		
+
 }
 
 function toggleTributes(){
@@ -380,8 +389,8 @@ function toggleTributes(){
 	if (display == 'block'){
 		$("#itributes").hide('fast');
 		$("#tributos").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#tributos").append(' Ver tributos');	
-	} 
+		$("#tributos").append(' Ver tributos');
+	}
 	else{
 		$("#itributes").show('fast');
 		$("#tributos").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
@@ -393,7 +402,7 @@ function toggleTributes(){
 	    });
 
 	}
-		
+
 }
 
 
@@ -420,7 +429,7 @@ function hideConcept(text){
 	}else{
 		index[current_index] = "hide"
 		$("table#details > thead > tr").find('th').eq(current_index).hide()
-		
+
 	}
 	toogleConceptInTable()
 }

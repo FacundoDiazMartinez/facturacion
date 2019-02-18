@@ -23,10 +23,14 @@ class User < ApplicationRecord
   validate :cant_disapprove_if_has_management_role
   before_validation :set_admin_if_owner
 
+	default_scope { where(active: true) }
+
   accepts_nested_attributes_for :user_roles, reject_if: :all_blank, allow_destroy: true
 
-  after_create :send_admin_mail, if: Proc.new{ |u| !u.company_id.nil?}
-  after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && !company_id.nil?}
+  after_create :send_admin_mail, if: Proc.new{ |u| u.has_company?}
+  after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && u.has_company?}
+
+
 
   #FILTROS DE BUSQUEDA
 
@@ -132,6 +136,13 @@ class User < ApplicationRecord
       recoverable
     end
 
+		def destroy
+			self.update_column(:approved, false)
+      self.update_column(:active, false)
+      run_callbacks :destroy
+      freeze
+    end
+
     def send_admin_mail
       AdminMailer.new_user_waiting_for_approval(email).deliver
     end
@@ -139,6 +150,7 @@ class User < ApplicationRecord
     def set_admin_if_owner
       if self.company_id.nil?
         self.admin = true
+				self.approved = true
       end
     end
 
