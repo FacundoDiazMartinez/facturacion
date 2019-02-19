@@ -92,6 +92,7 @@ class Receipt < ApplicationRecord
           r.client_id   = invoice.client_id
           r.sale_point_id = invoice.sale_point_id
           r.user_id     = invoice.user_id
+          r.state       = "Finalizado"
           ReceiptDetail.save_from_invoice(r, invoice) unless !r.save
         else
           invoice.receipts.each do |r|
