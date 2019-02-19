@@ -41,9 +41,6 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		}
 	}
 
-	form = $(this).parents('form:first');
-	alert(form.attr('id'));
-
 	var recharge = parseFloat($("#client_recharge").val() * -1);
 
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);

@@ -6,7 +6,7 @@ class Invoice < ApplicationRecord
     belongs_to :invoice, foreign_key: :associated_invoice, optional: true
     belongs_to :budget, optional: true
     belongs_to :sales_file, optional: true
-  
+
 
     default_scope { where(active: true) }
 
@@ -287,8 +287,13 @@ class Invoice < ApplicationRecord
       end
 
       def self.paid_unpaid_invoices client
+        pp "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAAAAAAA INVOICE"
+        pp client
+        pp client.account_movements.where("account_movements.amount_available > 0.0")
         client.account_movements.where("account_movements.amount_available > 0.0").each do |am|
+          pp "entro al ciclo de paid_unpaid"
           if am.amount_available > 0
+            pp "ENTRO AL IF DE PAID_UNPAID"
             unpaid_invoices = self.where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
             unpaid_invoices.each_with_index do |invoice, index|
               pp "ENTROOOOOOOOOOOOOOOOO INDEX #{index}"
@@ -451,7 +456,7 @@ class Invoice < ApplicationRecord
 
       def full_number
         if state == "Confirmado" || state == "Anulado"
-          "#{sale_point.name} - #{comp_number}" 
+          "#{sale_point.name} - #{comp_number}"
         else
           "Falta confirmar"
         end
@@ -564,7 +569,7 @@ class Invoice < ApplicationRecord
       def get_cae
         # begin
           auth_bill(set_bill)
-        # rescue 
+        # rescue
         #   errors.add(:base, "Error interno de AFIP, intente nuevamente más tarde.")
         # end
       end
@@ -594,7 +599,7 @@ class Invoice < ApplicationRecord
         Afip::AuthData.environment = :test
         begin
           Afip::Bill.get_tributos.map{|t| [t[:desc], t[:id]]}
-        rescue 
+        rescue
           []
         end
       end

@@ -58,7 +58,7 @@ class Receipt < ApplicationRecord
         destroy unless total >= 0.0
       end
     end
-    
+
   #VALIDACIONES
 
   #ATRIBUTOS
@@ -69,7 +69,6 @@ class Receipt < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
-
 
   	def touch_account_movement
   		AccountMovement.create_from_receipt(self) #unless total_without_invoices <= 0

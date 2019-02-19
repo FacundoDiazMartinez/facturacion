@@ -95,7 +95,7 @@ class AccountMovement < ApplicationRecord
 
   #FUNCIONES
   	def days
-  		(Date.today - created_at.to_date).to_i / 1.days 
+  		(Date.today - created_at.to_date).to_i / 1.days
   	end
 
   	def self.sum_total_from_invoices_per_client client_id
@@ -128,13 +128,12 @@ class AccountMovement < ApplicationRecord
     			total_saldo = am.saldo - total_dif
     			am.update_column(:saldo, total_saldo)
     		end
-    		#client.update_debt
       end
   	end
 
   	def update_debt
   		self.client.update_debt
-      pp "UPDATE DEBT"
+      pp "UPDATE DEBT ACCMOVEMENTSSSSS"
   	end
 
     def destroy
@@ -191,6 +190,8 @@ class AccountMovement < ApplicationRecord
     end
 
     def set_total_if_subpayments
+      pp "PÁYMENTS DE CUENTA CORREITNEEEEEEEEEEEEEEEEEEEEEEEEE"
+      pp self.account_movement_payments
       if self.account_movement_payments.any?
         self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
         self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
@@ -215,6 +216,7 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.create_from_receipt receipt
+
       am             = AccountMovement.where(receipt_id: receipt.id).first_or_initialize
       am.client_id   = receipt.client_id
       am.receipt_id  = receipt.id
