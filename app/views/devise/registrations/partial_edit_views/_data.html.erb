@@ -2,16 +2,19 @@
   <div class="col-md-8" style="margin:auto">
     <div class="card p-4">
       <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+
         <div id="company_code" class="form-group">
           <div class="row">
-            <div>
-              <%= f.label :code, 'Código de compañía' %>
-              <a href="#" id="company_code_popover" data-toggle="popover" title="¿Donde puedo conseguir el código?" class="my-auto">
-                <%= icon('fas', 'question-circle') %>
-              </a>
+            <div class="col-md-12">
+              <div cla>
+                <%= f.label :code, 'Código de compañía' %>
+                <a href="#" id="company_code_popover" data-toggle="popover" title="¿Donde puedo conseguir el código?" class="my-auto">
+                  <%= icon('fas', 'question-circle') %>
+                </a>
+              </div>
+              <%= autocomplete_field_tag :code, '', autocomplete_company_code_users_path, class: 'form-control', id_element:'#user_company_id' %>
+              <%= f.hidden_field :company_id %>
             </div>
-            <%= autocomplete_field_tag :code, '', autocomplete_company_code_users_path, class: 'form-control', id_element:'#user_company_id' %>
-            <%= f.hidden_field :company_id %>
           </div>
         </div>
 

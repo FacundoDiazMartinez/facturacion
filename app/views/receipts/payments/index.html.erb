@@ -24,7 +24,7 @@
 								<td><%= payment.payment_name %></td>
 								<td><%= payment.total %></td>
 								<td><%= payment.payment_date %></td>
-								<td><%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank?) %></td>
+								<td><%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %></td>
 							</tr>
 						<% end -%>
 					<% end -%>
@@ -32,9 +32,11 @@
 			</table>
 		</div>
 
-		<center><div class="m-2">
-	    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button' %>
-		</div></center>
+		<% if @receipt.editable? %>
+			<center><div class="m-2">
+		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button' %>
+			</div></center>
+		<% end -%>
 	</div>
 </div>
 

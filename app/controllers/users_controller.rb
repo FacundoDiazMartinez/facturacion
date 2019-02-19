@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   end
 
   def edit
-    
+
   end
 
   def update
@@ -27,6 +27,22 @@ class UsersController < ApplicationController
         format.html {redirect_to users_path, alert: 'Error al actualizar'}
       end
     end
+  end
+
+  def destroy
+    if current_user.id != @user.id
+      @user.destroy
+      respond_to do |format|
+        format.html { redirect_to users_path, notice: 'El usuario fue eliminado correctamente.' }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to users_path, alert: 'Un usuario no puede eliminarse a si mismo.' }
+        format.json { head :no_content }
+      end
+    end
+    
   end
 
   def approve
@@ -54,7 +70,7 @@ class UsersController < ApplicationController
   end
 
   def roles
-    
+
   end
 
   def commission
@@ -63,7 +79,7 @@ class UsersController < ApplicationController
   end
 
   def edit_commission
-    
+
   end
 
   def update_commission

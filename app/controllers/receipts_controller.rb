@@ -30,7 +30,11 @@ class ReceiptsController < ApplicationController
     DailyCash.current_daily_cash current_user.company_id
     @receipt = current_user.company.receipts.new()
     @receipt.date = Date.today
-    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+    if !params[:client_id].blank?
+      @client = current_user.company.clients.find(params[:client_id])
+    else
+      @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+    end
     build_account_movement
   end
 
@@ -101,7 +105,7 @@ class ReceiptsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:invoice_id, :client_id, :sale_point_id, :number, :active, :total, :date, :concept, :company_id,
+      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :state,
        receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
        account_movement_attributes: [:id, :total, :debe, :haber,
          account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,

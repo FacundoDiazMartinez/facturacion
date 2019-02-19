@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   end
 
   namespace :payments do
+    resources :payments
     resources :card_payments
     resources :cash_payments
     resources :retention_payments
@@ -132,7 +133,7 @@ Rails.application.routes.draw do
     post :import, on: :collection
   end
 
-  resources :users, only: [:index, :show, :update] do
+  resources :users, only: [:index, :show, :update, :destroy] do
     get :autocomplete_company_code, :on => :collection
     patch :approve, on: :member
     patch :disapprove, on: :member
