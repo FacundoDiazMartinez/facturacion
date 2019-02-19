@@ -22,6 +22,19 @@ class Payments::PaymentsController < ApplicationController
   def update
   end
 
+  def destroy
+    @payment = current_user.company.account_movement_payments.find(params[:id])
+    @receipt = @payment.account_movement.receipt
+    respond_to do |format|
+      if @payment.destroy
+        format.html {redirect_to edit_receipt_path(@receipt.id), notice: "Pago eliminado con éxito."}
+      else
+        @payment.errors.full_messages.each{|e| @receipt.errors.add(:base, e)}
+        format.html {render template: "/invoices/edit.html.erb"}
+      end
+    end
+  end
+
   private
 
     def set_receipt

@@ -32,6 +32,8 @@ class Receipt < ApplicationRecord
     "99"=>"Devolución"
   }
 
+  STATES = ["Pendiente", "Finalizado"]
+
   #FILTROS DE BUSQUEDA
   	def self.find_by_period from, to
   		if !from.blank? && !to.blank?
@@ -71,7 +73,7 @@ class Receipt < ApplicationRecord
   #PROCESOS
 
   	def touch_account_movement
-  		AccountMovement.create_from_receipt(self) #unless total_without_invoices <= 0
+  		AccountMovement.create_from_receipt(self) if state == "Finalizado"
   	end
 
     def set_number
@@ -90,6 +92,7 @@ class Receipt < ApplicationRecord
           r.client_id   = invoice.client_id
           r.sale_point_id = invoice.sale_point_id
           r.user_id     = invoice.user_id
+          r.state       = "Finalizado"
           ReceiptDetail.save_from_invoice(r, invoice) unless !r.save
         else
           invoice.receipts.each do |r|

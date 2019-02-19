@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   end
 
   namespace :payments do
+    resources :payments
     resources :card_payments
     resources :cash_payments
     resources :retention_payments
