@@ -4,7 +4,7 @@ FactoryBot.define do
     association :locality
     email {"litecode@sas.com"}
     code {"B01"}
-    name {"Juego de tuercas acero"}
+    name {"Compañía 1"}
     cuit {"20362340043"}
     concepto {"Productos"}
     moneda {"ARS"}
