@@ -9,7 +9,7 @@
         <div class="row">
           <div class="border">
                 <center>
-                  <h2 class="text_size_25">
+                  <h2 class="text_size_25" style="line-height: 5px !important;">
                     <% case i
                       when 1 %>
                        ORIGINAL
@@ -27,9 +27,11 @@
 
 
       <% total_page = details_page.map {|a| a.subtotal unless a.nil?}.compact.reduce(:+).to_f %>
-      <%= render template: '/invoices/pdf_partials/_header.html.erb' %>
-      <%= render template: '/invoices/pdf_partials/_details.html.erb', :locals => { :details => details_page, :total_of_page => total_page, :total_pages => @group_details.count} %>
-      <%= render template: '/invoices/pdf_partials/_footer.html.erb', :locals => { :page_number => (index + 1), :total_pages => @group_details.count } %>
+      <div class="invoice_pdf">
+        <%= render template: '/invoices/pdf_partials/_header.html.erb' %>
+        <%= render template: '/invoices/pdf_partials/_details.html.erb', :locals => { :details => details_page, :total_of_page => total_page, :total_pages => @group_details.count} %>
+        <%= render template: '/invoices/pdf_partials/_footer.html.erb', :locals => { :page_number => (index + 1), :total_pages => @group_details.count } %>
+      </div>
     </div>
   <% end %>
 <% end %>
