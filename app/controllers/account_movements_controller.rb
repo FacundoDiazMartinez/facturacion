@@ -16,8 +16,8 @@ class AccountMovementsController < ApplicationController
   # GET /account_movements/new
   def new
     @account_movement = AccountMovement.new
-    @account_movement.build_receipt(client_id: @client.id)
-    @account_movement.account_movement_payments.build
+    #@account_movement.build_receipt(client_id: @client.id)
+    #@account_movement.account_movement_payments.build
     DailyCash.current_daily_cash current_user.company_id
   end
 
@@ -29,7 +29,10 @@ class AccountMovementsController < ApplicationController
   # POST /account_movements.json
   def create
 
-    @account_movement = @client.account_movements.new(extra_params)
+    @account_movement = @client.account_movements.new(account_movement_params)
+    @account_movement.user_id = current_user.id
+    @account_movement.company_id = current_user.company_id
+    @account_movement.amount_available = @account_movement.total
     respond_to do |format|
       if @account_movement.save
         format.html { redirect_to client_account_movements_path(@client.id), notice: 'Movimiento generado correctamente.' }
@@ -85,9 +88,9 @@ class AccountMovementsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def account_movement_params
-      params.require(:account_movement).permit(:total, :debe, :haber, :cbte_tipo, receipt_attributes: 
+      params.require(:account_movement).permit(:total, :debe, :haber, :cbte_tipo, receipt_attributes:
         [:id, :sale_point_id, :client_id, :company_id, :total],
-        account_movement_payments_attributes: [:id, :payment_date, :type_of_payment, 
+        account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
           cash_payment_attributes: [:id, :total],
           card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
           bank_payment_attributes: [:id, :bank_id, :total],
@@ -95,26 +98,5 @@ class AccountMovementsController < ApplicationController
           retention_payment_attributes: [:id, :number, :total, :observation]
         ]
       )
-    end
-
-    def extra_params
-      new_params = account_movement_params
-      new_params.merge!({
-        "receipt_attributes" => {
-          "client_id" => @client.id,
-          "company_id" => current_user.company_id,
-          "user_id" => current_user.id,
-          "date" => Date.today,
-          "total" => params["account_movement"]["receipt_attributes"]["total"],
-          "sale_point_id" => params["account_movement"]["receipt_attributes"]["sale_point_id"]
-        },
-        "account_movement_payments_attributes" =>{
-          "0" =>{
-            "type_of_payment" => params["account_movement"]["type_of_payment"],
-            "payment_date" => params["account_movement"]["payment_date"],
-            "total" => params["account_movement"]["total"].to_f
-          }
-        }
-      })
     end
 end

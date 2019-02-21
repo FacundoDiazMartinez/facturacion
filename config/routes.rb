@@ -1,10 +1,6 @@
 Rails.application.routes.draw do
 
 
-
-
- resources :sended_advertisement
-
  resources :advertisements do
    patch :cancel, on: :member
    patch :send_email, on: :member
@@ -48,6 +44,7 @@ Rails.application.routes.draw do
   end
 
   resources :receipts do
+    resources :account_movements
     get :autocomplete_invoice, on: :collection
   end
 
@@ -59,6 +56,7 @@ Rails.application.routes.draw do
   end
 
   namespace :payments do
+    resources :payments
     resources :card_payments
     resources :cash_payments
     resources :retention_payments
@@ -72,6 +70,10 @@ Rails.application.routes.draw do
     resources :clients do
       get :autocomplete_document, on: :collection
     end
+  end
+
+  resources :sended_advertisements do
+  get :get_all_clients, on: :collection
   end
 
   resources :notifications, only: [:index, :show]
@@ -131,7 +133,7 @@ Rails.application.routes.draw do
     post :import, on: :collection
   end
 
-  resources :users, only: [:index, :show, :update] do
+  resources :users, only: [:index, :show, :update, :destroy] do
     get :autocomplete_company_code, :on => :collection
     patch :approve, on: :member
     patch :disapprove, on: :member
@@ -142,11 +144,13 @@ Rails.application.routes.draw do
   end
   resources :suppliers
   resources :depots
+
   resources :clients do
     resources :account_movements do
       get :export, on: :collection
     end
   end
+
   resources :product_categories
   resources :companies
 

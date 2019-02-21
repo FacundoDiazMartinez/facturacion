@@ -25,7 +25,12 @@ class Company < ApplicationRecord
 	has_many :sales_files
 	has_many :income_payments, through: :invoices
 	has_many :advertisements
+	has_many :sended_advertisements, through: :advertisements
+	has_many :payments
 	has_many :card_payments, through: :credit_cards
+	has_many :cheque_payments, through: :payments
+	has_many :account_movements, through: :clients
+	has_many :account_movement_payments, through: :account_movements
 
 	belongs_to :province
 	belongs_to :locality

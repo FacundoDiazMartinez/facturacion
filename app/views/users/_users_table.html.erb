@@ -25,8 +25,8 @@
           </td>
           <td><%= link_to "#{icon('fas', 'money-bill-alt')}".html_safe, commission_user_path(user.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
           <td>
-            <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, User %>
-            <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, User %>
+            <%= link_to icon('fas', 'eye'), user, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, User  %>
+            <%= link_to icon('fas', 'trash'), user, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if ((can? :destroy, User) && (current_user.id != user.id)) %>
           </td>
         </tr>
       <% end %>

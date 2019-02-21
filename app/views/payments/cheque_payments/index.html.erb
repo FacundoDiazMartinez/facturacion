@@ -1,27 +1,82 @@
-<div class="page-header">
-  <%= link_to new_cheque_payment_path, class: 'btn btn-primary' do %>
-    <span class="glyphicon glyphicon-plus"></span>
-    New Cheque payment
-  <% end %>
-  <h1>Listing cheque_payments</h1>
+<div class="p-4">
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+    <h1 class="h2">Transacciones con cheques</h1>
+  </div>
+
+  <div class="page-section">
+    <div class="card card-fluid">
+
+      <div class="card-header">
+        <%= form_tag payments_cheque_payments_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <!-- BUSCAR POR NUMERO -->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+            </div>
+            <%= text_field_tag :number, params[:number], class: 'form-control', placeholder: 'Buscar por número...', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR NUMERO -->
+
+          <!-- BUSCAR POR CLIENTE-->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= text_field_tag :client, params[:client], class: 'form-control', placeholder: 'Buscar por cliente...', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR CLIENTE-->
+
+          <!-- BUSCAR POR FECHA -->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+            </div>
+            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha...', onchange: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR FECHA -->
+        <% end %>
+      </div>
+
+      <div id="cheques_table" class="card-body">
+        <!-- MOVIMIENTOS ASOCIADOS -->
+        <%= render '/payments/cheque_payments/cheques_table' %>
+        <!-- MOVIMIENTOS ASOCIADOS -->
+      </div>
+      
+    </div>
+  </div>
 </div>
 
-<div class="table-responsive">
-  <table class="table table-striped table-bordered table-hover">
-    <thead>
-      <tr>
-            <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
+<div class="modal fade bd-example-modal-lg" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'eye').html_safe %> Detalle del pago</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="show_modal">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <%= save_button %>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <tbody>
-      <%= content_tag_for(:tr, @cheque_payments) do |cheque_payment| %>
-            <td><%= link_to 'Show', cheque_payment %></td>
-        <td><%= link_to 'Edit', edit_cheque_payment_path(cheque_payment) %></td>
-        <td><%= link_to 'Destroy', cheque_payment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      <% end %>
-    </tbody>
-  </table>
+<div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'edit').html_safe %> Editar pago</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="edit_modal">
+      </div>
+    </div>
+  </div>
 </div>

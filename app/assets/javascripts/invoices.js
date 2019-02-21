@@ -1,6 +1,7 @@
 var total_venta = parseFloat(0);
 var rest = parseFloat(0);
 var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
+var index = {};
 
 $( document ).ready(function() {
 	autocomplete_field();
@@ -18,7 +19,7 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
-function updateTooltip22(element) { 
+function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
 	$(element).tooltip('dispose');
 	$(element).tooltip({
@@ -27,6 +28,11 @@ function updateTooltip22(element) {
 	});
 }
 
+$(document).on('keypress', function(e){
+	if (e.keyCode == 13) {
+    return false;
+  }
+})
 
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
@@ -34,6 +40,7 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
 	}
+
 	var recharge = parseFloat($("#client_recharge").val() * -1);
 
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
@@ -69,7 +76,7 @@ $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field',
 })
 
 $(document).on("change", ".price, .quantity", function(){
-	
+
 	price				= $(this).closest("tr.fields").find("input.price");
 	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
 	quantity 			= $(this).closest("tr.fields").find("input.quantity");
@@ -227,6 +234,7 @@ $(document).on('nested:fieldAdded', function(event){
 	      autoclose: true,
 	      startView: 2
 	});
+	toogleConceptInTable()
 });
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -363,14 +371,14 @@ function toggleHeader(){
 	if (display == 'flex'){
 		$(".invoice-header").hide('fast');
 		$("#encabezado").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#encabezado").append(' Ver encabezado');	
-	} 
+		$("#encabezado").append(' Ver encabezado');
+	}
 	else{
 		$(".invoice-header").show('fast');
 		$("#encabezado").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
 		$("#encabezado").append(' Ocultar encabezado');
 	}
-		
+
 }
 
 function toggleTributes(){
@@ -378,8 +386,8 @@ function toggleTributes(){
 	if (display == 'block'){
 		$("#itributes").hide('fast');
 		$("#tributos").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#tributos").append(' Ver tributos');	
-	} 
+		$("#tributos").append(' Ver tributos');
+	}
 	else{
 		$("#itributes").show('fast');
 		$("#tributos").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
@@ -391,37 +399,9 @@ function toggleTributes(){
 	    });
 
 	}
-		
+
 }
 
-$(document).on("change", ".new_type_of_payment", function(){
-
-	selected_payment = $(this).val();
-	invoice_id 			= $("#invoice_id_for_payment").val();
-	client_id 			= $("#client_id_for_payment").val();
-	account_movement_id = $("#account_movement_id_for_payment").val();
-	data = {invoice_id: invoice_id, client_id: client_id, account_movement_id: account_movement_id}
-	switch (selected_payment) { 
-		case '0': 
-			getPaymentRequest("/payments/cash_payments/new", data);
-			break;
-		case '1': 
-			getPaymentRequest("/payments/card_payments/new", data);
-			break;
-		case '3': 
-			getPaymentRequest("/payments/bank_payments/new", data);
-			break;
-		case '4': 
-			getPaymentRequest("/payments/cheque_payments/new", data);
-			break;
-		case '5': 
-			getPaymentRequest("/payments/retention_payments/new", data);
-			break;
-		case '6': 
-			getPaymentRequest("/payments/account_payments/new", data);
-			break;
-	}
-})
 
 function getPaymentRequest(url, data) {
   $.ajax({
@@ -438,4 +418,27 @@ $(document).on("click", "#with_alert", function(){
 	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
 })
 
+function hideConcept(text){
+	var current_index = $('th:contains("'+ text +'")').index();
+	if (index[current_index] == "hide"){
+		index[current_index] = "show"
+		$("table#details > thead > tr").find('th').eq(current_index).show()
+	}else{
+		index[current_index] = "hide"
+		$("table#details > thead > tr").find('th').eq(current_index).hide()
 
+	}
+	toogleConceptInTable()
+}
+
+function toogleConceptInTable(){
+	$.each(index, function(j, i){
+		$("table#details > tbody > tr").each(function(){
+			if(i == "hide"){
+				$(this).find('td').eq(j).hide()
+			}else{
+				$(this).find('td').eq(j).show()
+			}
+		})
+	})
+}

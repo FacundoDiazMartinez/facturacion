@@ -1,6 +1,6 @@
 <%= nested_form_for @invoice do |form| %>
   <%= form.hidden_field :budget_id %>
-  <%= error_explanation @invoice %> 
+  <%= error_explanation @invoice %>
   <!-- HEADER -->
     <div class="card shadow  invoice-header">
       <div class="card-body">
@@ -33,7 +33,7 @@
               <div class="form-group row">
                 <%= label_tag :total_left, "Monto faltante", class:'col-4 col-form-label col-form-label-sm' %>
                 <div class="col-8">
-                  <%= text_field_tag :total_left, @invoice.total_left, class: 'form-control', readonly: true %>
+                  <%= text_field_tag :total_left, @invoice.total_left.round(2), class: 'form-control', readonly: true %>
                 </div>
               </div>
             </div>
@@ -89,7 +89,7 @@
             </center>
           </div>
           <div class="col-2 offset-md-2">
-            
+
           </div>
         </div>
         <!-- BOTONES DE ACCION -->

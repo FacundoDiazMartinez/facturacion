@@ -6,10 +6,10 @@
     <%= f.hidden_field :debe, value: false %>
     <%= f.hidden_field :cbte_tipo, value: "Recibo X" %>
 
-    <% hidden_field_tag :client_id_for_payment, @client.id %>
-    <% hidden_field_tag :account_movement_id_for_payment, @account_movement.id %>
+    <%= hidden_field_tag :client_id_for_payment, @client.id %>
+    <%= hidden_field_tag :account_movement_id_for_payment, @account_movement.id %>
 
-    <%= f.fields_for :receipt do |rf| %>
+    <%= f.fields_for :receipt, f.object.build_receipt do |rf| %>
       <div class="fields">
         <div class="form-group">
           <%= rf.label :sale_point_id, "Punto de venta" %>
@@ -21,7 +21,7 @@
       </div>
     <% end -%>
 
-    <%= f.fields_for :account_movement_payments do |pf| %>
+    <%= f.fields_for :account_movement_payments, f.object.account_movement_payments.build do |pf| %>
       <div class="fields">
         <div class="form-group">
           <%= pf.label :type_of_payment, "Tipo" %>

@@ -7,11 +7,14 @@ class AccountMovement < ApplicationRecord
   has_many :invoices, through: :account_movement_payments
   has_many :invoice_details, through: :invoices
 
-  before_save :set_saldo_to_movements
-  before_destroy :fix_saldo
-  after_save  :update_debt
-  after_destroy :update_debt
-  after_destroy :destroy_receipt
+  before_save         :set_saldo_to_movements
+  before_save :set_total_if_subpayments
+  before_validation   :set_attrs_to_receipt
+  before_destroy      :fix_saldo
+  after_save          :update_debt
+  after_destroy       :update_debt
+  after_destroy       :destroy_receipt
+  #before_validation :check_receipt_attributes
 
   validate :check_pertenence_of_receipt_to_client
 
@@ -20,11 +23,12 @@ class AccountMovement < ApplicationRecord
   validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
   validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."
   validates_presence_of :total, message: "Debe definir un total."
+  validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
   validates_presence_of :saldo, message: "Falta definir el saldo actual del cliente."
   validate :check_debe_haber
 
   accepts_nested_attributes_for :receipt, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :account_movement_payments, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :account_movement_payments, allow_destroy: true, reject_if: Proc.new{|p| p["type_of_payment"].blank?}
 
   #TABLA
     # create_table "account_movements", force: :cascade do |t|
@@ -91,7 +95,7 @@ class AccountMovement < ApplicationRecord
 
   #FUNCIONES
   	def days
-  		(Date.today - created_at.to_date).to_i / 1.days 
+  		(Date.today - created_at.to_date).to_i / 1.days
   	end
 
   	def self.sum_total_from_invoices_per_client client_id
@@ -124,12 +128,12 @@ class AccountMovement < ApplicationRecord
     			total_saldo = am.saldo - total_dif
     			am.update_column(:saldo, total_saldo)
     		end
-    		client.update_debt
       end
   	end
 
   	def update_debt
   		self.client.update_debt
+      pp "UPDATE DEBT ACCMOVEMENTSSSSS"
   	end
 
     def destroy
@@ -155,9 +159,53 @@ class AccountMovement < ApplicationRecord
         "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{receipt.number}"
       end
     end
+
+    def user_id=(user_id)
+      @user_id = user_id
+    end
+
+    def user_id
+      @user_id
+    end
+
+    def company_id=(company_id)
+      @company_id = company_id
+    end
+
+    def company_id
+      @company_id
+    end
   #ATRIBUTOS
 
   #PROCESOS
+
+    def set_attrs_to_receipt
+      if !receipt.nil? && !client.nil?
+        self.receipt.company_id = self.client.company_id
+        self.receipt.date = Date.today
+      elsif client.nil?
+        self.client_id = self.receipt.client_id
+        self.cbte_tipo = self.receipt.cbte_tipo
+      end
+    end
+
+    def set_total_if_subpayments
+      pp "PÁYMENTS DE CUENTA CORREITNEEEEEEEEEEEEEEEEEEEEEEEEE"
+      pp self.account_movement_payments
+      if self.account_movement_payments.any?
+        self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
+        self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
+      end
+      pp "SET TOTAL IF SUBPAYMENTS"
+    end
+
+    def check_receipt_attributes
+      self.receipt.client_id  = self.client_id
+      self.receipt.user_id    = self.user_id
+      self.receipt.company_id = self.company_id
+      self.receipt.date       = Date.today
+      self.total              = self.receipt.total
+    end
 
     def destroy_receipt
       self.receipt.destroy unless receipt.nil?
@@ -168,6 +216,7 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.create_from_receipt receipt
+
       am             = AccountMovement.where(receipt_id: receipt.id).first_or_initialize
       am.client_id   = receipt.client_id
       am.receipt_id  = receipt.id

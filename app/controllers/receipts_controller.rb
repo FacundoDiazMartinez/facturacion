@@ -27,14 +27,21 @@ class ReceiptsController < ApplicationController
 
   # GET /receipts/new
   def new
+    DailyCash.current_daily_cash current_user.company_id
     @receipt = current_user.company.receipts.new()
     @receipt.date = Date.today
-    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+    if !params[:client_id].blank?
+      @client = current_user.company.clients.find(params[:client_id])
+    else
+      @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+    end
+    build_account_movement
   end
 
   # GET /receipts/1/edit
   def edit
     @client = @receipt.client
+    build_account_movement
   end
 
   # POST /receipts
@@ -44,8 +51,9 @@ class ReceiptsController < ApplicationController
     @client = @receipt.client
     respond_to do |format|
       if @receipt.save
-        format.html { redirect_to receipts_path(), notice: 'El recibo fue creado correctamente.' }
+        format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue creado correctamente.' }
       else
+        build_account_movement
         format.html { render :new }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
       end
@@ -57,9 +65,12 @@ class ReceiptsController < ApplicationController
   def update
     respond_to do |format|
       if @receipt.update(receipt_params)
-        format.html { redirect_to @receipt, notice: 'El recibo fue actualizado correctamente.' }
+        format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
+        pp @receipt.errors
+        @client = @receipt.client
+        build_account_movement
         format.html { render :edit }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
       end
@@ -79,7 +90,7 @@ class ReceiptsController < ApplicationController
   def autocomplete_invoice
     term = params[:term]
     invoices = current_user.company.invoices.where("comp_number ILIKE ? AND state = 'Confirmado'", "%#{term}%").order(:comp_number).all
-    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :total => invoice.imp_total, client: invoice.client.attributes} }
+    render :json => invoices.map { |invoice| {:id => invoice.id, :label => invoice.full_number, :total => invoice.total_pay, client: invoice.client.attributes} }
   end
 
   private
@@ -88,8 +99,23 @@ class ReceiptsController < ApplicationController
       @receipt = Receipt.find(params[:id])
     end
 
+    def build_account_movement
+      @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:invoice_id, :client_id, :sale_point_id, :number, :active, :total, :date, :concept, :company_id)
+      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :state,
+       receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
+       account_movement_attributes: [:id, :total, :debe, :haber,
+         account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
+            cash_payment_attributes: [:id, :total],
+            card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+            bank_payment_attributes: [:id, :bank_id, :total],
+            cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
+            retention_payment_attributes: [:id, :number, :total, :observation]
+          ]
+        ]
+      )
     end
 end

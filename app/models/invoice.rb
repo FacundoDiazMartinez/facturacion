@@ -7,6 +7,7 @@ class Invoice < ApplicationRecord
     belongs_to :budget, optional: true
     belongs_to :sales_file, optional: true
 
+
     default_scope { where(active: true) }
 
 
@@ -17,29 +18,25 @@ class Invoice < ApplicationRecord
     has_many :delivery_notes, dependent: :destroy
     has_many :commissioners, through: :invoice_details
     has_many :tributes, dependent: :destroy
+    has_many :receipt_details
+    has_many :receipts, through: :receipt_details
 
-    has_one  :receipt, dependent: :destroy
     has_one  :account_movement, dependent: :destroy
 
-    accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: :all_blank
+    accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: Proc.new{|ip| ip["type_of_payment"].blank?}
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
-    after_save :set_state
-    after_touch :update_total_pay
-    after_save :update_expired, if: Proc.new{|i| i.state == "Confirmado"}
-    after_save :touch_commissioners
-    after_touch :touch_account_movement
-    after_save :touch_account_movement#, if: Proc.new{|i| i.saved_change_to_total?}
-    after_save :touch_payments
-    after_save :check_receipt
-    after_touch :check_receipt
+    after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
+    after_touch :update_total_pay, :touch_account_movement, :check_receipt
+
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
+    after_save :update_expired, if: Proc.new{|i| i.state == "Confirmado"}
+
     before_validation :check_if_confirmed
     after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
-    after_save :update_payment_belongs
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
 
@@ -289,17 +286,23 @@ class Invoice < ApplicationRecord
         end
       end
 
-      def self.paid_unpaid_invoices client, account_movement
-        am_total = -client.saldo.to_f
-        if am_total > 0
-          unpaid_invoices = where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
-          unpaid_invoices.each do |invoice|
-            payment = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: account_movement.id)
-            payment.total = am_total > invoice.total_left ? invoice.total_left : am_total
-            payment.save
-            
-            am_total -= payment.total
-            break if am_total == 0
+      def self.paid_unpaid_invoices client
+        pp "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAAAAAAA INVOICE"
+        pp client
+        pp client.account_movements.where("account_movements.amount_available > 0.0")
+        client.account_movements.where("account_movements.amount_available > 0.0").each do |am|
+          pp "entro al ciclo de paid_unpaid"
+          if am.amount_available > 0
+            pp "ENTRO AL IF DE PAID_UNPAID"
+            unpaid_invoices = self.where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
+            unpaid_invoices.each_with_index do |invoice, index|
+              pp "ENTROOOOOOOOOOOOOOOOO INDEX #{index}"
+              pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
+              pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
+              pay.save
+              am.update_column(:amount_available, am.amount_available - pay.total)
+              break if am.amount_available < 1
+            end
           end
         end
       end
@@ -453,7 +456,7 @@ class Invoice < ApplicationRecord
 
       def full_number
         if state == "Confirmado" || state == "Anulado"
-          "#{sale_point.name} - #{comp_number}" 
+          "#{sale_point.name} - #{comp_number}"
         else
           "Falta confirmar"
         end
@@ -564,11 +567,11 @@ class Invoice < ApplicationRecord
       end
 
       def get_cae
-        begin
+        # begin
           auth_bill(set_bill)
-        rescue 
-          error.add(:base, "Error interno de AFIP, intente nuevamente más tarde.")
-        end
+        # rescue
+        #   errors.add(:base, "Error interno de AFIP, intente nuevamente más tarde.")
+        # end
       end
 
       def afip_errors(bill)
@@ -596,7 +599,7 @@ class Invoice < ApplicationRecord
         Afip::AuthData.environment = :test
         begin
           Afip::Bill.get_tributos.map{|t| [t[:desc], t[:id]]}
-        rescue 
+        rescue
           []
         end
       end

@@ -31,6 +31,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'barby', '~> 0.6.6'
 gem 'chunky_png'
 
+gem 'byebug'
 #GEMA WYSIWYG
 gem 'summernote-rails', '~> 0.8.10.0'
 

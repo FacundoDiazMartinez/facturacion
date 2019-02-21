@@ -101,7 +101,6 @@ class PurchaseOrder < ApplicationRecord
 
   #PROCESOS
     def check_pending_arrival_notes
-      pp "ENTRO"
       self.arrival_notes.each do |an|
         if an.editable?
           errors.add(:state, "No se pudo cerrar Orden de Compra. Existen remitos asociados pendientes.")

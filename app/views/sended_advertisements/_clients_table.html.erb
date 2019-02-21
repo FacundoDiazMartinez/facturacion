@@ -2,7 +2,7 @@
   <table class="table table-hover" id="clients_table">
     <thead>
       <tr>
-        <th>Enviar</th>
+        <th style="width: 15%;"><%= check_box_tag 'select_all', 'all_checked', false, { onchange: 'all_checked(this.value)' } %> Seleccionar todos</th>
         <th>Nombre</th>
         <th>Dirección</th>
         <th>Documento</th>
@@ -13,7 +13,7 @@
     <tbody>
       <% @clients.each do |client| %>
       <tr>
-        <td><%= check_box_tag 'client_ids[]', client.id %></td>
+        <td><%= check_box_tag 'client_ids', client.id, false, { onchange: 'item_checked(this.value)' } %></td>
         <td><%= client.name %></td>
         <td><%= client.address %></td>
         <td><%= client.document_number %></td>

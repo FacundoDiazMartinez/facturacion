@@ -2,7 +2,7 @@ class ProductPriceHistory < ApplicationRecord
   belongs_to :product, optional: true
   belongs_to :user, foreign_key: "created_by"
 
-  after_create :set_create_activity, if: Proc.new{|pph| pph.percentage != 0}
+  after_create :set_create_activity, if: Proc.new{|pph| pph.percentage != 0 && (pph.product.created_at != pph.product.updated_at)}
 
   #PROCESOS
   	def set_create_activity
