@@ -7,13 +7,14 @@
       <th class="description_header">Producto/Servicio</th>
       <th class="description_header">Cantidad</th>
       <th class="description_header">Precio Unit.</th>
+      <th class="description_header">Subtotal</th>
       <th class="description_header">% Bonif</th>
       <% if @invoice.cbte_tipo == "01" %>
         <th class="description_header">I.V.A.</th>
       <% end %>
       <!-- <th class="description_header">%Bonif</th>
       <th class="description_header">Imp.Bonif</th> -->
-      <th class="description_header">Subtotal</th>
+      <th class="description_header">Subtotal c/IVA</th>
     </tr>
     <% details.compact.each do |det| %>
       <tr>
@@ -25,6 +26,7 @@
         <% else %>
           <td class="text_right"><%= det.price_per_unit %></td>
         <% end %>
+        <td class="text_right"><%= det.subtotal - det.iva_amount %>
         <td class="text_right"><%= det.bonus_percentage %></td>
         <% if @invoice.cbte_tipo == "01" %>
           <td class="text_right"><%= det.iva_amount %></td>
