@@ -19,7 +19,7 @@ class Receipt < ApplicationRecord
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
 
-  #accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
 

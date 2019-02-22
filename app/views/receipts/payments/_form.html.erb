@@ -9,6 +9,9 @@
 
     <%= f.fields_for :account_movement_payments, @account_movement.account_movement_payments.build() do |amp| %>
 
+      <div id="total_left">
+
+      </div>
       <div class="fields">
         <div class="form-group">
           <%= amp.label :type_of_payment, "Tipo" %>

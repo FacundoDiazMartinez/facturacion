@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  load_and_authorize_resource
+  load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product]
   before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver]
 
   # GET /invoices
@@ -147,7 +147,7 @@ class InvoicesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
       params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired,
-        income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy, 
+        income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
           cash_payment_attributes: [:id, :total],
           card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
           bank_payment_attributes: [:id, :bank_id, :total],
