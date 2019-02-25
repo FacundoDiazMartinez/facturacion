@@ -11,6 +11,7 @@ class Receipt < ApplicationRecord
   # has_many :invoice_details, through: :invoices
 
   after_save :touch_account_movement
+  before_validation :validate_receipt_detail
   before_validation :set_number, on: :create
   before_validation :check_total
 
@@ -61,6 +62,10 @@ class Receipt < ApplicationRecord
       end
     end
 
+    def validate_receipt_detail
+      receipt_details.each{|rd| rd.invoices_clients_validation}
+    end
+
   #VALIDACIONES
 
   #ATRIBUTOS
@@ -107,6 +112,7 @@ class Receipt < ApplicationRecord
     def set_total
       self.total = total_without_invoices
     end
+
 
   #PROCESOS
 

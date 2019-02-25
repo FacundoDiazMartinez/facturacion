@@ -1,5 +1,6 @@
 class Payments::RetentionPaymentsController < Payments::PaymentsController
   before_action :set_retention_payment, only: [:show, :edit, :update, :destroy]
+  layout :false
 
   # GET /retention_payments
   # GET /retention_payments.json

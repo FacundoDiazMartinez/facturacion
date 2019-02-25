@@ -1,5 +1,6 @@
 class Payments::BankPaymentsController < Payments::PaymentsController
   before_action :set_bank_payment, only: [:show, :edit, :update, :destroy]
+  layout :false
 
   # GET /bank_payments
   # GET /bank_payments.json

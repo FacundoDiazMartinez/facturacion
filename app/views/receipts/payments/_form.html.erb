@@ -15,7 +15,7 @@
       <div class="fields">
         <div class="form-group">
           <%= amp.label :type_of_payment, "Tipo" %>
-          <%= amp.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', style: 'min-width: 100px;'} %>
+          <%= amp.select :type_of_payment, Payment::TYPES.reject {|k,v| v == "Cuenta Corriente"}.map{|k,v| [v,k]}, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', style: 'min-width: 100px;'} %>
         </div>
         <div class="form-group">
           <%= amp.label :payment_date, "Fecha" %>
