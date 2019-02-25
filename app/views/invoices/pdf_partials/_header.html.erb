@@ -10,8 +10,8 @@
 <!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
     <div class=" border">
       <table class="width_100">
-        <tr>
-          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 400px;"><%= @invoice.company.name %></th>
+        <tr style="line-height: 20px !important;">
+          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 400px; line-height: 60px;"><%= @invoice.company.name %></th>
           <th class="text_size_invoice_type invoice_type"><%= Invoice.available_cbte_type(@invoice.company, @invoice.client).first.first.last %>
             <table>
               <tbody>

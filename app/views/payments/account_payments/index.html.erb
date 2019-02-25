@@ -18,7 +18,7 @@
 
     <tbody>
       <%= content_tag_for(:tr, @account_movement_payments) do |account_movement_payment| %>
-            <td><%= link_to 'Show', account_movement_payment %></td>
+        <td><%= link_to 'Show', account_movement_payment %></td>
         <td><%= link_to 'Edit', edit_account_movement_payment_path(account_movement_payment) %></td>
         <td><%= link_to 'Destroy', account_movement_payment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       <% end %>

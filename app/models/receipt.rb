@@ -11,6 +11,7 @@ class Receipt < ApplicationRecord
   # has_many :invoice_details, through: :invoices
 
   after_save :touch_account_movement
+  before_validation :validate_receipt_detail
   before_validation :set_number, on: :create
   before_validation :check_total
 
@@ -19,7 +20,7 @@ class Receipt < ApplicationRecord
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
 
-  #accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
 
@@ -59,6 +60,10 @@ class Receipt < ApplicationRecord
       else
         destroy unless total >= 0.0
       end
+    end
+
+    def validate_receipt_detail
+      receipt_details.each{|rd| rd.invoices_clients_validation}
     end
 
   #VALIDACIONES
@@ -107,6 +112,7 @@ class Receipt < ApplicationRecord
     def set_total
       self.total = total_without_invoices
     end
+
 
   #PROCESOS
 

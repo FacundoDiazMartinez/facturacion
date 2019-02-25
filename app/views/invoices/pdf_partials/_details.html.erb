@@ -5,33 +5,35 @@
     <tr>
       <th class="description_header">Codigo</th>
       <th class="description_header">Producto/Servicio</th>
-      <th class="description_header">Precio Unit.</th>
       <th class="description_header">Cantidad</th>
-      <th class="description_header">U.Medida</th>
+      <th class="description_header">Precio Unit.</th>
+      <th class="description_header">Subtotal</th>
+      <th class="description_header">% Bonif</th>
       <% if @invoice.cbte_tipo == "01" %>
         <th class="description_header">I.V.A.</th>
       <% end %>
       <!-- <th class="description_header">%Bonif</th>
       <th class="description_header">Imp.Bonif</th> -->
-      <th class="description_header">Subtotal</th>
+      <th class="description_header">Subtotal c/IVA</th>
     </tr>
     <% details.compact.each do |det| %>
       <tr>
         <td><%= det.product.code %></td>
         <td><%= det.product.name %></td>
-        <% if det.bonus_amount != 0 %>
-          <td class="text_right">$ <%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
-        <% else %>
-          <td class="text_right">$ <%= det.price_per_unit %></td>
-        <% end %>
         <td class="text_right"><%= det.quantity %></td>
-        <td class="text_right"><%= det.product.measurement_unit_name %></td>
+        <% if det.bonus_amount != 0 %>
+          <td class="text_right"><%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
+        <% else %>
+          <td class="text_right"><%= det.price_per_unit %></td>
+        <% end %>
+        <td class="text_right"><%= det.subtotal - det.iva_amount %>
+        <td class="text_right"><%= det.bonus_percentage %></td>
         <% if @invoice.cbte_tipo == "01" %>
-          <td class="text_right">$ <%= det.iva_amount %></td>
+          <td class="text_right"><%= det.iva_amount %></td>
         <% end %>
         <!-- <td class="text_right"><%= det.bonus_percentage %></td>
         <td class="text_right"><%= det.bonus_amount %></td> -->
-        <td class="text_right">$ <%= det.subtotal %></td>
+        <td class="text_right"><%= det.subtotal %></td>
       </tr>
     <% end %>
   </table>
@@ -47,26 +49,60 @@
       <col width="600">
       <col width="100">
     <tr>
-      <td class="text_right"><b>
-        <% if total_pages > 1 %>
-          Subtotal página:
-        <% else %>
-          Subtotal:
-        <% end %>
-      </b>
+      <td><b>Móvil:</b></td>
+      <td class="text_right">
+        <b>
+          <% if total_pages > 1 %>
+            Subtotal página:
+          <% else %>
+            Subtotal:
+          <% end %>
+        </b>
       </td>
       <td class="text_right"><b>$ <%= total_of_page %></b></td>
     </tr>
 
     <tr>
+      <td><b>Firma:</b></td>
       <td class="text_right"><b>Otros Tributos:</b></td>
       <td class="text_right"><b>$ <%= @invoice.imp_op_ex %> </b></td>
     </tr>
 
     <tr>
+      <td><b>Aclaración:</b></td>
       <td class="text_right"><b>Importe Total:</b></td>
       <td class="text_right"><b>$ <%= @invoice.total %></b></td>
+    </tr>
+
+    <tr>
+      <td><b>Dni:</b></td>
+      <td class="text_right"></td>
+      <td class="text_right"></td>
     </tr>
   </table>
   </div>
 </div>
+<br>
+<% if @invoice.tributes.count > 1 %>
+  <div class="row footer_top">
+    <div class="container border">
+      <table class="width_100">
+        <col width="600">
+        <col width="100">
+
+        <tr>
+          <td class="text_right"><b>Importe Neto Gravado:</b></td>
+          <td class="text_right"><b><%= @invoice.net_amount_sum %></b></td>
+        </tr>
+
+        <% @invoice.tributes.each do |t| %>
+        <tr>
+          <td class="text_right"><b><%= @invoice.tributes.desc %></b></td>
+          <td class="text_right"><b><%= @invoice.tributes.importe %> </b></td>
+        </tr>
+        <% end %>
+
+    </table>
+    </div>
+  </div>
+<% end %>

@@ -1,6 +1,6 @@
 <h3 class="d-flex mb-2">
     <div class="p-2">
-      	Conceptos 
+      	Conceptos
     </div>
     <div class="p-2">
 	  	<div class="dropdown ">
@@ -14,8 +14,8 @@
 	  			<%= button_tag "Precio", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Precio")' %>
 	  			<%= button_tag "Comisionantes", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Comisionantes")' %>
 	  			<%= button_tag "I.V.A. (%)", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("I.V.A. (%)")' %>
-	  			<%= button_tag "Bonificado", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Bonificado")' %> 
-	  			<%= button_tag "Subtotal", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Subtotal")' %> 
+	  			<%= button_tag "Bonificado", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Bonificado")' %>
+	  			<%= button_tag "Subtotal", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Subtotal")' %>
 	  		</div>
 	  	</div>
 	</div>
@@ -34,7 +34,7 @@
 		        <% if @invoice.editable? %>
 		          	<th scope="col" class="only-desktop">Comisionantes</th>
 		        <% end %>
-				
+
 				<th scope="col">I.V.A. (%)</th>
 				<th scope="col" class="only-desktop">Bonificado</th>
 				<th scope="col" style="width:9%;">Subtotal</th>
@@ -42,18 +42,18 @@
 			</tr>
 		</thead>
 		<tbody>
-			<%= form.fields_for :invoice_details, wrapper: false do |f| %>
+			<%= form.fields_for :invoice_details,(@invoice.invoice_details.build unless !@invoice.invoice_details.empty?), wrapper: false do |f| %>
 		    	<tr class="fields" id="<%= f.index %>">
 		    		<%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
 			  			<td>
-			                <% if @invoice.editable? %>
-			                  <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'input-group-text btn btn-secondary', min_length: 3 %>
-			                <% else %>
-			                  #
-			                <% end %>
+                <% if @invoice.editable? %>
+                  <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'input-group-text btn btn-secondary', min_length: 3 %>
+                <% else %>
+                  #
+                <% end %>
 					    </td>
 					    <td>
-			                <%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: !@invoice.editable? %>
+                <%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: !@invoice.editable? %>
 			  				<%= pf.hidden_field :id, class: 'product_id' %>
 			  			</td>
 						<td>
@@ -76,11 +76,11 @@
 					<td>
 						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"tooltip"}, disabled: !@invoice.editable? %>
 					</td>
-			        <% if @invoice.editable? %>
-			            <td class="text-center">
-			              	<%= render '/invoices/detail/commissioner_fields', f: f %>
-			            </td>
-			        <% end %>
+		        <% if @invoice.editable? %>
+	            <td class="text-center">
+	              	<%= render '/invoices/detail/commissioner_fields', f: f %>
+	            </td>
+		        <% end %>
 					<td>
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
 						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.default_iva), {}, {class: 'form-control form-control-sm iva_aliquot', data: {toggle:"tooltip"}, style: 'width: 100px;', disabled: !@invoice.editable?} %>

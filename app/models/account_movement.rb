@@ -8,7 +8,7 @@ class AccountMovement < ApplicationRecord
   has_many :invoice_details, through: :invoices
 
   before_save         :set_saldo_to_movements
-  before_save :set_total_if_subpayments
+  before_save         :set_total_if_subpayments
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
   after_save          :update_debt
