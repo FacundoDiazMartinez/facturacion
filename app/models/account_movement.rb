@@ -6,6 +6,7 @@ class AccountMovement < ApplicationRecord
   has_many :account_movement_payments, dependent: :destroy
   has_many :invoices, through: :account_movement_payments
   has_many :invoice_details, through: :invoices
+  has_many :income_payments, dependent: :destroy
 
   before_save         :set_saldo_to_movements
   before_save         :set_total_if_subpayments
@@ -131,10 +132,7 @@ class AccountMovement < ApplicationRecord
       end
   	end
 
-  	def update_debt
-  		self.client.update_debt
-      pp "UPDATE DEBT ACCMOVEMENTSSSSS"
-  	end
+
 
     def destroy
       update_column(:active, false)
@@ -216,7 +214,6 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.create_from_receipt receipt
-
       am             = AccountMovement.where(receipt_id: receipt.id).first_or_initialize
       am.client_id   = receipt.client_id
       am.receipt_id  = receipt.id
@@ -225,7 +222,12 @@ class AccountMovement < ApplicationRecord
       am.haber       = receipt.cbte_tipo != "99"
       am.total       = receipt.total.to_f
       am.save
+      pp am
     end
+
+    def update_debt
+  		self.client.update_debt
+  	end
 
     def self.create_from_invoice invoice
       if invoice.state == "Confirmado"
