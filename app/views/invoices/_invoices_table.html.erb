@@ -42,11 +42,14 @@
       <thead>
         <tr>
           <th>Nº</th>
+          <th scope="col" class="only-desktop">Fecha</th>
           <th scope="col">Cliente</th>
           <th scope="col" class="only-desktop">Tipo</th>
           <th scope="col">Total</th>
           <th scope="col" class="only-desktop">Estado</th>
-          <th scope="col" class="only-desktop">Fecha</th>
+          <th>Pagado</th>
+          <th>Faltante</th>
+
           <th scope="col"></th>
         </tr>
       </thead>
@@ -55,11 +58,13 @@
         <% @invoices.each do |invoice| %>
           <tr>
             <td><%= invoice.full_number %></td>
+            <td class="only-desktop"><%= invoice.cbte_fch %></td>
             <td><%= link_to invoice.client.name, client_path(invoice.client_id) %></td>
             <td class="only-desktop"><%= invoice.tipo %></td>
             <td>$<%= invoice.total %></td>
             <td class="only-desktop"><%= invoice_state(invoice.state) %></td>
-            <td class="only-desktop"><%= invoice.cbte_fch %></td>
+            <td>$<%= invoice.total_pay %></td>
+            <td>$<%= invoice.total_left %></td>
             <td>
               <%  if ! invoice.editable? %>
                 <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>

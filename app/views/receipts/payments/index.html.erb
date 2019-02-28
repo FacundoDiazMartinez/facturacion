@@ -18,7 +18,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<% @receipt.account_movement_payments.each do |payment| %>
+					<% @account_movement_payments.where(generated_by_system: false).each do |payment| %>
 						<% if payment.errors.empty? %>
 							<tr>
 								<td><%= payment.payment_name %></td>

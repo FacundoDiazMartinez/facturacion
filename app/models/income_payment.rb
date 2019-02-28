@@ -69,15 +69,15 @@ class IncomePayment < Payment
 
 		def set_total_pay_to_invoice
 			sum = invoice.sum_payments
-	  		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
-	  	end
+  		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
+  	end
 
-	  	def set_notification
-	     	Notification.create_from_payment(self)
-	    end
+  	def set_notification
+     	Notification.create_from_payment(self)
+    end
 
-    	def set_flow
- 			self.flow = "income"
+  	def set_flow
+			self.flow = "income"
  		end
 
  		def change_credit_card_balance

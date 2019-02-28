@@ -42,13 +42,13 @@ class AccountMovementPayment < Payment
  			self.client_id = self.account_movement.client_id
  		end
 
-    	def set_flow
+    def set_flow
  			self.flow = "income"
  		end
 
  		def set_total_pay_to_invoice
 			sum = invoice.sum_payments
-	  		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
-	  	end
+  		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
+  	end
 	#PRECESOS
 end

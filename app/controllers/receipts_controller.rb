@@ -11,7 +11,6 @@ class ReceiptsController < ApplicationController
   # GET /receipts/1.json
   def show
     # la siguiene variable la cree para el pdf:
-
     respond_to do |format|
       format.html
       format.pdf do
@@ -35,13 +34,22 @@ class ReceiptsController < ApplicationController
     else
       @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
     end
+    AccountMovement.unscoped do
+      @account_movement = AccountMovement.new()
+      @account_movement_payments = @account_movement.account_movement_payments
+    end
     build_account_movement
   end
 
   # GET /receipts/1/edit
   def edit
     @client = @receipt.client
-    build_account_movement
+    # build_account_movement
+    AccountMovement.unscoped do
+      @account_movement = @receipt.account_movement
+      @account_movement_payments = @account_movement.account_movement_payments
+    end
+
   end
 
   # POST /receipts
@@ -100,20 +108,21 @@ class ReceiptsController < ApplicationController
     end
 
     def build_account_movement
-      @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
+      @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
+      # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
       params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :state,
        receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
-       account_movement_attributes: [:id, :total, :debe, :haber,
-         account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
-            cash_payment_attributes: [:id, :total],
-            card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
-            bank_payment_attributes: [:id, :bank_id, :total],
-            cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
-            retention_payment_attributes: [:id, :number, :total, :observation]
+          account_movement_attributes: [:id, :total, :debe, :haber, :active,
+          account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
+          cash_payment_attributes: [:id, :total],
+          card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+          bank_payment_attributes: [:id, :bank_id, :total],
+          cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
+          retention_payment_attributes: [:id, :number, :total, :observation]
           ]
         ]
       )

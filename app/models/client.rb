@@ -111,6 +111,8 @@ class Client < ApplicationRecord
 	#PROCESOS
 		def destroy
 			update_column(:active,false)
+			run_callbacks :destroy
+			freeze
 		end
 
 		def set_attributes attrs

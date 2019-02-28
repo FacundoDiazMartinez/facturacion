@@ -245,11 +245,11 @@ class Invoice < ApplicationRecord
         Afip::CBTE_TIPO[cbte_tipo]
       end
 
-      def destroy
-        update_column(:active, false)
-        run_callbacks :destroy
-        freeze
-      end
+      # def destroy
+      #   update_column(:active, false)
+      #   run_callbacks :destroy
+      #   freeze
+      # end
 
       def check_if_confirmed
         if state_was == "Confirmado" && changed?
@@ -304,21 +304,13 @@ class Invoice < ApplicationRecord
       # end
 
       def self.paid_unpaid_invoices client
-        pp client
-        pp "/////////////////////////////////////////////////////----------------------///////////////////////////////////////////////////////////"
         client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
-          pp am
-          pp "***********************************************************************************************************************************"
           am.receipt.receipt_details.each do |rd|
-            pp rd
-            pp "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
             if am.amount_available > 0
-              pp "GUARDANDO PAGO DE FACTURA"
               invoice = rd.invoice
               pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
               pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
               pay.save
-              pp pay.errors
               am.update_column(:amount_available, am.amount_available - pay.total)
               break if am.amount_available < 1
             end

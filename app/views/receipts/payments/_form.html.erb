@@ -4,7 +4,7 @@
 
     <%= f.hidden_field :haber, value: true %>
     <%= f.hidden_field :debe, value: false %>
-
+    <%= f.hidden_field :active, value: false %>
     <%= hidden_field_tag :receipt_id_for_payment, @receipt.id %>
 
     <%= f.fields_for :account_movement_payments, @account_movement.account_movement_payments.build() do |amp| %>
