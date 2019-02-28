@@ -8,9 +8,9 @@ $(document).on('ready',function(){
 
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
   $(this).closest('tr.fields').find('input.invoice_id').val(data.item.id);
-	$(this).closest('tr.fields').find('input.invoice_total').val(data.item.total);
-  $(this).closest('tr.fields').find('input.invoice_total_left').val(data.item.total_left);
-  $(this).closest('tr.fields').find('input.invoice_total_pay').val(data.item.total_pay);
+	$(this).closest('tr.fields').find('input.invoice_total').val("$ " + data.item.total.toFixed(2));
+  $(this).closest('tr.fields').find('input.invoice_total_left').val("$ " + data.item.total_left.toFixed(2));
+  $(this).closest('tr.fields').find('input.invoice_total_pay').val("$ " + data.item.total_pay.toFixed(2));
   $(this).closest('tr.fields').find('input.invoice_created_at').val(data.item.created_at);
 
 

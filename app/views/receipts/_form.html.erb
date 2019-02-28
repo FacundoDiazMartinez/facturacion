@@ -103,16 +103,16 @@
                       <%= f.hidden_field :invoice_id, class: 'invoice_id' %>
                     </td>
                     <td>
-                      <%= text_field_tag :invoice_created_at, f.object.invoice.nil? ? nil : f.object.invoice.created_at,  class: 'form-control form-control-sm invoice_created_at', data: {toggle:"tooltip"}, disabled: true %>
+                      <%= text_field_tag :invoice_created_at, f.object.invoice.nil? ? nil : I18n.l(f.object.invoice.updated_at, format: :only_date), style: "text-align: right;" , class: 'form-control form-control-sm invoice_created_at', data: {toggle:"tooltip"}, disabled: true %>
                     </td>
                     <td>
-                      <%= text_field_tag :invoice_total, f.object.invoice.nil? ? nil : f.object.invoice.total,  class: 'form-control form-control-sm invoice_total', data: {toggle:"tooltip"}, disabled: true %>
+                      <%= text_field_tag :invoice_total, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total.to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total', data: {toggle:"tooltip"}, disabled: true %>
                     </td>
                     <td>
-                      <%= text_field_tag :invoice_total_pay, f.object.invoice.nil? ? nil : f.object.invoice.total_pay, class: 'form-control form-control-sm invoice_total_pay', data: {toggle:"tooltip"}, disabled: true %>
+                      <%= text_field_tag :invoice_total_pay, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_pay.to_s, style: "text-align: right;" , class: 'form-control form-control-sm invoice_total_pay', data: {toggle:"tooltip"}, disabled: true %>
                     </td>
                     <td>
-                      <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : f.object.invoice.total_left,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
+                      <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_left.to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
                     </td>
                     <!-- <td>
                       <%# f.number_field :total, class: 'form-control form-control-sm total', data: {toggle:"tooltip"}, disabled: !@receipt.editable?, value: 0 %>
