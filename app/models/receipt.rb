@@ -4,7 +4,7 @@ class Receipt < ApplicationRecord
   belongs_to :sale_point
   belongs_to :company
 
-  has_one  :account_movement
+  has_one  :account_movement, dependent: :destroy
   has_many :account_movement_payments, through: :account_movement
   has_many :receipt_details
   has_many :invoices, through: :receipt_details
