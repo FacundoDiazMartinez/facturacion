@@ -1,6 +1,6 @@
 <!-- DETALLE -->
 <div class="row">
-  <div class="container" style="height: 680px;">
+  <div class="container" style="height: 680px; font-size: 10px !important;">
     <table class="width_100">
     <tr>
       <th class="description_header">Codigo</th>
@@ -26,7 +26,7 @@
         <% else %>
           <td class="text_right"><%= det.price_per_unit %></td>
         <% end %>
-        <td class="text_right"><%= det.subtotal - det.iva_amount %>
+        <td class="text_right"><%= (det.subtotal - det.iva_amount).round(2) %>
         <td class="text_right"><%= det.bonus_percentage %></td>
         <% if @invoice.cbte_tipo == "01" %>
           <td class="text_right"><%= det.iva_amount %></td>
