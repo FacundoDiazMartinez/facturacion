@@ -14,7 +14,47 @@
       <tr>
         <td><%= @receipt.concept %></td>
       </tr>
-  </table>
+    </table>
+
+    <br>
+    <br>
+
+    <% if !@receipt.invoices.blank? %>
+      <table class="width_100 TFtable">
+        <tr>
+          <th>
+            Factura asociada
+          </th>
+          <th>
+            Total de factura
+          </th>
+          <th>
+            Monto abonado
+          </th>
+        </tr>
+        <% @receipt.invoices.each do |i| %>
+          <tr>
+            <td>
+              <%= i.full_number %>
+            </td>
+            <td>
+              $ <%= i.total %>
+            </td>
+            <td>
+              $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+
+    <br>
+    <br>
+
+    <% @receipt.account_movement.income_payments.where(generated_by_system: false).each do |ip| %>
+      #Mostrar pagos del recibo
+    <% end %>
+
   </div>
 </div>
 <!-- FIN DEL DETALLE -->

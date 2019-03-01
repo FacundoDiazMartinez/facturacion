@@ -22,7 +22,7 @@
 						<% if payment.errors.empty? %>
 							<tr>
 								<td><%= payment.payment_name %></td>
-								<td id="pay"><%= payment.total %></td>
+								<td id="pay">$ <%= payment.total %></td>
 								<td><%= payment.payment_date %></td>
 								<td><%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %></td>
 							</tr>

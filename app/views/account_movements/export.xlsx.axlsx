@@ -1,8 +1,13 @@
 wb = xlsx_package.workbook
-title = wb.styles.add_style(:bg_color => "132794", :fg_color=>"FFFFFF", :sz=>14,  :border=> {:style => :thin, :color => '000000', :edges => [:top, :bottom, :left, :right]})
-last_row_debe = wb.styles.add_style(:fg_color=>"F00000", :sz=>14)
-last_row_saldo_rojo = wb.styles.add_style(:bg_color => "FF0000",:fg_color=>"FFFFFF", :sz=>14)
-last_row_saldo_verde = wb.styles.add_style(:bg_color => "008080",:fg_color=>"FFFFFF", :sz=>14)
+
+title = wb.styles.add_style(:bg_color => "132794", :fg_color=>"FFFFFF", :sz=>12,  :border=> {:style => :thin, :color => '000000', :edges => [:top, :bottom, :left, :right]}, alignment: {horizontal: :center})
+body = wb.styles.add_style(:sz=>10)
+body_right = wb.styles.add_style(:sz=>10, alignment: {horizontal: :right})
+center = wb.styles.add_style(:sz=>10, alignment: {horizontal: :center})
+debe_rojo = wb.styles.add_style(:fg_color=>"F00000", :sz=>10, alignment: {horizontal: :right})
+last_row_saldo_rojo = wb.styles.add_style(:bg_color => "FF0000",:fg_color=>"FFFFFF", :sz=>10, alignment: {horizontal: :right})
+last_row_saldo_verde = wb.styles.add_style(:bg_color => "008080",:fg_color=>"FFFFFF", :sz=>10, alignment: {horizontal: :right})
+
 wb.add_worksheet(name: "Cuente Corriente") do |sheet|
     sheet.add_row(["Fecha", "Comprobante", "Observación", "Debe", "Haber", "Saldo"], :style=> title)
     @account_movements.each_with_index do |am, index|
@@ -10,17 +15,40 @@ wb.add_worksheet(name: "Cuente Corriente") do |sheet|
         	sheet.add_row([l(am.created_at, format: :only_date),
         	 am.comprobante,
         	 am.observation, 
-        	 am.debe ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}, :style=>last_row_debe" : "", 
+        	 am.debe  ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", 
         	 am.haber ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", 
         	 "#{number_to_currency(am.saldo, separator: ",", delimiter: ".", format: "%n", precision: 2)}"])
-        	sheet.rows[index+1].cells[3].style=last_row_debe
+            sheet.rows[index+1].cells[0].style=center
+            sheet.rows[index+1].cells[1].style=body
+            sheet.rows[index+1].cells[2].style=body
+            sheet.rows[index+1].cells[3].style=body_right
+            sheet.rows[index+1].cells[3].style=debe_rojo
+            sheet.rows[index+1].cells[4].style=body_right
+            sheet.rows[index+1].cells[5].style=body_right
         	if sheet.rows[index+1].cells[5] != 0
         		sheet.rows[index+1].cells[5].style=last_row_saldo_rojo
         	else
         		sheet.rows[index+1].cells[5].style=last_row_saldo_verde
         	end
         else
-        	sheet.add_row([l(am.created_at, format: :only_date), am.comprobante, am.observation, am.debe ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", am.haber ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", "#{number_to_currency(am.saldo, separator: ",", delimiter: ".", format: "%n", precision: 2)}"])
+        	sheet.add_row([l(am.created_at, format: :only_date), 
+            am.comprobante, 
+            am.observation, 
+            am.debe ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", 
+            am.haber ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", "#{number_to_currency(am.saldo, separator: ",", delimiter: ".", format: "%n", precision: 2)}"])
+            sheet.rows[index+1].cells[0].style=center
+            sheet.rows[index+1].cells[1].style=body
+            sheet.rows[index+1].cells[2].style=body
+            if !am.invoice_id.nil?
+                if (am.invoice.total - am.invoice.total_pay) > 0
+                    sheet.rows[index+1].cells[3].style=body_right
+                    sheet.rows[index+1].cells[3].style=debe_rojo
+                else
+                    sheet.rows[index+1].cells[3].style=body_right
+                end
+            end
+            sheet.rows[index+1].cells[4].style=body_right
+            sheet.rows[index+1].cells[5].style=body_right
         end
     end
 end

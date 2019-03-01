@@ -8,7 +8,7 @@
         <th>Comprobante asoc.</th>
         <th>Cliente</th>
         <th>Total</th>
-        <th colspan="1"></th>
+        <th></th>
       </tr>
     </thead>
 
@@ -21,9 +21,15 @@
           <td><%= invoices_with_link(receipt) %></td>
           <td><%= link_to receipt.client.name, client_path(receipt.client_id) %></td>
           <td>$<%= receipt.total %></td>
-          <td><%= link_to icon('fas', 'eye').html_safe, receipt_path(receipt.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
-          <!-- <td><%= link_to 'Edit', edit_receipt_path(receipt) %></td>
-          <td><%= link_to 'Destroy', receipt, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
+          <td>
+            <% if receipt.state == "Finalizado" %>
+              <%= link_to icon('fas', 'eye').html_safe, receipt_path(receipt.id, format: :pdf), target: "_blank", class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <% end %>
+            <% if receipt.editable? %>
+              <%= link_to icon('fas', 'edit').html_safe, edit_receipt_path(receipt),class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <%= link_to icon('fas', 'trash').html_safe, receipt, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <% end %>
+          </td>
         </tr>
       <% end %>
     </tbody>

@@ -6,22 +6,38 @@
 				<th>Comprobante</th>
 				<th>Días</th>
 				<th>Observación</th>
-				<th class="text-danger">Debe</th>
-				<th class="text-success">Haber</th>
+				<th>Debe</th>
+				<th>Haber</th>
 				<th>Saldo</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
-		<% @account_movements.each do |am| %>
+		<% @account_movements.each_with_index do |am, index| %>
 		    <tr>
 		    	<td><%= l(am.created_at, format: :only_date) %></td>
 		    	<td><%= comprobante_con_link(am) %></td>
 		    	<td><%= am.days %></td>
 		    	<td><%= am.observation %></td>
-		    	<td class="text-danger"><%= "$#{am.total}" unless !am.debe %></td>
-		    	<td class="text-success"><%= "$#{am.total}" unless !am.haber %></td>
-		    	<td>$<%= am.saldo %></td>
+		    	<% if !am.invoice_id.nil? %>
+		    		<% if (am.invoice.total - am.invoice.total_pay) > 0 %>
+		    			<td class="text-danger"><%= "$#{am.total}" unless !am.debe %></td>
+		    		<% else %>
+		    			<td><%= "$#{am.total}" unless !am.debe %></td>
+		    		<% end %>
+		    	<% else %>
+		    		<td><%= "$#{am.total}" unless !am.debe %></td>
+		    	<% end %>
+		    	<td><%= "$#{am.total}" unless !am.haber %></td>
+		    	<% if @account_movements.count == (index + 1) %>
+		    		<% if am.saldo > 0 %>
+		    			<td class="text-danger">$<%= am.saldo %></td>
+		    		<% else %>
+		    			<td class="text-success">$<%= am.saldo %></td>
+		    		<% end %>
+		    	<% else %>
+		    		<td>$<%= am.saldo %></td>
+		    	<% end %>
 		    	<td>
 		    		<%= link_to icon('fas', 'file-pdf').html_safe, receipt_path(am.receipt_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.receipt_id.blank? %>
 		    		<%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(am.invoice_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.invoice_id.blank? %>
