@@ -1,5 +1,6 @@
 class Payments::AccountPaymentsController < Payments::PaymentsController
   before_action :set_account_payment, only: [:show, :edit, :update, :destroy]
+  layout :false
 
   # GET /account_payments
   # GET /account_payments.json
@@ -15,6 +16,7 @@ class Payments::AccountPaymentsController < Payments::PaymentsController
   # GET /account_payments/new
   def new
     @account_payment = AccountPayment.new
+    super
   end
 
   # GET /account_payments/1/edit

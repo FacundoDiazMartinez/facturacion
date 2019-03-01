@@ -6,9 +6,10 @@ class AccountMovement < ApplicationRecord
   has_many :account_movement_payments, dependent: :destroy
   has_many :invoices, through: :account_movement_payments
   has_many :invoice_details, through: :invoices
+  has_many :income_payments, dependent: :destroy
 
-  before_save         :set_saldo_to_movements
-  before_save :set_total_if_subpayments
+  before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
+  before_save         :set_total_if_subpayments
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
   after_save          :update_debt
@@ -112,29 +113,27 @@ class AccountMovement < ApplicationRecord
     end
 
   	def set_saldo_to_movements
-  		debe_dif 	= debe ? (total - total_was) : 0.0
+  		debe_dif 	= debe  ? (total - total_was) : 0.0
   		haber_dif	= haber ? (total - total_was) : 0.0
       total_dif = debe_dif + haber_dif
 
       if debe
         self.saldo = self.client.saldo + debe_dif
       else
-        self.saldo = self.client.saldo - haber_dif
+        self.saldo = self.client.saldo - haber_dif # 12000
       end
 
       if total_dif != 0 && persisted?
     		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
     		next_movements.each do |am|
     			total_saldo = am.saldo - total_dif
+          pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 1 &&&&&&&&&&&&&&&&&&&&&&&&&&&"
     			am.update_column(:saldo, total_saldo)
     		end
       end
   	end
 
-  	def update_debt
-  		self.client.update_debt
-      pp "UPDATE DEBT ACCMOVEMENTSSSSS"
-  	end
+
 
     def destroy
       update_column(:active, false)
@@ -142,9 +141,23 @@ class AccountMovement < ApplicationRecord
       freeze
     end
 
+    def self.del
+      ReceiptDetail.delete_all
+      IvaBook.delete_all
+      InvoiceDetail.delete_all
+      DailyCashMovement.delete_all
+      Payment.delete_all
+
+      AccountMovement.unscoped.delete_all
+      Invoice.delete_all
+      Receipt.delete_all
+      Client.update_all(saldo: 0)
+      DailyCashMovement.delete_all
+    end
+
     def self.reset
-      Invoice.destroy_all
       AccountMovement.destroy_all
+      Invoice.destroy_all
       Receipt.destroy_all
       Client.update_all(saldo: 0)
       DailyCashMovement.destroy_all
@@ -180,6 +193,7 @@ class AccountMovement < ApplicationRecord
   #PROCESOS
 
     def set_attrs_to_receipt
+      pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 3 &&&&&&&&&&&&&&&&&&&&&&&&&&"
       if !receipt.nil? && !client.nil?
         self.receipt.company_id = self.client.company_id
         self.receipt.date = Date.today
@@ -190,13 +204,15 @@ class AccountMovement < ApplicationRecord
     end
 
     def set_total_if_subpayments
-      pp "PÁYMENTS DE CUENTA CORREITNEEEEEEEEEEEEEEEEEEEEEEEEE"
-      pp self.account_movement_payments
+      pp "///////////////////ESTO LO HACE ANTES DE GUARDAR AM (set_total_if_subpayments)"
+
       if self.account_movement_payments.any?
+        pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 2 &&&&&&&&&&&&&&&&&&&&&&&&&&"
         self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
+        #self.active = true
         self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
       end
-      pp "SET TOTAL IF SUBPAYMENTS"
+      pp self
     end
 
     def check_receipt_attributes
@@ -216,16 +232,25 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.create_from_receipt receipt
-
-      am             = AccountMovement.where(receipt_id: receipt.id).first_or_initialize
+      pp "&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 0 &&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+      am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
       am.client_id   = receipt.client_id
       am.receipt_id  = receipt.id
       am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
       am.debe        = receipt.cbte_tipo == "99"
       am.haber       = receipt.cbte_tipo != "99"
       am.total       = receipt.total.to_f
+      am.saldo       = receipt.client.saldo - receipt.total.to_f
+      am.active      = true
       am.save
+      pp "Acc Mov guardado:"
+      pp am
     end
+
+    def update_debt
+      pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&  BANDERA 4 &&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+  		self.client.update_debt
+  	end
 
     def self.create_from_invoice invoice
       if invoice.state == "Confirmado"

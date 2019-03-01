@@ -1,11 +1,11 @@
 <div class="card shadow">
-    <div class="card-body">
+  <div class="card-body">
 
-    	<h3 class="d-flex mb-2">
-		    <div class="p-2">
-		      	Pagos
-		    </div>
-		</h3>
+  	<h3 class="d-flex mb-2">
+	    <div class="p-2">
+	      	Pagos
+	    </div>
+    </h3>
 
 		<div class="table-responsive-sm">
 			<table class="table table-striped receipt-table" id="payments" style="width: 100%;">
@@ -18,11 +18,11 @@
 					</tr>
 				</thead>
 				<tbody>
-					<% @receipt.account_movement_payments.each do |payment| %>
+					<% @account_movement_payments.where(generated_by_system: false).each do |payment| %>
 						<% if payment.errors.empty? %>
 							<tr>
 								<td><%= payment.payment_name %></td>
-								<td><%= payment.total %></td>
+								<td id="pay"><%= payment.total %></td>
 								<td><%= payment.payment_date %></td>
 								<td><%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %></td>
 							</tr>
@@ -34,7 +34,7 @@
 
 		<% if @receipt.editable? %>
 			<center><div class="m-2">
-		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button' %>
+		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id:'add_payment' %>
 			</div></center>
 		<% end -%>
 	</div>
@@ -49,4 +49,3 @@
     </div>
   </div>
 </div>
-

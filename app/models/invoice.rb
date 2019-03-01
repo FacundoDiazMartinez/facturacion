@@ -245,11 +245,11 @@ class Invoice < ApplicationRecord
         Afip::CBTE_TIPO[cbte_tipo]
       end
 
-      def destroy
-        update_column(:active, false)
-        run_callbacks :destroy
-        freeze
-      end
+      # def destroy
+      #   update_column(:active, false)
+      #   run_callbacks :destroy
+      #   freeze
+      # end
 
       def check_if_confirmed
         if state_was == "Confirmado" && changed?
@@ -286,17 +286,28 @@ class Invoice < ApplicationRecord
         end
       end
 
+      # def self.paid_unpaid_invoices_viejo client
+      #   client.account_movements.where("account_movements.amount_available > 0.0").each do |am|
+      #     if am.amount_available > 0
+      #       unpaid_invoices = self.where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
+      #       unpaid_invoices.each_with_index do |invoice, index|
+      #         if am.receipt.receipt_details.map(&:invoice_id).include? (invoice.id)
+      #           pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
+      #           pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
+      #           pay.save
+      #           am.update_column(:amount_available, am.amount_available - pay.total)
+      #           break if am.amount_available < 1
+      #         end
+      #       end
+      #     end
+      #   end
+      # end
+
       def self.paid_unpaid_invoices client
-        pp "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaAAAAAAA INVOICE"
-        pp client
-        pp client.account_movements.where("account_movements.amount_available > 0.0")
-        client.account_movements.where("account_movements.amount_available > 0.0").each do |am|
-          pp "entro al ciclo de paid_unpaid"
-          if am.amount_available > 0
-            pp "ENTRO AL IF DE PAID_UNPAID"
-            unpaid_invoices = self.where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
-            unpaid_invoices.each_with_index do |invoice, index|
-              pp "ENTROOOOOOOOOOOOOOOOO INDEX #{index}"
+        client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
+          am.receipt.receipt_details.each do |rd|
+            if am.amount_available > 0
+              invoice = rd.invoice
               pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
               pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
               pay.save
