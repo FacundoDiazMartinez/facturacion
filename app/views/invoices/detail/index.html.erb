@@ -56,16 +56,16 @@
                 <%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: !@invoice.editable? %>
 			  				<%= pf.hidden_field :id, class: 'product_id' %>
 			  			</td>
-						<td>
-							<div class="input-group">
-								<div class="input-group-prepend">
-									<%= pf.select :tipo, ["Producto", "Servicio"], {}, {class: 'form-control form-control-sm tipo input-group-text', disabled: !@invoice.editable?, style: 'max-width: 100px;'} %>
-									<%= pf.text_field :name, class: 'form-control form-control-sm name', data: {toggle:"tooltip"}, disabled: !@invoice.editable? %>
-									<%= pf.hidden_field :company_id, value: current_user.company_id %>
-								</div>
-							</div>
-						</td>
-					<% end %>
+  						<td>
+  							<div class="input-group">
+  								<div class="input-group-prepend">
+  									<%= pf.select :tipo, ["Producto", "Servicio"], {}, {class: 'form-control form-control-sm tipo input-group-text', disabled: !@invoice.editable?, style: 'max-width: 100px;'} %>
+  									<%= pf.text_field :name, class: 'form-control form-control-sm name', data: {toggle:"tooltip"}, disabled: !@invoice.editable? %>
+  									<%= pf.hidden_field :company_id, value: current_user.company_id %>
+  								</div>
+  							</div>
+  						</td>
+	          <% end %>
 					<td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"tooltip"}, min: 0, step: :any, disabled: !@invoice.editable? %></td>
 					<td>
 						<%= f.select :depot_id,current_user.company.depots.map{|d| [d.name, d.id]}, {include_blank: "Seleccione..."}, {class: 'form-control form-control-sm depot_id', disabled: !@invoice.editable?, style: 'max-width: 100px;'} %>

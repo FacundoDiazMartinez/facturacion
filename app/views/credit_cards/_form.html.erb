@@ -1,0 +1,96 @@
+<%= nested_form_for @credit_card do |form| %>
+
+  <%= error_explanation @credit_card %>
+  <div class="card shadow">
+    <div class="card-body">
+      <div class="row">
+        <div class="form-group">
+          <%= form.label :name, "Nombre" %>
+          <%= form.text_field :name, class: 'form-control', required: true %>
+        </div>
+        <div class="form-group">
+          <%= form.label :enabled, "Habilitada" %>
+          <%= form.select :enabled, options_for_select([["Habilitada",true],["Inhabilitada", false]], @credit_card.enabled), {}, {class: 'form-control'} %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- CUOTAS ASOCIADAS -->
+
+    <div class="card shadow">
+      <div class="card-body">
+
+        <h3 class="d-flex mb-2">
+    	    <div class="p-2">
+    	      	Plan de cuotas asociadas
+    	    </div>
+        </h3>
+
+        <div class="row">
+
+          <div class="table-responsive">
+            <table class="table table-striped invoice-table" id="fees">
+              <thead>
+                <tr>
+
+                  <th scope="col">Cantidad de cuotas</th>
+                  <th scope="col">T.N.A.</th>
+                  <th scope="col">T.E.M.</th>
+                  <th scope="col">Coeficiente</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- @receipt.receipt_details.build unless !@receipt.receipt_details.empty? -->
+                <%= form.fields_for :fees, wrapper: false do |f| %>
+                  <tr class="fields" id="<%= f.index %>">
+                    <td>
+                      <%= f.number_field :quantity, value: f.object.quantity.nil? ? 2 : f.object.quantity, class: 'form-control form-control-sm quantity' , required: true, min: 2 %>
+                      <%= f.hidden_field :credit_card_id, class: 'credit_card_id' %>
+                    </td>
+                    <td>
+                      <%= f.number_field :tna,value: f.object.tna.nil? ? 0 : f.object.tna, class: 'form-control form-control-sm tna' %>
+                    </td>
+                    <td>
+                      <%= f.number_field :tem,value: f.object.tem.nil? ? 0 : f.object.tem, class: 'form-control form-control-sm tem' %>
+                    </td>
+                    <td>
+                      <%= f.number_field :coefficient,value: f.object.coefficient.nil? ? 1.01 : f.object.tna, class: 'form-control form-control-sm coefficient',  required: true, min: 1 %>
+                    </td>
+          					<td class="verical-align">
+                      <%= f.link_to_remove icon('fas', 'trash') %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+        <hr>
+        	<center>
+        		<div class="m-2">
+        			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar plan de cuotas</span>".html_safe, :fees, class: 'btn btn-success', data: {target: '#fees'} %>
+        		</div>
+        	</center>
+      </div>
+    </div>
+
+  <!-- CUOTAS ASOCIADAS -->
+
+  <center> <%= save_button %> </center>
+
+
+
+<% end %>
+
+<!-- <div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="client_modal">
+      </div>
+    </div>
+  </div>
+</div> -->

@@ -7,7 +7,7 @@
   <div class="row">
     <div class="col">
       <%= cpf.label :total, "Subtotal" %>
-      <%= cpf.number_field :total, step: :any, step: :any, class: 'form-control', requried: true %>
+      <%= cpf.number_field :total, step: :any, class: 'form-control', requried: true %>
     </div>
 
     <div class="col">
@@ -25,7 +25,7 @@
     </div>
     <div class="col">
       <%= cpf.label :interest_rate_amount, "Intereses ($)" %>
-      <%= cpf.number_field :interest_rate_amount, step: :any, class: 'form-control', required: true, placeholder: "$" %>
+      <%= cpf.number_field :interest_rate_amount, step: :any, class: 'form-control', required: true, placeholder: "$", disabled: true%>
     </div>
   </div>
 </div>
