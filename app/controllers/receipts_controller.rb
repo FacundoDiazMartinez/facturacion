@@ -4,7 +4,7 @@ class ReceiptsController < ApplicationController
   # GET /receipts
   # GET /receipts.json
   def index
-    @receipts = current_user.company.receipts.no_devolution.find_by_period(params[:from], params[:to]).search_by_client(params[:client]).paginate(page: params[:page], per_page: 15)
+    @receipts = current_user.company.receipts.no_devolution.find_by_period(params[:from], params[:to]).search_by_client(params[:client]).paginate(page: params[:page], per_page: 15).order("created_at DESC")
   end
 
   # GET /receipts/1
@@ -78,7 +78,8 @@ class ReceiptsController < ApplicationController
       else
         @client = @receipt.client
         build_account_movement
-        format.html { render :edit }
+        pp @receipt.errors
+        format.html { redirect_to edit_receipt_path(@receipt.id), alert: 'Error.'  }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
       end
     end

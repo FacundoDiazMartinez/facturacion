@@ -48,25 +48,25 @@ class Payment < ApplicationRecord
 
     def card_payment_attributes=(attribute)
       self.total = attribute["total"]
-      self.credit_card_id = attribute["credit_card_id"]
+      #self.credit_card_id = attribute["credit_card_id"]
       #super
     end
-    
+
     def bank_payment_attributes=(attribute)
       self.total = attribute["total"]
       #super
     end
-    
+
     def cheque_payment_attributes=(attribute)
       self.total = attribute["total"]
       #super
     end
-    
+
     def retention_payment_attributes=(attribute)
       self.total = attribute["total"]
       #super
     end
-    
+
     def payment_name
       TYPES[type_of_payment]
     end

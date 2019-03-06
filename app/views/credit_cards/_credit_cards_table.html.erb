@@ -1,0 +1,34 @@
+<div class="table-responsive table-striped">
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>Nombre</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @credit_cards.each do |c| %>
+        <tr>
+          <td style="font-size:36px;"> <%=  icon('fab', 'cc-visa').html_safe %></td>
+          <td><%= c.name %></td>
+          <td>
+            <% if c.enabled %>
+              Habilitada
+            <% else %>
+              Deshabilitada
+            <% end %>
+          </td>
+          <td>
+            <%= link_to icon('fas', 'eye').html_safe, credit_card_path(c.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <%= link_to icon('fas', 'edit').html_safe, edit_credit_card_path(c.id),class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <%= link_to icon('fas', 'trash').html_safe, c, method: :delete, data: { confirm: '¿Está seguro que desea eliminar esta tarjeta de forma permanente?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<%# paginate @credit_cards %>

@@ -1,12 +1,11 @@
 Rails.application.routes.draw do
 
 
+ resources :credit_cards
  resources :advertisements do
    patch :cancel, on: :member
    patch :send_email, on: :member
  end
-
-
   resources :payments, only: :destroy
   resources :sales_files, only: [:index, :show]
   resources :price_changes do
