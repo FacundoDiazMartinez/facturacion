@@ -96,7 +96,7 @@ class AccountMovement < ApplicationRecord
 
   #FUNCIONES
   	def days
-  		(Date.today - created_at.to_date).to_i / 1.days
+  		(Date.today - created_at.to_date).to_i
   	end
 
   	def self.sum_total_from_invoices_per_client client_id
