@@ -154,15 +154,15 @@ class Receipt < ApplicationRecord
   #ATRIBUTOS
 
   #FUNCIONES
-    # def destroy (hard = nil)
-    #   if hard
-    #     super
-    #   else
-    #     update_column(:active, false)
-    #     run_callbacks :destroy
-    #     freeze
-    #   end
-    # end
+    def destroy (hard = nil)
+      if hard
+        super
+      else
+        update_column(:active, false)
+        run_callbacks :destroy
+        freeze
+      end
+    end
 
     def all_payments_string
       payments = self.account_movement_payments.where(generated_by_system: false)

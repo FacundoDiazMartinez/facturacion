@@ -227,13 +227,13 @@ $(document).on('nested:fieldAdded', function(event){
 	autocomplete_field();
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
-	$('.datepicker').datepicker({
-	      language: "es",
-	      dateFormat: "dd/mm/yyyy",
-	      todayHighlight: true,
-	      autoclose: true,
-	      startView: 2
-	});
+	// $('.datepicker').datepicker({
+	//       language: "es",
+	//       dateFormat: "dd/mm/yyyy",
+	//       todayHighlight: true,
+	//       autoclose: true,
+	//       startView: 2
+	// });
 	toogleConceptInTable()
 });
 

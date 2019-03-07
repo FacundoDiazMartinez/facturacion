@@ -11,8 +11,15 @@
 
     <tbody>
       <% @credit_cards.each do |c| %>
+
+      <% if c.fav_logo == "credit-card"
+        type = "fas"
+      else
+        type = "fab"
+      end %>
+
         <tr>
-          <td style="font-size:36px;"> <%=  icon('fab', 'cc-visa').html_safe %></td>
+          <td style="font-size:36px;"> <%=  icon( type , c.fav_logo ).html_safe %> </td>
           <td><%= c.name %></td>
           <td>
             <% if c.enabled %>

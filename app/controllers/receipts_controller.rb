@@ -78,7 +78,6 @@ class ReceiptsController < ApplicationController
       else
         @client = @receipt.client
         build_account_movement
-        pp @receipt.errors
         format.html { redirect_to edit_receipt_path(@receipt.id), alert: 'Error.'  }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
       end

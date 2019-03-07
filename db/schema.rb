@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_01_182215) do
+ActiveRecord::Schema.define(version: 2019_03_06_184107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -279,6 +279,8 @@ ActiveRecord::Schema.define(version: 2019_03_01_182215) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "enabled", default: true, null: false
+    t.string "type_of_fee", default: "Porcentaje", null: false
+    t.string "fav_logo", default: "credit-card", null: false
     t.index ["company_id"], name: "index_credit_cards_on_company_id"
   end
 
@@ -385,6 +387,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_182215) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "percentage", default: 0.0
     t.index ["credit_card_id"], name: "index_fees_on_credit_card_id"
   end
 
