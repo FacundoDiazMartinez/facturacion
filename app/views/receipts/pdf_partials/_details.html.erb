@@ -27,10 +27,10 @@
           <th>
             Factura asociada
           </th>
-          <th>
+          <th class="text_center">
             Total de factura
           </th>
-          <th>
+          <th class="text_center">
             Monto abonado
           </th>
         </tr>
@@ -39,10 +39,10 @@
             <td>
               <%= i.full_number %>
             </td>
-            <td>
+            <td class="text_center">
               $ <%= i.total %>
             </td>
-            <td>
+            <td class="text_center">
               $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>
             </td>
           </tr>
@@ -57,12 +57,14 @@
       <table class="width_100 TFtable">
         <tr>
           <th>Medio de pago</th>
-          <th>Monto abonado</th>
+          <th class="text_center">Fecha de pago</th>
+          <th class="text_center">Monto abonado</th>
         </tr>
         <% @receipt.account_movement.income_payments.where(generated_by_system: false).each do |ip| %>
           <tr>
             <td><%= ip.payment_name %></td>
-            <td>$ <%= ip.total %></td>
+            <td class="text_center"><%= ip.payment_date %></td>
+            <td class="text_center">$ <%= ip.total %></td>
           </tr>
         <% end %>
       </table>

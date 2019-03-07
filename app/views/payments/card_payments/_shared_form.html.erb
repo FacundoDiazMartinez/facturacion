@@ -23,7 +23,7 @@
       <%= cpf.label :interest_rate_percentage, "Intereses (%)" %>
       <%= cpf.number_field :interest_rate_percentage, step: :any, class: 'form-control', required: true, placeholder: "%" %>
     </div>
-    <div class="col">
+    <div class="col" style="display:none;">
       <%= cpf.label :interest_rate_amount, "Intereses ($)" %>
       <%= cpf.number_field :interest_rate_amount, step: :any, class: 'form-control', required: true, placeholder: "$", disabled: true%>
     </div>

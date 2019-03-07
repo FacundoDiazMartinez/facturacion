@@ -25,7 +25,7 @@
   
     <p>
       <b>
-        <%= @current_user.company.invoice_footer %>
+        <%= @current_user.company.invoice_footer.html_safe %>
       </b>
     </p>
   </div>

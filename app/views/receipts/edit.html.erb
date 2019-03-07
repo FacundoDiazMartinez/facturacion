@@ -1,5 +1,14 @@
 <div class="p-4">
-	<h1 class="h2">Editar recibo Nº <%= @receipt.number %></h1>
+	<div class="row">
+		<div class="col-8">
+			<h1 class="h2">Editar recibo Nº <%= @receipt.number %></h1>
+		</div>
+		<div class="col-4 text-right">
+			<% if @receipt.state == "Finalizado" %>
+				<%= link_to "#{icon('fas', 'eye')} Ver PDF".html_safe, receipt_path(@receipt.id, format: :pdf), target: "_blank", class: 'btn btn-primary text-right' %>
+		    <% end %>
+		</div>
+	</div>
 
 	<div id="receipt_form">
 		<%= render 'form', receipt: @receipt %>
