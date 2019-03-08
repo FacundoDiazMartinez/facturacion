@@ -70,8 +70,9 @@ $(document).on("change",".credit-card-select", function(){
 		id: $(this).val()
 	}
   $(".credit-card-interest-percentage").val(0.00);
-  $(".credit-card-total").val(0.00);
+  $(".credit-card-total").val($(".credit-card-subtotal").val());
   $(".credit-card-interest-amount").val(0.00);
+  $(".fee-total").val($(".credit-card-subtotal").val());
   $.get("/receipts/get_cr_card_fees",params,null,"script")
     .done(function(data){
       fees = jQuery.parseJSON(data);
@@ -109,16 +110,19 @@ $(document).on("change", ".credit-card-installments", function(){
           interes = parseFloat(fee.coefficient) - 1;
         }
       }
-      $(".credit-card-total").val((subtotal * (1 + interes)).toFixed(2));
+      total = subtotal * (1 + interes);
+      $(".credit-card-total").val(total.toFixed(2));
       $(".credit-card-interest-amount").val((subtotal * interes).toFixed(2));
+      $(".fee-total").val((total / fee.quantity).toFixed(2));
     });
   }
 })
 
 $(document).on("change", ".credit-card-subtotal", function(){
   $(".credit-card-interest-percentage").val(0.00);
-  $(".credit-card-total").val(0.00);
+  $(".credit-card-total").val($(".credit-card-subtotal").val());
   $(".credit-card-interest-amount").val(0.00);
+  $(".fee-total").val($(".credit-card-subtotal").val());
   $(".credit-card-installments").val(0);
 })
 

@@ -14,7 +14,7 @@ class AccountMovementPayment < Payment
 	self.table_name = "payments"
 
 	def self.default_scope
-    	where(active: true)
+  	where(active: true)
  	end
 
  	#ATRIBUTOS

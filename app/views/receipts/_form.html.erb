@@ -37,7 +37,7 @@
               <%= form.select :cbte_tipo, options_for_select([['Recibo X', '00'], ['Devolución','99']]),{prompt: "Seleccionar tipo de recibo"},{class: 'form-control', disabled: !@receipt.editable?} %>
             </div>
             <div class="form-group">
-              <%= form.label :total, "Total" %>
+              <%= form.label :total, "Total ($)" %>
               <%= form.number_field :total, class: 'form-control', required: true, disabled: true %>
             </div>
           </div>

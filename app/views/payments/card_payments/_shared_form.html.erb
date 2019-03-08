@@ -7,7 +7,7 @@
   <div class="row">
     <div class="col">
       <%= cpf.label :subtotal, "Subtotal ($)" %>
-      <%= cpf.number_field :subtotal, class: 'form-control credit-card-subtotal', requried: true %>
+      <%= cpf.number_field :total, class: 'form-control credit-card-subtotal', requried: true %>
     </div>
 
     <div class="col">
@@ -32,6 +32,15 @@
 </div>
 
 <div class="form-group">
-  <%= cpf.label :total, "Total ($)" %>
-  <%= cpf.number_field :total, class: 'form-control subpayment_total credit-card-total', requried: true, readonly: true %>
+  <div class="row">
+    <div class="col">
+      <%= label_tag :fee_total, "Valor de cada cuota ($)" %>
+      <%= text_field_tag :fee_total, "0.0", class: "form-control fee-total", readonly: true %>
+    </div>
+
+    <div class="col">
+      <%= cpf.label :total, "Total ($)" %>
+      <%= cpf.number_field :subtotal, class: 'form-control subpayment_total credit-card-total', requried: true, readonly: true %>
+    </div>
+  </div>
 </div>
