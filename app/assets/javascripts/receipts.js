@@ -65,6 +65,53 @@ $(document).on('click','#add_payment', function(){
 //   });
 // })
 
+$(document).on("change","#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_credit_card_id", function(){
+  params = {
+		id: $(this).val()
+	}
+  $.get("/receipts/get_cr_card_fees",params,null,"script")
+    .done(function(data){
+      fees = jQuery.parseJSON(data);
+        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments")
+        .empty()
+        .append($('<option>', {value: 0, text: 1}));
+      $.each(fees, function(index, element){
+        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments").append($('<option>', {
+          value: element[1],
+          text: element[0]
+        }));
+      });
+    });
+})
+
+$(document).on("change", "#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments", function(){
+  if ($("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments :selected").text() > 0) {
+    params = {
+  		fee_id: $(this).val(),
+      cr_card_id: $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_credit_card_id").val()
+  	}
+    $.get("/receipts/get_fee_details",params,null,"json").done(function(data){
+      fee_type = data.fee_type;
+      fee = data.fee_data;
+      subtotal = parseFloat($("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_subtotal").val());
+
+      if (fee_type == "Porcentaje") {
+        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_interest_rate_percentage").val(fee.percentage);
+        if (subtotal > 0) {
+          interes = parseFloat(fee.percentage) / 100;
+          $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_total").val((subtotal * (1 + interes))toFixed(2));
+        }
+      } else {
+        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_interest_rate_percentage").val((1 - fee.percentage) * 100);
+        if (subtotal > 0) {
+          interes = parseFloat(fee.coefficient) - 1;
+          $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_total").val((subtotal * (1 + interes))toFixed(2));
+        }
+      }
+
+    });
+  }
+})
 
 $(document).on('nested:fieldRemoved', function(event){
   var bandera = true;
@@ -77,8 +124,4 @@ $(document).on('nested:fieldRemoved', function(event){
     $("#editReceiptClient").attr('data-toggle', 'modal')
                            .tooltip('dispose');
   }
-	// var field 	= event.field;
-	// delete_total 	= field.find("input.invoice_total").val()
-	// var current_total = parseFloat($("#receipt_total").val())
-  // $("#receipt_total").val(current_total - delete_total)
 })

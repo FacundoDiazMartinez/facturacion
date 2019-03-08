@@ -45,6 +45,8 @@ Rails.application.routes.draw do
   resources :receipts do
     resources :account_movements
     get :autocomplete_invoice, on: :collection
+    get :get_cr_card_fees, on: :collection
+    get :get_fee_details, on: :collection
   end
 
 

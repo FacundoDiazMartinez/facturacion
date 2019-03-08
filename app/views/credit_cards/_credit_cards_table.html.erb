@@ -29,7 +29,7 @@
             <% end %>
           </td>
           <td>
-            <%= link_to icon('fas', 'eye').html_safe, credit_card_path(c.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <%# link_to icon('fas', 'eye').html_safe, credit_card_path(c.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
             <%= link_to icon('fas', 'edit').html_safe, edit_credit_card_path(c.id),class: 'btn btn-sm btn-icon btn-outline-secondary' %>
             <%= link_to icon('fas', 'trash').html_safe, c, method: :delete, data: { confirm: '¿Está seguro que desea eliminar esta tarjeta de forma permanente?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           </td>

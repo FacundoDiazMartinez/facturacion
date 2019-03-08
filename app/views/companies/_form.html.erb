@@ -4,7 +4,7 @@
 
   <!-- IMAGEN DE LA EMPRESA -->
   <div class="container-fluid justify-flex-content p-4 light-dark-background">
-    <% if @company.logo.blank? %> 
+    <% if @company.logo.blank? %>
       <p class="text-muted">Selecciona un logo para tu empresa</p>
     <% end %>
     <div class="card mb-4 card-shadow" style="width:15%;margin:auto;">
@@ -142,11 +142,11 @@
         <%= render '/companies/banks', f: f %>
       <!-- BANCOS -->
     </div>
-    <div class="col">
+    <!-- <div class="col"> -->
       <!-- TARJETAS DE CRÉDITO -->
-        <%= render '/companies/credit_cards', f: f %>
+        <%# render '/companies/credit_cards', f: f %>
       <!-- TARJETAS DE CRÉDITO -->
-    </div>
+    <!-- </div> -->
   </div>
 
   <!-- Nota al pie de factura -->

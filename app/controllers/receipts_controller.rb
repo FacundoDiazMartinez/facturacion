@@ -101,6 +101,14 @@ class ReceiptsController < ApplicationController
     render :json => invoices.map { |invoice| {:id => invoice.id,:label => invoice.full_number, :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 
+  def get_cr_card_fees
+    render json: current_user.company.credit_cards.find(params[:id]).fees.all.map{|a| [a.quantity, a.id]}
+  end
+
+  def get_fee_details
+    render json: {fee_data: current_user.company.credit_cards.find(params[:cr_card_id]).fees.find(params[:fee_id]), fee_type: current_user.company.credit_cards.find(params[:cr_card_id]).type_of_fee }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_receipt
