@@ -65,18 +65,21 @@ $(document).on('click','#add_payment', function(){
 //   });
 // })
 
-$(document).on("change","#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_credit_card_id", function(){
+$(document).on("change",".credit-card-select", function(){
   params = {
 		id: $(this).val()
 	}
+  $(".credit-card-interest-percentage").val(0.00);
+  $(".credit-card-total").val(0.00);
+  $(".credit-card-interest-amount").val(0.00);
   $.get("/receipts/get_cr_card_fees",params,null,"script")
     .done(function(data){
       fees = jQuery.parseJSON(data);
-        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments")
+        $(".credit-card-installments")
         .empty()
         .append($('<option>', {value: 0, text: 1}));
       $.each(fees, function(index, element){
-        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments").append($('<option>', {
+        $(".credit-card-installments").append($('<option>', {
           value: element[1],
           text: element[0]
         }));
@@ -84,33 +87,39 @@ $(document).on("change","#receipt_account_movement_attributes_account_movement_p
     });
 })
 
-$(document).on("change", "#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments", function(){
-  if ($("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_installments :selected").text() > 0) {
+$(document).on("change", ".credit-card-installments", function(){
+  if ($(".credit-card-installments :selected").text() > 0) {
     params = {
   		fee_id: $(this).val(),
-      cr_card_id: $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_credit_card_id").val()
+      cr_card_id: $(".credit-card-select").val()
   	}
     $.get("/receipts/get_fee_details",params,null,"json").done(function(data){
       fee_type = data.fee_type;
       fee = data.fee_data;
-      subtotal = parseFloat($("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_subtotal").val());
+      subtotal = parseFloat($(".credit-card-subtotal").val());
 
       if (fee_type == "Porcentaje") {
-        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_interest_rate_percentage").val(fee.percentage);
+        $(".credit-card-interest-percentage").val(fee.percentage);
         if (subtotal > 0) {
           interes = parseFloat(fee.percentage) / 100;
-          $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_total").val((subtotal * (1 + interes))toFixed(2));
         }
       } else {
-        $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_interest_rate_percentage").val((1 - fee.percentage) * 100);
+        $(".credit-card-interest-percentage").val(((fee.coefficient - 1) * 100).toFixed(2));
         if (subtotal > 0) {
           interes = parseFloat(fee.coefficient) - 1;
-          $("#receipt_account_movement_attributes_account_movement_payments_attributes_0_card_payment_attributes_total").val((subtotal * (1 + interes))toFixed(2));
         }
       }
-
+      $(".credit-card-total").val((subtotal * (1 + interes)).toFixed(2));
+      $(".credit-card-interest-amount").val((subtotal * interes).toFixed(2));
     });
   }
+})
+
+$(document).on("change", ".credit-card-subtotal", function(){
+  $(".credit-card-interest-percentage").val(0.00);
+  $(".credit-card-total").val(0.00);
+  $(".credit-card-interest-amount").val(0.00);
+  $(".credit-card-installments").val(0);
 })
 
 $(document).on('nested:fieldRemoved', function(event){
