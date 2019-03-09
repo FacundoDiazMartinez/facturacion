@@ -2,6 +2,13 @@
 <%= hidden_field_tag :receipt_id , params[:receipt_id] %>
 
 <div class="form-group row">
+  <%= label_tag :name, "Nombre *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+  <div class="col-md-9">
+    <%= f.autocomplete_field :name, autocomplete_name_receipts_clients_path, class: 'form-control form-control-sm client-autocomplete_field client_name', placeholder: "Ingrese nombre del cliente", required: true, autocomplete: false %>
+  </div>
+</div>
+
+<div class="form-group row">
   <%= label_tag :document_number, "Documento *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
     <div class="input-group mb-3">
@@ -21,12 +28,12 @@
 </div>
 
 
-<div class="form-group row">
-  <%= label_tag :name, "Nombre *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+<!-- <div class="form-group row">
+  <%# label_tag :name, "Nombre *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.text_field :name, class: 'form-control form-control-sm name', required: true %>
+    <%# f.text_field :name, class: 'form-control form-control-sm name', required: true %>
   </div>
-</div>
+</div> -->
 
 <div class="form-group row">
   <%= label_tag :address, "Dirección", class: 'col-sm-3 col-form-label col-form-label-sm' %>
