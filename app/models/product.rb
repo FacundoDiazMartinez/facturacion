@@ -153,7 +153,7 @@ class Product < ApplicationRecord
 
   	#ATRIBUTOS
   		def parent_code
-  			parent.nil? ? "" : parent.code	
+  			parent.nil? ? "" : parent.code
   		end
 
   		def updated_by=(updated_by)
@@ -340,7 +340,6 @@ class Product < ApplicationRecord
 		def self.load_products spreadsheet, header, categories, current_user, supplier_id, depot_id
 			products 	= []
     		invalid 	= []
-    		pp spreadsheet.size
 			(0..spreadsheet.size - 1).each do |i|
 	    		row = Hash[[header, spreadsheet[i]].transpose]
 	    		product = where(code: row[:code]).first_or_initialize

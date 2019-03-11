@@ -1,5 +1,4 @@
 '<% if not @client.errors.any? %>'
-	alert("<%= @client.name %>");
 	$("#clientModal").modal('hide');
 	$('#clientModal').on('hidden.bs.modal', function (e) {
   	$("#client_form").html("<%= j render '/receipts/client_column' %> ");

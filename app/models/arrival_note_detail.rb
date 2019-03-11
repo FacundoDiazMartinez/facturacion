@@ -3,7 +3,7 @@ class ArrivalNoteDetail < ApplicationRecord
   belongs_to :product
 
   after_create      :change_product_stock
-  after_validation  :adjust_product_stock, if: Proc.new{|detail| pp detail.quantity_changed? && detail.arrival_note.state != "Anulado" && !detail.new_record?}
+  after_validation  :adjust_product_stock, if: Proc.new{|detail| detail.quantity_changed? && detail.arrival_note.state != "Anulado" && !detail.new_record?}
   before_destroy    :remove_stock
 
 
@@ -60,7 +60,7 @@ class ArrivalNoteDetail < ApplicationRecord
 
     def adjust_product_stock
       difference = quantity.to_f - quantity_was.to_f
-      if difference > 0 
+      if difference > 0
         self.product.add_stock(quantity: difference, depot_id: self.arrival_note.depot_id)
       else
         self.product.remove_stock(quantity: -difference, depot_id: self.arrival_note.depot_id)

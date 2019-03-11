@@ -54,9 +54,9 @@ class Service < Product
             service.created_by 			= current_user.id
             service.updated_by 			= current_user.id
             if service.valid?
-              pp service.save!
+              service.save!
             else
-              pp service.errors
+              service.errors
               invalid << i
             end
         end

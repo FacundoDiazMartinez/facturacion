@@ -56,7 +56,6 @@ class IncomePayment < Payment
 		end
 
 		def touch_invoice
-			pp "TOUCH INVOICE"
 			invoice.touch
 		end
 

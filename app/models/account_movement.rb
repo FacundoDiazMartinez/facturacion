@@ -127,7 +127,6 @@ class AccountMovement < ApplicationRecord
     		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
     		next_movements.each do |am|
     			total_saldo = am.saldo - total_dif
-          pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 1 &&&&&&&&&&&&&&&&&&&&&&&&&&&"
     			am.update_column(:saldo, total_saldo)
     		end
       end
@@ -193,7 +192,6 @@ class AccountMovement < ApplicationRecord
   #PROCESOS
 
     def set_attrs_to_receipt
-      pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 3 &&&&&&&&&&&&&&&&&&&&&&&&&&"
       if !receipt.nil? && !client.nil?
         self.receipt.company_id = self.client.company_id
         self.receipt.date = Date.today
@@ -204,15 +202,11 @@ class AccountMovement < ApplicationRecord
     end
 
     def set_total_if_subpayments
-      pp "///////////////////ESTO LO HACE ANTES DE GUARDAR AM (set_total_if_subpayments)"
-
       if self.account_movement_payments.any?
-        pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 2 &&&&&&&&&&&&&&&&&&&&&&&&&&"
         self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
         #self.active = true
         self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
       end
-      pp self
     end
 
     def check_receipt_attributes
@@ -232,7 +226,6 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.create_from_receipt receipt
-      pp "&&&&&&&&&&&&&&&&&&&&&&&&&&& BANDERA 0 &&&&&&&&&&&&&&&&&&&&&&&&&&&&"
       am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
       am.client_id   = receipt.client_id
       am.receipt_id  = receipt.id
@@ -243,12 +236,9 @@ class AccountMovement < ApplicationRecord
       am.saldo       = receipt.client.saldo - receipt.total.to_f
       am.active      = true
       am.save
-      pp "Acc Mov guardado:"
-      pp am
     end
 
     def update_debt
-      pp "&&&&&&&&&&&&&&&&&&&&&&&&&&&  BANDERA 4 &&&&&&&&&&&&&&&&&&&&&&&&&&&&"
   		self.client.update_debt
   	end
 

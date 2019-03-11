@@ -5,12 +5,12 @@ module Subpayment
     after_save :update_payment
     after_destroy :update_invoice
     #before_validation :update_account_movement
-    
+
     def self.search_by_date date
       if !date.blank?
         where("payments.payment_date = ?", date.to_date.strftime("%Y-%m-%d"))
       else
-        all 
+        all
       end
     end
 
@@ -18,13 +18,12 @@ module Subpayment
       if !client.blank?
         joins(payment: :client).where("LOWER(clients.name) ILIKE ?", "%#{client.downcase}%")
       else
-        all 
+        all
       end
     end
   end
 
   def update_payment
-    pp "ENTRA UPDATE PAYMENT"
     payment.update(total: self.total)
   end
 
@@ -56,7 +55,6 @@ module Subpayment
   # end
 
   def update_invoice
-    pp "SI ESTA ENTRADO"
   	if not self.payment.invoice_id.blank?
   		Invoice.find(self.payment.invoice_id).touch
   	end

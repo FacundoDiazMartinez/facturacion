@@ -9,7 +9,7 @@ class DeliveryNoteDetail < ApplicationRecord
   validates_presence_of :product, message:  "El concepto debe tener asociado un producto."
   validates_presence_of :depot, message:  "El concepto debe tener asociado un depósito."
 
-  after_validation :adjust_product_stock, if: Proc.new{|detail| pp detail.quantity_changed? && detail.delivery_note.state != "Anulado" && detail.new_record?}
+  after_validation :adjust_product_stock, if: Proc.new{|detail| detail.quantity_changed? && detail.delivery_note.state != "Anulado" && detail.new_record?}
 
   #ATRIBUTOS
   	def product_name

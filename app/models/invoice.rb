@@ -245,11 +245,15 @@ class Invoice < ApplicationRecord
         Afip::CBTE_TIPO[cbte_tipo]
       end
 
-      # def destroy
-      #   update_column(:active, false)
-      #   run_callbacks :destroy
-      #   freeze
-      # end
+      def destroy
+        if self.state == "Pendiente"
+          update_column(:active, false)
+          run_callbacks :destroy
+          freeze
+        else
+          errors.add(:state, "No se puede eliminar esta factura.")
+        end
+      end
 
       def check_if_confirmed
         if state_was == "Confirmado" && changed?

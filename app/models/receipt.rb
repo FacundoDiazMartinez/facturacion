@@ -10,10 +10,11 @@ class Receipt < ApplicationRecord
   has_many :invoices, through: :receipt_details
   # has_many :invoice_details, through: :invoices
 
-  after_save :touch_account_movement, if: Proc.new{|r| r.state == "Finalizado"}
+
   before_validation :validate_receipt_detail
   before_validation :set_number, on: :create
   before_validation :check_total
+  after_save :touch_account_movement, if: Proc.new{|r| r.state == "Finalizado"}
 
   validates_uniqueness_of :number, scope: [:company, :active], message: "No se puede repetir el numero de recibo."
 
@@ -78,7 +79,6 @@ class Receipt < ApplicationRecord
   #PROCESOS
 
   	def touch_account_movement
-      pp "¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ AQUI SOLO DEBE ENTRAR CUANDO FINALIZAMOS EL RECEIPT ¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡"
 		  AccountMovement.create_from_receipt(self)
     end
 

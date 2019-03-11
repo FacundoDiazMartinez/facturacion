@@ -1,7 +1,6 @@
 '<% if not @client.errors.any? %>'
 	$("#clientModal").modal('hide');
 	$('#clientModal').on('hidden.bs.modal', function (e) {
-		alert("<%= @client.name %>");
   	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
   	$("#invoice_client_id").val("<%= @client.id %>");
   	var options = <%= raw Invoice.available_cbte_type(current_user.company, @client).to_json %>
