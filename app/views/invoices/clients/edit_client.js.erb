@@ -1,12 +1,13 @@
 '<% if not @client.errors.any? %>'
 	$("#clientModal").modal('hide');
 	$('#clientModal').on('hidden.bs.modal', function (e) {
-	  	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
-	  	$("#invoice_client_id").val("<%= @client.id %>");
-	  	var options = <%= raw Invoice.available_cbte_type(current_user.company, @client).to_json %>
-	  	$('#invoice_cbte_tipo').html("");
-	  	$.each(options, function(i, option) {
-		    $('#invoice_cbte_tipo').append( new Option(option[0],option[1]) );
+		alert("<%= @client.name %>");
+  	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
+  	$("#invoice_client_id").val("<%= @client.id %>");
+  	var options = <%= raw Invoice.available_cbte_type(current_user.company, @client).to_json %>
+  	$('#invoice_cbte_tipo').html("");
+  	$.each(options, function(i, option) {
+	    $('#invoice_cbte_tipo').append( new Option(option[0],option[1]) );
 		});
 		addRechargeToDetails();
 		"<% if @client.saldo.to_f < 0.0 && @client.valid_for_account %>"

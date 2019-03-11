@@ -4,7 +4,7 @@
 <div class="form-group row">
   <%= label_tag :name, "Nombre *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.autocomplete_field :name, autocomplete_name_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field client_name', placeholder: "Ingrese nombre del cliente", required: true %>
+    <%= f.autocomplete_field :name, autocomplete_name_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field client_name', placeholder: "Ingrese nombre del cliente", required: true, autocomplete: false %>
   </div>
 </div>
 

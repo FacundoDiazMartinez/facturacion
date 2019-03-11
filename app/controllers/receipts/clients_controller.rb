@@ -11,7 +11,8 @@ class Receipts::ClientsController < ApplicationController
 	end
 
 	def update
-		@client 		= current_user.company.clients.find_by_full_document(client_params).first_or_initialize
+		@client = current_user.company.clients.find_by_full_document(client_params).first_or_initialize
+		pp @client
 		@client.set_attributes(params["client"].as_json)
 		@client.user_id = current_user.id
 		respond_to do |format|
@@ -25,10 +26,16 @@ class Receipts::ClientsController < ApplicationController
 	    end
 	end
 
+	def autocomplete_name
+		term = params[:term]
+  	clients = current_user.company.clients.where('LOWER(name) ILIKE ?', "%#{term}%").all
+  	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
+	end
+
 	def autocomplete_document
 		term = params[:term]
-    	clients = current_user.company.clients.where('document_number ILIKE ?', "%#{term}%").all
-    	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
+  	clients = current_user.company.clients.where('document_number ILIKE ?', "%#{term}%").all
+  	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
 	end
 
 	protected
