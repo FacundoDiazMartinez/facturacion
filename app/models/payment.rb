@@ -108,6 +108,11 @@ class Payment < ApplicationRecord
         account_movement.receipt.company
       end
     end
+
+    def client
+      Client.unscoped{ super }
+    end
+
   #ATRIBUTOS
 
   #PROCESOS

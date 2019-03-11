@@ -45,6 +45,13 @@ class SalesFile < ApplicationRecord
     end
   #FILTROS DE BUSQUEDA
 
+  #ATRIBUTOS
+    def client
+      Client.unscoped{ super }
+    end
+
+  #ATRIBUTOS
+
   #PROCESOS
     def set_number
       last_sales_file = SalesFile.where(company_id: company_id).last

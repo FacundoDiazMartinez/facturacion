@@ -108,6 +108,10 @@ class Budget < ApplicationRecord
   		!persisted?
   	end
 
+    def client
+      Client.unscoped{ super }
+    end
+
     def client_name
       client.nil? ? nil : client.name
     end

@@ -70,6 +70,10 @@ class DeliveryNote < ApplicationRecord
       invoice.nil? ? "" : invoice.comp_number
     end
 
+    def client
+      Client.unscoped{ super }
+    end
+
     def delivery_note_details_attributes=(attributes)
       self.delivery_note_details.each do |dnd|
         dnd.mark_for_destruction

@@ -84,6 +84,14 @@ class AccountMovement < ApplicationRecord
 
   #ATRIBUTOS
 
+  def saldo
+    read_attribute("saldo").round(2)
+  end
+
+  def client
+    Client.unscoped{ super }
+  end
+
   #ATRIBUTOS
 
   #VALIDACIONES
