@@ -1,0 +1,13 @@
+<div class="page-header">
+  <%= link_to debit_payments_path, class: 'btn btn-default' do %>
+    <span class="glyphicon glyphicon-list-alt"></span>
+    Back
+  <% end %>
+  <%= link_to @debit_payment, class: 'btn btn-primary' do %>
+    <span class="glyphicon glyphicon-info-sign"></span>
+    Show
+  <% end %>
+  <h1>Editing debit_payment</h1>
+</div>
+
+<%= render 'form' %>

@@ -63,6 +63,7 @@ Rails.application.routes.draw do
     resources :retention_payments
     resources :debit_payments
     resources :bank_payments
+    resources :debit_payments
     resources :cheque_payments
     resources :account_payments
   end

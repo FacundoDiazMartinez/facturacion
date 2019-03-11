@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_06_184107) do
+ActiveRecord::Schema.define(version: 2019_03_08_184702) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -312,6 +312,17 @@ ActiveRecord::Schema.define(version: 2019_03_06_184107) do
     t.date "date", null: false
     t.float "current_amount", null: false
     t.index ["company_id"], name: "index_daily_cashes_on_company_id"
+  end
+
+  create_table "debit_payments", force: :cascade do |t|
+    t.bigint "bank_id"
+    t.bigint "payment_id"
+    t.float "total", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bank_id"], name: "index_debit_payments_on_bank_id"
+    t.index ["payment_id"], name: "index_debit_payments_on_payment_id"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -912,6 +923,8 @@ ActiveRecord::Schema.define(version: 2019_03_06_184107) do
   add_foreign_key "daily_cash_movements", "payments"
   add_foreign_key "daily_cash_movements", "users"
   add_foreign_key "daily_cashes", "companies"
+  add_foreign_key "debit_payments", "banks"
+  add_foreign_key "debit_payments", "payments"
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_note_details", "delivery_notes"
   add_foreign_key "delivery_note_details", "depots"

@@ -44,10 +44,11 @@ class ReceiptsController < ApplicationController
   # GET /receipts/1/edit
   def edit
     @client = @receipt.client
-    # build_account_movement
+
     AccountMovement.unscoped do
-      @account_movement = @receipt.account_movement
-      @account_movement_payments = @account_movement.account_movement_payments
+      build_account_movement
+      # @account_movement = @receipt.account_movement
+      # @account_movement_payments = @account_movement.account_movement_payments
     end
 
   end
@@ -117,6 +118,7 @@ class ReceiptsController < ApplicationController
 
     def build_account_movement
       @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
+      @account_movement_payments = @account_movement.account_movement_payments
       # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
     end
 
@@ -129,6 +131,7 @@ class ReceiptsController < ApplicationController
           cash_payment_attributes: [:id, :total],
           card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
           bank_payment_attributes: [:id, :bank_id, :total],
+          debit_payment_attributes: [:id, :bank_id, :total],
           cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
           retention_payment_attributes: [:id, :number, :total, :observation]
           ]

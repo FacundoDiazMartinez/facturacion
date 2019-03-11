@@ -9,6 +9,7 @@ class Payment < ApplicationRecord
   has_one :cash_payment, dependent: :destroy
   has_one :card_payment, dependent: :destroy
   has_one :bank_payment, dependent: :destroy
+  has_one :debit_payment, dependent: :destroy
   has_one :cheque_payment, dependent: :destroy
   has_one :retention_payment, dependent: :destroy
 
@@ -19,6 +20,7 @@ class Payment < ApplicationRecord
   accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
   accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
   accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+  accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
   accepts_nested_attributes_for :cheque_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
   accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
 
@@ -31,7 +33,8 @@ class Payment < ApplicationRecord
   	"3" => "Transferencia bancaria",
   	"4" => "Cheque",
   	"5" => "Retenciones",
-    "6" => "Cuenta Corriente"
+    "6" => "Cuenta Corriente",
+    "7" => "Tarjeta de débito"
   }
 
   #VALIDACIONES
