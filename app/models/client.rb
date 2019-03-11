@@ -99,6 +99,10 @@ class Client < ApplicationRecord
 			"/images/default_user.png"
 		end
 
+		def saldo
+	    read_attribute("saldo").round(2)
+	  end
+
 		def email
 			if client_contacts.empty?
 				return nil
