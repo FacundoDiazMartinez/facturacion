@@ -2,7 +2,7 @@
 
 <%= @builder.fields_for :cash_payment, @builder.object.build_cash_payment do |cpf| %>
   <div class="fields">
-  	<%= cpf.label :total, "Total" %>
+  	<%= cpf.label :total, "Total ($)" %>
   	<%= cpf.number_field :total, step: :any, class: 'form-control subpayment_total', requried: true %>
   </div>
 <% end -%>
