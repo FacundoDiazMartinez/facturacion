@@ -74,6 +74,10 @@ class Receipt < ApplicationRecord
       super.where.not(type_of_payment: "6")
     end
 
+    def client
+      Client.unscoped{ super }
+    end
+
   #ATRIBUTOS
 
   #PROCESOS
