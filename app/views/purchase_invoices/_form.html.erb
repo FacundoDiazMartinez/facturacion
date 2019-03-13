@@ -58,16 +58,16 @@
       <div class="form-row" id="invoice_a_div">
         <div class="form-group col-md-6">
           <%= form.label :net_amount %>
-          <%= form.number_field :net_amount, class: 'form-control invoice_amount', min: 0 %>
+          <%= form.number_field :net_amount, class: 'form-control invoice_amount', min: 0, required: true %>
         </div>
 
         <div class="form-group col-md-6">
           <%= form.label :iva_amount %>
           <div class="input-group">
             <div class="input-group-prepend">
-              <%= form.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {prompt: "Personalizado"}, {class: 'form-control'} %>
+              <%= form.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {prompt: "Personalizado"}, {class: 'form-control', required: true} %>
             </div>
-            <%= form.number_field :iva_amount, class: 'form-control invoice_amount', placeholder: "Ingrese un monto", min: 0 %>
+            <%= form.number_field :iva_amount, class: 'form-control invoice_amount', min: 0, disabled:true %>
           </div>
         </div>
       </div>
