@@ -28,7 +28,7 @@ class PurchaseInvoicesController < ApplicationController
     @purchase_invoice.user_id = current_user.id
     respond_to do |format|
       if @purchase_invoice.save
-        format.html { redirect_to @purchase_invoice, notice: 'Purchase invoice was successfully created.' }
+        format.html { redirect_to '/purchase_invoices', notice: 'Comprobante de compra cargado correctamente.' }
         format.json { render :show, status: :created, location: @purchase_invoice }
       else
         format.html { render :new }
@@ -42,7 +42,7 @@ class PurchaseInvoicesController < ApplicationController
   def update
     respond_to do |format|
       if @purchase_invoice.update(purchase_invoice_params)
-        format.html { redirect_to @purchase_invoice, notice: 'Purchase invoice was successfully updated.' }
+        format.html { redirect_to '/purchase_invoices', notice: 'Comprobante de compra actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @purchase_invoice }
       else
         format.html { render :edit }
@@ -56,7 +56,7 @@ class PurchaseInvoicesController < ApplicationController
   def destroy
     @purchase_invoice.destroy
     respond_to do |format|
-      format.html { redirect_to purchase_invoices_url, notice: 'Purchase invoice was successfully destroyed.' }
+      format.html { redirect_to purchase_invoices_url, notice: 'Comprobante de compra eliminado correctamente.' }
       format.json { head :no_content }
     end
   end
