@@ -88,7 +88,7 @@ class BudgetsController < ApplicationController
       detail = @invoice.invoice_details.build(
         quantity: bd.quantity,
         measurement_unit: bd.measurement_unit,
-        price_per_unit: bd.price_per_unit,
+        price_per_unit: bd.product.net_price,
         bonus_percentage: bd.bonus_percentage,
         bonus_amount: bd.bonus_amount,
         subtotal: bd.subtotal,
@@ -97,6 +97,11 @@ class BudgetsController < ApplicationController
       detail.product = bd.product
     end
     DailyCash.current_daily_cash current_user.company_id
+
+    respond_to do |format|
+      format.html {render template: "/invoices/new.html.erb"}
+    end
+
   end
 
   def autocomplete_client
