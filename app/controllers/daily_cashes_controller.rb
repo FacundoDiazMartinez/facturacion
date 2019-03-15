@@ -24,7 +24,7 @@ class DailyCashesController < ApplicationController
       if session[:return_to].blank?
         redirect_to daily_cashes_path, notice: "Apertura de caja exitosa."
       else
-        redirect_to session.delete(:return_to), notice: "Ahora puede continuar con su operación."
+        redirect_to session.delete(:return_to), params: session[:new_invoice], notice: "Ahora puede continuar con su operación."
       end
     else
       render :new

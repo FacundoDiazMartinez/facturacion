@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     end
     response.headers['X-Flash'] = flash_header.to_json
   end
-  
+
 
 	def get_localities
 		render json: Locality.where(province_id: params[:city_id]).order(:name).map{|l| [l.id, l.name]}
@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from ::Exceptions::DailyCashClose do |exception|
-    session[:return_to] ||= request.path
+    session[:return_to] ||= request.path # Esto porque, por ejemplo, make_sale de Budget envía info en session[:return_to] y no debe cambiarse el valor.
     flash[:alert] =  "Primero debe abrir la caja diaria."
     redirect_to daily_cashes_path
   end
@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-  
+
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :dni, :birthday, :address, :phone, :mobile_phone, :province_id, :locality_id, :postal_code])
