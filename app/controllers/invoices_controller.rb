@@ -31,7 +31,7 @@ class InvoicesController < ApplicationController
 
   # GET /invoices/new
   def new
-    if session[:new_invoice].any?
+    if !session[:new_invoice].blank?
       @invoice = Invoice.new(session[:new_invoice]["invoice"])
       session[:new_invoice]["invoice_details"].each do |detail|
         @invoice.invoice_details.build(detail)
