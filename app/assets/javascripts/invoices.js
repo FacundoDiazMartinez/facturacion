@@ -119,12 +119,6 @@ function calculateSubtotal(subtotal){
 		iva_am = ( price.val() * parseFloat(iva_aliquot.text()) * quantity.val() ).toFixed(2);
 	}
 	iva_amount.val(iva_am);
-
-	alert("price " + price.val());
-		alert("quantity " + quantity.val());
-			alert("iva amount " + iva_amount.val());
-				alert("bonus amount " + bonus_amount.val());
-
 	Stotal = ((parseFloat(price.val())  * parseFloat(quantity.val()) ) + parseFloat(iva_amount.val()) - parseFloat(bonus_amount.val())).toFixed(2)
 	subtotal.val(Stotal);
 
