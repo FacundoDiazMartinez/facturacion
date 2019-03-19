@@ -1,4 +1,4 @@
-class Client < ApplicationRecord
+eclass Client < ApplicationRecord
 	has_many :invoices
 	has_many :receipts, through: :invoices
 	has_many :account_movements
