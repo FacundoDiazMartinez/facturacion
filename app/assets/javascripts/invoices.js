@@ -1,6 +1,5 @@
 var total_venta = parseFloat(0);
 var rest = parseFloat(0);
-var custom_bonus = false; // Variable para determinar si el usuario estableció un monto específico de monto bonificado
 var index = {};
 
 $( document ).ready(function() {
@@ -54,16 +53,9 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		title: data.item.name,
 		placement: "top"
 	})
-
-	//$(this).closest("tr.fields").find("input.price").tooltip({
-	//	title: data.item.price * (parseFloat($(this).closest("tr.fields").find("select.iva_aliquot option:selected").html()) + 1),
-	//	placement: "top"
-	//})
-	//console.log($(this).closest("tr.fields").find("select.iva_aliquot option:selected").html()),
-
-	// subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
-	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
-	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
+	// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
+	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge)
+	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
 
 
@@ -75,76 +67,66 @@ $(document).on('railsAutocomplete.select', '.invoice-number-autocomplete_field',
 	$(this).closest("div.fields").find("div.payments").show("fast")
 })
 
+function setVars(current_field){
+	price				= current_field.closest("tr.fields").find("input.price");
+	subtotal 			= current_field.closest("tr.fields").find("input.subtotal");
+	quantity 			= current_field.closest("tr.fields").find("input.quantity");
+	bonus_percentage 	= current_field.closest("tr.fields").find("input.bonus_percentage");
+	bonus_amount		= current_field.closest("tr.fields").find("input.bonus_amount");
+	iva_amount			= current_field.closest("tr.fields").find("input.iva_amount");
+	iva_aliquot	 		= current_field.closest("tr.fields").find("select.iva_aliquot").find('option:selected');
+}
+
 $(document).on("change", ".price, .quantity", function(){
+	setVars($(this));
 
-	price				= $(this).closest("tr.fields").find("input.price");
-	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
-	quantity 			= $(this).closest("tr.fields").find("input.quantity");
-	iva_aliquot 		= $(this).closest("tr.fields").find("select.iva_aliquot");
-	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
-	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
-
-	if (!custom_bonus) {
-		b_amount = ((parseFloat(price.val()) * parseFloat(quantity.val())) * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2)
-		bonus_amount.val(b_amount);
-	}
-
-	// total = ((parseFloat(price.val()) * parseFloat(quantity.val())) - parseFloat(bonus_amount.val())).toFixed(2);
-
-	// subtotal.val(total);
-	// subtotal.trigger("change");
-	iva_aliquot.trigger("change")
-});
-
-$(document).on("change", ".bonus_percentage", function(){
-	price				= $(this).closest("tr.fields").find("input.price");
-	quantity 			= $(this).closest("tr.fields").find("input.quantity");
-	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
-	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
-
-	total 				= parseFloat(price.val()) * parseFloat(quantity.val());
-	b_amount = (total * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2);
+	total_neto 				= parseFloat(price.val()) * parseFloat(quantity.val());
+	b_amount = (total_neto * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2);
 	bonus_amount.val(b_amount);
-	price.trigger("change");
+
+	calculateSubtotal(subtotal);
 });
 
 $(document).on("change", ".bonus_amount", function(){
-	price				= $(this).closest("tr.fields").find("input.price");
-	quantity 			= $(this).closest("tr.fields").find("input.quantity");
-	bonus_percentage 	= $(this).closest("tr.fields").find("input.bonus_percentage");
-	bonus_amount		= $(this).closest("tr.fields").find("input.bonus_amount");
-	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+	setVars($(this));
 
-	total 				= parseFloat(price.val()) * parseFloat(quantity.val());
-	b_percentage 		= (parseFloat(bonus_amount.val()) * 100 / parseFloat(total)).toFixed(2);
+	total_neto 				= parseFloat(price.val()) * parseFloat(quantity.val());
+	b_percentage 		= (parseFloat(bonus_amount.val()) * 100 / parseFloat(total_neto)).toFixed(2);
 	bonus_percentage.val(b_percentage);
 
-	custom_bonus = true; //Aquí indicamos que el usuario está estableciendo un monto específico que debe respetarse siempre
 	calculateSubtotal(subtotal);
 });
 
 $(document).on("change", ".iva_aliquot", function(){
-	net_price 			= $(this).closest("tr.fields").find("input.price");
-	iva_amount			= $(this).closest("tr.fields").find("input.iva_amount");
-	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").find('option:selected');
-	subtotal 			= $(this).closest("tr.fields").find("input.subtotal");
+	setVars($(this));
+
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
-		amount = 0.0
+		iva_am = 0.0
 	}else{
-		amount = ( net_price.val() * parseFloat( iva_aliquot.text() ) ).toFixed(2);
+		iva_am = ( price.val() * parseFloat( iva_aliquot.text() ) * quantity.val() ).toFixed(2);
 	}
-	iva_amount.val(amount);
+	iva_amount.val(iva_am);
 	updateTooltip22($(this))
 	calculateSubtotal(subtotal);
 });
 
 function calculateSubtotal(subtotal){
-	net_price 			= subtotal.closest("tr.fields").find("input.price");
-	quantity 			= subtotal.closest("tr.fields").find("input.quantity");
-	iva_amount			= subtotal.closest("tr.fields").find("input.iva_amount");
-	bonus_amount		= subtotal.closest("tr.fields").find("input.bonus_amount");
-	total = (( ( parseFloat( net_price.val() ) + parseFloat( iva_amount.val() ) ) * parseFloat( quantity.val() ) ) - parseFloat( bonus_amount.val() )).toFixed(2)
-	subtotal.val(total);
+	setVars(subtotal);
+
+	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
+		iva_am = 0.0
+	}else{
+		iva_am = ( price.val() * parseFloat(iva_aliquot.text()) * quantity.val() ).toFixed(2);
+	}
+	iva_amount.val(iva_am);
+
+	alert("price " + price.val());
+		alert("quantity " + quantity.val());
+			alert("iva amount " + iva_amount.val());
+				alert("bonus amount " + bonus_amount.val());
+
+	Stotal = ((parseFloat(price.val())  * parseFloat(quantity.val()) ) + parseFloat(iva_amount.val()) - parseFloat(bonus_amount.val())).toFixed(2)
+	subtotal.val(Stotal);
 
 	var inv_total = parseFloat(0);
 	$("tr.fields:visible > td > input.subtotal").each(function(){
