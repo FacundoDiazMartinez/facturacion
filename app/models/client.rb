@@ -1,4 +1,4 @@
-eclass Client < ApplicationRecord
+class Client < ApplicationRecord
 	has_many :invoices
 	has_many :receipts, through: :invoices
 	has_many :account_movements
@@ -98,6 +98,10 @@ eclass Client < ApplicationRecord
 		def avatar
 			"/images/default_user.png"
 		end
+
+		def saldo
+	    read_attribute("saldo").round(2)
+	  end
 
 		def email
 			if client_contacts.empty?

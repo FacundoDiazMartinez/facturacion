@@ -31,10 +31,20 @@ class InvoicesController < ApplicationController
 
   # GET /invoices/new
   def new
-    DailyCash.current_daily_cash current_user.company_id
-    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
-    @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
+    if !session[:new_invoice].blank?
+      @invoice = Invoice.new(session[:new_invoice]["invoice"])
+      session[:new_invoice]["invoice_details"].each do |detail|
+        @invoice.invoice_details.build(detail)
+      end
+      session.delete(:new_invoice)
+      @client = current_user.company.clients.find(@invoice.client_id)
+    else
+      @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+      @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
+    end
   end
+
+
 
   # GET /invoices/1/edit
   def edit
