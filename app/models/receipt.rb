@@ -14,7 +14,7 @@ class Receipt < ApplicationRecord
   before_validation :validate_receipt_detail
   before_validation :set_number, on: :create
   before_validation :check_total
-  after_save :touch_account_movement, if: Proc.new{|r| r.state == "Finalizado"}
+  after_create :touch_account_movement
 
   validates_uniqueness_of :number, scope: [:company, :active], message: "No se puede repetir el numero de recibo."
 
@@ -34,7 +34,8 @@ class Receipt < ApplicationRecord
     "99"=>"Devolución"
   }
 
-  STATES = ["Pendiente", "Finalizado"]
+  # STATES = ["Pendiente", "Finalizado"]
+  STATES = ["Finalizado"]
 
   #FILTROS DE BUSQUEDA
     def self.find_by_period from, to
@@ -83,6 +84,8 @@ class Receipt < ApplicationRecord
   #PROCESOS
 
   	def touch_account_movement
+      pp "----------------------- asd ---------------------------"
+      pp self.state
 		  AccountMovement.create_from_receipt(self)
     end
 

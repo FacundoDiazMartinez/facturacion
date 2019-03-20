@@ -57,6 +57,7 @@ class ReceiptsController < ApplicationController
   # POST /receipts.json
   def create
     @receipt = current_user.company.receipts.new(receipt_params)
+    @receipt.state = "Finalizado"
     @client = @receipt.client
     respond_to do |format|
       if @receipt.save
@@ -117,6 +118,8 @@ class ReceiptsController < ApplicationController
     end
 
     def build_account_movement
+      pp "/////////////////////////// build_account_movement /////////////////////"
+      pp @receipt.account_movement.nil?
       @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
       @account_movement_payments = @account_movement.account_movement_payments
       # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
@@ -124,7 +127,7 @@ class ReceiptsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :state,
+      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept,
        receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
           account_movement_attributes: [:id, :total, :debe, :haber, :active,
           account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
