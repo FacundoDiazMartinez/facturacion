@@ -1,15 +1,10 @@
 <!-- DETALLE -->
 <div class="row">
-  <div class="container" style="height: 880px;">
+  <br>
+  <div class="container" style="height: 850px;">
     <table class="width_100 TFtable">
       <tr>
-        <th class="text_left">Recibi la suma de: </th>
-      </tr>
-      <tr>
-        <td><%= I18n.with_locale(:es) { @receipt.total.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1).to_words } %> centavos.</td>
-      </tr>
-      <tr>
-        <th class="text_left">En concepto de: </th>
+        <th class="text_left">Observación: </th>
       </tr>
       <tr>
         <td><%= @receipt.concept %></td>
@@ -24,28 +19,27 @@
     <% if !@receipt.invoices.blank? %>
       <table class="width_100 TFtable">
         <tr>
-          <th>
-            Factura asociada
-          </th>
-          <th class="text_center">
-            Total de factura
-          </th>
-          <th class="text_center">
-            Monto abonado
+          <th class="text_left">
+            Recibimos en concepto de:
           </th>
         </tr>
         <% @receipt.invoices.each do |i| %>
           <tr>
             <td>
-              <%= i.full_number %>
-            </td>
-            <td class="text_center">
-              $ <%= i.total %>
-            </td>
-            <td class="text_center">
-              $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>
+              <% if i.total_left > 0 %>
+              Pago parcial factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
+              <% else %>
+                <% if i.total_left = 0 %>
+                  Cancelación factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
+                <% end %>
+              <% end %>
             </td>
           </tr>
+          <% i.notes.each do |n| %>
+            <tr class="text_center">
+              Vinculación <% n.nombre_comprobante %> <% n.id %> - Importe $ <%= n.total %>
+            </tr>
+          <% end %>
         <% end %>
       </table>
     <% end %>
@@ -53,28 +47,21 @@
     <br>
     <br>
 
-
       <table class="width_100 TFtable">
         <tr>
-          <th>Medio de pago</th>
-          <th class="text_center">Fecha de pago</th>
-          <th class="text_center">Monto abonado</th>
+          <th class="text_left">Forma de pago</th>
         </tr>
         <% @receipt.account_movement.income_payments.where(generated_by_system: false).each do |ip| %>
           <tr>
-            <td><%= ip.payment_name %></td>
-            <td class="text_center"><%= ip.payment_date %></td>
-            <td class="text_center">$ <%= ip.total %></td>
+            <td>
+              <%= ip.payment_name %> - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
+            </td>
           </tr>
         <% end %>
       </table>
-
-
   </div>
 </div>
 <!-- FIN DEL DETALLE -->
-
-
 
 <div class="row footer_top">
   <div class="container border">
@@ -85,6 +72,8 @@
         <td class="text_right"><b>Importe Total:</b></td>
         <td class="text_right"><b>$ <%= @receipt.total %></b></td>
       </tr>
-  </table>
+    </table>
   </div>
 </div>
+<p><b>Recibi la suma de: </b></p>
+<p><%= I18n.with_locale(:es) { @receipt.total.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1).to_words } %> centavos.</p>

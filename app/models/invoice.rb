@@ -10,7 +10,7 @@ class Invoice < ApplicationRecord
 
     default_scope { where(active: true) }
 
-
+    has_many :notes, foreign_key: :associated_invoice, class_name: 'Invoice'
     has_many :income_payments, dependent: :destroy
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
