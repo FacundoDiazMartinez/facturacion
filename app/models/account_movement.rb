@@ -251,6 +251,8 @@ class AccountMovement < ApplicationRecord
       am.saldo       = receipt.client.saldo - receipt.total.to_f
       am.active      = true
       am.save
+      pp "///////////////// create_from_receipt //////////////"
+      pp am
     end
 
     def update_debt

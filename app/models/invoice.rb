@@ -316,6 +316,9 @@ class Invoice < ApplicationRecord
               pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
               pay.save
               am.update_column(:amount_available, am.amount_available - pay.total)
+              pp "/////////////////////////// paid_unpaid_invoices ///////////////////////"
+              pp "ammount available: " + am.amount_available.to_s
+              pp "invoice total: " + invoice.total_left.to_s
               break if am.amount_available < 1
             end
           end

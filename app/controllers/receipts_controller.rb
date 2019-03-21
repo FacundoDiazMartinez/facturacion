@@ -57,6 +57,7 @@ class ReceiptsController < ApplicationController
   # POST /receipts.json
   def create
     @receipt = current_user.company.receipts.new(receipt_params)
+
     @client = @receipt.client
     respond_to do |format|
       if @receipt.save
@@ -72,8 +73,14 @@ class ReceiptsController < ApplicationController
   # PATCH/PUT /receipts/1
   # PATCH/PUT /receipts/1.json
   def update
+    if params[:button] == "confirm"
+      @receipt.state = "Finalizado"
+    end
     respond_to do |format|
       if @receipt.update(receipt_params)
+        if params[:button] == "confirm"
+          @receipt.touch_account_movement
+        end
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
@@ -118,6 +125,8 @@ class ReceiptsController < ApplicationController
 
     def build_account_movement
       @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
+      pp "////////////////////// ACCOUNT MOVEMENT //////////////////////////"
+      pp @account_movement
       @account_movement_payments = @account_movement.account_movement_payments
       # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
     end
