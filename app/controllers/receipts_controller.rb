@@ -57,7 +57,7 @@ class ReceiptsController < ApplicationController
   # POST /receipts.json
   def create
     @receipt = current_user.company.receipts.new(receipt_params)
-    @receipt.state = "Finalizado"
+
     @client = @receipt.client
     respond_to do |format|
       if @receipt.save
@@ -73,8 +73,14 @@ class ReceiptsController < ApplicationController
   # PATCH/PUT /receipts/1
   # PATCH/PUT /receipts/1.json
   def update
+    if params[:button] == "confirm"
+      @receipt.state = "Finalizado"
+    end
     respond_to do |format|
       if @receipt.update(receipt_params)
+        if params[:button] == "confirm"
+          @receipt.touch_account_movement
+        end
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
@@ -118,16 +124,16 @@ class ReceiptsController < ApplicationController
     end
 
     def build_account_movement
-      pp "/////////////////////////// build_account_movement /////////////////////"
-      pp @receipt.account_movement.nil?
       @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
+      pp "////////////////////// ACCOUNT MOVEMENT //////////////////////////"
+      pp @account_movement
       @account_movement_payments = @account_movement.account_movement_payments
       # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept,
+      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :state,
        receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
           account_movement_attributes: [:id, :total, :debe, :haber, :active,
           account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,

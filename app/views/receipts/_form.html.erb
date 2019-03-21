@@ -25,7 +25,7 @@
             <%= form.hidden_field :client_id, value: @client.id %>
             <div class="form-group">
               <%= form.label :state, "Estado" %>
-              <%= form.select :state, Receipt::STATES, {},{class: 'form-control', disabled: !@receipt.editable?}  %>
+              <%= form.select :state, Receipt::STATES, {},{class: 'form-control', disabled: true}  %>
             </div>
           </div>
         <!-- SEGUNDA COLUMNA -->
@@ -147,8 +147,10 @@
     <%= render template: '/receipts/payments/index.html.erb', locals:{form: form} %>
   <!-- PAGOS -->
 
+  <% if @receipt.state == "Pendiente" %>
+    <center> <%= button_tag "#{icon('fas', 'save')} Confirmar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'confirm_btn', name: 'button', value: "confirm" %> </center>
+  <% end %>
 
-  <center> <%= save_button %> </center>
 
 
 

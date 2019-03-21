@@ -211,12 +211,9 @@ class AccountMovement < ApplicationRecord
 
     def set_total_if_subpayments
       if self.account_movement_payments.any?
-        pp "//////////////////////////////// set_total_if_subpayments ///////////////////////"
         self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
         #self.active = true
         self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
-        pp "AM total: " + self.total.to_s
-        pp "AM am available: " + self.amount_available.to_s
       end
     end
 
@@ -237,7 +234,6 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.create_from_receipt receipt
-      pp "/////////////// inicia la creacion del AM //////////////////"
       am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
       am.client_id   = receipt.client_id
       am.receipt_id  = receipt.id
@@ -247,9 +243,9 @@ class AccountMovement < ApplicationRecord
       am.total       = receipt.total.to_f
       am.saldo       = receipt.client.saldo - receipt.total.to_f
       am.active      = true
-      pp "/////////////// finaliza la creacion del AM ///////////////"
       am.save
-      pp "/////////////// finalizo la creacion del AM////////////////"
+      pp "///////////////// create_from_receipt //////////////"
+      pp am
     end
 
     def update_debt
