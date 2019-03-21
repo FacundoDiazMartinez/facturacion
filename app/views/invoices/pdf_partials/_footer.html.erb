@@ -1,5 +1,10 @@
 <!-- PIE DE PAGINA -->
 <div class="row footer_bottom">
+  <p>
+    <b>
+      <%= @current_user.company.invoice_footer.html_safe %>
+    </b>
+  </p>
   <div class="container">
     <table class="width_100">
       <tr>
@@ -16,18 +21,12 @@
       </tr>
 
       <tr>
-        <td><b>Observación:</b></td>
+        <td></td>
         <td></td>
         <td></td>
         <td class="text_right"><b>Fecha de Vto. de CAE: </b> <%= @invoice.cae_due_date %> </td>
       </tr>
     </table>
-  
-    <p>
-      <b>
-        <%= @current_user.company.invoice_footer.html_safe %>
-      </b>
-    </p>
   </div>
 </div>
 <div class="text_center">

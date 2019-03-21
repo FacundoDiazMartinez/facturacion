@@ -10,7 +10,7 @@ class Invoice < ApplicationRecord
 
     default_scope { where(active: true) }
 
-
+    has_many :notes, foreign_key: :associated_invoice, class_name: 'Invoice'
     has_many :income_payments, dependent: :destroy
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
@@ -479,6 +479,14 @@ class Invoice < ApplicationRecord
       def full_number
         if state == "Confirmado" || state == "Anulado"
           "#{sale_point.name} - #{comp_number}"
+        else
+          "Falta confirmar"
+        end
+      end
+
+      def full_number_with_debt
+        if state == "Confirmado" || state == "Anulado"
+          "#{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{total_left} "
         else
           "Falta confirmar"
         end

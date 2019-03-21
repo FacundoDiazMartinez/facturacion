@@ -13,7 +13,6 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
   $(this).closest('tr.fields').find('input.invoice_total_pay').val("$ " + data.item.total_pay.toFixed(2));
   $(this).closest('tr.fields').find('input.invoice_created_at').val(data.item.created_at);
 
-
   $("#editReceiptClient").attr('data-toggle', 'tooltip');
   $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
   $("#editReceiptClient").tooltip();
@@ -32,7 +31,24 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
 	// 	$('#editReceiptClient').attr("data-toggle", "");
 	// 	$('#editReceiptClient').tooltip({title: "No es posible editar cliente mientras exista una factura vinculada."});
 	// }
+  total = 0;
+  $('.invoice_total_left').each(function(){
+    var res = $(this).val().replace("$ ", "");
+    total= total + parseFloat(res);
+  })
 
+  $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
+
+});
+
+$(document).on('nested:fieldRemoved', function(event){
+  total = 0;
+  $('.invoice_total_left').filter(':visible').each(function(){
+    var res = $(this).val().replace("$ ", "");
+    total= total + parseFloat(res);
+  })
+
+  $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
 });
 
 $(document).on('keyup','.receipt_associated-invoice-autocomplete_field', function(){

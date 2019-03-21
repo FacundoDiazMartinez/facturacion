@@ -20,14 +20,20 @@ class Product < ApplicationRecord
     scope :active, -> { where(active: true) }
     validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active
     validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active
+  	validates_uniqueness_of :supplier_code, scope: [:company_id, :active], message: "Ya existe un producto con el mismo código de proveedor."
+
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
+  	validates_presence_of :net_price, message: "Debe ingresar el precio neto del producto."
+  	validates_presence_of :cost_price, message: "Debe ingresar el precio de costo del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
   	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
-  	validates_numericality_of :price, message: "El precio solo debe contener caracteres numéricos."
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
   	validates_presence_of :name, message: "El nombre del producto no puede estar en blanco."
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
-
+  	validates_presence_of :iva_aliquot, message: "Ingrese un valor para el IVA."
+  	
+  	validates_numericality_of :price, message: "El precio sólo debe contener caracteres numéricos."
+  	
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
   	after_create :create_price_history, :user_activity_for_create
 

@@ -41,45 +41,45 @@
 </div>
 <!-- FIN DEL DETALLE -->
 
-
-
 <div class="row footer_top">
+  <p>
+    <b>
+      <%= @invoice.observation %>
+    </b>
+  </p>
   <div class="container border">
     <table class="width_100">
-      <col width="600">
-      <col width="100">
-    <tr>
-      <td><b>Móvil:</b></td>
-      <td class="text_right">
-        <b>
-          <% if total_pages > 1 %>
-            Subtotal página:
-          <% else %>
-            Subtotal:
-          <% end %>
-        </b>
-      </td>
-      <td class="text_right"><b>$ <%= total_of_page %></b></td>
-    </tr>
+      <col width="400">
+      <col width="200">
+      <tr>
+        <td><b>Móvil:</b></td>
+        <td><b>Aclaración:</b></td>
+        <td class="text_right">
+          <b>
+            <% if total_pages > 1 %>
+              Subtotal página:
+            <% else %>
+              Subtotal:
+            <% end %>
+          </b>
+        </td>
+        <td class="text_right"><b>$ <%= total_of_page %></b></td>
+      </tr>
 
-    <tr>
-      <td><b>Firma:</b></td>
-      <td class="text_right"><b>Otros Tributos:</b></td>
-      <td class="text_right"><b>$ <%= @invoice.imp_op_ex %> </b></td>
-    </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="text_right"><b>Otros Tributos:</b></td>
+        <td class="text_right"><b>$ <%= @invoice.imp_op_ex %> </b></td>
+      </tr>
 
-    <tr>
-      <td><b>Aclaración:</b></td>
-      <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%= @invoice.total %></b></td>
-    </tr>
-
-    <tr>
-      <td><b>Dni:</b></td>
-      <td class="text_right"></td>
-      <td class="text_right"></td>
-    </tr>
-  </table>
+      <tr>
+        <td><b>Firma:</b></td>
+        <td><b>Dni:</b></td>
+        <td class="text_right"><b>Importe Total:</b></td>
+        <td class="text_right"><b>$ <%= @invoice.total %></b></td>
+      </tr>
+    </table>
   </div>
 </div>
 <br>
