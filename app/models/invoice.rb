@@ -481,6 +481,14 @@ class Invoice < ApplicationRecord
         end
       end
 
+      def full_number_with_debt
+        if state == "Confirmado" || state == "Anulado"
+          "#{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{total_left} "
+        else
+          "Falta confirmar"
+        end
+      end
+
       def full_name
         "Pto. venta: #{sale_point_name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
       end

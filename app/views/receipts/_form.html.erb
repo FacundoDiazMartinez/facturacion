@@ -72,32 +72,31 @@
         </h3>
 
         <div class="row">
-
           <div class="table-responsive">
             <table class="table table-striped invoice-table" id="details">
               <thead>
                 <tr>
-                  <th scope="col"></th>
-                  <th scope="col">Número</th>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Pagado</th>
-                  <th scope="col">Faltante</th>
+                  <th width="35%" scope="col">Número</th>
+                  <th width="15%" scope="col">Fecha</th>
+                  <th width="15%" scope="col">Total</th>
+                  <th width="15%" scope="col">Pagado</th>
+                  <th width="15%" scope="col">Faltante</th>
                   <!-- <th scope="col">Total a pagar</th> -->
-                  <th scope="col"></th>
+                  <th width="5%" scope="col"></th>
                 </tr>
               </thead>
               <tbody>
                 <!-- @receipt.receipt_details.build unless !@receipt.receipt_details.empty? -->
+                <% total_faltante = 0 %>
                 <%= form.fields_for :receipt_details, wrapper: false do |f| %>
                   <tr class="fields" id="<%= f.index %>">
-                    <td>
+                    <!--<td>-->
                       <!-- <% if @receipt.editable? %>
                         <%# link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'input-group-text btn btn-secondary', min_length: 3 %>
                       <% else %> -->
-                        #
+                        
                       <!-- <% end %> -->
-                    </td>
+                    <!--</td>-->
                     <td>
                       <%= autocomplete_field_tag :comp_number, f.object.invoice.nil? ? nil : f.object.invoice.full_number, autocomplete_invoice_receipts_path, :fields => {:client_id => '#receipt_client_id'}, class: 'receipt_associated-invoice-autocomplete_field form-control form-control-sm comp_number' , required: true, disabled: !@receipt.editable? %>
                       <%= f.hidden_field :invoice_id, class: 'invoice_id' %>
@@ -127,7 +126,9 @@
               </tbody>
             </table>
           </div>
-
+        </div>
+        <div style="padding-left: 70% !important;">
+          <%= label_tag :total_faltante, "Total faltante", id:'total_faltante' %>
         </div>
         <hr>
         <% if @receipt.editable? %>

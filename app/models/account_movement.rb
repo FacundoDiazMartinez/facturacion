@@ -104,7 +104,14 @@ class AccountMovement < ApplicationRecord
 
   #FUNCIONES
   	def days
-  		(Date.today - created_at.to_date).to_i
+      if self.invoice.blank?
+      else
+        if self.invoice.cbte_fch.blank?
+    		  (Date.today - self.invoice.created_at.to_date).to_i
+        else
+          (self.invoice.cbte_fch.to_date - self.invoice.created_at.to_date).to_i
+        end
+      end
   	end
 
   	def self.sum_total_from_invoices_per_client client_id
