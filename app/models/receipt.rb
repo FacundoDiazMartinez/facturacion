@@ -105,6 +105,7 @@ class Receipt < ApplicationRecord
           r.user_id     = invoice.user_id
           r.state       = "Finalizado"
           ReceiptDetail.save_from_invoice(r, invoice) unless !r.save
+          r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
         else
           invoice.receipts.each do |r|
             r.total      += invoice.saved_change_to_total_pay.last - invoice.saved_change_to_total_pay.first

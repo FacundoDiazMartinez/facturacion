@@ -61,6 +61,9 @@ class ReceiptsController < ApplicationController
     @client = @receipt.client
     respond_to do |format|
       if @receipt.save
+        # if @receipt.state = "Finalizado"
+        #   @receipt.touch_account_movement
+        # end
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue creado correctamente.' }
       else
         build_account_movement

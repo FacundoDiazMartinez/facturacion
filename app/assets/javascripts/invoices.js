@@ -11,6 +11,14 @@ $( document ).ready(function() {
 	if ($("#purchase_order_total").val() > 0) {
 		total_venta = parseFloat($("#purchase_order_total").val());
 	}
+
+	$("#details tr.fields").each(function(){  // Mostrar popover del campo nombre con el nombre completo
+		var name = $(this).find(".name");
+		name.popover({
+			title: name.val(),
+			trigger: "hover"
+		});
+	});
 });
 
 function setConfirmParam() {
@@ -47,15 +55,15 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
   	$(this).closest("tr.fields").find("select.tipo").val(data.item.tipo);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
+		$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 
-	$(this).closest("tr.fields").find("input.name").tooltip({
-		title: data.item.name,
-		placement: "top"
-	})
-	// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
-	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge)
-	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
+		$(this).closest("tr.fields").find("input.name").popover({
+			title: data.item.name,
+			trigger: "hover"
+		});
+		// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
+		$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
+		calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
 
 
@@ -129,9 +137,9 @@ function calculateSubtotal(subtotal){
 	$("tr.fields:visible > td > input.importe").each(function(){
 	    inv_total = inv_total + parseFloat($(this).val());
 	});
-	$("#invoice_total").val(inv_total);
+	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
-	$("#total_left").val(total_left);
+	$("#total_left").val(total_left.toFixed(2));
 
 	if (total_left > 0 ) {
 		$("#normal").show();
@@ -258,7 +266,7 @@ $(document).on("change", ".importe", function(){
 	$(".importe").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
-	$("#invoice_total").val(total);
+	$("#invoice_total").val(total.toFixed(2));
 	$("span#total_left_venta").val(total);
 	total_venta = total;
 

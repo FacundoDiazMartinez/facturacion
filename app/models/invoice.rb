@@ -683,12 +683,11 @@ class Invoice < ApplicationRecord
       end
       pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
 
-      # pp pagos[1][1]
 
       showed_payment = ""
       pagos.each_with_index do |arr,i|
         showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
-        if ((i+1) < pagos.first.count)
+        if ((i+1) < pagos.count)
           showed_payment = showed_payment + " / "
         end
       end
