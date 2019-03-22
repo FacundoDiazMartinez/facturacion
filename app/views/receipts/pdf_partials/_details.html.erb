@@ -27,17 +27,19 @@
           <tr>
             <td>
               <% if i.total_left > 0 %>
-              Pago parcial factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
+              Pago parcial Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
               <% else %>
                 <% if i.total_left = 0 %>
-                  Cancelación factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
+                  Cancelación Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
                 <% end %>
               <% end %>
             </td>
           </tr>
           <% i.notes.each do |n| %>
-            <tr class="text_center">
-              Vinculación <% n.nombre_comprobante %> <% n.id %> - Importe $ <%= n.total %>
+            <tr class="text_left">
+              <td>
+                Vinculación <%= n.nombre_comprobante %> <%= n.full_number %> - Importe $ <%= n.total %>
+              </td>
             </tr>
           <% end %>
         <% end %>

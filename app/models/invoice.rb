@@ -9,6 +9,7 @@ class Invoice < ApplicationRecord
 
 
     default_scope { where(active: true) }
+    scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
 
     has_many :notes, foreign_key: :associated_invoice, class_name: 'Invoice'
     has_many :income_payments, dependent: :destroy
@@ -39,6 +40,9 @@ class Invoice < ApplicationRecord
     after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
+    COD_INVOICE = ["01", "06", "11"]
+    COD_ND = ["02", "07", "12"]
+    COD_NC = ["03", "08", "13"]
 
     validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
     validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un cliente.", if: Proc.new{ |i| not i.is_invoice?}
@@ -262,15 +266,15 @@ class Invoice < ApplicationRecord
       end
 
       def is_invoice?
-        ["01", "06", "11"].include?(cbte_tipo) || cbte_tipo.nil?
+        COD_INVOICE.include?(cbte_tipo) || cbte_tipo.nil?
       end
 
       def is_credit_note?
-        ["03", "08", "13"].include?(cbte_tipo)
+        COD_NC.include?(cbte_tipo)
       end
 
       def is_debit_note?
-        ["02", "07", "12"].include?(cbte_tipo)
+        COD_ND.include?(cbte_tipo)
       end
 
       def update_expired
@@ -653,7 +657,9 @@ class Invoice < ApplicationRecord
           )
           self.activate_commissions
           if response && !self.associated_invoice.nil?
-            self.invoice.update_column(:state, "Anulado")
+            if self.total.to_f.round(2) == self.invoice.total
+              self.invoice.update_column(:state, "Anulado")
+            end
           end
         end
       #PROCESOS

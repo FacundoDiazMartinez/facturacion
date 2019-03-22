@@ -23,8 +23,8 @@ class Product < ApplicationRecord
   	validates_uniqueness_of :supplier_code, scope: [:company_id, :active], message: "Ya existe un producto con el mismo código de proveedor."
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
-  	validates_presence_of :net_price, message: "Debe ingresar el precio neto del producto."
-  	validates_presence_of :cost_price, message: "Debe ingresar el precio de costo del producto."
+  	#validates_presence_of :net_price, message: "Debe ingresar el precio neto del producto."
+  	#validates_presence_of :cost_price, message: "Debe ingresar el precio de costo del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
   	validates_presence_of :updated_by, message: "Debe ingresar quien actualizó el producto.", if: :persisted?
   	validates_presence_of :code, message: "Debe ingresar un código en el producto."
