@@ -57,7 +57,7 @@
 
       <div class="form-row" id="invoice_a_div">
         <div class="form-group col-md-6">
-          <%= form.label :net_amount %>
+          <%= label_tag :net_amount, "Monto bruto" %>
           <%= form.number_field :net_amount, class: 'form-control invoice_amount', min: 0, required: true %>
         </div>
 
