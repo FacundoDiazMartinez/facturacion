@@ -20,7 +20,7 @@ class Product < ApplicationRecord
     scope :active, -> { where(active: true) }
     validates_uniqueness_of :code, scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active
     validates_uniqueness_of :name, scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active
-  	validates_uniqueness_of :supplier_code, scope: [:company_id, :active], message: "Ya existe un producto con el mismo código de proveedor."
+  	#validates_uniqueness_of :supplier_code, scope: [:company_id, :active], message: "Ya existe un producto con el mismo código de proveedor."
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
   	#validates_presence_of :net_price, message: "Debe ingresar el precio neto del producto."
