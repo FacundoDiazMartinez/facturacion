@@ -28,9 +28,9 @@
 
   <table class="width_100" style="font-size: 11px !important;">
       <tr>
-        <td> <b>Razon Social: </b> <%= @invoice.company.society_name %></td>
+        <td style="width: 50%;"> <b>Razon Social: </b> <%= @invoice.company.society_name %> </td>
         <td rowspan="5" class="right_border"></td>
-        <td rowspan="5" style="width: 25px;"></td>
+        <td rowspan="5" style="width: 1px;"></td>
         <td>
           <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
             <% if !@invoice.fill_comp_number.nil? %>
@@ -72,20 +72,22 @@
   <div class="container border">
     <table class="width_100">
     <tr>
-      <td><b>CUIT: </b><%= @invoice.client.document_number %></td>
+      <td style="width: 51%;"><b>CUIT: </b><%= @invoice.client.document_number %></td>
       <td><b>Cliente / Razon Social: </b> <%= @invoice.client.name %></td>
-      <td></td>
     </tr>
 
     <tr>
       <td><b>Condicion frente al IVA: </b><%= @invoice.client.iva_cond %></td>
       <td><b>Domicilio: </b> <%= @invoice.client.address %></td>
-      <td></td>
     </tr>
 
     <tr>
       <td><b>Medios de pago: </b><%= @invoice.all_payments_string %></td>
       <td></td>
+    </tr>
+
+    <tr>
+      <td><b>Saldo: </b> Cuenta corriente: $ <%= @invoice.total_left %></td>
       <td></td>
     </tr>
   </table>
