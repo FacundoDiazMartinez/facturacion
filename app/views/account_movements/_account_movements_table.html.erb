@@ -21,22 +21,22 @@
 		    	<td><%= am.observation %></td>
 		    	<% if !am.invoice_id.nil? %>
 		    		<% if (am.invoice.total - am.invoice.total_pay) > 0 %>
-		    			<td class="text-danger text-bold"><%= "$#{am.total}" unless !am.debe %></td>
+		    			<td class="text-danger text-bold"><%= "$ #{am.total}" unless !am.debe %></td>
 		    		<% else %>
-		    			<td class="text-bold"><%= "$#{am.total}" unless !am.debe %></td>
+		    			<td><%= "$ #{am.total}" unless !am.debe %></td>
 		    		<% end %>
 		    	<% else %>
-		    		<td class="text-bold"><%= "$#{am.total}" unless !am.debe %></td>
+		    		<td class="text-bold"><%= "$ #{am.total}" unless !am.debe %></td>
 		    	<% end %>
-		    	<td class="text-bold"><%= "$#{am.total}" unless !am.haber %></td>
+		    	<td class="text-bold"><%= "$ #{am.total}" unless !am.haber %></td>
 		    	<% if @account_movements.count == (index + 1) %>
 		    		<% if am.saldo > 0 %>
-		    			<td class="text-danger text-bold"">$<%= am.saldo %></td>
+		    			<td class="text-danger text-bold"> $ <%= am.saldo %></td>
 		    		<% else %>
-		    			<td class="text-success text-bold"">$<%= am.saldo %></td>
+		    			<td class="text-success text-bold">$ <%= am.saldo %></td>
 		    		<% end %>
 		    	<% else %>
-		    		<td class="text-bold">$<%= am.saldo %></td>
+		    		<td>$ <%= am.saldo %></td>
 		    	<% end %>
 		    	<td>
 		    		<%= link_to icon('fas', 'file-pdf').html_safe, receipt_path(am.receipt_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.receipt_id.blank? %>
