@@ -1,10 +1,11 @@
 class Receipt < ApplicationRecord
+  include Deleteable
   #RECIBO DE PAGO
   belongs_to :client
   belongs_to :sale_point
   belongs_to :company
 
-  has_one  :account_movement, dependent: :destroy
+  has_one  :account_movement
   has_many :account_movement_payments, through: :account_movement
   has_many :receipt_details
   has_many :invoices, through: :receipt_details
@@ -108,8 +109,10 @@ class Receipt < ApplicationRecord
           r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
         else
           invoice.receipts.each do |r|
-            r.total      += invoice.saved_change_to_total_pay.last - invoice.saved_change_to_total_pay.first
-            r.user_id     = invoice.user_id
+            if invoice.saved_change_to_total_pay?
+              r.total      += invoice.saved_change_to_total_pay.last - invoice.saved_change_to_total_pay.first
+              r.user_id     = invoice.user_id
+            end
             ReceiptDetail.save_from_invoice(r, invoice) unless !r.save
           end
         end
@@ -160,16 +163,6 @@ class Receipt < ApplicationRecord
   #ATRIBUTOS
 
   #FUNCIONES
-    def destroy (hard = nil)
-      if hard
-        super
-      else
-        update_column(:active, false)
-        run_callbacks :destroy
-        freeze
-      end
-    end
-
     def all_payments_string
       payments = self.account_movement_payments.where(generated_by_system: false)
       if !payments.nil?

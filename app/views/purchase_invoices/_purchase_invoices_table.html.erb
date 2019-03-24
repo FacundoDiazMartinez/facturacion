@@ -18,7 +18,7 @@
       <% @purchase_invoices.each do |purchase_invoice| %>
       <tr>
         <td><strong><%= purchase_invoice.number %></strong></td>
-        <td><%= purchase_invoice.cbte_tipo %></td>
+        <td><%= purchase_invoice.tipo %></td>
         <td><%= link_to purchase_invoice.supplier.name, edit_supplier_path(purchase_invoice.supplier_id) %></td>
         <td><%= link_to purchase_invoice.user.name, user_path(purchase_invoice.user_id) %></td>
         <td>$<%= purchase_invoice.net_amount %></td>
@@ -26,7 +26,6 @@
         <td>$<%= purchase_invoice.imp_op_ex %></td>
         <td>$<%= purchase_invoice.total %></td>
         <td>
-          <%= link_to icon('fas', 'eye'), purchase_invoice, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, PurchaseInvoice %>
           <%= link_to icon('fas', 'edit'), edit_purchase_invoice_path(purchase_invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, PurchaseInvoice %>
           <%= link_to icon('fas', 'trash'), purchase_invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, PurchaseInvoice %>
         </td>

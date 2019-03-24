@@ -1,4 +1,5 @@
 class ReceiptDetail < ApplicationRecord
+  include Deleteable
   belongs_to :receipt
   belongs_to :invoice
   validate :invoices_clients_validation

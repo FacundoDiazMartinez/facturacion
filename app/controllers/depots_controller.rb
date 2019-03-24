@@ -32,6 +32,7 @@ class DepotsController < ApplicationController
         format.html { redirect_to @depot, notice: 'El depósito fue creado correctamente.' }
         format.json { render :show, status: :created, location: @depot }
       else
+        pp @depot.errors
         format.html { render :new }
         format.json { render json: @depot.errors, status: :unprocessable_entity }
       end

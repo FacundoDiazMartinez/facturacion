@@ -6,12 +6,12 @@ class Depot < ApplicationRecord
   validates_presence_of :name, message: "El nombre no puede estar en blanco."
   validates_presence_of :stock_count, message: "Debe estar vinculado a un stock actual."
   validates_presence_of :location, message: "Debe especificar una ubicación para el depósito."
-  validates_presence_of :filled, message: "Debe especificar si el depósito se encuentra lleno."
+  #validates_presence_of :filled, message: "Debe especificar si el depósito se encuentra lleno."
 
   validates_numericality_of :stock_count, greater_than_or_equal_to: 0.0, message: "El stock actual debe ser mayor o igual a 0."
 
   default_scope { where(active: true) }
-  
+
   # TABLA
   # 	create_table "depots", force: :cascade do |t|
 	 #    t.string "name"
@@ -32,7 +32,7 @@ class Depot < ApplicationRecord
     	if !name.nil?
       	where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
     	else
-      	all 
+      	all
     	end
     end
 

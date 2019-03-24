@@ -1,4 +1,5 @@
 class IvaBook < ApplicationRecord
+  include Deleteable
   belongs_to :invoice, optional: true
   belongs_to :purchase_invoice, optional: true
   belongs_to :company
@@ -47,12 +48,6 @@ class IvaBook < ApplicationRecord
 
     def is_debit? #es debito cuando tiene un invoice id
       not invoice_id.nil?
-    end
-
-    def destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
     end
   #FUNCIONES
 

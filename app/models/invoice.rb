@@ -35,6 +35,7 @@ class Invoice < ApplicationRecord
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
     after_save :update_expired, if: Proc.new{|i| i.state == "Confirmado"}
+    after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?}
 
     before_validation :check_if_confirmed
     after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
@@ -45,7 +46,7 @@ class Invoice < ApplicationRecord
     COD_NC = ["03", "08", "13"]
 
     validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
-    validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un cliente.", if: Proc.new{ |i| not i.is_invoice?}
+    validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice?}
     validates_presence_of :total, message: "El total no debe estar en blanco."
     validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0."
     validates_presence_of :total_pay, message: "El total pagado no debe estar en blanco."
@@ -54,6 +55,7 @@ class Invoice < ApplicationRecord
     validate :cbte_tipo_inclusion
     validate :at_least_one_detail
     validate :fch_ser_if_service
+    validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo], allow_blank: true
 
     #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
@@ -249,13 +251,17 @@ class Invoice < ApplicationRecord
         Afip::CBTE_TIPO[cbte_tipo]
       end
 
-      def destroy
-        if self.state == "Pendiente"
+      def destroy(mode = :soft)
+        if self.state == "Pendiente" || "Pagado"
           update_column(:active, false)
           run_callbacks :destroy
           freeze
         else
-          errors.add(:state, "No se puede eliminar esta factura.")
+          if mode == :soft
+            errors.add(:state, "No se puede eliminar esta factura.")
+          else
+            super()
+          end
         end
       end
 
@@ -286,6 +292,12 @@ class Invoice < ApplicationRecord
   	#FUNCIONES
 
     #PROCESOS
+
+    def rollback_stock
+      invoice_details.each do |detail|
+        detail.remove_reserved_stock
+      end
+    end
 
       def update_payment_belongs
         income_payments.each do |p|

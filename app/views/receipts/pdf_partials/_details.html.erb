@@ -27,10 +27,10 @@
           <tr>
             <td>
               <% if i.total_left > 0 %>
-              Pago parcial Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
+              Pago parcial Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= i.total %>  -  Faltante $ <%= i.total_left %>
               <% else %>
-                <% if i.total_left = 0 %>
-                  Cancelación Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= @receipt.account_movement.income_payments.where(generated_by_system: true, invoice_id: i.id).first.total %>  -  Faltante $ <%= i.total_left %>
+                <% if i.total_left == 0 %>
+                  Cancelación Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= i.total_pay %>  -  Faltante $ <%= i.total_left %>
                 <% end %>
               <% end %>
             </td>

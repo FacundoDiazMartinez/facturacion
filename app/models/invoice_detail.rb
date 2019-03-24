@@ -1,4 +1,5 @@
 class InvoiceDetail < ApplicationRecord
+  include Deleteable
   belongs_to :invoice
   belongs_to :product, optional: true
   belongs_to :depot, optional: true
@@ -138,12 +139,6 @@ class InvoiceDetail < ApplicationRecord
 
     def iva
       Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f
-    end
-
-    def destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
     end
   #FUNCIONES
 
