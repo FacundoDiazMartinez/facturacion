@@ -23,7 +23,7 @@ class DailyCashMovement < ApplicationRecord
       if !user.blank?
         where(user_id: user)
       else
-        all 
+        all
       end
     end
 
@@ -31,7 +31,7 @@ class DailyCashMovement < ApplicationRecord
       if !payment_type.nil?
         where(payment_type: payment_type)
       else
-        all 
+        all
       end
     end
   #FILTROS DE BUSQUEDA

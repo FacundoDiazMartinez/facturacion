@@ -291,7 +291,7 @@ class Product < ApplicationRecord
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: attrs[:from]).first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			if s.save
-				d = self.stocks.where(depot_id: attrs[:depot_id], state: "Despachado").first_or_initialize
+				d = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
 				d.quantity = d.quantity.to_f + attrs[:quantity].to_f
 				d.save
 			end

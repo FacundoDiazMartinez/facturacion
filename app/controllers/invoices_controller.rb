@@ -65,6 +65,30 @@ class InvoicesController < ApplicationController
     end
   end
 
+  def cancel
+    associated_invoice = current_user.company.invoices.find(params[:id])
+    atributos = associated_invoice.attributes
+    @invoice = current_user.company.invoices.where(associated_invoice: associated_invoice.id).first_or_initialize
+    @invoice.attributes = atributos.except!(*["id", "state", "cbte_tipo", "header_result", "authorized_on", "cae_due_date", "cae", "cbte_fch", "comp_number", "associated_invoice"])
+    @invoice.cbte_tipo = (associated_invoice.cbte_tipo.to_i + 2).to_s.rjust(2,padstr= '0')
+    @invoice.cbte_fch = Date.today
+
+    associated_invoice.invoice_details.each do |detail|
+      @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
+    end
+    associated_invoice.income_payments.each do |payment|
+      p_attr = payment.attributes.except!(*["id", "invoice_id"])
+      @invoice.income_payments.build(p_attr)
+    end
+    @invoice.associated_invoice = associated_invoice.id
+    pp @invoice.receipts
+    @invoice.save
+    pp @invoice.errors
+    respond_to do |format|
+      format.html { redirect_to edit_invoice_path(@invoice.id) }
+    end
+  end
+
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
@@ -134,18 +158,20 @@ class InvoicesController < ApplicationController
 
   def set_associated_invoice
     if params[:id].blank?
-      @invoice = Invoice.new
+      @invoice = current_user.company.invoices.new
     else
       set_invoice
     end
     @associated = true
     associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice], state: "Confirmado").first
     associated_invoice.invoice_details.each do |id|
-      @invoice.invoice_details.new(id.attributes)
+      @invoice.invoice_details.new(id.attributes.except("id"))
     end
     associated_invoice.income_payments.each do |payment|
-      @invoice.income_payments.new(payment.attributes)
+      @invoice.income_payments.new(payment.attributes.except("id"))
     end
+    @invoice.client = associated_invoice.client
+    @invoice.save
   end
 
   private

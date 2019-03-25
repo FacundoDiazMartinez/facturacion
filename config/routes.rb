@@ -182,6 +182,7 @@ Rails.application.routes.draw do
     resources :invoice_details
     get :autocomplete_product_code, :on => :collection
     get :confirm, on: :member
+    get :cancel, on: :member
     get :search_product, on: :collection
     get :autocomplete_associated_invoice, on: :collection
     get :autocomplete_invoice_number, on: :collection

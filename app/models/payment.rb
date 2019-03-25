@@ -1,4 +1,5 @@
 class Payment < ApplicationRecord
+  include Deleteable
   belongs_to :user, optional: true
   belongs_to :company, optional: true
   belongs_to :client, optional: true #TODO VINCULAR
@@ -120,16 +121,11 @@ class Payment < ApplicationRecord
       self.payment_date ||= Date.today
     end
 
-    def destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
-    end
-
     def save_daily_cash_movement
       if type_of_payment == "0"
         if payment_date <= Date.today
-          DailyCashMovement.save_from_payment(self, company.id)
+          pp "ENTRO #{self.company_id}"
+          DailyCashMovement.save_from_payment(self, company_id)
         else
           DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)
         end
@@ -144,6 +140,25 @@ class Payment < ApplicationRecord
 
     def changed_or_new_record?
       !saved_changes.empty? || created_at == updated_at
+    end
+
+    def type_of_payment_name
+      case type_of_payment.to_i
+      when 0
+        "cash_payments"
+  		when 1
+          "card_payments"
+  		when 3
+          "bank_payments"
+  		when 4
+          "cheque_payments"
+  		when 5
+          "retention_payments"
+  		when 6
+          "account_payments"
+  		when 7
+          "debit_payments"
+      end
     end
   #FUNCIONES
 end

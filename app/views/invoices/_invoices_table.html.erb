@@ -49,7 +49,7 @@
           <th scope="col" class="only-desktop">Estado</th>
           <th>Pagado</th>
           <th>Faltante</th>
-
+          <th>Anular</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -66,17 +66,24 @@
             <td>$<%= invoice.total_pay %></td>
             <td>$<%= invoice.total_left %></td>
             <td>
-              <%  if ! invoice.editable? %>
-                <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-              <% else %>
-                <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <%  if !invoice.editable? && invoice.is_invoice? && invoice.state != "Anulado" %>
+                <%= link_to icon('fas', 'eraser ').html_safe, cancel_invoice_path(invoice.id,), data: {confirm: "Está por anular un comprobante. ¿Está seguro que desea continuar?"}, class: 'btn btn-sm btn-icon btn-outline-danger' %>
               <% end %>
             </td>
-            <%  if invoice.editable? %>
-              <td><%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
-            <% else %>
-              <td><%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
-            <% end -%>
+            <td>
+              <%  if !invoice.editable? %>
+                <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <% end %>
+            </td>
+            <td>
+              <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            </td>
+            <td>
+              <%  if invoice.editable? %>
+                <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <% end %>
+            </td>
+
           </tr>
         <% end %>
       </tbody>

@@ -1,4 +1,5 @@
 class InvoiceDetail < ApplicationRecord
+  include Deleteable
   belongs_to :invoice
   belongs_to :product, optional: true
   belongs_to :depot, optional: true
@@ -20,6 +21,7 @@ class InvoiceDetail < ApplicationRecord
   #validates_presence_of :invoice_id, message: "El detalle debe estar vinculado a una factura."
   validates_presence_of :product, message: "El detalle debe estar vinculado a un producto."
   validates_presence_of :quantity, message: "El detalle debe especificar una cantidad."
+  validates_presence_of :depot_id, message: "El detalle debe especificar un deposito."
   validates_numericality_of :quantity, greater_than: 0.0, message: "La cantidad debe ser mayor a 0."
   validates_inclusion_of :measurement_unit, in: Product::MEASUREMENT_UNITS.keys, message: "Unidad de medida inválida.", if: Proc.new{|id| not id.product.nil?}
   validates_presence_of :measurement_unit, message: "Debe especificar la unidad de medida en el detalle de la factura.", if: Proc.new{|id| not id.product.nil?}
@@ -138,12 +140,6 @@ class InvoiceDetail < ApplicationRecord
 
     def iva
       Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f
-    end
-
-    def destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
     end
   #FUNCIONES
 

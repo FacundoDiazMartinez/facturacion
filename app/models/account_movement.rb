@@ -1,4 +1,5 @@
 class AccountMovement < ApplicationRecord
+  include Deleteable
   belongs_to :client
   belongs_to :invoice, optional: true
   belongs_to :receipt, optional: true
@@ -147,14 +148,6 @@ class AccountMovement < ApplicationRecord
       end
   	end
 
-
-
-    def destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
-    end
-
     def self.del
       ReceiptDetail.delete_all
       IvaBook.delete_all
@@ -170,11 +163,15 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.reset
-      AccountMovement.destroy_all
-      Invoice.destroy_all
-      Receipt.destroy_all
+      ReceiptDetail.unscoped.all.map{|am| am.destroy(:hard)}
+      AccountMovement.unscoped.all.map{|am| am.destroy(:hard)}
+      InvoiceDetail.unscoped.all.map{|am| am.destroy(:hard)}
+      IvaBook.unscoped.all.map{|am| am.destroy(:hard)}
+      Payment.unscoped.all.map{|am| am.destroy(:hard)}
+      Invoice.unscoped.all.map{|am| am.destroy(:hard)}
+      Receipt.unscoped.all.map{|am| am.destroy(:hard)}
       Client.update_all(saldo: 0)
-      DailyCashMovement.destroy_all
+      DailyCashMovement.unscoped.all.map{|am| am.destroy(:hard)}
     end
   #FUNCIONES
 

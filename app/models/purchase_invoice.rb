@@ -45,6 +45,10 @@ class PurchaseInvoice < ApplicationRecord
   def purchase_order_number
     purchase_order.nil? ? "" : purchase_order.number
   end
+
+  def tipo
+    Afip::CBTE_TIPO[cbte_tipo]
+  end
   # ATRIBUTOS
 
   #PROCESOS
