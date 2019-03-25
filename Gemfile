@@ -96,6 +96,8 @@ gem 'pjax_rails'
 #Importar en una sola consulta a la DB
 gem 'activerecord-import'
 
+gem 'pry-rails'
+
 #Gemas para importar o trabajar con excel
 gem 'roo'
 gem 'roo-xls'
