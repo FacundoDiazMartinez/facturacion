@@ -31,9 +31,9 @@
 		    	<td class="text-bold"><%= "$ #{am.total}" unless !am.haber %></td>
 		    	<% if @account_movements.count == (index + 1) %>
 		    		<% if am.saldo > 0 %>
-		    			<td class="text-danger text-bold"> $ <%= am.saldo %></td>
+		    			<td class="text-white text-bold" style="background-color: red;"> $ <%= am.saldo %></td>
 		    		<% else %>
-		    			<td class="text-success text-bold">$ <%= am.saldo %></td>
+		    			<td class="text-white text-bold" style="background-color: green;">$ <%= am.saldo %></td>
 		    		<% end %>
 		    	<% else %>
 		    		<td>$ <%= am.saldo %></td>
