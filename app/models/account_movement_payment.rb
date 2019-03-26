@@ -43,12 +43,16 @@ class AccountMovementPayment < Payment
  		end
 
     def set_flow
- 			self.flow = "income"
+ 			self.flow = self.account_movement.cbte_tipo == "99" ? "expense" : "income"
  		end
 
  		def set_total_pay_to_invoice
 			sum = invoice.sum_payments
   		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
   	end
+
+		def account_movement
+			AccountMovement.unscoped { super }
+		end
 	#PRECESOS
 end

@@ -15,7 +15,7 @@ class Payment < ApplicationRecord
   has_one :retention_payment, dependent: :destroy
 
   after_initialize :set_payment_date
-  after_save :save_daily_cash_movement, if: :changed_or_new_record?
+  after_save :save_daily_cash_movement
 
   default_scope { where(active: true) }
   accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
@@ -85,6 +85,13 @@ class Payment < ApplicationRecord
         invoice.name_with_comp
       elsif !purchase_order_id.nil?
         purchase_order.name_with_comp
+      elsif !account_movement_id.nil?
+        am = AccountMovement.unscoped.find(account_movement_id)
+        if am.receipt_id.nil?
+          ""
+        else
+          am.receipt.full_name
+        end
       else
         ""
       end
@@ -122,9 +129,9 @@ class Payment < ApplicationRecord
     end
 
     def save_daily_cash_movement
+      pp "ENTRO A SAVE DAILY CASH MOVEMENT"
       if type_of_payment == "0"
         if payment_date <= Date.today
-          pp "ENTRO #{self.company_id}"
           DailyCashMovement.save_from_payment(self, company_id)
         else
           DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)

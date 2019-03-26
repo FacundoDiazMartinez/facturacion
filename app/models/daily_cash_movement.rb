@@ -85,6 +85,7 @@ class DailyCashMovement < ApplicationRecord
   	def self.save_from_payment payment, company_id
       invoice_tipo = Invoice.where(id: payment.invoice_id).first.try(:cbte_tipo)
       unless Invoice::COD_NC.include?(invoice_tipo)
+        pp "ENTRO A SAVE FROM PAYMENT"
         daily_cash = DailyCash.current_daily_cash(company_id)
     		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
     		movement.movement_type 			   =  "Pago"

@@ -127,6 +127,11 @@ class Receipt < ApplicationRecord
   #PROCESOS
 
   #ATRIBUTOS
+
+    def full_name
+      "R#{letra_tipo}: #{number}"
+    end
+
     def full_invoice
       Invoice.unscoped do
         full_invoice = []
