@@ -12,14 +12,30 @@ $( document ).ready(function() {
 		total_venta = parseFloat($("#purchase_order_total").val());
 	}
 
+	showProductNamePopover ();
+});
+
+$(document).on('pjax:complete', function() {
+	showProductNamePopover();
+});
+
+function showProductNamePopover () {
 	$("#details tr.fields").each(function(){  // Mostrar popover del campo nombre con el nombre completo
 		var name = $(this).find(".name");
 		name.popover({
 			title: name.val(),
 			trigger: "hover"
 		});
+
+		var iva = $(this).find(".iva_aliquot");
+		var iva_amount = $(this).find("input.iva_amount").val();
+		iva.popover({
+			title: "Monto I.V.A.: $ " + iva_amount,
+			trigger: "hover"
+		});
+
 	});
-});
+}
 
 function setConfirmParam() {
 	$("#send_to_afip").prop('checked', true);
@@ -28,10 +44,10 @@ function setConfirmParam() {
 
 function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
-	$(element).tooltip('dispose');
-	$(element).tooltip({
-		title: "Monto I.V.A.: $" + iva_amount + ".",
-		placement: "top"
+	$(element).popover('dispose');
+	$(element).popover({
+		title: "Monto I.V.A.: $" + iva_amount,
+		trigger: "hover"
 	});
 }
 
@@ -50,20 +66,19 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 
 	var recharge = parseFloat($("#client_recharge").val() * -1);
 
-  	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
-  	$(this).closest("tr.fields").find("input.name").val(data.item.name);
-  	$(this).closest("tr.fields").find("select.tipo").val(data.item.tipo);
-  	$(this).closest("tr.fields").find("input.price").val(data.item.price);
-  	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-		$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
+	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
+	$(this).closest("tr.fields").find("input.name").val(data.item.name).popover('dispose').popover({
+		title: data.item.name,
+		trigger: "hover"
+	});
+	$(this).closest("tr.fields").find("select.tipo").val(data.item.tipo);
+	$(this).closest("tr.fields").find("input.price").val(data.item.price);
+	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 
-		$(this).closest("tr.fields").find("input.name").popover({
-			title: data.item.name,
-			trigger: "hover"
-		});
-		// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
-		$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
-		calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
+	// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
+	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
+	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
 
 
@@ -85,7 +100,7 @@ function setVars(current_field){
 	iva_aliquot	 		= current_field.closest("tr.fields").find("select.iva_aliquot").find('option:selected');
 }
 
-$(document).on("change", ".price, .quantity", function(){
+$(document).on("change", ".price, .quantity, .bonus_percentage", function(){
 	setVars($(this));
 
 	total_neto 				= parseFloat(price.val()) * parseFloat(quantity.val());
@@ -211,13 +226,7 @@ $(document).on('nested:fieldAdded', function(event){
 	autocomplete_field();
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
-	// $('.datepicker').datepicker({
-	//       language: "es",
-	//       dateFormat: "dd/mm/yyyy",
-	//       todayHighlight: true,
-	//       autoclose: true,
-	//       startView: 2
-	// });
+
 	toogleConceptInTable()
 });
 
