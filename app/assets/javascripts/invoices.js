@@ -30,7 +30,7 @@ function showProductNamePopover () {
 		var iva = $(this).find(".iva_aliquot");
 		var iva_amount = $(this).find("input.iva_amount").val();
 		iva.popover({
-			title: "Monto I.V.A.: $" + iva_amount,
+			title: "Monto I.V.A.: $ " + iva_amount,
 			trigger: "hover"
 		});
 
