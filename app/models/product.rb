@@ -90,6 +90,12 @@ class Product < ApplicationRecord
 	  	"98" => "otras unidades"
 	}
 	validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}, allow_blank: true
+  validate :validate_unique_state
+
+  def validate_unique_state
+    validate_uniqueness_of_in_memory(
+      stocks, [:state, :depot_id], 'Esta intentando generar estados duplicados para un mismo depósito.')
+  end
 
 	#FILTROS DE BUSQUEDA
 		def self.search_by_name name

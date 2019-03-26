@@ -36,11 +36,18 @@ class DeliveryNoteDetail < ApplicationRecord
   #ATRIBUTOS
 
   def adjust_product_stock
-    difference = quantity.to_f
-    if invoice_detail.depot_id == self.depot_id
-      self.product.deliver_product(quantity: difference, depot_id: self.depot_id, from: "Reservado")
+    if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
+      pp "ENTRO AL 1 #{depot.name}"
+      difference = invoice_detail.quantity.to_f - quantity.to_f
+      self.product.rollback_reserved_stock(quantity: difference, depot_id: self.depot_id)
+      self.product.deliver_product(quantity: quantity, depot_id: self.depot_id, from: "Reservado")
+    elsif !invoice_detail.blank? && invoice_detail.depot_id != self.depot_id
+      pp "ENTRO AL 2 #{depot.name}"
+      self.product.rollback_reserved_stock(quantity: quantity.to_f, depot_id: self.depot_id)
+      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible")
     else
-      self.product.deliver_product(quantity: difference, depot_id: self.depot_id, from: "Disponible")
+      pp "ENTRO AL 3 #{depot.name}"
+      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible")
     end
   end
 

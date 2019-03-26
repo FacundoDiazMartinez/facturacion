@@ -109,12 +109,12 @@ class DeliveryNotesController < ApplicationController
     @client = @associated_invoice.client
     @delivery_note.client_id = @associated_invoice.client_id
     @delivery_note.delivery_note_details.each{ |dnd| dnd.mark_for_destruction  }
-    @associated_invoice.invoice_details.each do |id|
+    @associated_invoice.invoice_details.each do |detail|
       @delivery_note.delivery_note_details.build(
-        product_id: id.product_id,
-        depot_id: id.depot_id,
-        quantity: id.quantity,
-        invoice_detail_id: id.id
+        product_id: detail.product_id,
+        depot_id: detail.depot_id,
+        quantity: detail.quantity,
+        invoice_detail_id: detail.id
       )
     end
   end

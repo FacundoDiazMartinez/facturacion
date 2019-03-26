@@ -31,7 +31,7 @@
 			            #
 			        <% end %>
 					<%= f.hidden_field :product_id, class: 'product_id' %>
-          <%= f.hidden_field :invoice_detail_id, class: 'product_id' %>
+          <%= f.hidden_field :invoice_detail_id %>
 					</td>
 		      		<td><%= autocomplete_field_tag :code, f.object.product_code, autocomplete_product_code_products_path, class: 'delivery_note-autocomplete_field form-control code', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@delivery_note.editable? || !f.object.invoice_detail_id.nil? %></td>
 		      		<td><%= text_field_tag :name, f.object.product_name, class: 'form-control name', disabled: !@delivery_note.editable?  %></td>
