@@ -1,4 +1,5 @@
 class DeliveryNoteDetail < ApplicationRecord
+  include Deleteable
   belongs_to :delivery_note, optional: true
   belongs_to :product, optional: true, class_name: "ProductUnscoped"
   belongs_to :depot, optional: true

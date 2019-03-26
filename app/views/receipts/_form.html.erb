@@ -34,7 +34,7 @@
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :cbte_tipo, "Tipo de recibo" %>
-              <%= form.select :cbte_tipo, options_for_select([['Recibo X', '00'], ['Devolución','99']]),{prompt: "Seleccionar tipo de recibo"},{class: 'form-control', disabled: !@receipt.editable?} %>
+              <%= form.select :cbte_tipo, [['Recibo X', '00'], ['Devolución','99']], {prompt: "Seleccionar tipo de recibo"}, {class: 'form-control'} %>
             </div>
             <div class="form-group">
               <%= form.label :total, "Total ($)" %>
@@ -94,7 +94,7 @@
                       <!-- <% if @receipt.editable? %>
                         <%# link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'input-group-text btn btn-secondary', min_length: 3 %>
                       <% else %> -->
-                        
+
                       <!-- <% end %> -->
                     <!--</td>-->
                     <td>

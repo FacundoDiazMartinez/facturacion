@@ -1,5 +1,5 @@
 class DeliveryNote < ApplicationRecord
-
+  include Deleteable
   belongs_to :company,optional: true
   belongs_to :invoice,optional: true
   belongs_to :user,optional: true
