@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_26_133627) do
+ActiveRecord::Schema.define(version: 2019_03_26_165837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
 
   create_table "cheque_payments", force: :cascade do |t|
     t.string "state", default: "No cobrado", null: false
-    t.date "expiration", default: -> { "('now'::text)::date" }, null: false
+    t.date "expiration", default: -> { "CURRENT_DATE" }, null: false
     t.float "total", default: 0.0, null: false
     t.text "observation"
     t.boolean "active", default: true, null: false
@@ -352,8 +352,10 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.boolean "cumpliment", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "invoice_details_id"
     t.index ["delivery_note_id"], name: "index_delivery_note_details_on_delivery_note_id"
     t.index ["depot_id"], name: "index_delivery_note_details_on_depot_id"
+    t.index ["invoice_details_id"], name: "index_delivery_note_details_on_invoice_details_id"
     t.index ["product_id"], name: "index_delivery_note_details_on_product_id"
   end
 
@@ -367,7 +369,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -520,7 +522,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -708,8 +710,8 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.string "cbte_tipo", default: "00", null: false
     t.bigint "client_id"
     t.bigint "sale_point_id"
-    t.string "state", default: "Pendiente"
     t.bigint "user_id"
+    t.string "state", default: "Pendiente"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
@@ -759,7 +761,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.bigint "responsable_id", null: false
     t.string "observation"
     t.string "number", null: false
-    t.date "init_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -929,6 +931,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_note_details", "delivery_notes"
   add_foreign_key "delivery_note_details", "depots"
+  add_foreign_key "delivery_note_details", "invoice_details", column: "invoice_details_id"
   add_foreign_key "delivery_note_details", "products"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"

@@ -3,6 +3,7 @@ class DeliveryNoteDetail < ApplicationRecord
   belongs_to :delivery_note, optional: true
   belongs_to :product, optional: true, class_name: "ProductUnscoped"
   belongs_to :depot
+  belongs_to :invoice_detail, optional: true
   has_many :invoice_details, through: :delivery_note
 
 
@@ -36,7 +37,11 @@ class DeliveryNoteDetail < ApplicationRecord
 
   def adjust_product_stock
     difference = quantity.to_f
-    self.product.deliver_product(quantity: difference, depot_id: self.depot_id, from: "Reservado")
+    if invoice_detail.depot_id == self.depot_id
+      self.product.deliver_product(quantity: difference, depot_id: self.depot_id, from: "Reservado")
+    else
+      self.product.deliver_product(quantity: difference, depot_id: self.depot_id, from: "Disponible")
+    end
   end
 
 end
