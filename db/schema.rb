@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_08_184702) do
+ActiveRecord::Schema.define(version: 2019_03_25_144916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -412,7 +412,7 @@ ActiveRecord::Schema.define(version: 2019_03_08_184702) do
   create_table "invoice_details", force: :cascade do |t|
     t.bigint "invoice_id"
     t.bigint "product_id"
-    t.float "quantity", default: 1.0, null: false
+    t.float "quantity", default: 0.0, null: false
     t.string "measurement_unit", null: false
     t.float "price_per_unit", default: 0.0, null: false
     t.float "bonus_percentage", default: 0.0, null: false

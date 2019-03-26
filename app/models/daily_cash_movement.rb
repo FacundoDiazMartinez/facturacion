@@ -83,23 +83,26 @@ class DailyCashMovement < ApplicationRecord
     end
 
   	def self.save_from_payment payment, company_id
-      daily_cash = DailyCash.current_daily_cash(company_id)
-  		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
-  		movement.movement_type 			   =  "Pago"
-  		movement.amount 				       =  payment.total
-  		movement.associated_document 	 =  payment.associated_document
-  		movement.payment_type			     =  payment.type_of_payment
-  		movement.flow 					       =  payment.flow
-  		movement.payment_id 			     =  payment.id
-      movement.user_id               =  payment.user_id
-      if movement.new_record?
-        if payment.flow == "income"
-          movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
-        else
-          movement.current_balance       =  daily_cash.current_amount.to_f - payment.total
+      invoice_tipo = Invoice.where(id: payment.invoice_id).first.try(:cbte_tipo)
+      unless Invoice::COD_NC.include?(invoice_tipo)
+        daily_cash = DailyCash.current_daily_cash(company_id)
+    		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
+    		movement.movement_type 			   =  "Pago"
+    		movement.amount 				       =  payment.total
+    		movement.associated_document 	 =  payment.associated_document
+    		movement.payment_type			     =  payment.type_of_payment
+    		movement.flow 					       =  payment.flow
+    		movement.payment_id 			     =  payment.id
+        movement.user_id               =  payment.user_id
+        if movement.new_record?
+          if payment.flow == "income"
+            movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
+          else
+            movement.current_balance       =  daily_cash.current_amount.to_f - payment.total
+          end
         end
+    		movement.save unless !movement.changed?
       end
-  		movement.save unless !movement.changed?
   	end
 
     def touch_daily_cash_current_amount

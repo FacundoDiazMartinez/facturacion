@@ -16,7 +16,7 @@
 				<% if @invoice.delivery_notes.last.nil?  %>
 					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 				<% else %>
-					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.delivery_note.last.id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
+					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.delivery_notes.last.id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 				<% end -%>
 			<% end -%>
 		</div>

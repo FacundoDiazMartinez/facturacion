@@ -547,6 +547,7 @@ class Invoice < ApplicationRecord
           Afip.service_url        = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
           Afip.cuit               = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
           Afip::AuthData.environment = :production
+          Afip.environment 	      = :production
           #http://ayuda.egafutura.com/topic/5225-error-certificado-digital-computador-no-autorizado-para-acceder-al-servicio/
         else
           #TEST

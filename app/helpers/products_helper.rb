@@ -4,7 +4,11 @@ module ProductsHelper
 		if product.supplier_id.blank? 
 			product.category_name
 		else
-			link_to product.category_name, product_category_path(product.product_category_id)
+			if product.product_category.present?
+				link_to product.category_name, product_category_path(product.product_category_id)
+			else
+				
+			end
 		end
 	end
 
