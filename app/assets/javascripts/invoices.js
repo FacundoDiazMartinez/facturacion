@@ -294,6 +294,12 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 }
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
+	if (jQuery.inArray($(this).val(), ["03", "08", "13"])) {
+		$("#payment_title").html("Devoluciones de dinero")
+	}else{
+		$("#payment_title").html("Pagos")
+	}
+
 	form = $(this).parents('form:first')
 	cbte_tipo = $("#invoice_cbte_tipo")
 	concepto = $("#invoice_concepto")

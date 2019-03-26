@@ -76,14 +76,9 @@ class InvoicesController < ApplicationController
       associated_invoice.invoice_details.each do |detail|
         id = @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
       end
-      associated_invoice.income_payments.each do |payment|
-        p_attr = payment.attributes.except!(*["id", "invoice_id"])
-        @invoice.income_payments.build(p_attr)
-      end
       @invoice.associated_invoice = associated_invoice.id
     end
     @invoice.save
-    pp @invoice.errors
     respond_to do |format|
       format.html { redirect_to edit_invoice_path(@invoice.id) }
     end

@@ -34,7 +34,7 @@
               <% end %>
 		  					<%= pf.hidden_field :id, class: 'product_id' %>
 				  		</td>
-						<td><%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'purchase_order-autocomplete_field form-control code', data:{noMatchesLabel: "Crear nuevo producto."}, required: true, disabled: !@purchase_order.editable?  %></td>
+						<td><%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'purchase_order-autocomplete_field form-control code', fields: {supplier_id: "#purchase_order_supplier_id"},data:{noMatchesLabel: "Crear nuevo producto."}, required: true, disabled: !@purchase_order.editable?  %></td>
 						<td><%= pf.text_field :supplier_code, class: 'purchase_order-autocomplete_field form-control supplier_code', disabled: !@purchase_order.editable?  %></td>
 						<td><%= pf.text_field :name, class: 'form-control name', disabled: !@purchase_order.editable?  %></td>
 						<td><%= pf.number_field :cost_price, class: 'form-control prodPrice',step: :any, disabled: !@purchase_order.editable?  %></td>
