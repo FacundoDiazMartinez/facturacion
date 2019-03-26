@@ -352,10 +352,10 @@ ActiveRecord::Schema.define(version: 2019_03_26_165837) do
     t.boolean "cumpliment", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "invoice_details_id"
+    t.bigint "invoice_detail_id"
     t.index ["delivery_note_id"], name: "index_delivery_note_details_on_delivery_note_id"
     t.index ["depot_id"], name: "index_delivery_note_details_on_depot_id"
-    t.index ["invoice_details_id"], name: "index_delivery_note_details_on_invoice_details_id"
+    t.index ["invoice_detail_id"], name: "index_delivery_note_details_on_invoice_detail_id"
     t.index ["product_id"], name: "index_delivery_note_details_on_product_id"
   end
 
@@ -931,7 +931,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_165837) do
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_note_details", "delivery_notes"
   add_foreign_key "delivery_note_details", "depots"
-  add_foreign_key "delivery_note_details", "invoice_details", column: "invoice_details_id"
+  add_foreign_key "delivery_note_details", "invoice_details"
   add_foreign_key "delivery_note_details", "products"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
