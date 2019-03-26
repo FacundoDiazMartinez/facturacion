@@ -72,18 +72,13 @@ class InvoicesController < ApplicationController
     @invoice.attributes = atributos.except!(*["id", "state", "cbte_tipo", "header_result", "authorized_on", "cae_due_date", "cae", "cbte_fch", "comp_number", "associated_invoice"])
     @invoice.cbte_tipo = (associated_invoice.cbte_tipo.to_i + 2).to_s.rjust(2,padstr= '0')
     @invoice.cbte_fch = Date.today
-
-    associated_invoice.invoice_details.each do |detail|
-      @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
+    if @invoice.invoice_details.size == 0 && @invoice.income_payments.size == 0
+      associated_invoice.invoice_details.each do |detail|
+        id = @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
+      end
+      @invoice.associated_invoice = associated_invoice.id
     end
-    associated_invoice.income_payments.each do |payment|
-      p_attr = payment.attributes.except!(*["id", "invoice_id"])
-      @invoice.income_payments.build(p_attr)
-    end
-    @invoice.associated_invoice = associated_invoice.id
-    pp @invoice.receipts
     @invoice.save
-    pp @invoice.errors
     respond_to do |format|
       format.html { redirect_to edit_invoice_path(@invoice.id) }
     end

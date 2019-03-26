@@ -91,7 +91,11 @@ class PurchaseOrdersController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
-    products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
+    if params[:supplier_id].blank?
+      products = current_user.company.products.where('code ILIKE ?', "%#{term}%").order(:code).all
+    else
+      products = current_user.company.suppliers.find(params[:supplier_id]).products.where('code ILIKE ?', "%#{term}%").order(:code).all
+    end
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.cost_price, supplier_code: product.supplier_code} }
   end
 

@@ -1,6 +1,6 @@
 <h3 class="d-flex mb-2">
-    <div class="p-2">
-      	Pagos
+    <div class="p-2" id="payment_title">
+      	<%= @invoice.is_credit_note? ? "Devoluciones de dinero" : "Pagos" %>
     </div>
 </h3>
 <div id="saldo_disponible" class="text-muted ml-4"></div>
