@@ -25,6 +25,9 @@ class Receipt < ApplicationRecord
   accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
+  validate :uniqueness_of_invoice_id
+
+
 
   CBTE_TIPO = {
     "04"=>"Recibo A",
@@ -57,6 +60,11 @@ class Receipt < ApplicationRecord
   #FILTROS DE BUSQUEDA
 
   #VALIDACIONES
+    def uniqueness_of_invoice_id
+      invoice_ids = receipt_details.map{|detail| detail.invoice_id unless detail.marked_for_destruction?}
+      errors.add(:base, "Esta intentando vincular dos o más veces los mismos comprobantes, por favor revise.") unless invoice_ids.uniq.length == invoice_ids.length
+    end
+
     def check_total
       if new_record?
         errors.add(:total, "No se puede crear un recibo por un monto nulo.") unless total > 0.0
