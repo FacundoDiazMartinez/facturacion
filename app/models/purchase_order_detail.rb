@@ -16,9 +16,7 @@ class PurchaseOrderDetail < ApplicationRecord
 
   #PROCESOS
   	def check_product
-      if new_record?
-        pp "ACAAAAA ES"
-        pp self.purchase_order.user_id
+      if self.product.new_record?
         product.company_id  = self.purchase_order.company_id
         product.created_by  = self.purchase_order.user_id
         product.price       = 0.0
@@ -39,8 +37,8 @@ class PurchaseOrderDetail < ApplicationRecord
 
     def product_attributes=(attributes)
       if !attributes['id'].blank?
-        p = Product.where(id: attributes['id']).first
-        if p.nil?
+        self.product = Product.where(id: attributes['id']).first
+        if self.product.nil?
           attributes['id'] = ""
         end
       end

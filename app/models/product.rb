@@ -272,7 +272,11 @@ class Product < ApplicationRecord
 		end
 
 		def add_price_history
-			old_price = saved_changes[:net_price].first.to_f
+      if saved_changes[:net_price].nil?
+          old_price = 0.0
+      else
+		      old_price = saved_changes[:net_price].first.to_f
+      end
 			percentage = (net_price * 100 / old_price).to_f.round(2) - 100
 			self.product_price_histories.create(price: net_price, percentage: percentage, created_by: created_by)
 		end
