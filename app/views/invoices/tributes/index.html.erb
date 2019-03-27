@@ -2,11 +2,6 @@
     <div class="p-2">
       	Tributos
     </div>
-    <div class="ml-auto p-2">
-      	<% if @invoice.editable? %>
-        	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-success', data: {target: '#tributes'}%>
-      	<% end %>
-    </div>
 </h3>
 <div id="saldo_disponible" class="text-muted ml-4"></div>
 <div class="table-responsive-sm">
@@ -39,3 +34,11 @@
 		</tbody>
 	</table>
 </div>
+
+<% if @invoice.editable? %>
+	<center>
+		<div class="m-2">
+			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-success', data: {target: '#tributes'}%>
+		</div>
+	</center>
+<% end %>
