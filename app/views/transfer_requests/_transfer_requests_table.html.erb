@@ -1,0 +1,35 @@
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Fecha</th>
+        <th>Remitente</th>
+        <th>Destinatario</th>
+        <th>Estado</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @transfer_requests.each do |transfer_request| %>
+      <tr>
+        <td><%= transfer_request.number %></td>
+        <td><%= l(transfer_request.date) %></td>
+        <td><%= link_to transfer_request.sender.name, edit_invoice_path(transfer_request.from_depot_id) %></td>
+        <td><%= link_to transfer_request.receiver.name, edit_invoice_path(transfer_request.to_depot_id) %></td>
+        <td><%= transfer_request.state %></td>
+        <td>
+          <%= link_to icon('fas', 'eye').html_safe, transfer_request_path(transfer_request.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit'), edit_transfer_request_path(transfer_request), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, TransferRequest %>
+          <% if (transfer_request.editable?) %>
+            <%= link_to icon('fas', 'trash'), transfer_request, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, DeliveryNote %>
+          <% end %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= paginate @transfer_requests %>
+</div>

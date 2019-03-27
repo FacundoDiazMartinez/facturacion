@@ -1,0 +1,48 @@
+<div class="modal-header">
+	<h5 class="modal-title" id="clientModalTitle"><%= icon('far', 'check-circle') %> Confirmar comprobante </h5>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  	<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<div class="modal-body" id="search_product_body">
+  Está a punto de enviar el comprobante a AFIP para su validación. ¿Está seguro?
+  <br>
+  <br>
+  <div class="form-group row">
+    <%= label_tag :name, "Cliente", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+    <div class="col-md-8">
+      <%= text_field_tag :client_name_modal, @invoice.client.name , class: 'form-control form-control-sm client_name_modal', autocomplete: false, disabled: true %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= label_tag :type, "Tipo", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+    <div class="col-md-8">
+      <%= text_field_tag :doc_type_modal, @invoice.cbte_tipo , class: 'form-control form-control-sm cbte_tipo_modal', autocomplete: false, disabled: true %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= label_tag :total, "Total", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+    <div class="col-md-8">
+      <%= text_field_tag :invoice_total_modal, @invoice.total , class: 'form-control form-control-sm invoice_total_modal', autocomplete: false, disabled: true %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= label_tag :total_pay, "Total pagado", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+    <div class="col-md-8">
+      <%= text_field_tag :invoice_total_pay_modal, @invoice.total_pay , class: 'form-control form-control-sm invoice_total_pay_modal', autocomplete: false, disabled: true %>
+    </div>
+  </div>
+
+  <br>
+  Futuros pagos deberán realizarse por medio de recibos.
+
+</div>
+
+<div class="modal-footer">
+  	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+  	<%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
+</div>
