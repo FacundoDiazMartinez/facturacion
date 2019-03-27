@@ -28,6 +28,8 @@ class PurchaseOrderDetail < ApplicationRecord
           self.price        = product.cost_price
           self.total        = self.price * self.quantity
         end
+      else
+        product.updated_by  = self.purchase_order.user_id
       end
     end
 

@@ -269,7 +269,7 @@ $(document).on('nested:fieldRemoved', function(event){
 
 $(document).on("change", ".importe", function(){
 	var total = parseFloat(0);
-	$(".subtotal:visible").each(function(){
+	$("td:visible > .subtotal").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
 	$(".importe:visible").each(function(){
