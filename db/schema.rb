@@ -829,7 +829,7 @@ ActiveRecord::Schema.define(version: 2019_03_27_170003) do
     t.string "number", null: false
     t.string "state", default: "Pendiente", null: false
     t.string "observation"
-    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "date", default: -> { "('now'::text)::date" }, null: false
     t.bigint "from_depot_id", null: false
     t.bigint "to_depot_id", null: false
     t.boolean "active", default: true, null: false
