@@ -5,9 +5,6 @@
 		</div>
 		<div class="col-4 text-right">
 			<button class="btn btn-primary " role="button" onclick="toggleHeader()" id="encabezado"><%= icon('fas' ,'eye-slash') %> Ocultar encabezado</button>
-			<% if current_user.company.iva_cond == "Responsable Inscripto" %>
-				<button class="btn btn-primary " role="button" onclick="toggleTributes()" id="tributos"><%= icon('fas' ,'eye') %> Ver tributos</button>
-			<% end -%>
 		</div>
 	</div>
 

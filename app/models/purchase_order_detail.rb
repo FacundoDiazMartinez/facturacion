@@ -17,12 +17,18 @@ class PurchaseOrderDetail < ApplicationRecord
   #PROCESOS
   	def check_product
       if new_record?
-        product.company_id = purchase_order.company_id
-        product.updated_by = purchase_order.user_id
+        pp "ACAAAAA ES"
+        pp self.purchase_order.user_id
+        product.company_id  = self.purchase_order.company_id
+        product.created_by  = self.purchase_order.user_id
+        product.price       = 0.0
+        product.iva_aliquot = "03"
+        product.updated_by  = self.purchase_order.user_id
         product.save
-        if not product.errors.any?
-          self.price   = product.cost_price
-          self.total = 	self.price * self.quantity
+        unless product.errors.any?
+          self.product      = product
+          self.price        = product.cost_price
+          self.total        = self.price * self.quantity
         end
       end
     end
@@ -33,7 +39,10 @@ class PurchaseOrderDetail < ApplicationRecord
 
     def product_attributes=(attributes)
       if !attributes['id'].blank?
-        self.product = Product.find(attributes['id'])
+        p = Product.where(id: attributes['id']).first
+        if p.nil?
+          attributes['id'] = ""
+        end
       end
       super
     end
