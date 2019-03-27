@@ -1,0 +1,83 @@
+<%= nested_form_for @transfer_request do |form| %>
+  <%= error_explanation @transfer_request %>
+  <!-- HEADER -->
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+
+          <!-- PRIMERA COLUMNA -->
+            <div class="col-sm">
+              <div class="form-group">
+                <%= form.label :number, "Número de remito" %>
+                <%= form.text_field :number, class: 'form-control', disabled: !@transfer_request.editable?, required: true %>
+              </div>
+              <div class="form-group">
+                <%= form.label :date, "Fecha" %>
+                <%= form.text_field :date, class: 'form-control datepicker', required: true, disabled: !@transfer_request.editable? %>
+              </div>
+            </div>
+          <!-- PRIMERA COLUMNA -->
+
+          <!-- SEGUNDA COLUMNA -->
+            <div class="col-sm">
+              <div class="form-group">
+                <%= form.label :from_depot_id, "Remitente" %>
+                <%= form.select :from_depot_id, options_for_select(current_user.company.depots.map{|depot| [depot.name, depot.id]}, form.object.from_depot_id),{prompt: "Selecione..."}, {class: 'form-control', disabled: !@transfer_request.editable?, required: true} %>
+              </div>
+              <div class="form-group">
+                <%= form.label :to_depot_id, "Destinatario" %>
+                <%= form.select :to_depot_id, options_for_select(current_user.company.depots.map{|depot| [depot.name, depot.id]}, form.object.to_depot_id),{prompt: "Seleccione..."}, {class: 'form-control', disabled: !@transfer_request.editable?, required: true} %>
+              </div>
+            </div>
+          <!-- SEGUNDA COLUMNA -->
+
+          <!-- TERCERA COLUMNA -->
+            <div class="col-sm">
+              <div class="form-group">
+                <%= form.label :state, "Estado" %>
+                <% if @transfer_request.editable? %>
+                  <%= form.select :state, options_for_select(["Pendiente", "Finalizado"], form.object.state),{}, {class: 'form-control', disabled: !@transfer_request.editable?} %>
+                <% else %>
+                  <%= form.text_field :state, class: 'form-control', disabled: !@transfer_request.editable? %>
+                <% end %>
+              </div>
+              <div class="form-group">
+                <%= form.label :transporter_id, "Transportista" %>
+                <%= form.select :transporter_id, options_for_select(current_user.company.users.map{|u| [u.name, u.id]}), {prompt:  "Seleccione..."},{class: 'form-control', disabled: !@transfer_request.editable?, required: true}%>
+              </div>
+
+            </div>
+          <!-- TERCERA COLUMNA -->
+        </div>
+
+        <center>
+          <% if @transfer_request.state == "Finalizado" && current_user.has_stock_management_role? && @transfer_request.persisted? %>
+            <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_transfer_request_path(@transfer_request.id), method: :patch, class: 'btn btn-danger' %>
+          <% end %>
+          <% if @transfer_request.state == "Finalizado" && current_user.has_stock_management_role? && @transfer_request.persisted? %>
+            <%= link_to "#{icon('fas', 'share')} Enviar al destinatario".html_safe, send_transfer_transfer_request_path(@transfer_request.id), method: :patch, class: 'btn btn-success' %>
+          <% end %>
+          <% if @transfer_request.state == "Enviado" && current_user.has_stock_management_role? && @transfer_request.persisted? %>
+            <%= link_to "#{icon('fas', 'share')} Registrar recepción".html_safe, receive_transfer_transfer_request_path(@transfer_request.id), method: :patch, class: 'btn btn-success' %>
+          <% end %>
+        </center>
+      </div>
+    </div>
+  <!-- HEADER -->
+
+  <!-- DETALLES -->
+    <div class="card" id="arrival_details">
+      <div class="card-body" id="idetails">
+        <%= render template: '/transfer_requests/details/index.html.erb', locals:{form: form} %>
+      </div>
+    </div>
+  <!-- DETALLES -->
+
+  <%= render '/transfer_requests/details/search_product' %>
+  <center>
+    <% if (@transfer_request.state != "Anulado" && @transfer_request.state != "Finalizado") || @transfer_request.new_record? %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary' %>
+    <% end %>
+  </center>
+
+<% end %>

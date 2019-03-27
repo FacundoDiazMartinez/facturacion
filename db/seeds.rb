@@ -61,8 +61,17 @@ f_ivab = FriendlyName.where(name: "Libros IVA", subject_class: "IvaBook").first_
 f_ivab.save
 f_receipt = FriendlyName.where(name: "Recibos", subject_class: "Receipt").first_or_initialize
 f_receipt.save
+f_transfer_request = FriendlyName.where(name: "Remitos de traslado", subject_class: "TransferRequest").first_or_initialize
+f_transfer_request.save
 
-
+#Remitos de traslado
+Permission.where(action_name: "read", description: "Ver el índice de remitos de traslado", friendly_name_id: f_transfer_request.id).first_or_initialize.save
+Permission.where(action_name: "show", description: "Ver información de una remito de traslado", friendly_name_id: f_transfer_request.id).first_or_initialize.save
+Permission.where(action_name: "manage", description: "Administrar las remitos de traslado", friendly_name_id: f_transfer_request.id).first_or_initialize.save
+Permission.where(action_name: "update", description: "Editar las remitos de traslado", friendly_name_id: f_transfer_request.id).first_or_initialize.save
+Permission.where(action_name: "confirm", description: "Confirmar una remito de traslado", friendly_name_id: f_transfer_request.id).first_or_initialize.save
+Permission.where(action_name: "cancel", description: "Anular una remito de traslado", friendly_name_id: f_transfer_request.id).first_or_initialize.save
+Permission.where(action_name: "create", description: "Crear una remito de traslado", friendly_name_id: f_transfer_request.id).first_or_initialize.save
 
 #Clientes Permissions
 Permission.where(action_name: "read", description: "Ver el índice de clientes", friendly_name_id: f_cli.id).first_or_initialize.save
@@ -189,10 +198,3 @@ Permission.where(action_name: "create", description: "Asignar permisos", friendl
 Permission.where(action_name: "manage", description: "Administrar permisos", friendly_name_id: f_rolp.id).first_or_initialize.save
 Permission.where(action_name: "destroy", description: "Revolcar permisos", friendly_name_id: f_rolp.id).first_or_initialize.save
 Permission.where(action_name: "read", description: "Ver permisos de rol", friendly_name_id: f_rolp.id).first_or_initialize.save
-
-
-
-
-
-
-

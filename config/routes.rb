@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
 
-
- resources :credit_cards
- resources :advertisements do
-   patch :cancel, on: :member
-   patch :send_email, on: :member
- end
+  resources :transfer_requests do
+    patch :cancel, on: :member
+    patch :send_transfer, on: :member
+    patch :receive_transfer, on: :member
+    get :search_product, on: :collection
+  end
+  resources :credit_cards
+  resources :advertisements do
+    patch :cancel, on: :member
+    patch :send_email, on: :member
+  end
   resources :payments, only: :destroy
   resources :sales_files, only: [:index, :show]
   resources :price_changes do

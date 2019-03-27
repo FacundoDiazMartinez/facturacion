@@ -2,7 +2,9 @@
   <div class="row">
     <% if !@invoice.check_authorized_invoice %>
       <div class="text_center">
-        -- ATENCIÓN: COMPROBANTE NO AUTORIZADO --
+        <% if @current_user.company.environment != "production" %>
+          -- ATENCIÓN: COMPROBANTE NO AUTORIZADO --
+        <% end %>
       </div>
     <% end %>
   </div>

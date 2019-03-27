@@ -823,6 +823,40 @@ ActiveRecord::Schema.define(version: 2019_03_27_183626) do
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
+  create_table "transfer_request_details", force: :cascade do |t|
+    t.bigint "transfer_request_id"
+    t.bigint "product_id"
+    t.float "quantity", null: false
+    t.boolean "active", default: true, null: false
+    t.text "observation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "product_code"
+    t.index ["product_id"], name: "index_transfer_request_details_on_product_id"
+    t.index ["transfer_request_id"], name: "index_transfer_request_details_on_transfer_request_id"
+  end
+
+  create_table "transfer_requests", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.bigint "transporter_id", null: false
+    t.string "number", null: false
+    t.string "state", default: "Pendiente", null: false
+    t.string "observation"
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.bigint "from_depot_id", null: false
+    t.bigint "to_depot_id", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "sended_by"
+    t.bigint "received_by"
+    t.datetime "sended_at"
+    t.datetime "received_at"
+    t.index ["company_id"], name: "index_transfer_requests_on_company_id"
+    t.index ["user_id"], name: "index_transfer_requests_on_user_id"
+  end
+
   create_table "tributes", force: :cascade do |t|
     t.bigint "invoice_id"
     t.string "afip_id", null: false
@@ -1015,6 +1049,10 @@ ActiveRecord::Schema.define(version: 2019_03_27_183626) do
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"
+  add_foreign_key "transfer_request_details", "products"
+  add_foreign_key "transfer_request_details", "transfer_requests"
+  add_foreign_key "transfer_requests", "companies"
+  add_foreign_key "transfer_requests", "users"
   add_foreign_key "tributes", "invoices"
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_roles", "roles"

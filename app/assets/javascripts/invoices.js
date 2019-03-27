@@ -85,8 +85,8 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.price").val(data.item.price);
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
-
-	// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
+	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot)
+	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
 	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
@@ -165,8 +165,7 @@ function calculateSubtotal(subtotal){
 	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left.toFixed(2));
-
-	if (total_left > 0 ) {
+	if (total_left > 0 || not($.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] ))) {
 		$("#normal").show();
 		$("#with_alert").hide();
 	}else{
@@ -314,10 +313,12 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 }
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
-	if (jQuery.inArray($(this).val(), ["03", "08", "13"])) {
-		$("#payment_title").html("Devoluciones de dinero")
+	if ($.inArray($(this).val(), ["03", "08", "13"])) {
+		$("#payment_title").html("Devoluciones de dinero");
+		//$("#total_left").val(0);
 	}else{
-		$("#payment_title").html("Pagos")
+		$("#payment_title").html("Pagos");
+		//$("#total_left").val(( $("#invoice_total").val() -  $("#invoice_total_pay").val()).toFixed(2));
 	}
 
 	form = $(this).parents('form:first')
@@ -371,7 +372,6 @@ $(document).on("change", "input.alic", function(){
 })
 
 function calculateTrib(e){
-	alert("entro")
 	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
 	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).trigger("change");
