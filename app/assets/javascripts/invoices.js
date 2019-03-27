@@ -42,6 +42,16 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
+function openConfirmationModal () {
+	$('#client_name_modal').val($('#invoice_client_name').val());
+	$('#doc_type_modal').val($('#invoice_cbte_tipo option:selected').text());
+	$('#invoice_total_modal').val('$ ' + $('#invoice_total').val());
+	$('#invoice_total_pay_modal').val('$ ' + $('#invoice_total_pay').val());
+
+	//$('#confirm_invoice_modal').modal('toggle');
+	$('#confirm_invoice_modal').modal('show');
+}
+
 function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
 	$(element).popover('dispose');
