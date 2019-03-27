@@ -24,7 +24,7 @@
         <td></td>
         <td></td>
         <td></td>
-        <td class="text_right"><b>Fecha de Vto. de CAE: </b> <%= @invoice.cae_due_date %> </td>
+        <td class="text_right"><b>Fecha de Vto. de CAE: </b><%= Date.strptime(@invoice.cae_due_date , "%Y%m%d") %> </td>
       </tr>
     </table>
   </div>
