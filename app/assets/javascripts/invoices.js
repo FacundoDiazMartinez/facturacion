@@ -269,14 +269,15 @@ $(document).on('nested:fieldRemoved', function(event){
 
 $(document).on("change", ".importe", function(){
 	var total = parseFloat(0);
-	$(".subtotal").each(function(){
+	$(".subtotal:visible").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
-	$(".importe").each(function(){
-	    total = total + parseFloat($(this).val().toFixed(2));
+	$(".importe:visible").each(function(){
+	    total = total + parseFloat($(this).val());
 	});
 	$("#invoice_total").val(total.toFixed(2));
-	$("span#total_left_venta").val(total);
+	$("#total_left").val(total.toFixed(2) - $("#invoice_total_pay").toFixed(2));
+	$("span#total_left_venta").val($("#total_left").val());
 	total_venta = total;
 
 	$(this).closest("td").find("strong").html("$" + $(this).val())
