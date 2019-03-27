@@ -361,7 +361,6 @@ $(document).on("change", "input.alic", function(){
 })
 
 function calculateTrib(e){
-	alert("entro")
 	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
 	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).trigger("change");
