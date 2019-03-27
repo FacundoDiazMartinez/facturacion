@@ -269,7 +269,7 @@ $(document).on('nested:fieldRemoved', function(event){
 
 $(document).on("change", ".importe", function(){
 	var total = parseFloat(0);
-	$(".subtotal:visible").each(function(){
+	$("td:visible > .subtotal").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
 	$(".importe:visible").each(function(){
@@ -363,7 +363,7 @@ $(document).on("change", "input.alic", function(){
 function calculateTrib(e){
 	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
-	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).toFixed(2).trigger("change");
+	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).trigger("change");
 }
 
 function toggleHeader(){
