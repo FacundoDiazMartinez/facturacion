@@ -42,6 +42,16 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
+function openConfirmationModal () {
+	$('#client_name_modal').val($('#invoice_client_name').val());
+	$('#doc_type_modal').val($('#invoice_cbte_tipo option:selected').text());
+	$('#invoice_total_modal').val('$ ' + $('#invoice_total').val());
+	$('#invoice_total_pay_modal').val('$ ' + $('#invoice_total_pay').val());
+
+	//$('#confirm_invoice_modal').modal('toggle');
+	$('#confirm_invoice_modal').modal('show');
+}
+
 function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
 	$(element).popover('dispose');
@@ -276,7 +286,7 @@ $(document).on("change", ".importe", function(){
 	    total = total + parseFloat($(this).val());
 	});
 	$("#invoice_total").val(total.toFixed(2));
-	$("#total_left").val(total.toFixed(2) - $("#invoice_total_pay").toFixed(2));
+	$("#total_left").val((parseFloat($("#invoice_total").val()) - parseFloat($("#invoice_total_pay").val())).toFixed(2));
 	$("span#total_left_venta").val($("#total_left").val());
 	total_venta = total;
 
@@ -361,6 +371,7 @@ $(document).on("change", "input.alic", function(){
 })
 
 function calculateTrib(e){
+	alert("entro")
 	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
 	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).trigger("change");
