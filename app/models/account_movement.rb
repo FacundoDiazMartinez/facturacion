@@ -104,6 +104,11 @@ class AccountMovement < ApplicationRecord
   #VALIDACIONES
 
   #FUNCIONES
+
+  def self.sum_available_amount_to_asign(client_id)
+    client = Client.find(client_id)
+    client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").sum(:amount_available)
+  end
   	def days
       if self.invoice.blank?
       else
