@@ -43,13 +43,23 @@ $(document).on("change", ".prodPrice, .prodQuant", function(){
 });
 
 $(document).on("change", '.prodSubtotal', function(){
+	sumTotalPurchaseOrder()
+});
+
+$(document).on('nested:fieldRemoved', function(event){
+	sumTotalPurchaseOrder()
+})
+
+
+
+function sumTotalPurchaseOrder(){
 	sumaTotales = parseFloat(0);
-	$(".prodSubtotal").each(function(){
+	$(".prodSubtotal:visible").each(function(){
 	  sumaTotales = parseFloat(sumaTotales) + parseFloat($(this).val());
 	});
 	sumaTotales = parseFloat(sumaTotales) +  parseFloat($("#purchase_order_shipping_cost").val())
 	$('#purchase_order_total').val(sumaTotales);
-});
+}
 
 $(document).on("change", '#purchase_order_shipping_cost', function(){
 	$(".prodSubtotal").trigger("change");
