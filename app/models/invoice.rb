@@ -57,6 +57,20 @@ class Invoice < ApplicationRecord
     validate :fch_ser_if_service
     validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo], allow_blank: true
 
+    TRIBUTOS = [
+       ["Impuestos nacionales", "1"],
+       ["Impuestos provinciales", "2"],
+       ["Impuestos municipales", "3"],
+       ["Impuestos Internos", "4"],
+       ["Otro", "99"],
+       ["IIBB", "5"],
+       ["Percepción de IVA", "6"],
+       ["Percepción de IIBB", "7"],
+       ["Percepciones por Impuestos Municipales", "8"],
+       ["Otras Percepciones", "9"],
+       ["Percepción de IVA a no Categorizado", "13"]
+     ]
+
     #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
 

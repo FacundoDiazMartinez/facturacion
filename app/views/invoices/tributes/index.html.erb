@@ -24,7 +24,7 @@
 			<%= form.fields_for :tributes, wrapper: false do |f| %>
 		      	<tr class="fields">
 		      		<td><%= f.hidden_field :desc, class: 'desc' %>
-		      			<%= f.select :afip_id, Invoice.get_tributos(current_user.company), {}, {class: 'form-control form-control-sm afip_id', style: 'min-width: 100px;', disabled: !@invoice.editable?} %>
+		      			<%= f.select :afip_id, Invoice::TRIBUTOS, {}, {class: 'form-control form-control-sm afip_id', style: 'min-width: 100px;', disabled: !@invoice.editable?} %>
 		      		</td>
 		      		<td><%= f.number_field :base_imp, class: 'form-control form-control-sm base_imp', disabled: !@invoice.editable?, min: 0.0 %></td>
 		      		<td><%= f.number_field :alic, class: 'form-control alic', disabled: !@invoice.editable?, min: 0.0 %></td>
