@@ -45,6 +45,8 @@ class AccountMovementsController < ApplicationController
     end
   end
 
+  
+
   # PATCH/PUT /account_movements/1
   # PATCH/PUT /account_movements/1.json
   # def update

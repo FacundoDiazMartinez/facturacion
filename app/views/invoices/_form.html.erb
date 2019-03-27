@@ -98,7 +98,7 @@
 
   <!-- TRIBUTOS -->
   <% if current_user.company.iva_cond == "Responsable Inscripto" %>
-    <div id="itributes" style="display: none;">
+    <div id="itributes">
       <hr>
       <div class="card shadow">
         <%= render template: '/invoices/tributes/index.html.erb', locals:{form: form} %>
