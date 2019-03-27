@@ -85,8 +85,8 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.price").val(data.item.price);
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
-
-	// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
+	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot)
+	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
 	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
