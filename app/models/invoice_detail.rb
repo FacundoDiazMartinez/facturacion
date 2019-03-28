@@ -75,7 +75,9 @@ class InvoiceDetail < ApplicationRecord
 
     def product_attributes=(attributes)
       prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id], active: true).first_or_initialize
+      prod.iva_aliquot = self.iva_aliquot
       self.product = prod
+
       attributes.delete(:id) unless product.persisted?
       super
     end
@@ -109,7 +111,9 @@ class InvoiceDetail < ApplicationRecord
 
     def reserve_stock
       if quantity_change.nil? || new_record?
-        self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
+        if self.invoice.budget.nil? || !self.invoice.budget.reserv_stock
+          self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
+        end
       else
         dif = quantity_change.first.to_f - quantity_change.second.to_f
         self.product.rollback_reserved_stock(quantity: dif, depot_id: depot_id)

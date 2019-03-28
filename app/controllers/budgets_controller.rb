@@ -91,6 +91,8 @@ class BudgetsController < ApplicationController
         price_per_unit: bd.product.net_price,
         bonus_percentage: bd.bonus_percentage,
         bonus_amount: bd.bonus_amount,
+        iva_aliquot: bd.product.iva_aliquot,
+        iva_amount: ((bd.product.net_price * bd.product.iva / 100) * bd.quantity).round(2),
         subtotal: bd.subtotal,
         depot_id: bd.depot_id
       )

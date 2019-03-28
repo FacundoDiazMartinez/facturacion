@@ -166,12 +166,19 @@ function calculateSubtotal(subtotal){
 	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left.toFixed(2));
-	if (total_left > 0 || not($.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] ))) {
-		$("#normal").show();
-		$("#with_alert").hide();
+	if ($("#invoice_cbte_tipo").length != 0) {
+		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
 	}else{
-		$("#normal").hide();
-		$("#with_alert").show();
+		var is_invoice = false
+	}
+	if ($("#invoice_cbte_tipo").length != 0) {
+		if (total_left > 0 || not(is_invoice)) {
+			$("#normal").show();
+			$("#with_alert").hide();
+		}else{
+			$("#normal").hide();
+			$("#with_alert").show();
+		}
 	}
 
 	$("span#total_left_venta").text("$" + total_left);
@@ -287,8 +294,22 @@ $(document).on("change", ".importe", function(){
 	});
 	$("#invoice_total").val(total.toFixed(2));
 	$("#total_left").val((parseFloat($("#invoice_total").val()) - parseFloat($("#invoice_total_pay").val())).toFixed(2));
-	$("span#total_left_venta").val($("#total_left").val());
-	total_venta = total;
+	$("span#total_left_venta").text("$ " + $("#total_left").val());
+	total_left = $("#total_left").val();
+	if ($("#invoice_cbte_tipo").length != 0) {
+		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
+	}else{
+		var is_invoice = false
+	}
+	if ($("#invoice_cbte_tipo").length != 0) {
+		if (total_left > 0 || !(is_invoice)) {
+			$("#normal").show();
+			$("#with_alert").hide();
+		}else{
+			$("#normal").hide();
+			$("#with_alert").show();
+		}
+	}
 
 	$(this).closest("td").find("strong").html("$" + $(this).val())
 	complete_payments();
