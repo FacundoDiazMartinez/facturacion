@@ -55,7 +55,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <%= form.label :cbte_tip, "Tipo", class:'col-4 col-form-label col-form-label-sm' %>
+              <%= form.label :cbte_tipo, "Tipo", class:'col-4 col-form-label col-form-label-sm' %>
               <div class="col-8">
                 <%= form.select :cbte_tipo, options_for_select(Invoice.available_cbte_type(current_user.company, @client), form.object.cbte_tipo), {},{ class: 'form-control', disabled: !@invoice.editable?, autofocus: 'true'} %>
               </div>
@@ -172,7 +172,18 @@
       </div>
     </div>
   </div>
+<% else %>
+  <div class="modal fade bd-example-modal-lg" id="sendToAfipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div id="confirm_modal">
+        </div>
+      </div>
+    </div>
+  </div>
 <% end -%>
+
+
 <%= render '/invoices/detail/search_product' %>
 
 <script>
