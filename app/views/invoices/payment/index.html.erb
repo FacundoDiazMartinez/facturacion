@@ -9,7 +9,7 @@
 		<thead>
 			<tr>
 				<th scope="col">Tipo de pago</th>
-				<th scope="col">Monto</th>
+				<th scope="col">Monto ($)</th>
 				<th scope="col">Fecha de pago</th>
 				<th scope="col"></th>
 			</tr>
@@ -22,7 +22,7 @@
 						<td><%= payment.total %></td>
 						<td><%= payment.payment_date %></td>
 						<td>
-							<% unless (payment.errors.any? || payment.id.blank?) %>
+							<% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
 								<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
 							<% end -%>
 						</td>
@@ -35,8 +35,8 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
-		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-success', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
+    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
+    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-success', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
 		</div>
 	</center>
 <% end %>

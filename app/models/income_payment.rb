@@ -80,7 +80,7 @@ class IncomePayment < Payment
  		end
 
  		def change_credit_card_balance
- 			CreditCard.find(@credit_card_id).update_balance_from_payment(self)
+ 			CreditCard.find(credit_card_id).update_balance_from_payment(self)
  		end
 	#PRECESOS
 end

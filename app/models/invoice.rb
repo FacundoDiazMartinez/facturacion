@@ -689,10 +689,8 @@ class Invoice < ApplicationRecord
     def all_payments_string
 
       pagos = []
-      self.receipts.each do |r|
-        r.account_movement_payments.where(generated_by_system: false).each do |p|
-          pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
-        end
+      self.income_payments.each do |p|
+        pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
       end
       pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
 

@@ -57,8 +57,8 @@ class Payment < ApplicationRecord
 
     def card_payment_attributes=(attribute)
       self.total = attribute["total"]
-      #self.credit_card_id = attribute["credit_card_id"]
-      #super
+      self.credit_card_id = attribute["credit_card_id"]
+      super
     end
 
     def bank_payment_attributes=(attribute)
