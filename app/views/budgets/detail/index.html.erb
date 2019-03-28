@@ -46,7 +46,7 @@
 			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id', disabled: !@budget.editable?} %>
 			  		</td>
 					<td>
-						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', disabled: true, style: 'width: 90px;' %>
+						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', readonly: true, style: 'width: 90px;' %>
 					</td>
 					<td class="only-desktop">
 						<%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@budget.editable?} %>

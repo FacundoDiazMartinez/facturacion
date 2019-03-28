@@ -78,9 +78,13 @@ class InvoicesController < ApplicationController
       end
       @invoice.associated_invoice = associated_invoice.id
     end
-    @invoice.save
+
     respond_to do |format|
-      format.html { redirect_to edit_invoice_path(@invoice.id) }
+      if @invoice.save
+        format.html { redirect_to edit_invoice_path(@invoice.id) }
+      else
+        format.html { render :edit}
+      end
     end
   end
 
@@ -194,6 +198,7 @@ class InvoicesController < ApplicationController
       params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired,
         income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
           cash_payment_attributes: [:id, :total],
+          debit_payment_attributes: [:id, :total, :bank_id],
           card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
           bank_payment_attributes: [:id, :bank_id, :total],
           cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
