@@ -613,7 +613,7 @@ class Invoice < ApplicationRecord
           fch_serv_desde: self.fch_serv_desde,
           fch_serv_hasta: self.fch_serv_hasta,
           due_date:       self.fch_vto_pago,
-          tributos:       self.tributes.map{|t| [t.id, t.desc, t.base_imp, t.alic, t.importe]},
+          tributos:       self.tributes.map{|t| [t.afip_id, t.desc, t.base_imp, t.alic, t.importe]},
           cant_reg:       1,
           no_gravado:     self.no_gravado,
           exento:         self.exento,
@@ -680,7 +680,7 @@ class Invoice < ApplicationRecord
         begin
           Afip::Bill.get_tributos.map{|t| [t[:desc], t[:id]]}
         rescue
-          []
+          TRIBUTOS
         end
       end
       #FUNCIONES
