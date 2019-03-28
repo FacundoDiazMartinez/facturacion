@@ -3,6 +3,7 @@ class Client < ApplicationRecord
 	has_many :receipts, through: :invoices
 	has_many :account_movements
 	has_many :client_contacts
+	has_many :compensation_payments
 	belongs_to :company
 	belongs_to :user, optional: true
 
