@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_26_133627) do
+ActiveRecord::Schema.define(version: 2019_03_27_183626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "date", default: -> { "('now'::text)::date" }, null: false
     t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -177,7 +177,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
 
   create_table "cheque_payments", force: :cascade do |t|
     t.string "state", default: "No cobrado", null: false
-    t.date "expiration", default: -> { "CURRENT_DATE" }, null: false
+    t.date "expiration", default: -> { "('now'::text)::date" }, null: false
     t.float "total", default: 0.0, null: false
     t.text "observation"
     t.boolean "active", default: true, null: false
@@ -259,6 +259,20 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.string "invoice_footer"
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "compensation_payments", force: :cascade do |t|
+    t.float "total"
+    t.bigint "payment_id"
+    t.boolean "active"
+    t.string "asociatedClientInvoice"
+    t.text "observation"
+    t.string "concept"
+    t.bigint "client_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_compensation_payments_on_client_id"
+    t.index ["payment_id"], name: "index_compensation_payments_on_payment_id"
   end
 
   create_table "credit_card_payments", force: :cascade do |t|
@@ -352,8 +366,10 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.boolean "cumpliment", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "invoice_detail_id"
     t.index ["delivery_note_id"], name: "index_delivery_note_details_on_delivery_note_id"
     t.index ["depot_id"], name: "index_delivery_note_details_on_depot_id"
+    t.index ["invoice_detail_id"], name: "index_delivery_note_details_on_invoice_detail_id"
     t.index ["product_id"], name: "index_delivery_note_details_on_product_id"
   end
 
@@ -367,7 +383,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "date", default: -> { "('now'::text)::date" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -520,7 +536,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -759,7 +775,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.bigint "responsable_id", null: false
     t.string "observation"
     t.string "number", null: false
-    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "init_date", default: -> { "('now'::text)::date" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -805,6 +821,40 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
     t.string "bank_name"
     t.string "iva_cond", null: false
     t.index ["company_id"], name: "index_suppliers_on_company_id"
+  end
+
+  create_table "transfer_request_details", force: :cascade do |t|
+    t.bigint "transfer_request_id"
+    t.bigint "product_id"
+    t.float "quantity", null: false
+    t.boolean "active", default: true, null: false
+    t.text "observation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "product_code"
+    t.index ["product_id"], name: "index_transfer_request_details_on_product_id"
+    t.index ["transfer_request_id"], name: "index_transfer_request_details_on_transfer_request_id"
+  end
+
+  create_table "transfer_requests", force: :cascade do |t|
+    t.bigint "company_id"
+    t.bigint "user_id"
+    t.bigint "transporter_id", null: false
+    t.string "number", null: false
+    t.string "state", default: "Pendiente", null: false
+    t.string "observation"
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.bigint "from_depot_id", null: false
+    t.bigint "to_depot_id", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "sended_by"
+    t.bigint "received_by"
+    t.datetime "sended_at"
+    t.datetime "received_at"
+    t.index ["company_id"], name: "index_transfer_requests_on_company_id"
+    t.index ["user_id"], name: "index_transfer_requests_on_user_id"
   end
 
   create_table "tributes", force: :cascade do |t|
@@ -917,6 +967,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
   add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
+  add_foreign_key "compensation_payments", "clients"
   add_foreign_key "credit_card_payments", "credit_cards"
   add_foreign_key "credit_card_payments", "payments"
   add_foreign_key "credit_cards", "companies"
@@ -929,6 +980,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_note_details", "delivery_notes"
   add_foreign_key "delivery_note_details", "depots"
+  add_foreign_key "delivery_note_details", "invoice_details"
   add_foreign_key "delivery_note_details", "products"
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
@@ -997,6 +1049,10 @@ ActiveRecord::Schema.define(version: 2019_03_26_133627) do
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"
   add_foreign_key "suppliers", "companies"
+  add_foreign_key "transfer_request_details", "products"
+  add_foreign_key "transfer_request_details", "transfer_requests"
+  add_foreign_key "transfer_requests", "companies"
+  add_foreign_key "transfer_requests", "users"
   add_foreign_key "tributes", "invoices"
   add_foreign_key "user_activities", "users"
   add_foreign_key "user_roles", "roles"

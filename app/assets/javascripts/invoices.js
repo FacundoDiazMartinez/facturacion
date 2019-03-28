@@ -42,6 +42,16 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
+function openConfirmationModal () {  //carga la modal de advertencia antes de confirmar y la muestra
+	$('#client_name_modal').val($('#invoice_client_name').val());
+	$('#doc_type_modal').val($('#invoice_cbte_tipo option:selected').text());
+	$('#invoice_total_modal').val('$ ' + $('#invoice_total').val());
+	$('#invoice_total_pay_modal').val('$ ' + $('#invoice_total_pay').val());
+
+	//$('#confirm_invoice_modal').modal('toggle');
+	$('#confirm_invoice_modal').modal('show');
+}
+
 function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
 	$(element).popover('dispose');
@@ -76,8 +86,8 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 	$(this).closest("tr.fields").find("input.quantity").val(1);
-
-	// $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
+	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot)
+	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
 	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
@@ -156,8 +166,7 @@ function calculateSubtotal(subtotal){
 	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left.toFixed(2));
-
-	if (total_left > 0 ) {
+	if (total_left > 0 || not($.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] ))) {
 		$("#normal").show();
 		$("#with_alert").hide();
 	}else{
@@ -270,14 +279,15 @@ $(document).on('nested:fieldRemoved', function(event){
 
 $(document).on("change", ".importe", function(){
 	var total = parseFloat(0);
-	$(".subtotal").each(function(){
+	$("td:visible > .subtotal").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
-	$(".importe").each(function(){
+	$(".importe:visible").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
 	$("#invoice_total").val(total.toFixed(2));
-	$("span#total_left_venta").val(total);
+	$("#total_left").val((parseFloat($("#invoice_total").val()) - parseFloat($("#invoice_total_pay").val())).toFixed(2));
+	$("span#total_left_venta").val($("#total_left").val());
 	total_venta = total;
 
 	$(this).closest("td").find("strong").html("$" + $(this).val())
@@ -304,10 +314,12 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 }
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
-	if (jQuery.inArray($(this).val(), ["03", "08", "13"])) {
-		$("#payment_title").html("Devoluciones de dinero")
+	if ($.inArray($(this).val(), ["03", "08", "13"])) {
+		$("#payment_title").html("Devoluciones de dinero");
+		//$("#total_left").val(0);
 	}else{
-		$("#payment_title").html("Pagos")
+		$("#payment_title").html("Pagos");
+		//$("#total_left").val(( $("#invoice_total").val() -  $("#invoice_total_pay").val()).toFixed(2));
 	}
 
 	form = $(this).parents('form:first')

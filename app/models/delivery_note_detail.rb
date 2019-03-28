@@ -3,12 +3,15 @@ class DeliveryNoteDetail < ApplicationRecord
   belongs_to :delivery_note, optional: true
   belongs_to :product, optional: true, class_name: "ProductUnscoped"
   belongs_to :depot
+  belongs_to :invoice_detail, optional: true
   has_many :invoice_details, through: :delivery_note
 
 
   validates_presence_of :delivery_note, message:  "El concepto debe tener asociado un remito."
   validates_presence_of :product, message:  "El concepto debe tener asociado un producto."
   validates_presence_of :depot, message:  "El concepto debe tener asociado un depósito."
+
+  validate :depot_has_stock?
 
   after_validation :adjust_product_stock, if: Proc.new{|detail| detail.delivery_note.state == "Finalizado"}
 
@@ -35,8 +38,36 @@ class DeliveryNoteDetail < ApplicationRecord
   #ATRIBUTOS
 
   def adjust_product_stock
-    difference = quantity.to_f
-    self.product.deliver_product(quantity: difference, depot_id: self.depot_id, from: "Reservado")
+    if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
+      difference = invoice_detail.quantity.to_f - quantity.to_f
+      self.product.rollback_reserved_stock(quantity: difference, depot_id: self.depot_id)
+      self.product.deliver_product(quantity: quantity, depot_id: self.depot_id, from: "Reservado")
+    elsif !invoice_detail.blank? && invoice_detail.depot_id != self.depot_id
+      self.product.rollback_reserved_stock(quantity: quantity.to_f, depot_id: self.depot_id)
+      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible")
+    else
+      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible")
+    end
+  end
+
+  def depot_has_stock?
+    stocks = self.depot.stocks.where(product_id: self.product_id)
+    reservado = stocks.where(state: "Reservado").first.nil? ? 0 : stocks.where(state: "Reservado").first.quantity
+    disponible = stocks.where(state: "Disponible").first.nil? ? 0 : stocks.where(state: "Disponible").first.quantity
+
+    if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
+      if reservado < self.quantity.to_f
+        errors.add(:quantity, "Se esta intentando entregar mayor cantidad que la que se reservo cuando se realizo la factura. Si desea proceeder borre este detalle (fila) y cree uno nuevamente")
+      end
+    elsif !invoice_detail.blank? && invoice_detail.depot_id != self.depot_id
+      if disponible < self.quantity.to_f
+        errors.add(:quantity, "El deposito que seleccionó no tiene suficiente stock disponible. Disponible = #{disponible} #{self.product.measurement_unit_name}")
+      end
+    else
+      if disponible < self.quantity.to_f
+        errors.add(:quantity, "El deposito que seleccionó no tiene suficiente stock disponible. Disponible = #{disponible} #{self.product.measurement_unit_name}")
+      end
+    end
   end
 
 end

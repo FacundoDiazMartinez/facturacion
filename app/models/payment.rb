@@ -13,6 +13,7 @@ class Payment < ApplicationRecord
   has_one :debit_payment, dependent: :destroy
   has_one :cheque_payment, dependent: :destroy
   has_one :retention_payment, dependent: :destroy
+  has_one :compensation_payment, dependent: :destroy
 
   after_initialize :set_payment_date
   after_save :save_daily_cash_movement
@@ -24,6 +25,7 @@ class Payment < ApplicationRecord
   accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
   accepts_nested_attributes_for :cheque_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
   accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+  accepts_nested_attributes_for :compensation_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
 
   validate :min_total, on: :create
   validates_numericality_of :total, greater_than: 0.0, message: "El monto pagado debe ser mayor 0."
@@ -35,7 +37,8 @@ class Payment < ApplicationRecord
   	"4" => "Cheque",
   	"5" => "Retenciones",
     "6" => "Cuenta Corriente",
-    "7" => "Tarjeta de débito"
+    "7" => "Tarjeta de débito",
+    "8" => "Compensación"
   }
 
   #VALIDACIONES
@@ -73,6 +76,11 @@ class Payment < ApplicationRecord
 
     def retention_payment_attributes=(attribute)
       self.total = attribute["total"]
+      #super
+    end
+
+    def compensation_payment_attributes=(attribute)
+      self.total = attribute["total"].to_f
       #super
     end
 
@@ -129,7 +137,6 @@ class Payment < ApplicationRecord
     end
 
     def save_daily_cash_movement
-      pp "ENTRO A SAVE DAILY CASH MOVEMENT"
       if type_of_payment == "0"
         if payment_date <= Date.today
           DailyCashMovement.save_from_payment(self, company_id)
@@ -165,6 +172,8 @@ class Payment < ApplicationRecord
           "account_payments"
   		when 7
           "debit_payments"
+      when 8
+          "compensation_payments"
       end
     end
   #FUNCIONES

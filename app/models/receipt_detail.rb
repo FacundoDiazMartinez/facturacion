@@ -1,8 +1,8 @@
 class ReceiptDetail < ApplicationRecord
-  include Deleteable
   belongs_to :receipt
   belongs_to :invoice
   validate :invoices_clients_validation
+
 
 	def self.save_from_invoice receipt, invoice
   	rd = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize

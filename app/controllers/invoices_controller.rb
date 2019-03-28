@@ -116,10 +116,24 @@ class InvoicesController < ApplicationController
     redirect_to edit_invoice_path(@invoice.id), notice: "Email enviado."
   end
 
+  def paid_invoice_with_debt
+    invoice = current_user.company.invoices.where.not(cbte_tipo: Invoice::COD_NC).find(params[:id])
+    result  = invoice.paid_invoice_from_client_debt
+    response = result[:response]
+    messages = result[:messages].join(", ")
+    respond_to do |format|
+      if response
+        format.html {redirect_to client_account_movements_path(invoice.client_id), notice: messages}
+      else
+        format.html {redirect_to client_account_movements_path(invoice.client_id), alert: messages}
+      end
+    end
+  end
+
   def autocomplete_product_code
     term = params[:term]
     products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, depots: product.depots.map{|d| [d.id, d.name]}} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03",depots: product.depots.map{|d| [d.id, d.name]}} }
   end
 
   def autocomplete_invoice_number

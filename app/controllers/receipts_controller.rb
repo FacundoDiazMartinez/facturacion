@@ -89,7 +89,7 @@ class ReceiptsController < ApplicationController
       else
         @client = @receipt.client
         build_account_movement
-        format.html { redirect_to edit_receipt_path(@receipt.id), alert: 'Error.'  }
+        format.html { render :edit }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
       end
     end
@@ -108,7 +108,7 @@ class ReceiptsController < ApplicationController
   def autocomplete_invoice
     @client = Client.find(params[:client_id])
     term = params[:term]
-    invoices = @client.invoices.where("comp_number ILIKE ? AND state = 'Confirmado'", "%#{term}%").order(:comp_number).all
+    invoices = @client.invoices.where("comp_number ILIKE ? AND state = 'Confirmado' AND total > total_pay", "%#{term}%").order(:comp_number).all
     render :json => invoices.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_debt, :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 

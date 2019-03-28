@@ -57,6 +57,20 @@ class Invoice < ApplicationRecord
     validate :fch_ser_if_service
     validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo], allow_blank: true
 
+    TRIBUTOS = [
+       ["Impuestos nacionales", "1"],
+       ["Impuestos provinciales", "2"],
+       ["Impuestos municipales", "3"],
+       ["Impuestos Internos", "4"],
+       ["Otro", "99"],
+       ["IIBB", "5"],
+       ["Percepción de IVA", "6"],
+       ["Percepción de IIBB", "7"],
+       ["Percepciones por Impuestos Municipales", "8"],
+       ["Otras Percepciones", "9"],
+       ["Percepción de IVA a no Categorizado", "13"]
+     ]
+
     #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
 
@@ -332,12 +346,30 @@ class Invoice < ApplicationRecord
               pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
               pay.save
               am.update_column(:amount_available, am.amount_available - pay.total)
-              pp "/////////////////////////// paid_unpaid_invoices ///////////////////////"
-              pp "ammount available: " + am.amount_available.to_s
-              pp "invoice total: " + invoice.total_left.to_s
               break if am.amount_available < 1
             end
           end
+        end
+      end
+
+      def paid_invoice_from_client_debt
+        client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
+          @band = true
+          pay = self.income_payments.new(type_of_payment: "6", payment_date: Date.today, generated_by_system: true, account_movement_id: am.id)
+          pay.total = (am.amount_available.to_f >= self.total_left.to_f) ? self.total_left.to_f : am.amount_available.to_f
+          @r = pay.save
+          @last_pay = pay
+          am.update_column(:amount_available, am.amount_available - pay.total)
+          #break if self.total_pay = self.total || r
+        end
+        if @band
+          if @r
+            return {response:  true, messages: ["Se generó el pago correctamente."]}
+          else
+            return {response:  false, messages: @last_pay.errors.full_messages}
+          end
+        else
+          return {response:  false, messages: ["No tiene saldo disponible."]}
         end
       end
 
@@ -461,7 +493,7 @@ class Invoice < ApplicationRecord
   		end
 
       def sum_details
-        self.invoice_details.sum(:subtotal)
+        self.invoice_details.sum(:subtotal) + self.tributes.sum(:importe)
       end
 
       def sum_tributes
@@ -470,6 +502,7 @@ class Invoice < ApplicationRecord
 
       def sum_payments
         self.income_payments.sum(:total)
+
       end
 
       def cbte_fch

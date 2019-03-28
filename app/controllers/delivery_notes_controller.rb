@@ -109,11 +109,12 @@ class DeliveryNotesController < ApplicationController
     @client = @associated_invoice.client
     @delivery_note.client_id = @associated_invoice.client_id
     @delivery_note.delivery_note_details.each{ |dnd| dnd.mark_for_destruction  }
-    @associated_invoice.invoice_details.each do |id|
+    @associated_invoice.invoice_details.each do |detail|
       @delivery_note.delivery_note_details.build(
-        product_id: id.product_id,
-        depot_id: id.depot_id,
-        quantity: id.quantity
+        product_id: detail.product_id,
+        depot_id: detail.depot_id,
+        quantity: detail.quantity,
+        invoice_detail_id: detail.id
       )
     end
   end
@@ -132,6 +133,6 @@ class DeliveryNotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def delivery_note_params
-      params.require(:delivery_note).permit(:invoice_id, :date, :number, :client_id, :active, :state, delivery_note_details_attributes: [:id, :product_id, :quantity, :depot_id, :observation, :cumpliment, :_destroy])
+      params.require(:delivery_note).permit(:invoice_id, :date, :number, :client_id, :active, :state, delivery_note_details_attributes: [:id, :invoice_detail_id, :product_id, :quantity, :depot_id, :observation, :cumpliment, :_destroy])
     end
 end

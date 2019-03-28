@@ -61,6 +61,13 @@
 		  	<li class="nav-item">
 		    	<%= link_to "<span class='nav-span'>Depósitos</span> #{icon('fas', 'archive')}".html_safe, depots_path, class: 'nav-link', title: 'Depósitos' if can? :read, Depot %>
 		  	</li>
+				<li class="nav-item dropdown">
+    			<%= link_to "<span class='nav-span'>Almacén</span> #{icon('fas', 'archive')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, Depot %>
+   				<div class="dropdown-menu">
+						<%= link_to "<span class='nav-span'>Depósitos</span> #{icon('fas', 'archive')}".html_safe, depots_path, class: 'dropdown-item', title: 'Depósitos' if can? :read, Depot %>
+   					<%= link_to "<span class='nav-span'>Traslados</span> #{icon('fas', 'share')}".html_safe, transfer_requests_path, class: 'dropdown-item', title: 'Transferencías' %>
+				</div>
+			</li>
 
 		  	<li class="nav-item">
 		  		<%= link_to "<span class='nav-span'>Proveedores</span> #{icon('fas', 'plane')}".html_safe, suppliers_path, class: 'nav-link', title: "Proveedores" if can? :read, Supplier %>

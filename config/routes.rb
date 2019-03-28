@@ -1,11 +1,16 @@
 Rails.application.routes.draw do
 
-
- resources :credit_cards
- resources :advertisements do
-   patch :cancel, on: :member
-   patch :send_email, on: :member
- end
+  resources :transfer_requests do
+    patch :cancel, on: :member
+    patch :send_transfer, on: :member
+    patch :receive_transfer, on: :member
+    get :search_product, on: :collection
+  end
+  resources :credit_cards
+  resources :advertisements do
+    patch :cancel, on: :member
+    patch :send_email, on: :member
+  end
   resources :payments, only: :destroy
   resources :sales_files, only: [:index, :show]
   resources :price_changes do
@@ -67,6 +72,7 @@ Rails.application.routes.draw do
     resources :debit_payments
     resources :cheque_payments
     resources :account_payments
+    resources :compensation_payments
   end
 
   namespace :delivery_notes do
@@ -191,6 +197,7 @@ Rails.application.routes.draw do
     get :set_associated_invoice, on: :collection
     get :set_associated_invoice, on: :member
     get :deliver, on: :member
+    get :paid_invoice_with_debt, on: :member
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
