@@ -83,7 +83,7 @@ class InvoicesController < ApplicationController
       if @invoice.save
         format.html { redirect_to edit_invoice_path(@invoice.id) }
       else
-        format.html { render :edit}
+        format.html { redirect_to invoices_path(@invoice.id), alert: @invoice.errors.messages.values.join(". ")}
       end
     end
   end

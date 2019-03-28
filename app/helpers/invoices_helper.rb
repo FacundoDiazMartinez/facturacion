@@ -9,6 +9,8 @@ module InvoicesHelper
 			color = 'bg-success text-white'
 		when "Anulado"
 			color = 'bg-dark text-white'
+		when "Anulado parcialmente"
+			color = 'bg-dark text-white'
 		end
 
 		return "<div class='rounded-state #{color} text-center'></div> #{state}".html_safe
