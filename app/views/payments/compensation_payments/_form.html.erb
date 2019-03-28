@@ -4,7 +4,7 @@
 
 <div class="form-group">
   <%= cpf.label :concept, "Concepto" %>
-  <%= cpf.text_field :concept, class: 'form-control subpayment_concept', requried: true %>
+  <%= cpf.text_field :concept, class: 'form-control subpayment_concept', requried: true, autocomplete: "off" %>
 </div>
 
 <div class="form-group">
@@ -14,12 +14,12 @@
 
 <div class="form-group">
   <%= cpf.label :asociatedClientInvoice, "Factura asociada del cliente" %>
-  <%= cpf.text_field :asociatedClientInvoice, class: 'form-control subpayment_asociatedClientInvoice', requried: true %>
+  <%= cpf.text_field :asociatedClientInvoice, class: 'form-control subpayment_asociatedClientInvoice', requried: true, autocomplete: "off" %>
 </div>
 
 <div class="form-group">
   <%= cpf.label :observation, "Observaciones" %>
-  <%= cpf.text_field :observation, class: 'form-control subpayment_observation', requried: true %>
+  <%= cpf.text_field :observation, class: 'form-control subpayment_observation', requried: true, autocomplete: "off" %>
 </div>
 
 <% end -%>

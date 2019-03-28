@@ -16,7 +16,8 @@ class Payments::CompensationPaymentsController < Payments::PaymentsController
 
   # GET /card_payments/new
   def new
-    @compensation_payment = CompensationPayment.new
+    @compensation_payment = current_user.company.clients.find(params[:invoice_client_id]).compensation_payments.new
+    # @invoice_client = current_user.company.clients.find(params[:invoice_client_id])
     super
   end
 
@@ -29,7 +30,6 @@ class Payments::CompensationPaymentsController < Payments::PaymentsController
   def create
     super
     @compensation_payment = CompensationPayment.new(compensation_payment_params)
-
     respond_to do |format|
       if @compensation_payment.save
         format.html { redirect_to @compensation_payment, notice: 'Compensation payment was successfully created.' }
@@ -74,6 +74,6 @@ class Payments::CompensationPaymentsController < Payments::PaymentsController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def compensation_payment_params
-      params.require(:compensation_payment).permit(:client_id, :total, :payment_id, :active, :asociatedClientInvoice, :observation, :concept, :client_id)
+      params.require(:compensation_payment).permit(:total, :payment_id, :active, :asociatedClientInvoice, :observation, :concept, :client_id)
     end
 end
