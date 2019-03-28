@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_27_170003) do
+ActiveRecord::Schema.define(version: 2019_03_27_183626) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -259,6 +259,20 @@ ActiveRecord::Schema.define(version: 2019_03_27_170003) do
     t.string "invoice_footer"
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
+  end
+
+  create_table "compensation_payments", force: :cascade do |t|
+    t.float "total"
+    t.bigint "payment_id"
+    t.boolean "active"
+    t.string "asociatedClientInvoice"
+    t.text "observation"
+    t.string "concept"
+    t.bigint "client_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_compensation_payments_on_client_id"
+    t.index ["payment_id"], name: "index_compensation_payments_on_payment_id"
   end
 
   create_table "credit_card_payments", force: :cascade do |t|
@@ -710,8 +724,8 @@ ActiveRecord::Schema.define(version: 2019_03_27_170003) do
     t.string "cbte_tipo", default: "00", null: false
     t.bigint "client_id"
     t.bigint "sale_point_id"
-    t.string "state", default: "Pendiente"
     t.bigint "user_id"
+    t.string "state", default: "Pendiente"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
@@ -953,6 +967,7 @@ ActiveRecord::Schema.define(version: 2019_03_27_170003) do
   add_foreign_key "clients", "users"
   add_foreign_key "commissioners", "invoice_details"
   add_foreign_key "commissioners", "users"
+  add_foreign_key "compensation_payments", "clients"
   add_foreign_key "credit_card_payments", "credit_cards"
   add_foreign_key "credit_card_payments", "payments"
   add_foreign_key "credit_cards", "companies"

@@ -35,5 +35,9 @@ $(document).on("change", ".new_type_of_payment", function(){
 		case '7':
 			getPaymentRequest("/payments/debit_payments/new", data);
 			break;
+		case '8':
+		  alert("asd");
+			getPaymentRequest("/payments/compensation_payments/new", data);
+			break;
 	}
 })

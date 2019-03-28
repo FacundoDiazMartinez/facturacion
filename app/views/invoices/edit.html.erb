@@ -8,7 +8,7 @@
 			<% end %>
 		</div>
 		<div class="col text-right">
-			<%= link_to "#{icon('fas', 'file-pdf')} Ver PDF".html_safe, invoice_path(@invoice.id, format: :pdf), class: 'btn btn-info', target: "_blank" %>
+			<%= link_to "#{icon('fas', 'file-pdf')} Ver PDF".html_safe, invoice_path(@invoice.id, format: :pdf), class: 'btn btn-info', target: "_blank" unless @invoice.editable?%>
 			<button class="btn btn-primary " role="button" onclick="toggleHeader()" id="encabezado"><%= icon('fas' ,'eye-slash') %> Ocultar encabezado</button>
 			<% if ["01", "06", "11"].include?(@invoice.cbte_tipo) %>
 				<% if @invoice.delivery_notes.last.nil?  %>
