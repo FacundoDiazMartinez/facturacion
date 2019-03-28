@@ -27,10 +27,10 @@
           <tr>
             <td>
               <% if i.total_left > 0 %>
-              Pago parcial Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= i.total %>  -  Faltante $ <%= i.total_left %>
+              Pago parcial Factura <%= i.full_number %>  -  Importe $ <%= i.total %>
               <% else %>
                 <% if i.total_left == 0 %>
-                  Cancelación Factura <%= i.full_number %>  -  Importe $ <%= i.total %>  -  Pagado $ <%= i.total_pay %>  -  Faltante $ <%= i.total_left %>
+                  Cancelación Factura <%= i.full_number %>  -  Importe $ <%= i.total %>
                 <% end %>
               <% end %>
             </td>
