@@ -12,8 +12,9 @@ class IncomePayment < Payment
 	before_save :check_company_id
 	before_save :check_client_id
 	before_validation :set_flow
+	after_create :set_new_detail_if_credit_card
 
-	validate :check_max_total, if: Proc.new{|ip| !ip.invoice_id.blank? }
+	validate :check_max_total, if: Proc.new{|ip| !ip.invoice.nil? }
 	validate :check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
 
 	def self.default_scope
@@ -22,7 +23,11 @@ class IncomePayment < Payment
 
  	#VALIDACIONES
  		def check_max_total
- 			errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.") unless (invoice.sum_payments - total_was.to_f + total.to_f) <= invoice.total
+			unless (invoice.sum_payments - total_was.to_f + total.to_f) <= invoice.total
+				unless type_of_payment == "1" && (invoice.sum_payments + card_payment.subtotal.to_f <= invoice.total)
+ 					errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.")
+				end
+			end
  		end
 
  		def check_available_saldo
@@ -51,6 +56,17 @@ class IncomePayment < Payment
  	#ATRIBUTOS
 
 	#PROCESOS
+
+	def set_new_detail_if_credit_card
+		if type_of_payment == "1"
+			detail_total = card_payment.total - card_payment.subtotal
+			if detail_total > 0
+	      invoice.invoice_details.build_for_credit_card(detail_total.round(2), self.invoice.user_id, company)
+			end
+		end
+	end
+
+
 		def set_amount_available_to_account_movement
 			unless self.account_movement.nil?
 				self.account_movement.update_column(:amount_available, self.account_movement.amount_available.to_f + self.total.to_f)
