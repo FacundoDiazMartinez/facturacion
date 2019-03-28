@@ -11,7 +11,6 @@ $( document ).ready(function() {
 	if ($("#purchase_order_total").val() > 0) {
 		total_venta = parseFloat($("#purchase_order_total").val());
 	}
-
 	showProductNamePopover ();
 });
 
@@ -33,7 +32,6 @@ function showProductNamePopover () {
 			title: "Monto I.V.A.: $ " + iva_amount,
 			trigger: "hover"
 		});
-
 	});
 }
 
@@ -343,18 +341,16 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 		//$("#total_left").val(( $("#invoice_total").val() -  $("#invoice_total_pay").val()).toFixed(2));
 	}
 
-	form = $(this).parents('form:first')
-	cbte_tipo = $("#invoice_cbte_tipo")
-	concepto = $("#invoice_concepto")
-  	$.get(form.attr("action")+'/change_attributes', {cbte_tipo: cbte_tipo.val(), concepto: concepto.val()}, null, "script");
+	form = $(this).parents('form:first');
+	cbte_tipo = $("#invoice_cbte_tipo");
+	concepto = $("#invoice_concepto");
+	$.get(form.attr("action")+'/change_attributes', {cbte_tipo: cbte_tipo.val(), concepto: concepto.val()}, null, "script");
 });
-
 
 $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){
 	form = $(this).parents('form:first');
 	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");
 });
-
 
 function changeView(tipo){
 	$("#view").val(tipo).trigger("change");
@@ -370,8 +366,6 @@ function addRechargeToDetails(){
 		$(this).val(recharge).trigger("change");
 	})
 }
-
-
 
 $(document).on("change", ".type_of_payment", function(){
 	if ($(this).val() == "1"){
@@ -427,12 +421,10 @@ function toggleTributes(){
 		$("#tributos").append(' Ocultar tributos');
 		$([document.documentElement, document.body]).animate({
 	        scrollTop: $("#itributes").offset().top
-	    }, 500, function(){
-	    	$("#itributes").effect( "shake" )
-	    });
-
+    }, 500, function(){
+    	$("#itributes").effect( "shake" )
+    });
 	}
-
 }
 
 

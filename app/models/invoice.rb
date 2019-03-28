@@ -40,7 +40,7 @@ class Invoice < ApplicationRecord
     before_validation :check_if_confirmed
     after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 
-  	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado"]
+  	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado", "Anulado parcialmente"]
     COD_INVOICE = ["01", "06", "11"]
     COD_ND = ["02", "07", "12"]
     COD_NC = ["03", "08", "13"]
@@ -705,6 +705,8 @@ class Invoice < ApplicationRecord
           if response && !self.associated_invoice.nil?
             if self.total.to_f.round(2) == self.invoice.total
               self.invoice.update_column(:state, "Anulado")
+            else
+              self.invoice.update_column(:state, "Anulado parcialmente")
             end
           end
         end

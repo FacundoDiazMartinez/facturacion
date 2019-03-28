@@ -27,3 +27,4 @@
 /config/master.key
 
 /config/initializers/afip.rb
+/config/database.yml

@@ -12,7 +12,11 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+<<<<<<< HEAD
     Afip (1.0.5)
+=======
+    Afip (1.0.8)
+>>>>>>> e75fbb013024b47bba328f60c833d40deb21e8fd
       httpi
       savon
     actioncable (5.2.2)
