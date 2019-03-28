@@ -72,6 +72,7 @@ Rails.application.routes.draw do
     resources :debit_payments
     resources :cheque_payments
     resources :account_payments
+    resources :compensation_payments
   end
 
   namespace :delivery_notes do

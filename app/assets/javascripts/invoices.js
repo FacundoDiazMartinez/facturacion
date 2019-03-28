@@ -42,7 +42,7 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
-function openConfirmationModal () {
+function openConfirmationModal () {  //carga la modal de advertencia antes de confirmar y la muestra
 	$('#client_name_modal').val($('#invoice_client_name').val());
 	$('#doc_type_modal').val($('#invoice_cbte_tipo option:selected').text());
 	$('#invoice_total_modal').val('$ ' + $('#invoice_total').val());
