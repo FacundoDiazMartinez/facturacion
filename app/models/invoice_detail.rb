@@ -66,6 +66,7 @@ class InvoiceDetail < ApplicationRecord
         product.created_by          = invoice.user_id
         product.price             ||= price_per_unit
         product.measurement_unit  ||= measurement_unit
+        product.active              = false unless product.persisted? || product.tipo != "Servicio"
         product.save
     end
 
