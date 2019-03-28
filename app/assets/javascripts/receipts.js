@@ -9,7 +9,9 @@ $(document).on('ready',function(){
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
   $(this).closest('tr.fields').find('input.invoice_id').val(data.item.id);
 	$(this).closest('tr.fields').find('input.invoice_total').val("$ " + data.item.total.toFixed(2));
-  $(this).closest('tr.fields').find('input.invoice_total_left').val("$ " + data.item.total_left.toFixed(2));
+  $(this).closest('tr.fields').find('input.associated_invoices_total').val("$ " + data.item.associated_invoices_total.toFixed(2));
+  faltante = data.item.total_left.toFixed(2) - data.item.associated_invoices_total.toFixed(2)
+  $(this).closest('tr.fields').find('input.invoice_total_left').val("$ " + faltante);
   $(this).closest('tr.fields').find('input.invoice_total_pay').val("$ " + data.item.total_pay.toFixed(2));
   $(this).closest('tr.fields').find('input.invoice_created_at').val(data.item.created_at);
 
@@ -34,7 +36,7 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
   total = 0;
   $('.invoice_total_left').each(function(){
     var res = $(this).val().replace("$ ", "");
-    total= total + parseFloat(res);
+    total = total + parseFloat(res);
   })
 
   $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
