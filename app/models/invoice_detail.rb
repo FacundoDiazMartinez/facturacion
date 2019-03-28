@@ -71,7 +71,7 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def set_total_to_invoice
-      invoice.update_attribute(:total, invoice.sum_details + invoice.sum_tributes)
+      invoice.update_attribute(:total, invoice.sum_details)
     end
 
     def product_attributes=(attributes)

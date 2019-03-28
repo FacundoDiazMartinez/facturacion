@@ -55,7 +55,7 @@ class Invoice < ApplicationRecord
     validate :cbte_tipo_inclusion
     validate :at_least_one_detail
     validate :fch_ser_if_service
-    validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo], allow_blank: true
+    validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
 
     TRIBUTOS = [
        ["Impuestos nacionales", "1"],
@@ -194,7 +194,7 @@ class Invoice < ApplicationRecord
   		end
 
   		def editable?
-  			state != 'Confirmado' && state != 'Anulado'
+  			state != 'Confirmado' && state != 'Anulado' && state != 'Anulado parcialmente'
   		end
 
       def iva_sum
@@ -526,7 +526,7 @@ class Invoice < ApplicationRecord
       end
 
       def full_number
-        if state == "Confirmado" || state == "Anulado"
+        if state == "Confirmado" || state == "Anulado" || state == "Anulado parcialmente"
           "#{sale_point.name} - #{comp_number}"
         else
           "Falta confirmar"
@@ -703,7 +703,8 @@ class Invoice < ApplicationRecord
           )
           self.activate_commissions
           if response && !self.associated_invoice.nil?
-            if self.total.to_f.round(2) == self.invoice.total
+            total_from_notes = self.invoice.notes.sum(:total).round(2)
+            if total_from_notes == self.invoice.total.round(2)
               self.invoice.update_column(:state, "Anulado")
             else
               self.invoice.update_column(:state, "Anulado parcialmente")
