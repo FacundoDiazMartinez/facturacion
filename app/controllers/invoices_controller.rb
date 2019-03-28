@@ -68,7 +68,7 @@ class InvoicesController < ApplicationController
   def cancel
     associated_invoice = current_user.company.invoices.find(params[:id])
     atributos = associated_invoice.attributes
-    @invoice = current_user.company.invoices.where(associated_invoice: associated_invoice.id).first_or_initialize
+    @invoice = current_user.company.invoices.build(associated_invoice: associated_invoice.id)
     @invoice.attributes = atributos.except!(*["id", "state", "cbte_tipo", "header_result", "authorized_on", "cae_due_date", "cae", "cbte_fch", "comp_number", "associated_invoice"])
     @invoice.cbte_tipo = (associated_invoice.cbte_tipo.to_i + 2).to_s.rjust(2,padstr= '0')
     @invoice.cbte_fch = Date.today
@@ -81,7 +81,7 @@ class InvoicesController < ApplicationController
 
     respond_to do |format|
       if @invoice.save
-        format.html { redirect_to edit_invoice_path(@invoice.id) }
+        format.html { redirect_to edit_invoice_path(@invoice) }
       else
         format.html { redirect_to invoices_path(@invoice.id), alert: @invoice.errors.messages.values.join(". ")}
       end
