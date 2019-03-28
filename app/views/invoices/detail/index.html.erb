@@ -12,9 +12,9 @@
 	  			<%= button_tag "Depósito", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Depósito")' %>
 	  			<%= button_tag "Medida", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Medida")' %>
 	  			<%= button_tag "Precio", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Precio")' %>
+          <%= button_tag "Bonificado (%)", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Bonificado (%)")' %>
 	  			<%= button_tag "Comisionantes", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Comisionantes")' %>
 	  			<%= button_tag "I.V.A. (%)", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("I.V.A. (%)")' %>
-	  			<%= button_tag "Bonificado (%)", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Bonificado (%)")' %>
 	  			<%= button_tag "Subtotal", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Subtotal")' %>
 	  		</div>
 	  	</div>
@@ -31,12 +31,12 @@
 				<th scope="col">Depósito</th>
 				<th scope="col" class="only-desktop">Medida</th>
 				<th scope="col">Precio</th>
+        <th scope="col" class="only-desktop">Bonificado (%)</th>
 		        <% if @invoice.editable? %>
 		          	<th scope="col" class="only-desktop">Comisionantes</th>
 		        <% end %>
 
 				<th scope="col">I.V.A. (%)</th>
-				<th scope="col" class="only-desktop">Bonificado (%)</th>
 				<th scope="col" style="width:9%;">Subtotal</th>
 				<th scope="col"></th>
 			</tr>
@@ -76,6 +76,8 @@
 					<td>
 						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"popover"}, disabled: !@invoice.editable? %>
 					</td>
+          <td class="only-desktop"><%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@invoice.editable? %>
+						<%= f.hidden_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
 		        <% if @invoice.editable? %>
 	            <td class="text-center">
 	              	<%= render '/invoices/detail/commissioner_fields', f: f %>
@@ -85,9 +87,6 @@
 						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
 						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.iva_aliquot.blank? ? "03" : f.object.iva_aliquot ), {}, {class: 'form-control form-control-sm iva_aliquot', data: {toggle:"tooltip"}, style: 'width: 100px;', disabled: !@invoice.editable?} %>
 					</td>
-					<td class="only-desktop"><%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@invoice.editable? %>
-						<%= f.hidden_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
-
 					<td><%= f.hidden_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: !@invoice.editable? %><span><strong>$<%= f.object.subtotal %></strong></span></td>
 					<% if @invoice.editable? %>
 						<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
