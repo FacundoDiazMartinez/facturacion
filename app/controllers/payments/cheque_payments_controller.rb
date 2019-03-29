@@ -43,7 +43,7 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
   def update
     respond_to do |format|
       if @cheque_payment.update(cheque_payment_params)
-        format.html { redirect_to @cheque_payment, notice: 'Cheque payment was successfully updated.' }
+        format.html { redirect_to [:payments, :cheque_payments], notice: 'Cheque payment was successfully updated.' }
         format.json { render :show, status: :ok, location: @cheque_payment }
       else
         format.html { render :edit }
@@ -57,7 +57,7 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
   def destroy
     @cheque_payment.destroy
     respond_to do |format|
-      format.html { redirect_to cheque_payments_url, notice: 'Cheque payment was successfully destroyed.' }
+      format.html { redirect_to [:payments, :cheque_payments], notice: 'Cheque payment was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
@@ -84,6 +84,6 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def cheque_payment_params
-      params.fetch(:cheque_payment, {})
+      params.require(:cheque_payment).permit(:state, :expiration, :total, :observation, :origin, :entity, :number)
     end
 end
