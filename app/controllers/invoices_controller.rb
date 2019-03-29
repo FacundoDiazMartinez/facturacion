@@ -11,6 +11,10 @@ class InvoicesController < ApplicationController
   # GET /invoices/1
   # GET /invoices/1.json
   def show
+    @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
+    require 'barby'
+    require 'barby/barcode/code_25_interleaved'
+    require 'barby/outputter/png_outputter'
     # la siguiene variable la cree para el pdf:
     Product.unscoped do
       @group_details = @invoice.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
@@ -27,6 +31,7 @@ class InvoicesController < ApplicationController
         encoding:"UTF-8"
       end
     end
+    File.delete(@barcode_path) if File.exist?(@barcode_path)
   end
 
   # GET /invoices/new
