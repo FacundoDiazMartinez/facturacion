@@ -9,6 +9,8 @@ class Payments::PaymentsController < ApplicationController
     elsif !params[:receipt_id].nil?
       set_receipt
       set_account_movement
+		elsif !params[:purchase_order_id].nil?
+			  @purchase_order = params[:purchase_order_id].blank? ? PurchaseOrder.new : current_user.company.purchase_orders.find(params[:purchase_order_id])
     else
       set_invoice
     end

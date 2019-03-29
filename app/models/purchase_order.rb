@@ -6,6 +6,7 @@ class PurchaseOrder < ApplicationRecord
   has_many :expense_payments
   has_many :purchase_order_details
   has_many :arrival_notes
+  has_many :arrival_note_details, through: :arrival_notes
 
   has_one :product
 

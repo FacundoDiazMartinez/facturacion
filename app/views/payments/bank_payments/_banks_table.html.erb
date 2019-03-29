@@ -16,8 +16,8 @@
         <td><%= movement.tipo %></td>
         <td><%= movement.bank.name %></td>
         <td>$<%= movement.total %></td>
-        <td><%= l(movement.payment.payment_date) %></td>
-        <td><%= flow_type(movement.payment.flow) %></td>
+        <td><%= l(movement.parent_payment.payment_date) %></td>
+        <td><%= flow_type(movement.parent_payment.flow) %></td>
         <td>
           <% if movement.type_of_payment == "3" %>
             <%= link_to icon('fas', 'eye').html_safe,  payments_bank_payment_path(movement.bank_payment, invoice_id: movement.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>

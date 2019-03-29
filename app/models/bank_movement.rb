@@ -3,7 +3,7 @@ class BankMovement < Payment
   self.table_name = "payments"
 
   def self.default_scope
-    where(type_of_payment: ["3", "7"], active: true)
+    where(type_of_payment: ["3", "7"])
   end
 
   def self.search_by_bank bank
@@ -30,7 +30,7 @@ class BankMovement < Payment
     end
   end
 
-  def payment
+  def parent_payment
     self
   end
 

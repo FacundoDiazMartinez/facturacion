@@ -46,5 +46,13 @@ class PurchaseOrderDetail < ApplicationRecord
       end
       super
     end
+
+    def associates_arrival_note_details
+      purchase_order.arrival_note_details.where('arrival_note_details.product_id = ? ', product_id)
+    end
+
+    def left_quantity
+      quantity - associates_arrival_note_details.sum(:quantity)
+    end
   #PROCESOS
 end

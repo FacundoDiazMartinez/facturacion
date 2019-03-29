@@ -97,8 +97,8 @@
 
         <% @invoice.tributes.each do |t| %>
         <tr>
-          <td class="text_right"><b><%= @invoice.tributes.desc %></b></td>
-          <td class="text_right"><b><%= @invoice.tributes.importe %> </b></td>
+          <td class="text_right"><b><%= t.desc %></b></td>
+          <td class="text_right"><b><%= t.importe %> </b></td>
         </tr>
         <% end %>
 

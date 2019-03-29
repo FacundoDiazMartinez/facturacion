@@ -12,6 +12,12 @@
       <% end -%>
     <% end -%>
   <% end -%>
+<% elsif @purchase_order %>
+  <% nested_form_for @purchase_order do |form| %>
+    <% form.fields_for :expense_payments, form.object.expense_payments.build do |f| %>
+      <% @builder = f %>
+    <% end -%>
+  <% end -%>
 <% else %>
   <% nested_form_for @invoice do |form| %>
     <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
