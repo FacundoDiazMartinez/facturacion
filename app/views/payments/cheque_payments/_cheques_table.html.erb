@@ -1,6 +1,7 @@
 <table class="table table-striped">
   <thead>
     <tr>
+      <th scope="col">Estado</th>
       <th scope="col">Número</th>
       <th scope="col">Cliente</th>
       <th scope="col">Total</th>
@@ -14,12 +15,14 @@
   <tbody>
     <% @cheque_payments.each do |cheque_payment| %>
       <tr>
+        <td><%= cheque_state(cheque_payment.state) %></td>
         <td><%= cheque_payment.number %></td>
         <td><%= cheque_payment.client.name %></td>
         <td>$<%= cheque_payment.total %></td>
         <td><%= cheque_payment.entity %></td>
         <td><%= l(cheque_payment.payment.payment_date) %></td>
         <td><%= flow_type(cheque_payment.payment.flow) %></td>
+        <td><%= link_to icon('fas', 'dollar-sign'), new_charge_payments_cheque_payment_path(cheque_payment.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: '#chargeModal', toggle: 'modal', remote: true} unless cheque_payment.state == "Cobrado"%></td>
         <td>
           <%= link_to icon('fas', 'eye').html_safe,  payments_cheque_payment_path(cheque_payment, invoice_id: cheque_payment.payment.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit').html_safe, edit_payments_cheque_payment_path(cheque_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
@@ -31,3 +34,17 @@
 </table>
 
 <%= paginate @cheque_payments %>
+<div class="modal fade bd-example-modal-lg" id="chargeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'dollar-sign').html_safe %> Registrar pago</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="charge_modal">
+      </div>
+    </div>
+  </div>
+</div>

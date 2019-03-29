@@ -1,5 +1,5 @@
 class Payments::ChequePaymentsController < Payments::PaymentsController
-  before_action :set_cheque_payment, only: [:show, :edit, :update, :destroy]
+  before_action :set_cheque_payment, only: [:show, :edit, :update, :destroy, :charge, :new_charge]
   layout :false, only: :new
 
   # GET /cheque_payments
@@ -59,6 +59,20 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
     respond_to do |format|
       format.html { redirect_to cheque_payments_url, notice: 'Cheque payment was successfully destroyed.' }
       format.json { head :no_content }
+    end
+  end
+
+  def new_charge
+
+  end
+
+  def charge
+    respond_to do |format|
+      if @cheque_payment.charge_amount(params, current_user.company_id)
+        format.html { redirect_to [:payments, :cheque_payments], notice: "Cobro registrado con éxito"}
+      else
+        format.html { redirect_to [:payments, :cheque_payments], alert: "Error al registrar el cobro"}
+      end
     end
   end
 

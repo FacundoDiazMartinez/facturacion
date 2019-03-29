@@ -6,7 +6,10 @@ Rails.application.routes.draw do
     patch :receive_transfer, on: :member
     get :search_product, on: :collection
   end
-  resources :credit_cards
+  resources :credit_cards do
+    get :new_charge, on: :member
+    post :charge, on: :member
+  end
   resources :advertisements do
     patch :cancel, on: :member
     patch :send_email, on: :member
@@ -70,7 +73,10 @@ Rails.application.routes.draw do
     resources :debit_payments
     resources :bank_payments
     resources :debit_payments
-    resources :cheque_payments
+    resources :cheque_payments do
+      get :new_charge, on: :member
+      post :charge, on: :member
+    end
     resources :account_payments
     resources :compensation_payments
   end

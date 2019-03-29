@@ -134,6 +134,16 @@ class PurchaseOrdersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_order_params
-      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :total_pay, :created_at, :user_id, :shipping, :shipping_cost, :company_id, expense_payments_attributes: [:id, :type_of_payment, :total, :_destroy], purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :supplier_code, :cost_price, :name, :price]])
+      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :total_pay, :created_at, :user_id, :shipping, :shipping_cost, :company_id,
+        expense_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
+          cash_payment_attributes: [:id, :total],
+          debit_payment_attributes: [:id, :total, :bank_id],
+          card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+          bank_payment_attributes: [:id, :bank_id, :total],
+          cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
+          retention_payment_attributes: [:id, :number, :total, :observation],
+          compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
+        ],
+         purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :supplier_code, :cost_price, :name, :price]])
     end
 end

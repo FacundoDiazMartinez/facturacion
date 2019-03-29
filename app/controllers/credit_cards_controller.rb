@@ -1,5 +1,5 @@
 class CreditCardsController < ApplicationController
-  before_action :set_credit_card, only: [:show, :edit, :update, :destroy]
+  before_action :set_credit_card, only: [:show, :edit, :update, :destroy, :new_charge, :charge]
 
   def index
     @credit_cards = current_user.company.credit_cards
@@ -45,6 +45,20 @@ class CreditCardsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to credit_cards_path, notice: 'La tarjeta fue eliminada correctamente.' }
       format.json { head :no_content }
+    end
+  end
+
+  def new_charge
+
+  end
+
+  def charge
+    respond_to do |format|
+      if @credit_card.charge_amount(params)
+        format.html { redirect_to [:payments, :card_payments], notice: "Cobro registrado con éxito"}
+      else
+        format.html { redirect_to [:payments, :card_payments], alert: "Error al registrar el cobro"}
+      end
     end
   end
 
