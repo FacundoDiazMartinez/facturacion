@@ -12,20 +12,16 @@ class CardPayment < ApplicationRecord
 	  		if !card.blank?
 	  			where("credit_cards.name = ?", card)
 	  		else
-	  			all 
+	  			all
 	  		end
 	  	end
 	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS
-		def generator_name
-			payment.user_id.blank? ? "Sistema" : payment.user.name
-		end
 	#ATRIBUTOS
 
 	#PROCESOS
-
-		def update_credit_card_balance
+			def update_credit_card_balance
 	  		self.credit_card.update_balance_from_payment(self.payment)
 	  	end
 

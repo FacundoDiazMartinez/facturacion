@@ -13,7 +13,7 @@ ul.navpills > .nav-item{
   text-align: right;
 }
 
-.nav-link{
+.sidebar > ul > li > .nav-link{
   color: white !important;
 }
 
@@ -22,7 +22,7 @@ ul.navpills > .nav-item{
 }
 
 .sidebar-animate:hover{
-  
+
   span.nav-span {
     display: inline-block;
   }
@@ -53,4 +53,3 @@ li.nav-item > div.dropdown-menu > a.dropdown-item{
 #navpills{
   align-items: initial !important;
 }
-

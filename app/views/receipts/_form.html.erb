@@ -76,13 +76,14 @@
             <table class="table table-striped invoice-table" id="details">
               <thead>
                 <tr>
-                  <th width="35%" scope="col">Número</th>
-                  <th width="15%" scope="col">Fecha</th>
-                  <th width="15%" scope="col">Total</th>
-                  <th width="15%" scope="col">Pagado</th>
-                  <th width="15%" scope="col">Faltante</th>
+                  <th scope="col">Número</th>
+                  <th scope="col">Fecha</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">Crédito</th>
+                  <th scope="col">Pagado</th>
+                  <th scope="col">Faltante</th>
                   <!-- <th scope="col">Total a pagar</th> -->
-                  <th width="5%" scope="col"></th>
+                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
@@ -106,6 +107,9 @@
                     </td>
                     <td>
                       <%= text_field_tag :invoice_total, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total.to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total', data: {toggle:"tooltip"}, disabled: true %>
+                    </td>
+                    <td>
+                      <%= text_field_tag :asociated_invoices_total, f.object.associated_invoices_total, style: "text-align: right;" ,  class: 'form-control form-control-sm associated_invoices_total', data: {toggle:"tooltip"}, disabled: true %>
                     </td>
                     <td>
                       <%= text_field_tag :invoice_total_pay, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_pay.to_s, style: "text-align: right;" , class: 'form-control form-control-sm invoice_total_pay', data: {toggle:"tooltip"}, disabled: true %>

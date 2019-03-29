@@ -26,6 +26,7 @@ class Payments::DebitPaymentsController < Payments::PaymentsController
   # POST /debit_payments
   # POST /debit_payments.json
   def create
+    super
     @debit_payment = DebitPayment.new(debit_payment_params)
 
     respond_to do |format|
@@ -42,6 +43,7 @@ class Payments::DebitPaymentsController < Payments::PaymentsController
   # PATCH/PUT /debit_payments/1
   # PATCH/PUT /debit_payments/1.json
   def update
+    super
     respond_to do |format|
       if @debit_payment.update(debit_payment_params)
         format.html { redirect_to @debit_payment, notice: 'Debit payment was successfully updated.' }

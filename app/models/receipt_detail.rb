@@ -20,4 +20,11 @@ class ReceiptDetail < ApplicationRecord
     end
   end
 
+  def associated_invoices_total
+    if invoice.nil?
+      return "$ 0"
+    else
+      return "$ #{invoice.confirmed_notes.sum(:total)}"
+    end
+  end
 end
