@@ -352,11 +352,23 @@ class Invoice < ApplicationRecord
         end
       end
 
+      def real_total
+        if is_invoice?
+          self.total.round(2) - self.notes.sum(:total).round(2) + self.notes.sum(:total_pay).round(2)
+        else
+          self.total.round(2)
+        end
+      end
+
+      def real_total_left
+        (real_total - total_pay).round(2)
+      end
+
       def paid_invoice_from_client_debt
         client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
           @band = true
           pay = self.income_payments.new(type_of_payment: "6", payment_date: Date.today, generated_by_system: true, account_movement_id: am.id)
-          pay.total = (am.amount_available.to_f >= self.total_left.to_f) ? self.total_left.to_f : am.amount_available.to_f
+          pay.total = (am.amount_available.to_f >= self.real_total_left.to_f) ? self.real_total_left.to_f : am.amount_available.to_f
           @r = pay.save
           @last_pay = pay
           am.update_column(:amount_available, am.amount_available - pay.total)

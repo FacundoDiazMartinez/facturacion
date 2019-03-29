@@ -206,8 +206,8 @@ class InvoicesController < ApplicationController
           compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
         ],
         invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :depot_id, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
-        product_attributes: [:id, :code, :company_id, :name, :tipo],
-        commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
+          product_attributes: [:id, :code, :company_id, :name, :tipo],
+          commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
         client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
         tributes_attributes: [:id, :afip_id, :desc, :base_imp, :alic, :importe, :_destroy]
       )

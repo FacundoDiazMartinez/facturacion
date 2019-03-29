@@ -7,7 +7,7 @@
         <th class="text_left">Observación: </th>
       </tr>
       <tr>
-        <td><%= @receipt.concept %></td>
+        <td class="bg-white"><%= @receipt.concept %></td>
       </tr>
     </table>
 
@@ -24,7 +24,7 @@
           </th>
         </tr>
         <% @receipt.invoices.each do |i| %>
-          <tr>
+          <tr class="bg-white">
             <td>
               <% if i.total_left > 0 %>
               Pago parcial Factura <%= i.full_number %>  -  Importe $ <%= i.total %>
@@ -36,7 +36,7 @@
             </td>
           </tr>
           <% i.notes.each do |n| %>
-            <tr class="text_left">
+            <tr class="text_left bg-white">
               <td>
                 Vinculación <%= n.nombre_comprobante %> <%= n.full_number %> - Importe $ <%= n.total %>
               </td>
@@ -54,7 +54,7 @@
           <th class="text_left">Forma de pago</th>
         </tr>
         <% @receipt.account_movement.income_payments.where(generated_by_system: false).each do |ip| %>
-          <tr>
+          <tr class="bg-white">
             <td>
               <%= ip.payment_name %> - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
             </td>
