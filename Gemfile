@@ -29,6 +29,7 @@ gem 'jbuilder', '~> 2.5'
 
 # GENA código de barras
 gem 'barby', '~> 0.6.6'
+gem 'rmagick'
 gem 'chunky_png'
 
 gem 'byebug'
