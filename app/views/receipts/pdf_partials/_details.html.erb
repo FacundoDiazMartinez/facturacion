@@ -57,7 +57,7 @@
           <tr class="bg-white">
             <td>
               <% if ip.type_of_payment == "4" %>
-                <%= ip.payment_name %> [ <%= ip.cheque_payment.number %> ] - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
+                <%= ip.payment_name %> N°: <%= ip.cheque_payment.number %> - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
               <% else %>
                 <%= ip.payment_name %> - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
               <% end %>
