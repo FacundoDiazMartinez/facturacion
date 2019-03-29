@@ -67,4 +67,10 @@ class ArrivalNoteDetail < ApplicationRecord
       end
     end
   #PROCESOS
+
+  #FUNCION
+    def associates_purchase_order_detail purchase_order
+      purchase_order.purchase_order_details.find_by_product_id(product_id)
+    end
+  #FUNCION
 end

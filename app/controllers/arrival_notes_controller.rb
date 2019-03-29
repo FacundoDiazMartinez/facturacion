@@ -98,7 +98,7 @@ class ArrivalNotesController < ApplicationController
     @purchase_order = current_user.company.purchase_orders.find(params[:purchase_order_id] || @arrival_note.purchase_order_id)
     @arrival_note.purchase_order_id = @purchase_order.id
     @purchase_order.purchase_order_details.each do |pod|
-      @arrival_note.arrival_note_details.new(product_id: pod.product_id, req_quantity: pod.quantity)
+      @arrival_note.arrival_note_details.build(product_id: pod.product_id, req_quantity: pod.quantity)
     end
   end
 

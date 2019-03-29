@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_28_133530) do
+ActiveRecord::Schema.define(version: 2019_03_29_180610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,13 +62,13 @@ ActiveRecord::Schema.define(version: 2019_03_28_133530) do
   create_table "arrival_note_details", force: :cascade do |t|
     t.bigint "arrival_note_id"
     t.bigint "product_id"
-    t.string "quantity"
     t.boolean "cumpliment"
     t.string "observation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "req_quantity"
     t.boolean "completed", default: false, null: false
+    t.float "quantity", default: 0.0, null: false
     t.index ["arrival_note_id"], name: "index_arrival_note_details_on_arrival_note_id"
     t.index ["product_id"], name: "index_arrival_note_details_on_product_id"
   end
