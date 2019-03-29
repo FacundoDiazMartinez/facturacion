@@ -24,16 +24,25 @@
 						<% if payment.errors.empty? %>
 							<tr>
                 <td>
-                  <% if payment.type_of_payment == "4" %>
-                    <%= payment.payment_name %> - [ <%= payment.cheque_payment.number %> ]
+                  <% case payment.type_of_payment %>
+                  <% when "4" %>
+                    <%= payment.payment_name %> - N°: <%= payment.cheque_payment.number %>
+                  <% when "1" %>
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.installments %> cuotas
+                  <% when "3" %>
+                    transferencia
+                  <% when "7" %>
+                    tarj debito
                   <% else %>
                     <%= payment.payment_name %>
                   <% end %>
 								</td>
+
 								<td id="pay">$ <%= payment.total %></td>
 								<td><%= payment.payment_date %></td>
 								<td><%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %></td>
 							</tr>
+
 						<% end -%>
 					<% end -%>
 				</tbody>
