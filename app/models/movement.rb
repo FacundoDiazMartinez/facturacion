@@ -1,4 +1,4 @@
-class BankMovement < Payment
+class Movement < Payment
   include Subpayment
   self.table_name = "payments"
 
@@ -28,10 +28,6 @@ class BankMovement < Payment
     else
       "Pago con débito"
     end
-  end
-
-  def parent_payment
-    self
   end
 
 end
