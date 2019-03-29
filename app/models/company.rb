@@ -33,7 +33,7 @@ class Company < ApplicationRecord
 	has_many :account_movements, through: :clients
 	has_many :account_movement_payments, through: :account_movements
 	has_many :transfer_requests
-	has_many :bank_movements
+	has_many :movements
 
 	belongs_to :province
 	belongs_to :locality

@@ -122,11 +122,6 @@ class DeliveryNote < ApplicationRecord
       self.number = self.number.to_s.rjust(8,padstr= '0')
     end
 
-    def destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
-    end
   #PROCESOS
 
 

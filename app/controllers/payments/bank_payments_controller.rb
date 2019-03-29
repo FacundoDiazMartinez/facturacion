@@ -4,7 +4,7 @@ class Payments::BankPaymentsController < Payments::PaymentsController
   # GET /bank_payments
   # GET /bank_payments.json
   def index
-    @bank_movements = current_user.company.bank_movements.search_by_bank(params[:bank]).search_by_date(params[:date]).paginate(page: params[:page], per_page: 10)
+    @bank_movements = current_user.company.movements.search_by_bank(params[:bank]).search_by_date(params[:date]).paginate(page: params[:page], per_page: 10)
   end
 
   # GET /bank_payments/1
