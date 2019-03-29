@@ -3,8 +3,12 @@ class Bank < ApplicationRecord
   has_many :bank_payments
 
   def update_balance_from_payment payment
-    new_total =  payment.saved_change_to_total
-  	payment_total = new_total.last - new_total.first
+    if payment.saved_change_to_total.nil?
+      payment_total = payment.total
+    else
+      new_total =  payment.saved_change_to_total
+    	payment_total = new_total.last - new_total.first
+    end
   	update_column(:current_amount, current_amount + payment_total)
   end
 

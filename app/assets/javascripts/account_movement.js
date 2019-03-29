@@ -7,13 +7,14 @@ $(document).on("change", ".new_type_of_payment", function(){
 
 	selected_payment 	= $(this).val();
 	invoice_id 			= $("#invoice_id_for_payment").val();
+	purchase_order_id 	= $("#purchase_order_id_for_payment").val();
 	client_id 			= $("#client_id_for_payment").val();
 	receipt_id 			= $("#receipt_id_for_payment").val();
 	account_movement_id = $("#account_movement_id_for_payment").val();
 
 	invoice_client_id = $("#invoice_client_id").val();
 
-	data = {invoice_id: invoice_id, client_id: client_id, receipt_id: receipt_id, account_movement_id: account_movement_id, invoice_client_id: invoice_client_id}
+	data = {invoice_id: invoice_id, purchase_order_id: purchase_order_id, client_id: client_id, receipt_id: receipt_id, account_movement_id: account_movement_id, invoice_client_id: invoice_client_id}
 
 	switch (selected_payment) {
 		case '0':

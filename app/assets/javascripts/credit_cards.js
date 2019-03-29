@@ -78,3 +78,12 @@ $(document).on('change', '#credit_card_fav_logo', function(){
     $('#logo_div').show("slow");
   }
 })
+
+$(document).on('change', '#transfer_to', function(){
+  if ($(this).val() == "Cuenta Bancaria"){
+    $("#bank_group").show();
+  }else{
+    $("#bank").val("")
+    $("#bank_group").hide();
+  }
+})

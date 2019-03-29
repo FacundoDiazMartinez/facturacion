@@ -1,3 +1,4 @@
+
 <!-- PIE DE PAGINA -->
 <div class="row footer_bottom">
   <p>
@@ -8,16 +9,32 @@
   <div class="container">
     <table class="width_100">
       <tr>
-        <td><%= wicked_pdf_image_tag '/images/afip.png',:width => "130"%></td>
-        <td><b>
-          <% if @invoice.check_authorized_invoice %>
-            Comprobante Autorizado
-          <% else %>
-            Comprobante NO Autorizado
-          <% end %>
-        </b></td>
-        <td> </td>
-        <td class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
+        <td rowspan="2" style="width: 33%;"> <br> <center> <%= wicked_pdf_image_tag '/images/afip.png',:width => "150"%> </center></td>
+
+        <td rowspan="2" style="width: 34%;">
+          <b>
+            <center>
+              <% if @invoice.check_authorized_invoice %>
+                <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
+                <% outputter = Barby::PngOutputter.new(barcode) %>
+                <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
+                <%= image_tag(@barcode_path, class: "img-responsive") %>
+              <% else %>
+                Comprobante NO Autorizado
+                <% if !@invoice.cae.blank? %>
+                  <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
+                  <% outputter = Barby::PngOutputter.new(barcode) %>
+                  <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
+                  <%= image_tag(@barcode_path, class: "img-responsive") %>
+                  <%= barcode %>
+                <% end %>
+              <% end %>
+            </center>
+          </b>
+        </td>
+
+
+        <td style="width: 33%;" class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
       </tr>
 
       <tr>
@@ -30,6 +47,7 @@
   </div>
 </div>
 <div class="text_center">
+  <br>
   Página <%= page_number %> de <%= total_pages%>
 </div>
 

@@ -640,6 +640,24 @@ class Invoice < ApplicationRecord
         return bill
       end
 
+      def code_hash
+        {
+          cuit: self.company.cuit,
+          cbte_tipo: self.cbte_tipo.to_s.rjust(3,padstr= '0'),
+          pto_venta: self.sale_point.name,
+          cae: self.cae,
+          vto_cae: self.cae_due_date
+        }
+      end
+
+      def code_numbers(code_hash)
+        require "check_digit.rb"
+        code = code_hash.values.join("")
+        last_digit = CheckDigit.new(code).calculate
+        result = "#{code}#{last_digit}"
+        result.size.odd? ? "0" + result : result
+      end
+
       def no_gravado
         self.invoice_details.where(iva_aliquot: "01").sum(:subtotal).to_f.round(2)
       end
