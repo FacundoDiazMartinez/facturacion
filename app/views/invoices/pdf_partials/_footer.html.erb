@@ -20,7 +20,7 @@
                 <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
                 <%= image_tag(@barcode_path, class: "img-responsive") %>
               <% else %>
-                Comprobante NO Autorizado
+                -- Comprobante NO Autorizado --
                 <% if !@invoice.cae.blank? %>
                   <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
                   <% outputter = Barby::PngOutputter.new(barcode) %>
@@ -32,7 +32,6 @@
             </center>
           </b>
         </td>
-
 
         <td style="width: 33%;" class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
       </tr>

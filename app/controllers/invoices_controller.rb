@@ -11,10 +11,7 @@ class InvoicesController < ApplicationController
   # GET /invoices/1
   # GET /invoices/1.json
   def show
-    @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
-    require 'barby'
-    require 'barby/barcode/code_25_interleaved'
-    require 'barby/outputter/png_outputter'
+
     # la siguiene variable la cree para el pdf:
     Product.unscoped do
       @group_details = @invoice.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
@@ -23,15 +20,21 @@ class InvoicesController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@invoice.id}",
-        layout: 'pdf.html',
-        template: 'invoices/show',
-        viewport_size: '1280x1024',
-        page_size: 'A4',
-        encoding:"UTF-8"
+        @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
+        require 'barby'
+        require 'barby/barcode/code_25_interleaved'
+        require 'barby/outputter/png_outputter'
+
+        render pdf: "Factura_#{@invoice.comp_number}_#{@invoice.client.name}",
+          layout: 'pdf.html',
+          template: 'invoices/show',
+          viewport_size: '1280x1024',
+          page_size: 'A4',
+          encoding:"UTF-8"
+        File.delete(@barcode_path) if File.exist?(@barcode_path)
       end
     end
-    File.delete(@barcode_path) if File.exist?(@barcode_path)
+
   end
 
   # GET /invoices/new

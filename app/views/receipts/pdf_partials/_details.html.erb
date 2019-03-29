@@ -56,7 +56,11 @@
         <% @receipt.account_movement.income_payments.where(generated_by_system: false).each do |ip| %>
           <tr>
             <td>
-              <%= ip.payment_name %> - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
+              <% if ip.type_of_payment == "4" %>
+                <%= ip.payment_name %> [ <%= ip.cheque_payment.number %> ] - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
+              <% else %>
+                <%= ip.payment_name %> - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
+              <% end %>
             </td>
           </tr>
         <% end %>
