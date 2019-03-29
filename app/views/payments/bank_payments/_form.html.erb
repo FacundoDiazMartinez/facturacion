@@ -1,19 +1,5 @@
 <%= render '/payments/shared_builder' %>
 
 <%= @builder.fields_for :bank_payment, @builder.object.build_bank_payment do |cpf| %>
-
-  <div class="form-group">
-    <%= cpf.label :bank_id, "Banco" %>
-    <%= cpf.select :bank_id, current_user.company.banks.map{|cc| [cc.name, cc.id]}, {prompt: "Seleccione..."}, {class: 'form-control'} %>
-  </div>
-
-  <div class="form-group">
-    <%= cpf.label :total, "Total ($)" %>
-    <%= cpf.number_field :total, class: 'form-control subpayment_total', requried: true %>
-  </div>
-
-  <div class="form-group">
-    <%= cpf.label :ticket, "Ticket" %><br>
-    <%= cpf.file_field :ticket, step: :any, requried: true %>
-  </div>
+  <%= render "/payments/bank_payments/shared_form", cpf: cpf %>
 <% end -%>

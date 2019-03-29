@@ -1,27 +1,104 @@
-<div class="page-header">
-  <%= link_to new_bank_payment_path, class: 'btn btn-primary' do %>
-    <span class="glyphicon glyphicon-plus"></span>
-    New Bank payment
-  <% end %>
-  <h1>Listing bank_payments</h1>
+<div class="p-4">
+  <ul class="nav justify-content-center">
+    <li class="nav-item bg-light rounded-left border">
+      <%= link_to "Caja diaria #{icon('fas', 'money-bill-alt')}".html_safe, daily_cashes_path, class: 'text-dark nav-link', title: 'caja diaria' %>
+    <li class="nav-item bg-light border">
+      <%= link_to "Tarjetas #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
+    </li>
+    <li class="nav-item bg-light border">
+      <%= link_to "Cheques #{icon('fas', 'file-signature')}".html_safe, payments_cheque_payments_path(), class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
+    </li>
+    <li class="nav-item bg-light rounded-right border">
+      <%= link_to "Banco #{icon('fas', 'university')}".html_safe, payments_bank_payments_path(), class: 'text-white bg-secondary nav-link', title: "Información de movimientos bancarios" %>
+    </li>
+  </ul>
+  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+    <h1 class="h2">Movimientos bancarios</h1>
+  </div>
+
+  <div class="page-section">
+    <div class="bank bank-fluid">
+
+      <div class="bank-header">
+        <%= form_tag payments_bank_payments_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <!-- BUSCAR POR Banco-->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= select_tag :bank, options_for_select(current_user.company.banks.map{|u| [u.name, u.id]}), {prompt: 'Buscar por banco...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          </div>
+          <!-- BUSCAR POR Banco-->
+
+          <!-- BUSCAR POR CLIENTE -->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+            </div>
+            <%= text_field_tag :client, params[:client], class: 'form-control datepicker', placeholder: 'Buscar por cliente...', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR CLIENTE -->
+
+          <!-- BUSCAR POR FECHA -->
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+            </div>
+            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha...', onchange: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR FECHA -->
+        <% end %>
+      </div>
+
+      <div class="card-body">
+        <div class="row">
+          <% current_user.company.banks.each do |cc| %>
+            <div class="col">
+              <h6>Saldo <strong><%= cc.name %></strong>: $ <%= cc.current_amount %></h6>
+            </div>
+          <% end -%>
+        </div>
+        <hr>
+        <!-- MOVIMIENTOS ASOCIADOS -->
+        <div id="credit_banks_table">
+          <%= render 'banks_table' %>
+        </div>
+        <!-- MOVIMIENTOS ASOCIADOS -->
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="table-responsive">
-  <table class="table table-striped table-bordered table-hover">
-    <thead>
-      <tr>
-            <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
+<div class="modal fade bd-example-modal-lg" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'eye').html_safe %> Detalle del pago</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="show_modal">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <%= save_button %>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <tbody>
-      <%= content_tag_for(:tr, @bank_payments) do |bank_payment| %>
-            <td><%= link_to 'Show', bank_payment %></td>
-        <td><%= link_to 'Edit', edit_bank_payment_path(bank_payment) %></td>
-        <td><%= link_to 'Destroy', bank_payment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      <% end %>
-    </tbody>
-  </table>
+<div class="modal fade bd-example-modal-lg" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'edit').html_safe %> Editar pago</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="edit_modal">
+      </div>
+    </div>
+  </div>
 </div>

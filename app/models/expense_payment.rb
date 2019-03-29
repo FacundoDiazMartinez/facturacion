@@ -4,6 +4,7 @@ class ExpensePayment < Payment
 	self.table_name = "payments"
 
 	before_validation :set_flow
+	before_save :check_company_id
 
 	def self.default_scope
     	where(flow: "expense", active: true)
@@ -12,5 +13,9 @@ class ExpensePayment < Payment
  	def set_flow
  		self.flow = "expense"
  	end
+
+	def check_company_id
+		self.company_id = purchase_order.company_id
+	end
 
 end

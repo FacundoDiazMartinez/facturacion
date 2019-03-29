@@ -50,12 +50,12 @@ class Payment < ApplicationRecord
   #ATRIBUTOS
     def cash_payment_attributes=(attribute)
       self.total = attribute["total"].to_f
-      #super
+      super
     end
 
     def debit_payment_attributes=(attribute)
       self.total = attribute["total"].to_f
-      #super
+      super
     end
 
     def card_payment_attributes=(attribute)
@@ -66,22 +66,22 @@ class Payment < ApplicationRecord
 
     def bank_payment_attributes=(attribute)
       self.total = attribute["total"]
-      #super
+      super
     end
 
     def cheque_payment_attributes=(attribute)
       self.total = attribute["total"]
-      #super
+      super
     end
 
     def retention_payment_attributes=(attribute)
       self.total = attribute["total"]
-      #super
+      super
     end
 
     def compensation_payment_attributes=(attribute)
       self.total = attribute["total"].to_f
-      #super
+      super
     end
 
     def payment_name

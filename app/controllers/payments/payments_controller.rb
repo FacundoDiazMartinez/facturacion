@@ -1,5 +1,6 @@
 class Payments::PaymentsController < ApplicationController
 	before_action :set_invoice, except: :new
+	layout :false, except: :index
 
 	def new
     if !params[:client_id].nil?

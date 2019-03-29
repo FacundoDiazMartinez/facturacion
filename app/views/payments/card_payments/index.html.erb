@@ -1,4 +1,17 @@
 <div class="p-4">
+  <ul class="nav justify-content-center">
+    <li class="nav-item bg-light rounded-left border">
+      <%= link_to "Caja diaria #{icon('fas', 'money-bill-alt')}".html_safe, daily_cashes_path, class: 'text-dark nav-link', title: 'caja diaria' %>
+    <li class="nav-item bg-light border">
+      <%= link_to "Tarjetas #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), class: 'text-white bg-secondary nav-link', title: "Información de tarjetas de crédito" %>
+    </li>
+    <li class="nav-item bg-light border">
+      <%= link_to "Cheques #{icon('fas', 'file-signature')}".html_safe, payments_cheque_payments_path(), class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
+    </li>
+    <li class="nav-item bg-light rounded-right border">
+      <%= link_to "Banco #{icon('fas', 'university')}".html_safe, payments_bank_payments_path(), class: 'text-dark nav-link', title: "Información de movimientos bancarios" %>
+    </li>
+  </ul>
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
     <h1 class="h2">Transacciones con tarjetas</h1>
   </div>
@@ -38,16 +51,20 @@
       </div>
 
       <div class="card-body">
-        <% current_user.company.credit_cards.each do |cc| %>
-          <h5><strong>Saldo <%= cc.name %>:</strong> $ <%= cc.current_amount %></h5>
-        <% end -%>
+        <div class="row">
+          <% current_user.company.credit_cards.each do |cc| %>
+            <div class="col">
+              <h6>Saldo <strong><%= cc.name %></strong>: $ <%= cc.current_amount %></h6>
+            </div>
+          <% end -%>
+        </div>
+        <hr>
         <!-- MOVIMIENTOS ASOCIADOS -->
         <div id="credit_cards_table">
           <%= render 'credit_cards_table' %>
         </div>
         <!-- MOVIMIENTOS ASOCIADOS -->
       </div>
-      
     </div>
   </div>
 </div>

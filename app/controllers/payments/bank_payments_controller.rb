@@ -1,11 +1,10 @@
 class Payments::BankPaymentsController < Payments::PaymentsController
   before_action :set_bank_payment, only: [:show, :edit, :update, :destroy]
-  layout :false
 
   # GET /bank_payments
   # GET /bank_payments.json
   def index
-    @bank_payments = BankPayment.all
+    @bank_movements = current_user.company.bank_movements.search_by_bank(params[:bank]).search_by_date(params[:date]).paginate(page: params[:page], per_page: 10)
   end
 
   # GET /bank_payments/1
@@ -26,11 +25,12 @@ class Payments::BankPaymentsController < Payments::PaymentsController
   # POST /bank_payments
   # POST /bank_payments.json
   def create
+    super
     @bank_payment = BankPayment.new(bank_payment_params)
 
     respond_to do |format|
       if @bank_payment.save
-        format.html { redirect_to @bank_payment, notice: 'Bank payment was successfully created.' }
+        format.html { redirect_to [:payments, :bank_payments], notice: 'Card payment was successfully created.' }
         format.json { render :show, status: :created, location: @bank_payment }
       else
         format.html { render :new }
@@ -42,9 +42,10 @@ class Payments::BankPaymentsController < Payments::PaymentsController
   # PATCH/PUT /bank_payments/1
   # PATCH/PUT /bank_payments/1.json
   def update
+    super
     respond_to do |format|
       if @bank_payment.update(bank_payment_params)
-        format.html { redirect_to @bank_payment, notice: 'Bank payment was successfully updated.' }
+        format.html { redirect_to [:payments, :bank_payments], notice: 'Bank payment was successfully updated.' }
         format.json { render :show, status: :ok, location: @bank_payment }
       else
         format.html { render :edit }
@@ -66,11 +67,11 @@ class Payments::BankPaymentsController < Payments::PaymentsController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_bank_payment
-      @bank_payment = BankPayment.find(params[:id])
+      @bank_payment = current_user.company.bank_payments.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def bank_payment_params
-      params.fetch(:bank_payment, {})
+      params.require(:bank_payment).permit(:bank_id, :total, :ticket)
     end
 end
