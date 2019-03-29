@@ -31,6 +31,10 @@ module Subpayment
     payment.client
   end
 
+	def generator_name
+		payment.user_id.blank? ? "Sistema" : payment.user.name
+	end
+
   def destroy
     if self.payment.active
       self.payment.destroy

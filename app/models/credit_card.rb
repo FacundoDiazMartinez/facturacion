@@ -10,7 +10,8 @@ class CreditCard < ApplicationRecord
   DEFAULT_NAMES = [["VISA", "cc-visa"],[ "American Express", "cc-amex"], ["Mastercard", "cc-mastercard"], ["PayPal", "cc-paypal"], ["Diners Club", "cc-diners-club"], ["Otra", "credit-card"]]
 
   def update_balance_from_payment payment
-  	payment_total = payment.total - payment.total_was
+    new_total =  payment.saved_change_to_total
+  	payment_total = new_total.last - new_total.first
   	update_column(:current_amount, current_amount + payment_total)
   end
 
