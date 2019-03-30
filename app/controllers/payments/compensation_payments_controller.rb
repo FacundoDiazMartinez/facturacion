@@ -16,7 +16,7 @@ class Payments::CompensationPaymentsController < Payments::PaymentsController
 
   # GET /card_payments/new
   def new
-    @compensation_payment = current_user.company.clients.find(params[:invoice_client_id]).compensation_payments.new
+    @compensation_payment = CompensationPayment.new
     # @invoice_client = current_user.company.clients.find(params[:invoice_client_id])
     super
   end

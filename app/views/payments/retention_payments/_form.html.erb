@@ -8,6 +8,11 @@
   </div>
 
   <div class="form-group">
+    <%= rpf.label :tribute, "Tributo" %><br>
+    <%= rpf.select :tribute, Invoice::TRIBUTOS.map{|t| [t[0], t[0]]}, {}, {class: 'form-control', requried: true} %>
+  </div>
+
+  <div class="form-group">
     <%= rpf.label :observation, "Observación" %><br>
     <%= rpf.text_area :observation, class: 'form-control', requried: true %>
   </div>
