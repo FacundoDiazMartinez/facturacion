@@ -35,12 +35,21 @@ module Subpayment
 		payment.user_id.blank? ? "Sistema" : payment.user.name
 	end
 
-  def destroy
+  def destroy(mode = :soft)
+		if payment.nil?
+			super()
+			return
+		end
     if self.payment.active
-      self.payment.destroy
-      update_column(:active, false)
-      run_callbacks :destroy
-      freeze
+      if self.payment.destroy
+				if mode == :hard
+					super()
+				else
+		      update_column(:active, false)
+		      run_callbacks :destroy
+		      freeze
+				end
+			end
     end
   end
 
@@ -59,8 +68,10 @@ module Subpayment
   # end
 
   def update_invoice
-  	if not self.payment.invoice_id.blank?
-  		Invoice.find(self.payment.invoice_id).touch
-  	end
+		unless payment.nil?
+	  	if not self.payment.invoice_id.blank?
+	  		Invoice.find(self.payment.invoice_id).touch
+	  	end
+		end
   end
 end

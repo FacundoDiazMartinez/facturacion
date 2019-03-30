@@ -45,13 +45,13 @@ class TransferRequest < ApplicationRecord
 
   def register_sended_transfer
     transfer_request_details.each do |detail|
-      detail.remove_stock(depot_id: self.from_depot_id, quantity: detail.quantity)
+      detail.product.remove_stock(depot_id: self.from_depot_id, quantity: detail.quantity)
     end
   end
 
   def register_received_transfer
     transfer_request_details.each do |detail|
-      detail.add_stock(depot_id: self.to_depot_id, quantity: detail.quantity)
+      detail.product.add_stock(depot_id: self.to_depot_id, quantity: detail.quantity)
     end
   end
 
