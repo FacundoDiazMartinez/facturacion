@@ -55,12 +55,13 @@
           <% current_user.company.banks.each do |cc| %>
             <div class="col">
               <h6>Saldo <strong><%= cc.name %></strong>: $ <%= cc.current_amount %></h6>
+              <%= link_to "Registrar extracción", new_extraction_bank_path(cc.id), class: 'btn btn-secondary', data: {target: '#extractionModal', toggle: 'modal', remote: true} %>
             </div>
           <% end -%>
         </div>
         <hr>
         <!-- MOVIMIENTOS ASOCIADOS -->
-        <div id="credit_banks_table">
+        <div id="banks_table">
           <%= render 'banks_table' %>
         </div>
         <!-- MOVIMIENTOS ASOCIADOS -->
@@ -98,6 +99,21 @@
         </button>
       </div>
       <div id="edit_modal">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="extractionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'dollar-sign').html_safe %> Registrar extracción</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="extraction_modal">
       </div>
     </div>
   </div>
