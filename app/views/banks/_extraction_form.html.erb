@@ -1,0 +1,21 @@
+<%= form_tag extract_bank_path(@bank) do |f| %>
+  <div class="modal-body">
+    <div class="form-group">
+      <%= label_tag :amount, "Monto a extraer" %>
+      <%= number_field_tag :amount, @bank.current_amount , class: 'form-control',step: :any %>
+    </div>
+    <div class="form-group">
+      <%= label_tag :transfer_to, "Extraer a" %>
+      <%= select_tag :transfer_to, options_for_select(["Cuenta Bancaria", "Efectivo"]), {prompt: "Seleccione...", class: 'form-control'} %>
+    </div>
+
+    <div class="form-group" style="display: none;" id="bank_group">
+      <%= label_tag :bank, "Banco" %>
+      <%= select_tag :bank, options_for_select(current_user.company.banks.map{|b| [b.name, b.id]}),{prompt: "Seleccione...", class: 'form-control'} %>
+    </div>
+  </div>
+  <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      <%= save_button %>
+  </div>
+<% end %>

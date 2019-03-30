@@ -26,6 +26,7 @@ class InvoicesController < ApplicationController
         render pdf: "#{@invoice.id}",
         layout: 'pdf.html',
         template: 'invoices/show',
+        zoom: 3.1,
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"

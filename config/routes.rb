@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     get :new_charge, on: :member
     post :charge, on: :member
   end
+
+  resources :banks do
+    get :new_extraction, on: :member
+    post :extract, on: :member
+  end
   resources :advertisements do
     patch :cancel, on: :member
     patch :send_email, on: :member
