@@ -354,7 +354,7 @@ class Invoice < ApplicationRecord
 
       def real_total
         if is_invoice?
-          self.total.round(2) - self.notes.sum(:total).round(2)
+          self.total.round(2) - self.notes.sum(:total).round(2) + self.notes.sum(:total_pay).round(2)
         else
           self.total.round(2)
         end

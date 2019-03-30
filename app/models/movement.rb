@@ -1,5 +1,10 @@
+<<<<<<< HEAD:app/models/bank_movement.rb
 class BankMovement < Payment
   #include Subpayment
+=======
+class Movement < Payment
+  include Subpayment
+>>>>>>> 5395fe812cac4fab72d2fde1fd6e4e9d5e740948:app/models/movement.rb
   self.table_name = "payments"
 
   def self.default_scope
@@ -44,10 +49,6 @@ class BankMovement < Payment
     else
       "Pago con débito"
     end
-  end
-
-  def parent_payment
-    self
   end
 
 end

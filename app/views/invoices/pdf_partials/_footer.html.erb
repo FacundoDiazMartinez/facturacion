@@ -20,7 +20,7 @@
                 <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
                 <%= image_tag(@barcode_path, class: "img-responsive") %>
               <% else %>
-                Comprobante NO Autorizado
+                -- Comprobante NO Autorizado --
                 <% if !@invoice.cae.blank? %>
                   <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
                   <% outputter = Barby::PngOutputter.new(barcode) %>
@@ -33,14 +33,13 @@
           </b>
         </td>
 
-
         <td style="width: 33%;" class="text_right"><b>CAE N°:</b> <%= @invoice.cae %> </td>
       </tr>
 
       <tr>
-        <!-- <td></td>  COMENTADO POR EL ROWSPAN -->
-        <!-- <td></td>  COMENTADO POR EL ROWSPAN -->
-        <td class="text_right"><b>Fecha de Vto. de CAE: </b> <%= @invoice.cae_due_date %> </td>
+        <!-- <td></td>
+        <td></td> Comentado por los ROWSPAN de arriba  -->
+        <td class="text_right"><b>Fecha de Vto. de CAE: </b><%= Date.strptime(@invoice.cae_due_date , "%Y%m%d") %> </td>
       </tr>
     </table>
   </div>

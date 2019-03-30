@@ -4,6 +4,13 @@
   <div class="card shadow">
     <div class="card-body">
       <div class="row">
+        <div class="col-md-12">
+          Si trabaja con coeficientes de interés brindados por la tarjeta en cuestión, seleccione tipo de interés "coeficiente".
+          <br>
+          <br>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-md-3">
           <div class="form-group">
             <%= form.label :fav_logo, "Seleccione tarjeta" %>
@@ -24,7 +31,7 @@
           end %>
           <div class="form-group" style="font-size:80px;">
             <center>
-              <%=  icon( type , @credit_card.fav_logo ).html_safe %>
+              <%= icon( type , @credit_card.fav_logo ).html_safe %>
             </center>
           </div>
         </div>
