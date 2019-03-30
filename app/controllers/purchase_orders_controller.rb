@@ -20,6 +20,7 @@ class PurchaseOrdersController < ApplicationController
         render pdf: "#{@purchase_order.id}",
         layout: 'pdf.html',
         template: 'purchase_orders/show',
+        zoom: 3.1,
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"

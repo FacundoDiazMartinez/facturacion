@@ -3,7 +3,7 @@
   <div class="container border">
     <table class="width_100">
       <tr>
-        <td><b>Estado: </b><%= @arrival_note.state %></td>
+        <td><b>Estado: </b><%= @transfer_request.state %></td>
         <td> </td>
         <td> </td>
       </tr>
@@ -20,11 +20,11 @@
         <td class="width_50 text_center">
           ________________________
         </td>
-        <td class="width_50 "></td>
+        <td class="width_50"></td>
       </tr>
       <tr>
         <td class="text_center">Firma y sello</td>
-        <td class="text_center"> <%= @arrival_note.company.name %> - <%= @arrival_note.company.address %> </td>
+        <td class="text_center"> <%= @transfer_request.company.name %> - <%= @transfer_request.company.address %> </td>
       </tr>
     </table>
   </div>
