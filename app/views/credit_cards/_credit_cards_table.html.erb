@@ -10,31 +10,38 @@
     </thead>
 
     <tbody>
-      <% @credit_cards.each do |c| %>
+      <% if !@credit_cards.blank? %>
+        <% @credit_cards.each do |c| %>
 
-      <% if c.fav_logo == "credit-card"
-        type = "fas"
-      else
-        type = "fab"
-      end %>
+        <% if c.fav_logo == "credit-card"
+          type = "fas"
+        else
+          type = "fab"
+        end %>
 
+          <tr>
+            <td style="font-size:36px;"> <%=  icon( type , c.fav_logo ).html_safe %> </td>
+            <td><%= c.name %></td>
+            <td>
+              <% if c.enabled %>
+                Habilitada
+              <% else %>
+                Deshabilitada
+              <% end %>
+            </td>
+            <td>
+              <%# link_to icon('fas', 'eye').html_safe, credit_card_path(c.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <%= link_to icon('fas', 'edit').html_safe, edit_credit_card_path(c.id),class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <%= link_to icon('fas', 'trash').html_safe, c, method: :delete, data: { confirm: '¿Está seguro que desea eliminar esta tarjeta de forma permanente?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            </td>
+          </tr>
+        <% end %>
+      <% else %>
         <tr>
-          <td style="font-size:36px;"> <%=  icon( type , c.fav_logo ).html_safe %> </td>
-          <td><%= c.name %></td>
-          <td>
-            <% if c.enabled %>
-              Habilitada
-            <% else %>
-              Deshabilitada
-            <% end %>
-          </td>
-          <td>
-            <%# link_to icon('fas', 'eye').html_safe, credit_card_path(c.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-            <%= link_to icon('fas', 'edit').html_safe, edit_credit_card_path(c.id),class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-            <%= link_to icon('fas', 'trash').html_safe, c, method: :delete, data: { confirm: '¿Está seguro que desea eliminar esta tarjeta de forma permanente?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          </td>
+          <td colspan="4"> Aún no ha ingresado tarjetas. Por favor agregue una desde el botón "añadir" ubicado en el extremo inferior derecho de la pantalla.</td>
         </tr>
       <% end %>
+
     </tbody>
   </table>
 </div>
