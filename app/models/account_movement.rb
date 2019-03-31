@@ -93,6 +93,10 @@ class AccountMovement < ApplicationRecord
     Client.unscoped{ super }
   end
 
+  def invoice
+    Invoice.unscoped { super }
+  end
+
   #ATRIBUTOS
 
   #VALIDACIONES

@@ -436,6 +436,13 @@ function getPaymentRequest(url, data) {
     dataType: "html"
   }).done(function(response) {
     $("#payment_detail").html(response)
+		$('.datepicker').datepicker({
+	      language: "es",
+	      dateFormat: "dd/mm/yyyy",
+	      todayHighlight: true,
+	      autoclose: true,
+	      startView: 2
+	  });
   });
 }
 

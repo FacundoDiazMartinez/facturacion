@@ -38,6 +38,7 @@ class Invoice < ApplicationRecord
     after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?}
 
     before_validation :check_if_confirmed
+    before_destroy :check_if_editable
     after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 
   	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado", "Anulado parcialmente"]
@@ -55,7 +56,7 @@ class Invoice < ApplicationRecord
     validate :cbte_tipo_inclusion
     validate :at_least_one_detail
     validate :fch_ser_if_service
-    validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
+    validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
 
     TRIBUTOS = [
        ["Impuestos nacionales", "1"],
@@ -150,6 +151,12 @@ class Invoice < ApplicationRecord
   	#FILTROS DE BUSQUEDA
 
     #VALIDACIONES
+
+      def check_if_editable
+        errors.add(:base, "No puede eliminar una factura confirmada") unless editable?
+        errors.blank?
+      end
+
       def at_least_one_detail
         # when creating a new invoice: making sure at least one detail exists
         return errors.add :base, "Debe tener al menos un concepto" unless invoice_details.length > 0
@@ -372,7 +379,7 @@ class Invoice < ApplicationRecord
           @r = pay.save
           @last_pay = pay
           am.update_column(:amount_available, am.amount_available - pay.total)
-          #break if self.total_pay = self.total || r
+          break if self.real_total_left == 0 || r
         end
         if @band
           if @r

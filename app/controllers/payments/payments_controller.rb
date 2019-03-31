@@ -26,7 +26,7 @@ class Payments::PaymentsController < ApplicationController
   end
 
   def destroy
-    @payment = current_user.company.account_movement_payments.find(params[:id])
+    @payment = AccountMovementPayment.where(company_id: current_user.company_id).find(params[:id])
     @receipt = @payment.account_movement.receipt
     respond_to do |format|
       if @payment.destroy

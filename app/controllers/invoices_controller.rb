@@ -78,7 +78,7 @@ class InvoicesController < ApplicationController
     associated_invoice = current_user.company.invoices.find(params[:id])
     atributos = associated_invoice.attributes
     @invoice = current_user.company.invoices.build(associated_invoice: associated_invoice.id)
-    @invoice.attributes = atributos.except!(*["id", "state", "cbte_tipo", "header_result", "authorized_on", "cae_due_date", "cae", "cbte_fch", "comp_number", "associated_invoice"])
+    @invoice.attributes = atributos.except!(*["id", "state", "cbte_tipo", "header_result", "authorized_on", "cae_due_date", "cae", "cbte_fch", "comp_number", "associated_invoice", "total_pay"])
     @invoice.cbte_tipo = (associated_invoice.cbte_tipo.to_i + 2).to_s.rjust(2,padstr= '0')
     @invoice.cbte_fch = Date.today
     if @invoice.invoice_details.size == 0 && @invoice.income_payments.size == 0
@@ -117,10 +117,13 @@ class InvoicesController < ApplicationController
   # DELETE /invoices/1
   # DELETE /invoices/1.json
   def destroy
-    @invoice.destroy #TODO - solo si no esta confirmada
     respond_to do |format|
-      format.html { redirect_to invoices_url, notice: 'Factura eliminada. Tambien se eliminaron todos sus documentos asociados.' }
-      format.json { head :no_content }
+      if @invoice.destroy
+        format.html { redirect_to invoices_url, notice: 'Factura eliminada. Tambien se eliminaron todos sus documentos asociados.' }
+        format.json { head :no_content }
+      else
+        format.hmtl { render :edit }
+      end
     end
   end
 
@@ -189,9 +192,7 @@ class InvoicesController < ApplicationController
     associated_invoice.invoice_details.each do |id|
       @invoice.invoice_details.new(id.attributes.except("id"))
     end
-    associated_invoice.income_payments.each do |payment|
-      @invoice.income_payments.new(payment.attributes.except("id"))
-    end
+
     @invoice.client = associated_invoice.client
     @invoice.save
   end

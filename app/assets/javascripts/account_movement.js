@@ -41,5 +41,6 @@ $(document).on("change", ".new_type_of_payment", function(){
 		case '8':
 			getPaymentRequest("/payments/compensation_payments/new", data);
 			break;
+		
 	}
 })

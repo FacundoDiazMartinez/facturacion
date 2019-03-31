@@ -3,8 +3,8 @@ class AccountMovementPayment < Payment
 	belongs_to :invoice, optional: true
 
 	before_validation :set_flow, :set_total_to_receipt
-	after_destroy :set_total_pay_to_invoice, if: Proc.new{|amp| !amp.invoice_id.nil?}
-	after_destroy :reduce_total_to_receipt
+	after_destroy :set_total_pay_to_invoice
+	after_destroy :update_total_to_receipt
 	before_save :check_company_id
 	before_save :check_client_id
 	before_validation :check_total_from_account_movement
@@ -30,8 +30,9 @@ class AccountMovementPayment < Payment
 			self.account_movement.receipt.total += total - total_was
 		end
 
-		def reduce_total_to_receipt
-			self.account_movement.receipt.update_column(:total, total)
+		def update_total_to_receipt
+			receipt = self.account_movement.receipt
+			receipt.update_column(:total, receipt.total - total)
 		end
 
 		def check_company_id
@@ -47,12 +48,28 @@ class AccountMovementPayment < Payment
  		end
 
  		def set_total_pay_to_invoice
-			sum = invoice.sum_payments
-  		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
+			unless invoice_id.nil?
+				sum = invoice.sum_payments
+	  		invoice.update_column(:total_pay, sum) unless sum == invoice.total_pay
+			end
   	end
 
 		def account_movement
 			AccountMovement.unscoped { super }
+		end
+
+		def destroy(mode = :soft)
+		    if mode == :hard
+		      	super()
+		    else
+			    self.update_column(:active, false)
+					pp "REMIL ENTRO"
+					p = self
+			    self.run_callbacks :destroy
+					self.set_total_pay_to_invoice
+					self.update_total_to_receipt
+			    self.freeze
+		    end
 		end
 	#PRECESOS
 end
