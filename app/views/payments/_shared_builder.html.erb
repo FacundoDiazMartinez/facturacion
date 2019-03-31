@@ -18,6 +18,10 @@
       <% @builder = f %>
     <% end -%>
   <% end -%>
+<% elsif @payment %>
+  <% nested_form_for @payment do |form| %>
+    <% @builder = form %>
+  <% end -%>
 <% else %>
   <% nested_form_for @invoice do |form| %>
     <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
