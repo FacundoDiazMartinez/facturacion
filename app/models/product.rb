@@ -358,7 +358,7 @@ class Product < ApplicationRecord
     		invalid 	= []
 			(0..spreadsheet.size - 1).each do |i|
 	    		row = Hash[[header, spreadsheet[i]].transpose]
-	    		product = where(code: row[:code]).first_or_initialize
+	    		product = where(code: row[:code], company_id: current_user.company_id ).first_or_initialize
 	    		if categories["#{row[:product_category_name]}"].nil?
 	    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
 	    			if pc.save
