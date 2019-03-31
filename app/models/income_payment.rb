@@ -61,7 +61,7 @@ class IncomePayment < Payment
 		if type_of_payment == "1"
 			detail_total = card_payment.total - card_payment.subtotal
 			if detail_total > 0
-	      invoice.invoice_details.build_for_credit_card(detail_total.round(2), self.invoice.user_id, company)
+	      invoice.invoice_details.build_for_credit_card(detail_total.round(2), self.invoice.user_id, company, invoice_id)
 			end
 		end
 	end
