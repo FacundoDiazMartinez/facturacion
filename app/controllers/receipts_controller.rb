@@ -146,7 +146,8 @@ class ReceiptsController < ApplicationController
           bank_payment_attributes: [:id, :bank_id, :total],
           debit_payment_attributes: [:id, :bank_id, :total],
           cheque_payment_attributes: [:id, :state, :expiration, :total, :observation, :origin, :entity, :number],
-          retention_payment_attributes: [:id, :number, :total, :observation]
+          retention_payment_attributes: [:id, :number, :total, :observation, :tribute],
+          compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
           ]
         ]
       )
