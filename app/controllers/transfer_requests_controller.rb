@@ -16,7 +16,7 @@ class TransferRequestsController < ApplicationController
         render pdf: "#{@transfer_request.id}",
         layout: 'pdf.html',
         template: 'transfer_requests/show',
-        zoom: 3.1,
+        #zoom: 3.1,
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"

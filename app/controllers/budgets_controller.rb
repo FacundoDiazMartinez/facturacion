@@ -20,7 +20,7 @@ class BudgetsController < ApplicationController
         render pdf: "#{@budget.id}",
         layout: 'pdf.html',
         template: 'budgets/show',
-        zoom: 3.1,
+        #zoom: 3.1,
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"
