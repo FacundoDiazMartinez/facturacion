@@ -1,10 +1,5 @@
-<<<<<<< HEAD:app/models/bank_movement.rb
-class BankMovement < Payment
-  #include Subpayment
-=======
 class Movement < Payment
-  include Subpayment
->>>>>>> 5395fe812cac4fab72d2fde1fd6e4e9d5e740948:app/models/movement.rb
+  #include Subpayment
   self.table_name = "payments"
 
   def self.default_scope
