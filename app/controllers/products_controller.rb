@@ -33,7 +33,10 @@ class ProductsController < ApplicationController
 
   def update_multiple
     @products = Product.find(params[:product_ids])
+    ## elimina del vector los productos correctamente actualizados
     @products.reject! do |product|
+      ## añade el usuario que actualiza y rechaza las actualizaciones con valores vacios
+      product.updated_by = current_user.id
       product.update_attributes(update_multiple_product_params.reject { |k,v| v.blank? })
     end
     if @products.empty?
@@ -92,9 +95,9 @@ class ProductsController < ApplicationController
   end
 
   def import
-    result = Product.save_excel(params[:file], params[:supplier_id], current_user, params[:depot_id])
+    result = Product.save_excel(params[:file], params[:supplier_id], current_user, params[:depot_id], params[:type_of_movement])
     respond_to do |format|
-      format.html { redirect_to products_path, notice: 'Los productos estan siendo cargados. Le avisaremos cuando termine el proceso.' }
+      format.html { redirect_to products_path, notice: 'Los productos están siendo cargados. Le avisaremos cuando termine el proceso.' }
     end
   end
 

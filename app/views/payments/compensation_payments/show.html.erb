@@ -7,7 +7,7 @@
           		Total:
         		</strong>
       	</div>
-      	<span>$<%= @cash_payment.total %></span>
+      	<span>$<%= @compensation_payment.total %></span>
     	</li>
     	<li class="list-group-item d-flex justify-content-between lh-condensed">
       	<div>
@@ -15,7 +15,23 @@
           		Fecha:
         		</strong>
       	</div>
-      	<span><%= @cash_payment.payment.payment_date %></span>
+      	<span><%= @compensation_payment.payment.payment_date %></span>
+    	</li>
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<strong class="my-0">
+          		Concepto:
+        		</strong>
+      	</div>
+      	<span><%= @compensation_payment.concept %></span>
+    	</li>
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<strong class="my-0">
+          		Observación:
+        		</strong>
+      	</div>
+      	<span><%= @compensation_payment.observation %></span>
     	</li>
     	<li class="list-group-item d-flex justify-content-between lh-condensed">
       	<div>
@@ -23,7 +39,7 @@
           		Generado por:
         		</strong>
       	</div>
-      	<span><%= @cash_payment.generator_name %></span>
+      	<span><%= @compensation_payment.generator_name %></span>
     	</li>
   </ul>
 </div>

@@ -1,86 +1,62 @@
 <% if user_signed_in? %>
 	<div class="sidebar sidebar-animate collapse navbar-collapse" id="navpills">
 		<ul class="nav flex-column navpills">
-		  	<li class="nav-item">
-		    	<%= link_to "<span class='nav-span'>Inicio</span> #{icon('fas', 'home')}".html_safe, root_path, class: 'nav-link', title: 'Inicio' %>
-		  	</li>
-
-		  	<li class="nav-item">
-		  		<% if current_user.has_company? %>
-		    		<%= link_to "<span class='nav-span'>Compañía</span> #{icon('fas', 'building')}".html_safe, company_path(current_user.company_id), class: 'nav-link', title: 'Compañía' %>
-		    	<% else %>
-		    		<%= link_to "<span class='nav-span'>Compañía</span> #{icon('fas', 'building')}".html_safe, new_company_path(), class: 'nav-link', title: 'Compañía' %>
-		    	<% end %>
-		  	</li>
+	  	<li class="nav-item">
+	    	<%= link_to "<span class='nav-span'>Inicio</span> #{icon('fas', 'home')}".html_safe, root_path, class: 'nav-link', title: 'Inicio' %>
+	  	</li>
 
 			<li class="nav-item dropdown">
 				<%= link_to "<span class='nav-span'> Personal</span> #{icon('fas', 'users')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, User %>
 				<div class="dropdown-menu">
-				<%= link_to "<span class='nav-span'> Roles</span> #{icon('fas', 'user-tie')}".html_safe, roles_path, class: 'dropdown-item', title: "Roles" if can? :read, Role %>
-				<%= link_to "<span class='nav-span'> Personal</span> #{icon('fas', 'users')}".html_safe, users_path, class: 'dropdown-item', title: "Personal" if can? :read, User %>
+				<%= link_to "<span class='nav-span'> Roles</span>".html_safe, roles_path, class: 'dropdown-item', title: "Roles" if can? :read, Role %>
+				<%= link_to "<span class='nav-span'> Usuarios</span>".html_safe, users_path, class: 'dropdown-item', title: "Usuarios" if can? :read, User %>
 				</div>
-
 			</li>
 
 		  	<li class="nav-item dropdown">
     			<%= link_to "<span class='nav-span'>Ventas</span> #{icon('fas', 'hand-holding-usd')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
    				<div class="dropdown-menu">
-   					<%= link_to "<span class='nav-span'>Expedientes</span> #{icon('fas', 'folder-open')}".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
-						<%= link_to "<span class='nav-span'>Presupuestos</span> #{icon('fas', 'file-contract')}".html_safe, budgets_path, class: 'dropdown-item', title: 'caja diaria' %>
-   					<%= link_to "<span class='nav-span'>Facturación</span> #{icon('fas', 'hand-holding-usd')}".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
-						<%= link_to "<span class='nav-span'>Remitos</span> #{icon('fas', 'file-alt')}".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
-						<%= link_to "<span class='nav-span'>Tarjetas de crédito</span> #{icon('fas', 'credit-card')}".html_safe, credit_cards_path, class: 'dropdown-item', title: "Tarjetas de crédito" %>
+   					<%= link_to "<span class='nav-span'>Expedientes</span>".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
+						<%= link_to "<span class='nav-span'>Presupuestos</span>".html_safe, budgets_path, class: 'dropdown-item', title: 'caja diaria' %>
+   					<%= link_to "<span class='nav-span'>Facturación</span>".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
+						<%= link_to "<span class='nav-span'>Recibos</span>".html_safe, receipts_path, class: 'dropdown-item', title: 'Recibos' if can? :read, Receipt  %>
+						<%= link_to "<span class='nav-span'>Remitos</span>".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
+						<%= link_to "<span class='nav-span'>Tarjetas de crédito</span>".html_safe, credit_cards_path, class: 'dropdown-item', title: "Tarjetas de crédito" %>
+						<%= link_to "<span class='nav-span'>Clientes</span>".html_safe, clients_path, class: 'dropdown-item', title: 'Clientes' if can? :read, Client %>
 				</div>
 			</li>
 
-		  	<li class="nav-item dropdown">
-    			<%= link_to "<span class='nav-span'>Compras</span> #{icon('fas', 'shopping-cart')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, PurchaseOrder %>
-   				<div class="dropdown-menu">
-   					<%= link_to "<span class='nav-span'>Ordenes de compra</span> #{icon('fas', 'shopping-cart')}".html_safe, purchase_orders_path, class: 'dropdown-item', title: "Ordenes de compra" if can? :read, PurchaseOrder %>
-   					<%= link_to "<span class='nav-span'>Remitos</span> #{icon('fas', 'file-alt')}".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos" if can? :read, ArrivalNote %>
-					<%= link_to "<span class='nav-span'>Comprobantes</span> #{icon('fas', 'file-invoice-dollar')}".html_safe, purchase_invoices_path, class: 'dropdown-item', title: "Compras" if can? :read, PurchaseInvoice %>
+	  	<li class="nav-item dropdown">
+  			<%= link_to "<span class='nav-span'>Compras</span> #{icon('fas', 'shopping-cart')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, PurchaseOrder %>
+ 				<div class="dropdown-menu">
+ 					<%= link_to "<span class='nav-span'>Ordenes de compra</span>".html_safe, purchase_orders_path, class: 'dropdown-item', title: "Ordenes de compra" if can? :read, PurchaseOrder %>
+ 					<%= link_to "<span class='nav-span'>Remitos</span>".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos" if can? :read, ArrivalNote %>
+					<%= link_to "<span class='nav-span'>Comprobantes</span>".html_safe, purchase_invoices_path, class: 'dropdown-item', title: "Compras" if can? :read, PurchaseInvoice %>
+					<%= link_to "<span class='nav-span'>Proveedores</span>".html_safe, suppliers_path, class: 'dropdown-item', title: "Proveedores" if can? :read, Supplier %>
 				</div>
 			</li>
+
+			<li class="nav-item dropdown">
+  			<%= link_to "<span class='nav-span'>Almacén</span> #{icon('fas', 'archive')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, Depot %>
+ 				<div class="dropdown-menu">
+					<%= link_to "<span class='nav-span'>Depósitos</span>".html_safe, depots_path, class: 'dropdown-item', title: 'Depósitos' if can? :read, Depot %>
+					<%= link_to "<span class='nav-span'>Productos</span>".html_safe, products_path, class: 'dropdown-item', title: 'Productos' if can? :read, Product %>
+					<%= link_to "<span class='nav-span'>Servicios</span>".html_safe, services_path, class: 'dropdown-item', title: 'Servicios' if can? :read, Service %>
+ 					<%= link_to "<span class='nav-span'>Traslados</span>".html_safe, transfer_requests_path, class: 'dropdown-item', title: 'Transferencías' %>
+				</div>
+			</li>
+
+	  	<li class="nav-item dropdown">
+				<%= link_to "<span class='nav-span'> Contabilidad</span> #{icon('fas', 'book')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle'%>
+				<div class="dropdown-menu">
+					<%= link_to "<span class='nav-span'>Libro I.V.A.</span>".html_safe, iva_books_path, class: 'dropdown-item', title: 'Libro I.V.A.' if can? :read, IvaBook %>
+					<%= link_to "<span class='nav-span'>Caja</span>".html_safe, daily_cashes_path, class: 'dropdown-item', title: 'Contabilidad' %>
+				</div>
+	  	</li>
 
 			<li class="nav-item">
-		    	<%= link_to "<span class='nav-span'>Recibos</span> #{icon('fas', 'file-invoice')}".html_safe, receipts_path, class: 'nav-link', title: 'Recibos' if can? :read, Receipt  %>
-		  	</li>
-
-		  	<li class="nav-item">
-		    	<%= link_to "<span class='nav-span'>Clientes</span> #{icon('fas', 'briefcase')}".html_safe, clients_path, class: 'nav-link', title: 'Clientes' if can? :read, Client %>
-		  	</li>
-
-		  	<li class="nav-item">
-		    	<%= link_to "<span class='nav-span'>Productos</span> #{icon('fas', 'cubes')}".html_safe, products_path, class: 'nav-link', title: 'Productos' if can? :read, Product %>
-		  	</li>
-
-		  	<li class="nav-item">
-		    	<%= link_to "<span class='nav-span'>Servicios</span> #{icon('fas', 'hands-helping')}".html_safe, services_path, class: 'nav-link', title: 'Servicios' if can? :read, Service %>
-		  	</li>
-
-				<li class="nav-item dropdown">
-    			<%= link_to "<span class='nav-span'>Almacén</span> #{icon('fas', 'archive')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, Depot %>
-   				<div class="dropdown-menu">
-						<%= link_to "<span class='nav-span'>Depósitos</span> #{icon('fas', 'archive')}".html_safe, depots_path, class: 'dropdown-item', title: 'Depósitos' if can? :read, Depot %>
-   					<%= link_to "<span class='nav-span'>Traslados</span> #{icon('fas', 'share')}".html_safe, transfer_requests_path, class: 'dropdown-item', title: 'Transferencías' %>
-				</div>
-			</li>
-
-		  	<li class="nav-item">
-		  		<%= link_to "<span class='nav-span'>Proveedores</span> #{icon('fas', 'plane')}".html_safe, suppliers_path, class: 'nav-link', title: "Proveedores" if can? :read, Supplier %>
-		  	</li>
-
-		  	<li class="nav-item">
-		    	<%= link_to "<span class='nav-span'>Libro I.V.A.</span> #{icon('fas', 'book')}".html_safe, iva_books_path, class: 'nav-link', title: 'Libro I.V.A.' if can? :read, IvaBook %>
-		  	</li>
-
-				<li class="nav-item">
-		    	<%= link_to "<span class='nav-span'>Publicidad</span> #{icon('fas', 'at')}".html_safe, advertisements_path, class: 'nav-link', title: 'Publicidad' %>
-		  	</li>
-
-		  	<li class="nav-item dropdown">
-					<%= link_to "<span class='nav-span'>Contabilidad</span> #{icon('fas', 'book')}".html_safe, daily_cashes_path, class: 'nav-link', title: 'Contabilidad' %>
-				</li>
+	    	<%= link_to "<span class='nav-span'>Publicidad</span> #{icon('fas', 'at')}".html_safe, advertisements_path, class: 'nav-link', title: 'Publicidad' %>
+	  	</li>
 		</ul>
 	</div>
 <% end %>

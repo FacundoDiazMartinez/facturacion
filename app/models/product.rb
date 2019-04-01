@@ -341,7 +341,7 @@ class Product < ApplicationRecord
 		end
 
     	#IMPORTAR EXCEL o CSV
-	    def self.save_excel file, supplier_id, current_user, depot_id
+	    def self.save_excel file, supplier_id, current_user, depot_id, type_of_movement
 	    	spreadsheet = open_spreadsheet(file)
 	    	excel = []
 	    	(2..spreadsheet.last_row).each do |r|
@@ -350,10 +350,10 @@ class Product < ApplicationRecord
 	    	header = self.permited_params
 	    	categories = {}
 	    	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-	    	delay.load_products(excel, header, categories, current_user, supplier_id, depot_id)
+	    	delay.load_products(excel, header, categories, current_user, supplier_id, depot_id, type_of_movement)
 	    end
 
-		def self.load_products spreadsheet, header, categories, current_user, supplier_id, depot_id
+		def self.load_products spreadsheet, header, categories, current_user, supplier_id, depot_id, type_of_movement
 			products 	= []
     		invalid 	= []
 			(0..spreadsheet.size - 1).each do |i|
@@ -384,7 +384,11 @@ class Product < ApplicationRecord
 	    		else
 	    			if !depot_id.blank?
 		    			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
-		    			stock.quantity = row[:stock]
+              if type_of_movement == "0"
+                stock.quantity = row[:stock]
+              else
+                stock.quantity += row[:stock]
+              end
 		    			stock.save
 		    		end
 	    		end

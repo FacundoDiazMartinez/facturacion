@@ -173,6 +173,12 @@ class Payment < ApplicationRecord
   #PROCESOS
 
   #FUNCIONES
+
+    def subpayment_show invoice_id
+      sub_id = eval("#{type_of_payment_name.singularize}").id
+      "payments_#{type_of_payment_name.singularize}_path(#{sub_id}, invoice_id: #{invoice_id})"
+    end
+
     def self.set_payment
       any? ? all : new
     end
