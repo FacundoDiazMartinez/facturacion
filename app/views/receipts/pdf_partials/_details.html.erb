@@ -54,7 +54,7 @@
           <th class="text_left">Forma de pago</th>
         </tr>
 
-        <% (@receipt.account_movement_payments.empty? ? @receipt.invoices.map{|i| i.income_payments} : @receipt.account_movement_payments).each do |ip| %>
+        <% (@receipt.account_movement_payments.empty? ? @receipt.invoices.map{|i| i.income_payments}.first : @receipt.account_movement_payments).each do |ip| %>
           <tr class="bg-white">
             <td>
               <% if ip.type_of_payment == "4" %>
