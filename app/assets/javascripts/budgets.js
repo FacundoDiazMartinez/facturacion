@@ -4,11 +4,14 @@ $(document).on('railsAutocomplete.select', '.budget_detail-autocomplete_field', 
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
 	}
+		recharge = parseFloat($("#client_recharge").val());
+		bonus = -recharge
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
+		$(this).closest("tr.fields").find("input.bonus_percentage").val(bonus);
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price).trigger("change");
+		$(this).closest("tr.fields").find("input.subtotal").val(data.item.price * (1 - bonus / 100)).trigger("change");
 
 
 	$(this).closest("tr.fields").find("input.name").tooltip({
@@ -32,7 +35,7 @@ function calculateBudgetSubtotal(subtotal){
 	$(".subtotal:visible").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
-	
+
 	$("#budget_total").val(total);
 	total_venta = total;
 	complete_payments();

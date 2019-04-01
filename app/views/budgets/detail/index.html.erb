@@ -55,7 +55,7 @@
 						<%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@budget.editable? %>
 					</td>
 					<td class="only-desktop">
-						<%= f.number_field :bonus_percentage,  class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@budget.editable? %>
+						<%= f.number_field :bonus_percentage,  class: 'form-control form-control-sm bonus_percentage', disabled: !@budget.editable? %>
 					</td>
 					<td class="only-desktop">
 						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', readonly: true %>
