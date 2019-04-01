@@ -59,7 +59,8 @@ function sumTotalPurchaseOrder(){
 	});
 	sumaTotales = parseFloat(sumaTotales) +  parseFloat($("#purchase_order_shipping_cost").val())
 	$('#purchase_order_total').val(sumaTotales);
-	total_left == parseFloat(sumaTotales) - parseFloat($("#purchase_order_total_pay").val())
+	total_left = parseFloat(sumaTotales) - parseFloat($("#purchase_order_total_pay").val())
+	alert(total_left)
 	if (total_left > 0) {
 		$("#normal").show();
 		$("#with_alert").hide();
