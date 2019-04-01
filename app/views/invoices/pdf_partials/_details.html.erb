@@ -20,11 +20,7 @@
         <td><%= det.product.code %></td>
         <td><%= det.product.name %></td>
         <td class="text_right"><%= det.quantity %></td>
-        <% if det.bonus_amount != 0 %>
-          <td class="text_right"><%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
-        <% else %>
-          <td class="text_right"><%= det.price_per_unit %></td>
-        <% end %>
+        <td class="text_right"><%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
         <td class="text_right"><%= (det.subtotal - det.iva_amount - det.bonus_amount).round(2) %>
         <% if @invoice.cbte_tipo == "01" %>
           <td class="text_right"><%= det.iva_amount %></td>
