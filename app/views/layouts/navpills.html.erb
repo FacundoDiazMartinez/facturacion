@@ -26,8 +26,8 @@
     			<%= link_to "<span class='nav-span'>Ventas</span> #{icon('fas', 'hand-holding-usd')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
    				<div class="dropdown-menu">
    					<%= link_to "<span class='nav-span'>Expedientes</span> #{icon('fas', 'folder-open')}".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
+						<%= link_to "<span class='nav-span'>Presupuestos</span> #{icon('fas', 'file-contract')}".html_safe, budgets_path, class: 'dropdown-item', title: 'caja diaria' %>
    					<%= link_to "<span class='nav-span'>Facturación</span> #{icon('fas', 'hand-holding-usd')}".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
-   					<%= link_to "<span class='nav-span'>Presupuestos</span> #{icon('fas', 'file-contract')}".html_safe, budgets_path, class: 'dropdown-item', title: 'caja diaria' %>
 						<%= link_to "<span class='nav-span'>Remitos</span> #{icon('fas', 'file-alt')}".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
 						<%= link_to "<span class='nav-span'>Tarjetas de crédito</span> #{icon('fas', 'credit-card')}".html_safe, credit_cards_path, class: 'dropdown-item', title: "Tarjetas de crédito" %>
 				</div>
