@@ -1,13 +1,8 @@
-<div class="page-header">
-  <%= link_to cash_payments_path, class: 'btn btn-default' do %>
-    <span class="glyphicon glyphicon-list-alt"></span>
-    Back
-  <% end %>
-  <%= link_to @cash_payment, class: 'btn btn-primary' do %>
-    <span class="glyphicon glyphicon-info-sign"></span>
-    Show
-  <% end %>
-  <h1>Editing cash_payment</h1>
-</div>
+<%= render '/payments/shared_builder' %>
 
-<%= render 'form' %>
+<%= @builder.fields_for :cash_payment do |cpf| %>
+  <div class="fields">
+  	<%= cpf.label :total, "Total ($)" %>
+  	<%= cpf.number_field :total, step: :any, class: 'form-control subpayment_total', requried: true %>
+  </div>
+<% end -%>

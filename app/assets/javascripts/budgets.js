@@ -18,15 +18,26 @@ $(document).on('railsAutocomplete.select', '.budget_detail-autocomplete_field', 
 });
 
 $(document).on("change", ".subtotal", function(){
+	calculateBudgetSubtotal($(this))
+});
+
+$(document).on('nested:fieldRemoved', function(event){
+	 var field 	= event.field;
+	 subtotal 	= field.find("input.subtotal")
+	 calculateBudgetSubtotal(subtotal)
+})
+
+function calculateBudgetSubtotal(subtotal){
 	var total = parseFloat(0);
-	$(".subtotal").each(function(){
+	$(".subtotal:visible").each(function(){
 	    total = total + parseFloat($(this).val());
 	});
+	
 	$("#budget_total").val(total);
 	total_venta = total;
 	complete_payments();
-	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
-});
+	iva_aliquot	 		= subtotal.closest("tr.fields").find("select.iva_aliquot").trigger("change");
+}
 
 $(document).on("change", ".price, .quantity, .bonus_amount, .bonus_percentage", function(){
 	price				= $(this).closest("tr.fields").find("input.price");

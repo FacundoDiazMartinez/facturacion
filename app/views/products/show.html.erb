@@ -19,7 +19,6 @@
 	<%= button_edit_helper(edit_product_path(@product.id)) %>
 <% end %>
 <div class="p-4">
-	<div class="col-md-12 col-xs-12">
 		<div class="container-fluid">
 		  	<div class="row">
 		    	<div class="col-md-6">
@@ -91,35 +90,34 @@
 								<span><%= @product.gain_margin %>%</span>
 							</li>
 							<li class="list-group-item d-flex justify-content-between lh-condensed">
-				            	<div>
-				              		<strong class="my-0">
-				                		Precio neto
-				              		</strong>
-				            	</div>
-				            	<span>$<%= @product.net_price %></span>
-				          	</li>
+	            	<div>
+	              		<strong class="my-0">
+	                		Precio bruto
+	              		</strong>
+	            	</div>
+	            	<span>$<%= @product.net_price %></span>
+	          	</li>
 							<li class="list-group-item d-flex justify-content-between lh-condensed">
-				            	<div>
-				              		<strong class="my-0">
-				                		Alícuota IVA
-				              		</strong>
-				            	</div>
-				            	<span><%= @product.iva %>%</span>
-				          	</li>
+	            	<div>
+	              		<strong class="my-0">
+	                		Alícuota IVA
+	              		</strong>
+	            	</div>
+	            	<span><%= @product.iva %>%</span>
+	          	</li>
 							<li class="list-group-item d-flex justify-content-between lh-condensed">
-				            	<div>
-			                		<strong class="my-0">
-				                		Precio final
-				              		</strong>
-				            	</div>
-				            	<span>$<%= @product.price %></span>
-				          	</li>
+	            	<div>
+                		<strong class="my-0">
+	                		Precio final
+	              		</strong>
+	            	</div>
+	            	<span>$<%= @product.price %></span>
+	          	</li>
 						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
 	<!-- STOCK -->
 	<div class="container-fluid">

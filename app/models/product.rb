@@ -358,7 +358,7 @@ class Product < ApplicationRecord
     		invalid 	= []
 			(0..spreadsheet.size - 1).each do |i|
 	    		row = Hash[[header, spreadsheet[i]].transpose]
-	    		product = where(code: row[:code]).first_or_initialize
+	    		product = where(code: row[:code], company_id: current_user.company_id ).first_or_initialize
 	    		if categories["#{row[:product_category_name]}"].nil?
 	    			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
 	    			if pc.save
@@ -366,19 +366,19 @@ class Product < ApplicationRecord
 	    				categories["#{row[:product_category_name]}"] = product_category_id
 	    			end
 	    		end
-	    		product.supplier_id 		= supplier_id
+	    		product.supplier_id 		  = supplier_id
 	    		product.product_category_id = categories["#{row[:product_category_name]}"]
-	    		product.code 				= row[:code]
+	    		product.code 				      = row[:code]
 	    		product.supplier_code 		= row[:supplier_code]
-	    		product.name 				= row[:name]
-	    		product.cost_price 			= row[:cost_price].round(2) unless row[:cost_price].nil?
-	    		product.net_price 			= row[:net_price].round(2) unless row[:net_price].nil?
-	    		product.price 				= row[:price].round(2) unless row[:price].nil?
+	    		product.name 				      = row[:name]
+	    		product.cost_price 			  = row[:cost_price].round(2) unless row[:cost_price].nil?
+	    		product.net_price 			  = row[:net_price].round(2) unless row[:net_price].nil?
+	    		product.price 				    = row[:price].round(2) unless row[:price].nil?
 	    		product.measurement_unit 	= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
-	    		product.iva_aliquot 		= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
-	    		product.company_id 			= current_user.company_id
-	    		product.created_by 			= current_user.id
-	    		product.updated_by 			= current_user.id
+	    		product.iva_aliquot 		  = Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
+	    		product.company_id 			  = current_user.company_id
+	    		product.created_by 			  = current_user.id
+	    		product.updated_by 			  = current_user.id
 	    		if !product.save
 	    			invalid << [i, product.errors.messages.values]
 	    		else

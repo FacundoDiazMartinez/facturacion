@@ -2,10 +2,32 @@ class TransferRequestsController < ApplicationController
   before_action :set_transfer_request, only: [:show, :edit, :update, :destroy, :send_transfer, :receive_transfer]
 
   def index
-    @transfer_requests = current_user.company.transfer_requests.paginate(page: params[:page], per_page: 10)
+    @transfer_requests = current_user.company.transfer_requests
+      .search_by_number(params[:number])
+      .serach_by_transporter(params[:transporter])
+      .search_by_sender(params[:from_depot_id])
+      .search_by_receiver(params[:to_depot_id])
+      .search_by_state(params[:state])
+      .paginate(page: params[:page], per_page: 10)
   end
 
   def show
+    Product.unscoped do
+      @group_details = @transfer_request.transfer_request_details.includes(:product).in_groups_of(20, fill_with= nil)
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@transfer_request.id}",
+        layout: 'pdf.html',
+        template: 'transfer_requests/show',
+        #zoom: 3.1,
+        viewport_size: '1280x1024',
+        page_size: 'A4',
+        encoding:"UTF-8"
+      end
+    end
   end
 
   def new

@@ -6,11 +6,11 @@
       </div>
     </div>
   </div>
-  
+
   <% if can? :create, ProductCategory %>
     <%= button_new_modal_helper(new_product_category_path(), "product_category_modal") %>
   <% end %>
-  
+
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">
@@ -35,7 +35,7 @@
                 <%= select_tag :supplier, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}), prompt: "Buscar por proveedor", class: 'form-control', placeholder: 'Buscar por proveedor', onchange: 'remoteSubmit("#search_form")' %>
               </div>
               <!-- BUSCAR POR PROVEEDOR -->
-              
+
           <% end %>
         <!-- Buscador de productos -->
       </div>
@@ -50,7 +50,7 @@
   </div>
 </div>
 
-<div class="modal fade bd-example-modal-lg" id="product_category_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg" id="ProductCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div id="product_category_form">

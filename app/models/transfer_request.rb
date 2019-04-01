@@ -21,6 +21,42 @@ class TransferRequest < ApplicationRecord
 
   before_save :check_state
 
+  def self.search_by_number number
+    if !number.blank?
+      where("number ILIKE ?", "%#{number}%")
+    else
+      all
+    end
+  end
+  def self.search_by_state state
+    if !state.blank?
+      where(state: state)
+    else
+      all
+    end
+  end
+  def self.serach_by_transporter transporter
+    if !transporter.blank?
+      joins(:user).where("LOWER(users.first_name ||' ' || users.last_name) LIKE LOWER(?)", "%#{transporter}%")
+    else
+      all
+    end
+  end
+  def self.search_by_receiver receiver
+    if !receiver.blank?
+      where(to_depot_id: receiver)
+    else
+      all
+    end
+  end
+  def self.search_by_sender sender
+    if !sender.blank?
+      where(from_depot_id: sender)
+    else
+      all
+    end
+  end
+
   def editable?
     ["Pendiente"].include?(state)
   end

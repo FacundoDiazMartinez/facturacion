@@ -4,7 +4,6 @@ $(document).on("keyup", ".subpayment_total", function(){
 })
 
 $(document).on("change", ".new_type_of_payment", function(){
-
 	selected_payment 	= $(this).val();
 	invoice_id 			= $("#invoice_id_for_payment").val();
 	purchase_order_id 	= $("#purchase_order_id_for_payment").val();
@@ -18,29 +17,64 @@ $(document).on("change", ".new_type_of_payment", function(){
 
 	switch (selected_payment) {
 		case '0':
-			getPaymentRequest("/payments/cash_payments/new", data);
+			getPaymentRequest("/payments/cash_payments/new", data, "");
 			break;
 		case '1':
-			getPaymentRequest("/payments/card_payments/new", data);
+			getPaymentRequest("/payments/card_payments/new", data, "");
 			break;
 		case '3':
-			getPaymentRequest("/payments/bank_payments/new", data);
+			getPaymentRequest("/payments/bank_payments/new", data, "");
 			break;
 		case '4':
-			getPaymentRequest("/payments/cheque_payments/new", data);
+			getPaymentRequest("/payments/cheque_payments/new", data, "");
 			break;
 		case '5':
-			getPaymentRequest("/payments/retention_payments/new", data);
+			getPaymentRequest("/payments/retention_payments/new", data, "");
 			break;
 		case '6':
-			getPaymentRequest("/payments/account_payments/new", data);
+			getPaymentRequest("/payments/account_payments/new", data, "");
 			break;
 		case '7':
-			getPaymentRequest("/payments/debit_payments/new", data);
+			getPaymentRequest("/payments/debit_payments/new", data, "");
 			break;
 		case '8':
-			getPaymentRequest("/payments/compensation_payments/new", data);
+			getPaymentRequest("/payments/compensation_payments/new", data, "");
 			break;
-		
+
+	}
+})
+
+$(document).on("change", ".edit_type_of_payment", function(){
+	selected_payment 	= $(this).val();
+	payment_id = $(this).closest(".form-group").find("input#edited_payment_id").val()
+	data = {root_payment_form: true, payment_id: payment_id}
+
+
+	switch (selected_payment) {
+		case '0':
+			getPaymentRequest("/payments/cash_payments/new", data, "edit_");
+			break;
+		case '1':
+			getPaymentRequest("/payments/card_payments/new", data, "edit_");
+			break;
+		case '3':
+			getPaymentRequest("/payments/bank_payments/new", data, "edit_");
+			break;
+		case '4':
+			getPaymentRequest("/payments/cheque_payments/new", data, "edit_");
+			break;
+		case '5':
+			getPaymentRequest("/payments/retention_payments/new", data, "edit_");
+			break;
+		case '6':
+			getPaymentRequest("/payments/account_payments/new", data, "edit_");
+			break;
+		case '7':
+			getPaymentRequest("/payments/debit_payments/new", data, "edit_");
+			break;
+		case '8':
+			getPaymentRequest("/payments/compensation_payments/new", data, "edit_");
+			break;
+
 	}
 })

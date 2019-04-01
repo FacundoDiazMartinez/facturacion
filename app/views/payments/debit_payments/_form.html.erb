@@ -1,6 +1,6 @@
 <%= render '/payments/shared_builder' %>
 
-<%= @builder.fields_for :debit_payment, @builder.object.build_debit_payment do |cpf| %>
+<%= @builder.fields_for :debit_payment, DebitPayment.new(payment_id: @builder.object.id) do |cpf| %>
 
   <%= render '/payments/debit_payments/shared_form', cpf: cpf %>
 

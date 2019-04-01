@@ -1,6 +1,6 @@
 <%= render '/payments/shared_builder' %>
 
-<%= @builder.fields_for :compensation_payment, @builder.object.build_compensation_payment do |cpf| %>
+<%= @builder.fields_for :compensation_payment, CompensationPayment.new(payment_id: @builder.object.id) do |cpf| %>
 
 <div class="form-group">
   <%= cpf.label :concept, "Concepto" %>

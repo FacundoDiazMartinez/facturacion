@@ -35,24 +35,6 @@ module Subpayment
 		payment.user_id.blank? ? "Sistema" : payment.user.name
 	end
 
-  def destroy(mode = :soft)
-		if payment.nil?
-			super()
-			return
-		end
-    if self.payment.active
-      if self.payment.destroy
-				if mode == :hard
-					super()
-				else
-		      update_column(:active, false)
-		      run_callbacks :destroy
-		      freeze
-				end
-			end
-    end
-  end
-
   def account_movement_payment
     AccountMovementPayment.find_by_id(self.payment_id)
   end

@@ -1,0 +1,55 @@
+<div class="container">
+  <div class="row">
+    <div class="border">
+      <table class="width_100">
+        <tr>
+          <td class="width_25">N° <%= @transfer_request.number %></td>
+          <% if @transfer_request.state == 'Anulado' %>
+            <td class="width_50"><h1 class="text_size_25 text_center">REMITO ANULADO</h1></td>
+          <% else %>
+            <td class="width_50"><h1 class="text_size_25 text_center">REMITO </h1></td>
+          <% end %>
+          <td class="width_25">
+            <table >
+              <tr>
+                <td>Fecha: <%= @transfer_request.created_at.strftime("%d/%m/%Y") %></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!--ENCABEZADO DATOS EMPRESA -->
+
+    <div class=" border">
+      <div>
+        <center>
+          <%= @transfer_request.company.province.name %>, <%=@transfer_request.company.address %> - Teléfono: <%=@transfer_request.company.contact_number %>
+        </center>
+      </div>
+      <div>
+        <center>
+        E-mail: <%=@transfer_request.company.email %> - CUIT: <%=@transfer_request.company.cuit %>
+        <center>
+      </div>
+
+    </div>
+
+<!--ENCABEZADO DATOS PROVEEDOR -->
+
+    <div class=" border">
+
+      <table class="width_100">
+        <tr>
+          <td><b>Depósito emisor:</b> <%= @transfer_request.sender.name %></td>
+
+          <td><b>Depósito receptor:</b> <%=@transfer_request.receiver.name %></td>
+        </tr>
+
+      </table>
+
+    </div>
+  <!-- FIN DEL ENCABEZADO -->

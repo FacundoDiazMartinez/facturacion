@@ -1,6 +1,6 @@
 <%= render '/payments/shared_builder' %>
 
-<%= @builder.fields_for :cheque_payment, @builder.object.build_cheque_payment do |cpf| %>
+<%= @builder.fields_for :cheque_payment, ChequePayment.new(payment_id: @builder.object.id) do |cpf| %>
 
   <%= render '/payments/cheque_payments/shared_form', f: cpf %>
 

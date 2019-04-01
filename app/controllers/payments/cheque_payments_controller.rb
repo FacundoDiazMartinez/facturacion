@@ -5,7 +5,7 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
   # GET /cheque_payments
   # GET /cheque_payments.json
   def index
-    @cheque_payments = current_user.company.cheque_payments.joins(:payment).search_by_number(params[:number]).search_by_client(params[:client]).search_by_date(params[:date]).paginate(page: params[:page], per_page: 10)
+    @cheque_payments = current_user.company.cheque_payments.joins(:payment).search_by_number(params[:number]).search_by_client(params[:client]).search_by_date(params[:date]).order("created_at DESC").paginate(page: params[:page], per_page: 10)
   end
 
   # GET /cheque_payments/1

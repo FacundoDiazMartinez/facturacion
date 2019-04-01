@@ -1,6 +1,6 @@
 <%= render '/payments/shared_builder' %>
 
-<%= @builder.fields_for :cash_payment, @builder.object.build_cash_payment do |cpf| %>
+<%= @builder.fields_for :cash_payment, CashPayment.new(payment_id: @builder.object.id) do |cpf| %>
   <div class="fields">
   	<%= cpf.label :total, "Total ($)" %>
   	<%= cpf.number_field :total, step: :any, class: 'form-control subpayment_total', requried: true %>

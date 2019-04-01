@@ -18,6 +18,7 @@ class DeliveryNotesController < ApplicationController
         render pdf: "#{@delivery_note.id}",
         layout: 'pdf.html',
         template: 'delivery_notes/show',
+        #zoom: 3.1,
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"
@@ -109,7 +110,7 @@ class DeliveryNotesController < ApplicationController
     @client = @associated_invoice.client
     @delivery_note.client_id = @associated_invoice.client_id
     @delivery_note.delivery_note_details.each{ |dnd| dnd.mark_for_destruction  }
-    @associated_invoice.invoice_details.each do |detail|
+    @associated_invoice.invoice_details.joins(:product).where("product.tipo == 'Producto'").each do |detail|
       @delivery_note.delivery_note_details.build(
         product_id: detail.product_id,
         depot_id: detail.depot_id,
