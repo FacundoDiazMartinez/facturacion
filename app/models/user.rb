@@ -79,7 +79,7 @@ class User < ApplicationRecord
   	end
 
     def has_management_role?
-			return self.admin
+			return self.admin || self.roles.map(&:name).include?("Administrador")
     end
 
     def has_purchase_management_role?

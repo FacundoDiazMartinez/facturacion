@@ -7,25 +7,25 @@ class Payment < ApplicationRecord
   has_one :delayed_job, dependent: :destroy
   has_one :daily_cash_movement, dependent: :destroy
 
-  has_one :cash_payment, dependent: :destroy
-  has_one :card_payment, dependent: :destroy
-  has_one :bank_payment, dependent: :destroy
-  has_one :debit_payment, dependent: :destroy
-  has_one :cheque_payment, dependent: :destroy
-  has_one :retention_payment, dependent: :destroy
-  has_one :compensation_payment, dependent: :destroy
+  has_one :cash_payment
+  has_one :card_payment
+  has_one :bank_payment
+  has_one :debit_payment
+  has_one :cheque_payment
+  has_one :retention_payment
+  has_one :compensation_payment
 
   after_initialize :set_payment_date
   after_save :save_daily_cash_movement
 
   default_scope { where(active: true) }
-  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
-  accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
-  accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
-  accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
-  accepts_nested_attributes_for :cheque_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
-  accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
-  accepts_nested_attributes_for :compensation_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}, allow_destroy: true
+  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :cheque_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :compensation_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
 
   validate :min_total, on: :create
   validates_numericality_of :total, greater_than: 0.0, message: "El monto pagado debe ser mayor 0."
@@ -48,38 +48,63 @@ class Payment < ApplicationRecord
   #VALIDACIONES
 
   #ATRIBUTOS
+    def child
+      if not cash_payment.nil?
+        return cash_payment
+      elsif not debit_payment.nil?
+        return debit_payment
+      elsif not card_payment.nil?
+        return card_payment
+      elsif not bank_payment.nil?
+        return bank_payment
+      elsif not cheque_payment.nil?
+        return cheque_payment
+      elsif not retention_payment.nil?
+        return retention_payment
+      elsif not compensation_payment.nil?
+        return compensation_payment
+      end
+    end
+
     def cash_payment_attributes=(attribute)
+      self.child.destroy unless self.child.nil?
       self.total = attribute["total"].to_f
       super
     end
 
     def debit_payment_attributes=(attribute)
+      self.child.destroy unless self.child.nil?
       self.total = attribute["total"].to_f
       super
     end
 
     def card_payment_attributes=(attribute)
+      self.child.destroy unless self.child.nil?
       self.total = attribute["total"]
       # self.credit_card_id = attribute["credit_card_id"]
       super
     end
 
     def bank_payment_attributes=(attribute)
+      self.child.destroy unless self.child.nil?
       self.total = attribute["total"]
       super
     end
 
     def cheque_payment_attributes=(attribute)
+      self.child.destroy unless self.child.nil?
       self.total = attribute["total"]
       super
     end
 
     def retention_payment_attributes=(attribute)
+      self.child.destroy unless self.child.nil?
       self.total = attribute["total"]
       super
     end
 
     def compensation_payment_attributes=(attribute)
+      self.child.destroy unless self.child.nil?
       self.total = attribute["total"].to_f
       super
     end
@@ -90,9 +115,9 @@ class Payment < ApplicationRecord
 
     def associated_document
       if !invoice_id.nil?
-        invoice.name_with_comp
+        Invoice.find(invoice_id).name_with_comp
       elsif !purchase_order_id.nil?
-        purchase_order.name_with_comp
+        PurchaseOrder.find(purchase_order_id).name_with_comp
       elsif !account_movement_id.nil?
         am = AccountMovement.unscoped.find(account_movement_id)
         if am.receipt_id.nil?

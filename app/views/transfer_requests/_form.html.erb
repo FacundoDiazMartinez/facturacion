@@ -75,7 +75,7 @@
 
   <%= render '/transfer_requests/details/search_product' %>
   <center>
-    <% if (@transfer_request.state != "Anulado" && @transfer_request.state != "Finalizado") || @transfer_request.new_record? %>
+    <% if (@transfer_request.state == "Pendiente") || @transfer_request.new_record? %>
       <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary' %>
     <% end %>
   </center>

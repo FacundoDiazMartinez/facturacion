@@ -5,9 +5,6 @@ class Payments::CashPaymentsController < Payments::PaymentsController
 
   # GET /cash_payments
   # GET /cash_payments.json
-  def index
-    @cash_payments = CashPayment.all
-  end
 
   # GET /cash_payments/1
   # GET /cash_payments/1.json

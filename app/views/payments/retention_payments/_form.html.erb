@@ -1,6 +1,6 @@
 <%= render '/payments/shared_builder' %>
 
-<%= @builder.fields_for :retention_payment, @builder.object.build_retention_payment do |rpf| %>
+<%= @builder.fields_for :retention_payment, RetentionPayment.new(payment_id: @builder.object.id) do |rpf| %>
 
   <div class="form-group">
     <%= rpf.label :number, "Numeración" %>

@@ -9,27 +9,47 @@
     <div class="card">
       <div class="card-header">
         <%= form_tag transfer_requests_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR PROVEEDOR -->
-          <%= label_tag :invoice_number, "Nº Factura", class: 'sr-only' %>
+          <!-- BUSCAR POR numero -->
+          <%= label_tag :number, "Nº Remito", class: 'sr-only' %>
           <div class="input-group mb-2 col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'plane') %></div>
             </div>
-            <%= text_field_tag :invoice_number, params[:invoice_number], class: 'form-control', placeholder: 'Buscar por factura', onkeyup: 'remoteSubmit("#search_form")' %>
+            <%= text_field_tag :number, params[:number], class: 'form-control', placeholder: 'Buscar por número', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR PROVEEDOR -->
+          <!-- BUSCAR POR numero -->
 
           <!-- BUSCAR POR USUARIO -->
-          <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
+          <%= label_tag :transporter, "Usuario", class: 'sr-only' %>
           <div class="input-group mb-2 col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'user') %></div>
             </div>
-            <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+            <%= text_field_tag :transporter, params[:transporter], class: 'form-control', placeholder: 'Transportista', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
           <!-- BUSCAR POR USUARIO -->
 
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <!-- BUSCAR POR SENDER -->
+          <%= label_tag :from_depot_id, "Remitente", class: 'sr-only' %>
+          <div class="input-group mb-2 col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= select_tag :from_depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}, params[:from_depot_id]), {prompt: 'Buscar por remitente...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          </div>
+          <!-- BUSCAR POR SENDER -->
+
+          <!-- BUSCAR POR RECEIVER -->
+          <%= label_tag :to_depot_id, "Destinatario", class: 'sr-only' %>
+          <div class="input-group mb-2 col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= select_tag :to_depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}, params[:to_depot_id]), {prompt: 'Buscar por destinatario...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          </div>
+          <!-- BUSCAR POR RECEIVER -->
+
+          <!-- BUSCAR POR TIPO DE ESTADO -->
           <%= label_tag :state, "Estado", class: 'sr-only' %>
           <div class="input-group mb-2 col">
             <div class="input-group-prepend">
@@ -37,7 +57,7 @@
             </div>
             <%= select_tag :state, options_for_select(TransferRequest::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <!-- BUSCAR POR TIPO DE ESTADO -->
       <% end %>
       </div>
       <div class="card-body" id="transfer_requests_table">

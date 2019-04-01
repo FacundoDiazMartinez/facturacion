@@ -5,7 +5,7 @@ class Payments::CardPaymentsController < Payments::PaymentsController
   # GET /card_payments
   # GET /card_payments.json
   def index
-    @card_payments = current_user.company.card_payments.joins(:payment, :credit_card).search_by_card(params[:card]).search_by_date(params[:date]).paginate(page: params[:page], per_page: 10)
+    @card_payments = current_user.company.card_payments.joins(:payment, :credit_card).search_by_card(params[:card]).search_by_date(params[:date]).order("created_at DESC").paginate(page: params[:page], per_page: 10)
   end
 
   # GET /card_payments/1

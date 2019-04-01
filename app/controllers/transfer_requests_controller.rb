@@ -2,7 +2,13 @@ class TransferRequestsController < ApplicationController
   before_action :set_transfer_request, only: [:show, :edit, :update, :destroy, :send_transfer, :receive_transfer]
 
   def index
-    @transfer_requests = current_user.company.transfer_requests.paginate(page: params[:page], per_page: 10)
+    @transfer_requests = current_user.company.transfer_requests
+      .search_by_number(params[:number])
+      .serach_by_transporter(params[:transporter])
+      .search_by_sender(params[:from_depot_id])
+      .search_by_receiver(params[:to_depot_id])
+      .search_by_state(params[:state])
+      .paginate(page: params[:page], per_page: 10)
   end
 
   def show
