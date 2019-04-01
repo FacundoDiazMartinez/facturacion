@@ -59,6 +59,14 @@ function sumTotalPurchaseOrder(){
 	});
 	sumaTotales = parseFloat(sumaTotales) +  parseFloat($("#purchase_order_shipping_cost").val())
 	$('#purchase_order_total').val(sumaTotales);
+	total_left == parseFloat(sumaTotales) - parseFloat($("#purchase_order_total_pay").val())
+	if (total_left > 0) {
+		$("#normal").show();
+		$("#with_alert").hide();
+	}else{
+		$("#normal").hide();
+		$("#with_alert").show();
+	}
 }
 
 $(document).on("change", '#purchase_order_shipping_cost', function(){
