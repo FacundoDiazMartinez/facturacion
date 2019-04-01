@@ -135,7 +135,7 @@ $(document).on("change", ".iva_aliquot", function(){
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		iva_am = 0.0
 	}else{
-		iva_am = ( price.val() * parseFloat( iva_aliquot.text() ) * quantity.val() ).toFixed(2);
+		iva_am = ( (price.val() - bonus_amount.val() ) * parseFloat( iva_aliquot.text() ) * quantity.val() ).toFixed(2);
 	}
 	iva_amount.val(iva_am);
 	updateTooltip22($(this))
@@ -148,7 +148,7 @@ function calculateSubtotal(subtotal){
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		iva_am = 0.0
 	}else{
-		iva_am = ( price.val() * parseFloat(iva_aliquot.text()) * quantity.val() ).toFixed(2);
+		iva_am = ( (price.val() - bonus_amount.val() ) * parseFloat(iva_aliquot.text()) * quantity.val() ).toFixed(2);
 	}
 	iva_amount.val(iva_am);
 	Stotal = ((parseFloat(price.val())  * parseFloat(quantity.val()) ) + parseFloat(iva_amount.val()) - parseFloat(bonus_amount.val())).toFixed(2)
