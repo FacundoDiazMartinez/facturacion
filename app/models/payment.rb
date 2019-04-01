@@ -176,8 +176,8 @@ class Payment < ApplicationRecord
 
     def subpayment_show invoice_id
       sub_id = eval("#{type_of_payment_name.singularize}").id
-      if type_of_payment == "account_payments"
-        "#" 
+      if type_of_payment == "6"
+        "#"
       else
         "payments_#{type_of_payment_name.singularize}_path(#{sub_id}, invoice_id: #{invoice_id})"
       end
