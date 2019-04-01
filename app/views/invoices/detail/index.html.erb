@@ -76,7 +76,7 @@
 					<td>
 						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"popover"}, disabled: !@invoice.editable? %>
 					</td>
-          <td class="only-desktop"><%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', min: 0, disabled: !@invoice.editable? %>
+          <td class="only-desktop"><%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', disabled: !@invoice.editable? %>
 						<%= f.hidden_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
 		        <% if @invoice.editable? %>
 	            <td class="text-center">
