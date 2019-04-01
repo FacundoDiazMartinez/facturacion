@@ -53,7 +53,8 @@
         <tr>
           <th class="text_left">Forma de pago</th>
         </tr>
-        <% @receipt.account_movement.income_payments.where(generated_by_system: false).each do |ip| %>
+
+        <% (@receipt.account_movement_payments.empty? ? @receipt.invoices.map{|i| i.income_payments}.first : @receipt.account_movement_payments).each do |ip| %>
           <tr class="bg-white">
             <td>
               <% if ip.type_of_payment == "4" %>
@@ -82,4 +83,4 @@
   </div>
 </div>
 <p><b>Recibi la suma de: </b></p>
-<p><%= I18n.with_locale(:es) { @receipt.total.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1).to_words } %> centavos.</p>
+<p><%= I18n.with_locale(:es) { @receipt.total.to_i.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1 * 100).to_i.round(2).to_words } %> centavos.</p>
