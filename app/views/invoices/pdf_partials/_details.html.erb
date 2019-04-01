@@ -7,6 +7,7 @@
       <th class="description_header">Producto/Servicio</th>
       <th class="description_header">Cantidad</th>
       <th class="description_header">Precio Unit.</th>
+      <th class="description_header">Bonificación</th>
       <th class="description_header">Subtotal</th>
       <% if @invoice.cbte_tipo == "01" %>
         <th class="description_header">I.V.A.</th>
@@ -21,6 +22,7 @@
         <td><%= det.product.name %></td>
         <td class="text_right"><%= det.quantity %></td>
         <td class="text_right"><%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
+        <td class="text_right"><%= det.bonus_amount > 0 ? det.bonus_amount : 0.0  %></td>
         <td class="text_right"><%= (det.subtotal - det.iva_amount - det.bonus_amount).round(2) %>
         <% if @invoice.cbte_tipo == "01" %>
           <td class="text_right"><%= det.iva_amount %></td>
