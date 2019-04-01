@@ -34,7 +34,7 @@ class PurchaseOrderDetail < ApplicationRecord
     end
 
     def set_total_to_purchase_order
-      purchase_order.update_attribute(:total, purchase_order.sum_details)
+      purchase_order.update_attribute(:total, purchase_order.sum_details + purchase_order.shipping_cost)
     end
 
     def product_attributes=(attributes)

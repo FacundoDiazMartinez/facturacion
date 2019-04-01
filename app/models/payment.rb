@@ -19,7 +19,7 @@ class Payment < ApplicationRecord
   after_save :save_daily_cash_movement
 
   default_scope { where(active: true) }
-  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0 }
   accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}

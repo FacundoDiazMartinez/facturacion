@@ -12,13 +12,13 @@ class PurchaseOrder < ApplicationRecord
 
   default_scope { where(active: true) }
 
-  accepts_nested_attributes_for :expense_payments, reject_if: :all_blank, allow_destroy: true
+  accepts_nested_attributes_for :expense_payments, reject_if: Proc.new{|ip| ip["type_of_payment"].blank?}, allow_destroy: true
   accepts_nested_attributes_for :purchase_order_details, reject_if: :all_blank, allow_destroy: true
 
   before_create :set_number
   after_save :set_sended_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state == "Enviado"}
   after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
-  after_save :touch_payments
+  after_save :touch_payments, :set_paid_out
   after_touch :set_paid_out
 
   validates_uniqueness_of :number, scope: :company_id, message: "Se están duplicando los números de Órdenes de Compra.", if: :number_changed?
