@@ -8,7 +8,6 @@
       <th class="description_header">Cantidad</th>
       <th class="description_header">Precio Unit.</th>
       <th class="description_header">Subtotal</th>
-      <th class="description_header">% Bonif</th>
       <% if @invoice.cbte_tipo == "01" %>
         <th class="description_header">I.V.A.</th>
       <% end %>
@@ -26,8 +25,7 @@
         <% else %>
           <td class="text_right"><%= det.price_per_unit %></td>
         <% end %>
-        <td class="text_right"><%= (det.subtotal - det.iva_amount).round(2) %>
-        <td class="text_right"><%= det.bonus_percentage %></td>
+        <td class="text_right"><%= (det.subtotal - det.iva_amount - det.bonus_amount).round(2) %>
         <% if @invoice.cbte_tipo == "01" %>
           <td class="text_right"><%= det.iva_amount %></td>
         <% end %>
