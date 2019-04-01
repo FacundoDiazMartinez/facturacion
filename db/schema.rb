@@ -724,8 +724,8 @@ ActiveRecord::Schema.define(version: 2019_03_29_180610) do
     t.string "cbte_tipo", default: "00", null: false
     t.bigint "client_id"
     t.bigint "sale_point_id"
-    t.string "state", default: "Pendiente"
     t.bigint "user_id"
+    t.string "state", default: "Pendiente"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
@@ -843,7 +843,7 @@ ActiveRecord::Schema.define(version: 2019_03_29_180610) do
     t.string "number", null: false
     t.string "state", default: "Pendiente", null: false
     t.string "observation"
-    t.date "date", default: -> { "CURRENT_DATE" }, null: false
+    t.date "date", default: -> { "('now'::text)::date" }, null: false
     t.bigint "from_depot_id", null: false
     t.bigint "to_depot_id", null: false
     t.boolean "active", default: true, null: false

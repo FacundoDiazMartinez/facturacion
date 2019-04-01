@@ -45,7 +45,10 @@
           <a href="#" id="navbarDropdownMenuMiCuenta" role="button" class="dropdown-toggle nav-link m-2 menu-item" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Mi cuenta</a>
           <div class="dropdown-menu text-center right-nav" aria-labelledby="navbarDropdownMenuMiCuenta">
-            <%= link_to "Editar perfil", edit_user_registration_path, class: 'dropdown-item' %>
+            <% if current_user.has_company? %>
+  		    		<%= link_to "Mi empresa".html_safe, company_path(current_user.company_id), class: 'dropdown-item' %>
+              <%= link_to "Mi perfil", edit_user_registration_path, class: 'dropdown-item' %>
+  		    	<% end %>
             <div class="dropdown-divider only-desktop"></div>
             <%= link_to 'Salir', destroy_user_session_path, :method => :delete, class: 'dropdown-item' %>
           </div>

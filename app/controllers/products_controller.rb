@@ -33,7 +33,10 @@ class ProductsController < ApplicationController
 
   def update_multiple
     @products = Product.find(params[:product_ids])
+    ## elimina del vector los productos correctamente actualizados
     @products.reject! do |product|
+      ## añade el usuario que actualiza y rechaza las actualizaciones con valores vacios
+      product.updated_by = current_user.id
       product.update_attributes(update_multiple_product_params.reject { |k,v| v.blank? })
     end
     if @products.empty?
