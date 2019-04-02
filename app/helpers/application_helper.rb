@@ -58,7 +58,7 @@ module ApplicationHelper
 	end
 
 	def save_button
-		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
+		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."}
 	end
 
 	def save_button_lock
@@ -115,7 +115,7 @@ module ApplicationHelper
 	end
 
 	def error_for_modal_js message, type #danger info success
-		html = "<div class='alert alert-#{type} alert-dismissible' role='alert'> <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> #{message} </div>"		
+		html = "<div class='alert alert-#{type} alert-dismissible' role='alert'> <button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button> #{message} </div>"
 		return html.html_safe
 	end
 end
