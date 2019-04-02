@@ -10,8 +10,9 @@ class Invoice < ApplicationRecord
 
     default_scope { where(active: true) }
     scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
+    scope :credit_notes, -> { where(cbte_tipo: COD_NC) }
 
-    has_many :notes, foreign_key: :associated_invoice, class_name: 'Invoice'
+    has_many :notes, -> { credit_notes }, foreign_key: :associated_invoice, class_name: 'Invoice'
     has_many :income_payments, dependent: :destroy
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
@@ -743,7 +744,7 @@ class Invoice < ApplicationRecord
             state: "Confirmado"
           )
           self.activate_commissions
-          if response && !self.associated_invoice.nil?
+          if response && !self.associated_invoice.nil? && self.is_credit_note?
             total_from_notes = self.invoice.notes.sum(:total).round(2)
             if total_from_notes == self.invoice.total.round(2)
               self.invoice.update_column(:state, "Anulado")
