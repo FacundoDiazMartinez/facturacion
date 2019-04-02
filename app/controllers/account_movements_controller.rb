@@ -5,7 +5,7 @@ class AccountMovementsController < ApplicationController
   # GET /account_movements
   # GET /account_movements.json
   def index
-    @account_movements = @client.account_movements.order("created_at ASC").paginate(page: params[:page], per_page: 10)
+    @account_movements = @client.account_movements.order("created_at ASC").paginate(page: params[:page], per_page: 25)
   end
 
   # GET /account_movements/1
