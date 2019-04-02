@@ -17,7 +17,7 @@
         			<td><%= product_category.iva %></td>
         			<td><%= product_category.products_count %></td>
                     <td class="text-right">
-                        <%= link_to icon('fas', 'pencil-alt').html_safe, edit_product_category_path(product_category), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{target: '#ProductCategoryModal', toggle: 'modal', remote: true} if can? :update, ProductCategory %>
+                        <%= link_to icon('fas', 'pencil-alt').html_safe, edit_product_category_path(product_category), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{target: '#product_category_modal', toggle: 'modal', remote: true} if can? :update, ProductCategory %>
                         <%= link_to icon('fas', 'trash'), product_category, method: :delete, data: {confirm: '¿Estas seguro?'}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                     </td>
 

@@ -85,7 +85,6 @@
             </td>
 
           </tr>
-          <% if invoice.notes.any? %>
             <% invoice.notes.each do |note| %>
               <tr class="px-4 bg-light">
                 <td><%= icon('fas', 'long-arrow-alt-up') %></td>
@@ -118,7 +117,6 @@
 
               </tr>
             <% end %>
-          <% end %>
         <% end %>
       </tbody>
     </table>

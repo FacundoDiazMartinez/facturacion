@@ -1,0 +1,31 @@
+<%= form.fields_for :receipt_details, wrapper: false do |f| %>
+  <tr class="fields" id="<%= f.index %>">
+    <td>
+      <%= text_field_tag :invoice_tipo, f.object.invoice.nil? ? nil : f.object.invoice.nombre_comprobante, style: "text-align: right;" , class: 'form-control form-control-sm tipo', data: {toggle:"tooltip"}, disabled: true %>
+    </td>
+    <td>
+      <%= text_field_tag :comp_number, f.object.invoice.nil? ? nil : f.object.invoice.comp_number, style: "text-align: right;" , class: 'form-control form-control-sm invoice_comp_number', data: {toggle:"tooltip"}, disabled: true %>
+      <%= f.hidden_field :invoice_id, class: 'invoice_id' %>
+    </td>
+    <td>
+      <%= text_field_tag :invoice_created_at, f.object.invoice.nil? ? nil : I18n.l(f.object.invoice.updated_at, format: :only_date), style: "text-align: right;" , class: 'form-control form-control-sm invoice_created_at', data: {toggle:"tooltip"}, disabled: true %>
+    </td>
+    <td>
+      <%= text_field_tag :invoice_total, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total.to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total', data: {toggle:"tooltip"}, disabled: true %>
+    </td>
+    <td>
+      <%= text_field_tag :invoice_total_pay, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_pay.to_s, style: "text-align: right;" , class: 'form-control form-control-sm invoice_total_pay', data: {toggle:"tooltip"}, disabled: true %>
+    </td>
+    <td>
+      <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_left.to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
+    </td>
+    <!-- <td>
+      <%# f.number_field :total, class: 'form-control form-control-sm total', data: {toggle:"tooltip"}, disabled: !@receipt.editable?, value: 0 %>
+    </td> -->
+    <td>
+    </td>
+    <% if @receipt.editable? %>
+      <td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
+    <% end %>
+  </tr>
+<% end %>

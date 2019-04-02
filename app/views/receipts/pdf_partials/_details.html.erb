@@ -35,13 +35,6 @@
               <% end %>
             </td>
           </tr>
-          <% i.notes.each do |n| %>
-            <tr class="text_left bg-white">
-              <td>
-                Vinculación <%= n.nombre_comprobante %> <%= n.full_number %> - Importe $ <%= n.total %>
-              </td>
-            </tr>
-          <% end %>
         <% end %>
       </table>
     <% end %>
