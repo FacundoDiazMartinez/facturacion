@@ -318,11 +318,22 @@ class Invoice < ApplicationRecord
 
     #PROCESOS
 
-    def rollback_stock
-      invoice_details.each do |detail|
-        detail.remove_reserved_stock
+      def get_default_tributes
+        company.default_tributes.each do |trib|
+          tributes.build(afip_id: trib.tribute_id,
+            desc: Invoice::TRIBUTOS.map{|t| t.first if t.last == "1"}.compact.first,
+            base_imp: total.to_f.round(2),
+            alic: trib.default_aliquot
+          )
+        end
+        return tributes
       end
-    end
+
+      def rollback_stock
+        invoice_details.each do |detail|
+          detail.remove_reserved_stock
+        end
+      end
 
       def update_payment_belongs
         income_payments.each do |p|
@@ -355,7 +366,7 @@ class Invoice < ApplicationRecord
               invoice = rd.invoice
               unless invoice.is_credit_note?
                 pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
-                pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
+                pay.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
                 pay.save
                 am.update_column(:amount_available, am.amount_available - pay.total)
                 break if am.amount_available < 1

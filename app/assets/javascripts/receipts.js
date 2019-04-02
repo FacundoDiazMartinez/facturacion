@@ -1,4 +1,5 @@
 $(document).on('ready',function(){
+  calculateTotalLeft()
   if ($('#details > tbody > tr.fields').filter(":visible").length > 0) {
     $("#editReceiptClient").attr('data-toggle', 'tooltip');
     $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
@@ -6,43 +7,57 @@ $(document).on('ready',function(){
   }
 })
 
+$(document).on('pjax:complete', function() { calculateTotalLeft() })
+
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
-  $.get("/receipts/associate_invoice", {invoice_id: data.item.id}, "", "json")
-    .done(function(details){
-      $.each(details, function(i, detail){
-        console.log(detail)
-        $(".add_nested_fields").click();
-        tr = $("tr.fields").last();
-        tr.find('input.tipo').val(detail.tipo);
-        tr.find('input.invoice_comp_number').val(detail.label);
-        tr.find('input.invoice_id').val(detail.id);
-      	tr.find('input.invoice_total').val("$ " + detail.total.toFixed(2));
-        tr.find('input.associated_invoices_total').val("$ " + detail.associated_invoices_total.toFixed(2));
-        faltante = detail.total_left.toFixed(2) //- detail.associated_invoices_total.toFixed(2)
-        tr.find('input.invoice_total_left').val("$ " + faltante);
-        tr.find('input.invoice_total_pay').val("$ " + detail.total_pay.toFixed(2));
-        tr.find('input.invoice_created_at').val(detail.created_at);
-      })
-      $("#editReceiptClient").attr('data-toggle', 'tooltip');
-      $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
-      $("#editReceiptClient").tooltip();
+  var band = false
+  $(".invoice_comp_number").each(function(){
+    if ($(this).val() == data.item.label){
+      band = true
+      alert("Ya asigno este comprobante al remito.")
+      return false;
+    }
+  })
+  if (band == false){
+    $.get("/receipts/associate_invoice", {invoice_id: data.item.id}, "", "json")
+      .done(function(details){
+        $.each(details, function(i, detail){
+          console.log(detail)
+          $(".add_nested_fields").click();
+          tr = $("tr.fields").last();
+          tr.find('input.tipo').val(detail.tipo);
+          tr.find('input.invoice_comp_number').val(detail.label);
+          tr.find('input.invoice_id').val(detail.id);
+        	tr.find('input.invoice_total').val("$ " + detail.total.toFixed(2));
+          tr.find('input.associated_invoices_total').val("$ " + detail.associated_invoices_total.toFixed(2));
+          faltante = detail.total_left.toFixed(2) //- detail.associated_invoices_total.toFixed(2)
+          tr.find('input.invoice_total_left').val("$ " + faltante);
+          tr.find('input.invoice_total_pay').val("$ " + detail.total_pay.toFixed(2));
+          tr.find('input.invoice_created_at').val(detail.created_at);
+        })
+        $("#editReceiptClient").attr('data-toggle', 'tooltip');
+        $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
+        $("#editReceiptClient").tooltip();
 
-      total = 0;
-      $('.invoice_total_left').each(function(){
-        var res = $(this).val().replace("$ ", "");
-        alert(res)
-        tipo = $(this).closest("tr.fields").find('input.tipo').val()
-        if (tipo == "Nota de Crédito"){
-          total -= parseFloat(res);
-        }else{
-          total += parseFloat(res);
-        }
+        calculateTotalLeft()
+        $(".receipt_associated-invoice-autocomplete_field").val("")
       })
-
-      $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
-      $(".receipt_associated-invoice-autocomplete_field").val("")
-    })
+  }
 });
+
+function calculateTotalLeft(){
+  total = 0;
+  $('.invoice_total_left:visible').each(function(){
+    var res = $(this).val().replace("$ ", "");
+    tipo = $(this).closest("tr.fields").find('input.tipo').val()
+    if (tipo == "Nota de Crédito"){
+      total -= parseFloat(res);
+    }else{
+      total += parseFloat(res);
+    }
+    $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
+  })
+}
 
 $(document).on('nested:fieldRemoved', function(event){
   total = 0;

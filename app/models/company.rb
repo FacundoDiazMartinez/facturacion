@@ -34,6 +34,7 @@ class Company < ApplicationRecord
 	has_many :account_movement_payments, through: :account_movements
 	has_many :transfer_requests
 	has_many :movements
+	has_many :default_tributes
 
 	belongs_to :province
 	belongs_to :locality
@@ -67,6 +68,7 @@ class Company < ApplicationRecord
 
 
 	accepts_nested_attributes_for :sale_points, allow_destroy: true, reject_if: :all_blank
+	accepts_nested_attributes_for :default_tributes, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :banks, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :credit_cards, allow_destroy: true, reject_if: :all_blank
 

@@ -1,0 +1,26 @@
+<p class="text-muted">
+  Registra tus tributos
+  <%= f.link_to_add "#{icon'fas', 'plus'} Añadir tributo".html_safe, :default_tributes,  class: 'btn btn-sm btn-success float-md-right', data: {target: '#tributes'} %>
+</p>
+<div class="card mb-4 card-shadow">
+  <div  class="card-body table-responsive">
+    <table class="table table-striped" id="tributes">
+      <thead>
+        <tr>
+          <th>Tributo</th>
+          <th>Alícuota (%)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+         <%= f.fields_for :default_tributes, :wrapper => false do |bf| %>
+          <tr class="fields">
+            <td><%= bf.select :tribute_id, Invoice::TRIBUTOS,{}, {class: 'form-control', required: true} %></td>
+            <td><%= bf.number_field :default_aliquot, class: 'form-control', required: true, placeholder: "Alícuota (%)", min: 0, max: 100 %></td>
+            <td><%= bf.link_to_remove icon('fas', 'trash'), class: 'text-danger', title: 'Eliminar cuenta', data: { confirm: '¿Está seguro?' } %></td>
+          </tr>
+         <% end -%>
+      </tbody>
+    </table>
+  </div>
+</div>
