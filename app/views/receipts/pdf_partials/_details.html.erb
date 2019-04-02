@@ -26,11 +26,11 @@
         <% @receipt.invoices.each do |i| %>
           <tr class="bg-white">
             <td>
-              <% if i.total_left > 0 %>
-              Pago parcial Factura <%= i.full_number %>  -  Importe $ <%= i.total %>
+              <% if i.real_total_left > 0 %>
+              Pago parcial <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
               <% else %>
                 <% if i.total_left == 0 %>
-                  Cancelación Factura <%= i.full_number %>  -  Importe $ <%= i.total %>
+                  Cancelación <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
                 <% end %>
               <% end %>
             </td>
