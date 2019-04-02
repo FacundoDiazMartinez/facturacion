@@ -325,8 +325,8 @@ class Invoice < ApplicationRecord
             base_imp: total.to_f.round(2),
             alic: trib.default_aliquot
           )
-          return tributes
         end
+        return tributes
       end
 
       def rollback_stock
