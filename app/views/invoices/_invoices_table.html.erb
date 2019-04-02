@@ -111,7 +111,7 @@
                 </td>
                 <td>
                   <%  if note.editable? %>
-                    <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+                    <%= link_to icon('fas', 'trash').html_safe, note, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                   <% end %>
                 </td>
 

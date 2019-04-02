@@ -277,7 +277,7 @@ class Invoice < ApplicationRecord
       end
 
       def destroy(mode = :soft)
-        if self.state == "Pendiente" || "Pagado"
+        if self.state == "Pendiente" || self.state == "Pagado"
           update_column(:active, false)
           run_callbacks :destroy
           freeze
