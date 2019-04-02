@@ -13,7 +13,7 @@
 </div>
 
 <div class="form-group">
-  <%= cpf.label :asociatedClientInvoice, "Factura asociada del cliente" %>
+  <%= cpf.label :asociatedClientInvoice, "Factura asociada del proveedor" %>
   <%= cpf.text_field :asociatedClientInvoice, class: 'form-control subpayment_asociatedClientInvoice', requried: true, autocomplete: "off" %>
   <%= cpf.hidden_field :client_id, value: @compensation_client_id %>
 </div>

@@ -775,7 +775,8 @@ class Invoice < ApplicationRecord
 
       showed_payment = ""
       pagos.each_with_index do |arr,i|
-        showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
+        showed_payment = showed_payment + arr[0]
+        #showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
         if ((i+1) < pagos.count)
           showed_payment = showed_payment + " / "
         end
