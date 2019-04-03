@@ -98,6 +98,8 @@ gem 'activerecord-import'
 
 gem 'pry-rails'
 
+# Gema para logs
+gem 'rollbar'
 #Gemas para importar o trabajar con excel
 gem 'roo'
 gem 'roo-xls'
