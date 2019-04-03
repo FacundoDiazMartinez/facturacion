@@ -277,7 +277,7 @@ class Invoice < ApplicationRecord
       end
 
       def destroy(mode = :soft)
-        if self.state == "Pendiente" || "Pagado"
+        if self.state == "Pendiente" || self.state == "Pagado"
           update_column(:active, false)
           run_callbacks :destroy
           freeze
@@ -318,11 +318,22 @@ class Invoice < ApplicationRecord
 
     #PROCESOS
 
-    def rollback_stock
-      invoice_details.each do |detail|
-        detail.remove_reserved_stock
+      def get_default_tributes
+        company.default_tributes.each do |trib|
+          tributes.build(afip_id: trib.tribute_id,
+            desc: Invoice::TRIBUTOS.map{|t| t.first if t.last == "1"}.compact.first,
+            base_imp: total.to_f.round(2),
+            alic: trib.default_aliquot
+          )
+        end
+        return tributes
       end
-    end
+
+      def rollback_stock
+        invoice_details.each do |detail|
+          detail.remove_reserved_stock
+        end
+      end
 
       def update_payment_belongs
         income_payments.each do |p|

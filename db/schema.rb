@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_29_180610) do
+ActiveRecord::Schema.define(version: 2019_04_02_183327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -337,6 +337,15 @@ ActiveRecord::Schema.define(version: 2019_03_29_180610) do
     t.datetime "updated_at", null: false
     t.index ["bank_id"], name: "index_debit_payments_on_bank_id"
     t.index ["payment_id"], name: "index_debit_payments_on_payment_id"
+  end
+
+  create_table "default_tributes", force: :cascade do |t|
+    t.bigint "company_id"
+    t.integer "tribute_id", null: false
+    t.float "default_aliquot", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_default_tributes_on_company_id"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -977,6 +986,7 @@ ActiveRecord::Schema.define(version: 2019_03_29_180610) do
   add_foreign_key "daily_cashes", "companies"
   add_foreign_key "debit_payments", "banks"
   add_foreign_key "debit_payments", "payments"
+  add_foreign_key "default_tributes", "companies"
   add_foreign_key "delayed_jobs", "payments"
   add_foreign_key "delivery_note_details", "delivery_notes"
   add_foreign_key "delivery_note_details", "depots"

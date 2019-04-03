@@ -71,8 +71,8 @@
               <% end %>
             </td>
             <td>
-              <%  if !invoice.editable? %>
-                <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <%  unless invoice.editable? %>
+                <%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
               <% end %>
             </td>
             <td>
@@ -102,8 +102,8 @@
                   <% end %>
                 </td>
                 <td>
-                  <%  if !note.editable? %>
-                    <%= link_to icon('fas', 'eye').html_safe, invoice_path(note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+                  <% unless note.editable? %>
+                    <%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                   <% end %>
                 </td>
                 <td>
@@ -111,7 +111,7 @@
                 </td>
                 <td>
                   <%  if note.editable? %>
-                    <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+                    <%= link_to icon('fas', 'trash').html_safe, note, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                   <% end %>
                 </td>
 
