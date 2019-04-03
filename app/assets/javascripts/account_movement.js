@@ -12,8 +12,9 @@ $(document).on("change", ".new_type_of_payment", function(){
 	account_movement_id = $("#account_movement_id_for_payment").val();
 
 	invoice_client_id = $("#invoice_client_id").val();
+	receipt_client_id = $("#receipt_client_id").val();
 
-	data = {invoice_id: invoice_id, purchase_order_id: purchase_order_id, client_id: client_id, receipt_id: receipt_id, account_movement_id: account_movement_id, invoice_client_id: invoice_client_id}
+	data = {invoice_id: invoice_id, purchase_order_id: purchase_order_id, client_id: client_id, receipt_id: receipt_id, account_movement_id: account_movement_id, invoice_client_id: invoice_client_id, receipt_client_id: receipt_client_id}
 
 	switch (selected_payment) {
 		case '0':
@@ -73,6 +74,7 @@ $(document).on("change", ".edit_type_of_payment", function(){
 			getPaymentRequest("/payments/debit_payments/new", data, "edit_");
 			break;
 		case '8':
+			alert("asd");
 			getPaymentRequest("/payments/compensation_payments/new", data, "edit_");
 			break;
 
