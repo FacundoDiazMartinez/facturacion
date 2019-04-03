@@ -247,16 +247,18 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.create_from_receipt receipt
-      am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
-      am.client_id   = receipt.client_id
-      am.receipt_id  = receipt.id
-      am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
-      am.debe        = receipt.cbte_tipo == "99"
-      am.haber       = receipt.cbte_tipo != "99"
-      am.total       = receipt.total.to_f
-      am.saldo       = receipt.client.saldo - receipt.total.to_f
-      am.active      = true
-      am.save
+      if receipt.persisted?
+        am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
+        am.client_id   = receipt.client_id
+        am.receipt_id  = receipt.id
+        am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
+        am.debe        = receipt.cbte_tipo == "99"
+        am.haber       = receipt.cbte_tipo != "99"
+        am.total       = receipt.total.to_f
+        am.saldo       = receipt.client.saldo - receipt.total.to_f
+        am.active      = true
+        am.save
+      end
     end
 
     def update_debt

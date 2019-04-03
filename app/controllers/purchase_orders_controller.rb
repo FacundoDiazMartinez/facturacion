@@ -46,7 +46,7 @@ class PurchaseOrdersController < ApplicationController
     @purchase_order.user_id = current_user.id
     respond_to do |format|
       if @purchase_order.save
-        format.html { redirect_to '/purchase_orders', notice: 'La órden de compra fue creada exitosamente.' }
+        format.html { redirect_to edit_purchase_order_path(@purchase_order.id), notice: 'La órden de compra fue creada exitosamente.' }
       else
         format.html { render :new }
         format.json { render json: @purchase_order.errors, status: :unprocessable_entity }

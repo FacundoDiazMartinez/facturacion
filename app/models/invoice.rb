@@ -10,8 +10,12 @@ class Invoice < ApplicationRecord
 
     default_scope { where(active: true) }
     scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
+    scope :debit_notes, -> { where(cbte_tipo: COD_ND) }
+    scope :credit_notes, -> { where(cbte_tipo: COD_NC) }
 
     has_many :notes, foreign_key: :associated_invoice, class_name: 'Invoice'
+    has_many :debit_notes, -> { debit_notes }, foreign_key: :associated_invoice, class_name: 'Invoice'
+    has_many :credit_notes, -> { credit_notes }, foreign_key: :associated_invoice, class_name: 'Invoice'
     has_many :income_payments, dependent: :destroy
     has_many :invoice_details, dependent: :destroy
     has_many :products, through: :invoice_details
@@ -273,7 +277,7 @@ class Invoice < ApplicationRecord
       end
 
       def destroy(mode = :soft)
-        if self.state == "Pendiente" || "Pagado"
+        if self.state == "Pendiente" || self.state == "Pagado"
           update_column(:active, false)
           run_callbacks :destroy
           freeze
@@ -314,11 +318,22 @@ class Invoice < ApplicationRecord
 
     #PROCESOS
 
-    def rollback_stock
-      invoice_details.each do |detail|
-        detail.remove_reserved_stock
+      def get_default_tributes
+        company.default_tributes.each do |trib|
+          tributes.build(afip_id: trib.tribute_id,
+            desc: Invoice::TRIBUTOS.map{|t| t.first if t.last == "1"}.compact.first,
+            base_imp: total.to_f.round(2),
+            alic: trib.default_aliquot
+          )
+        end
+        return tributes
       end
-    end
+
+      def rollback_stock
+        invoice_details.each do |detail|
+          detail.remove_reserved_stock
+        end
+      end
 
       def update_payment_belongs
         income_payments.each do |p|
@@ -349,11 +364,13 @@ class Invoice < ApplicationRecord
           am.receipt.receipt_details.each do |rd|
             if am.amount_available > 0
               invoice = rd.invoice
-              pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
-              pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
-              pay.save
-              am.update_column(:amount_available, am.amount_available - pay.total)
-              break if am.amount_available < 1
+              unless invoice.is_credit_note?
+                pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
+                pay.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
+                pay.save
+                am.update_column(:amount_available, am.amount_available - pay.total)
+                break if am.amount_available < 1
+              end
             end
           end
         end
@@ -361,7 +378,7 @@ class Invoice < ApplicationRecord
 
       def real_total
         if is_invoice?
-          self.total.round(2) - self.notes.sum(:total).round(2) + self.notes.sum(:total_pay).round(2)
+          self.total.round(2) - self.credit_notes.sum(:total).round(2) + self.credit_notes.sum(:total_pay).round(2)
         else
           self.total.round(2)
         end
@@ -376,13 +393,15 @@ class Invoice < ApplicationRecord
           @band = true
           pay = self.income_payments.new(type_of_payment: "6", payment_date: Date.today, generated_by_system: true, account_movement_id: am.id)
           pay.total = (am.amount_available.to_f >= self.real_total_left.to_f) ? self.real_total_left.to_f : am.amount_available.to_f
-          @r = pay.save
-          @last_pay = pay
-          am.update_column(:amount_available, am.amount_available - pay.total)
-          break if self.real_total_left == 0 || r
+          result = pay.save
+          if result
+            @last_pay = pay
+            am.update_column(:amount_available, am.amount_available - pay.total)
+          end
+          break if self.real_total_left == 0 || !result
         end
         if @band
-          if @r
+          if result
             return {response:  true, messages: ["Se generó el pago correctamente."]}
           else
             return {response:  false, messages: @last_pay.errors.full_messages}
@@ -743,8 +762,8 @@ class Invoice < ApplicationRecord
             state: "Confirmado"
           )
           self.activate_commissions
-          if response && !self.associated_invoice.nil?
-            total_from_notes = self.invoice.notes.sum(:total).round(2)
+          if response && !self.associated_invoice.nil? && self.is_credit_note?
+            total_from_notes = self.invoice.credit_notes.sum(:total).round(2)
             if total_from_notes == self.invoice.total.round(2)
               self.invoice.update_column(:state, "Anulado")
             else
@@ -774,7 +793,8 @@ class Invoice < ApplicationRecord
 
       showed_payment = ""
       pagos.each_with_index do |arr,i|
-        showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
+        showed_payment = showed_payment + arr[0]
+        #showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
         if ((i+1) < pagos.count)
           showed_payment = showed_payment + " / "
         end

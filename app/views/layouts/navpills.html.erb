@@ -16,13 +16,11 @@
 		  	<li class="nav-item dropdown">
     			<%= link_to "<span class='nav-span'>Ventas</span> #{icon('fas', 'hand-holding-usd')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' %>
    				<div class="dropdown-menu">
-						<%= link_to "<span class='nav-span'>Presupuestos</span>".html_safe, budgets_path, class: 'dropdown-item', title: 'Presupuestos' %>
-   					<%= link_to "<span class='nav-span'>Expedientes</span>".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Presupuestos</span>".html_safe, budgets_path, class: 'dropdown-item', title: 'caja diaria' %>
-   					<%= link_to "<span class='nav-span'>Facturación</span>".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
+						<%= link_to "<span class='nav-span'>Facturación</span>".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Recibos</span>".html_safe, receipts_path, class: 'dropdown-item', title: 'Recibos' if can? :read, Receipt  %>
 						<%= link_to "<span class='nav-span'>Remitos</span>".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
-						<%= link_to "<span class='nav-span'>Tarjetas de crédito</span>".html_safe, credit_cards_path, class: 'dropdown-item', title: "Tarjetas de crédito" %>
+						<%= link_to "<span class='nav-span'>Expedientes</span>".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Clientes</span>".html_safe, clients_path, class: 'dropdown-item', title: 'Clientes' if can? :read, Client %>
 				</div>
 			</li>
@@ -52,6 +50,7 @@
 				<div class="dropdown-menu">
 					<%= link_to "<span class='nav-span'>Libro I.V.A.</span>".html_safe, iva_books_path, class: 'dropdown-item', title: 'Libro I.V.A.' if can? :read, IvaBook %>
 					<%= link_to "<span class='nav-span'>Caja</span>".html_safe, daily_cashes_path, class: 'dropdown-item', title: 'Contabilidad' %>
+					<%= link_to "<span class='nav-span'>Tarjetas de crédito</span>".html_safe, credit_cards_path, class: 'dropdown-item', title: "Tarjetas de crédito" %>
 				</div>
 	  	</li>
 

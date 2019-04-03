@@ -10,7 +10,7 @@ class InvoiceDetail < ApplicationRecord
   accepts_nested_attributes_for :commissioners, reject_if: :all_blank, allow_destroy: true
 
   before_validation :check_product
-  before_validation :calculate_iva_amount, if: Proc.new{|detail| !detail.iva_aliquot.blank?}
+  before_validation :calculate_iva_amount
   after_save :set_total_to_invoice
   after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
   after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.product.tipo == "Producto"}
@@ -65,6 +65,7 @@ class InvoiceDetail < ApplicationRecord
         product.updated_by          = invoice.user_id
         product.created_by          = invoice.user_id
         product.price             ||= price_per_unit
+        product.iva_aliquot       ||= self.iva_aliquot
         product.measurement_unit  ||= measurement_unit
         product.active              = false unless product.persisted? || product.tipo != "Servicio"
         product.save
@@ -79,7 +80,7 @@ class InvoiceDetail < ApplicationRecord
       prod.iva_aliquot = self.iva_aliquot
       self.product = prod
 
-      attributes.delete(:id) unless product.persisted?
+      attributes["id"] = product.id
       super
     end
 
@@ -122,6 +123,9 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def calculate_iva_amount
+      pp "ENTROOOO"
+      pp self.subtotal
+      pp self.iva
       self.iva_amount =  (subtotal.to_f / (1 + iva.to_f) * iva.to_f).round(2)
     end
 

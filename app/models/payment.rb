@@ -19,7 +19,7 @@ class Payment < ApplicationRecord
   after_save :save_daily_cash_movement
 
   default_scope { where(active: true) }
-  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0 }
   accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
@@ -27,7 +27,6 @@ class Payment < ApplicationRecord
   accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :compensation_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
 
-  validate :min_total, on: :create
   validates_numericality_of :total, greater_than: 0.0, message: "El monto pagado debe ser mayor 0."
 
   TYPES = {
@@ -42,9 +41,7 @@ class Payment < ApplicationRecord
   }
 
   #VALIDACIONES
-    def min_total
-      #self.mark_for_destruction unless total > 0
-    end
+
   #VALIDACIONES
 
   #ATRIBUTOS
@@ -173,6 +170,16 @@ class Payment < ApplicationRecord
   #PROCESOS
 
   #FUNCIONES
+
+    def subpayment_show invoice_id
+      if type_of_payment.to_i == 6
+        "#"
+      else
+        sub_id = eval("#{type_of_payment_name.singularize}").id
+        "payments_#{type_of_payment_name.singularize}_path(#{sub_id}, invoice_id: #{invoice_id})"
+      end
+    end
+
     def self.set_payment
       any? ? all : new
     end

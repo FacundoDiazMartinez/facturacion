@@ -14,13 +14,19 @@
               <li>
                 Selecciona a que proveedor pertenecen los productos que estas por importar. En caso de que no pertenezcan a ninguno debes dejar vacio este campo.
                 <center>
-                  <%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}), {include_blank: "Seleccione...", class: 'form-control col-4'} %>
+                  <%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}), {include_blank: "Seleccione...", class: 'form-control col-6'} %>
                 </center>
               </li>
               <li>
                 Selecciona el depósito al cual estaran asociados los productos.
                 <center>
-                  <%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}), {include_blank: "Seleccione...",class: 'form-control col-4'} %>
+                  <%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}), {include_blank: "Seleccione...",class: 'form-control col-6'} %>
+                </center>
+              </li>
+              <li>
+                Selecciona en que forma impactará en el inventario. Si selecciona "Cantidad disponible" los valores de la columna Stock (en el archivo importado) reemplazarán las cantidades actuales en stock para cada producto. "Sumar a stock actual" añadirá las cantidades de la columna Stock (del archivo importado) a las cantidades actuales en stock de cada producto.
+                <center>
+                  <%= select_tag :type_of_movement, options_for_select([["Cantidad disponible", "0"], ["Sumar a stock actual", "1"]]), {include_blank: "Seleccione...",class: 'form-control col-6'} %>
                 </center>
               </li>
               <li>
@@ -35,8 +41,8 @@
             </ol>
             <hr>
             <center>
-              <%= button_tag "#{icon('fas', 'upload')} Seleccionar excel".html_safe, type: 'button', onclick: '$("#file").click();', class: 'btn btn-info' %>
-              <%= file_field_tag :file , :class => 'hidden', accept: ".csv, .xls, .xlsx" %>
+
+              <%= file_field_tag :file , :class => 'btn btn-info', accept: ".csv, .xls, .xlsx" %>
             </center>
         </div>
         <div class="modal-footer">

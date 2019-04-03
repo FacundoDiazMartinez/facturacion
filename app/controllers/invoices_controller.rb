@@ -104,7 +104,7 @@ class InvoicesController < ApplicationController
     @invoice.user_id = current_user.id
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
-        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Factura actualizada con éxito.' }
+        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.' }
         format.json { render :show, status: :ok, location: @invoice }
       else
         pp @invoice.errors
@@ -119,7 +119,7 @@ class InvoicesController < ApplicationController
   def destroy
     respond_to do |format|
       if @invoice.destroy
-        format.html { redirect_to invoices_url, notice: 'Factura eliminada. Tambien se eliminaron todos sus documentos asociados.' }
+        format.html { redirect_to invoices_url, notice: 'Comprobante eliminado. También se eliminaron todos sus documentos asociados.' }
         format.json { head :no_content }
       else
         format.hmtl { render :edit }
@@ -189,8 +189,10 @@ class InvoicesController < ApplicationController
     end
     @associated = true
     associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice], state: "Confirmado").first
-    associated_invoice.invoice_details.each do |id|
-      @invoice.invoice_details.new(id.attributes.except("id"))
+    if associated_invoice.is_credit_note?
+      associated_invoice.invoice_details.each do |id|
+        @invoice.invoice_details.new(id.attributes.except("id"))
+      end
     end
 
     @invoice.client = associated_invoice.client

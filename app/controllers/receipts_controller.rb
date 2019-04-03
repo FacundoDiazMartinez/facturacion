@@ -121,6 +121,12 @@ class ReceiptsController < ApplicationController
     render json: {fee_data: current_user.company.credit_cards.find(params[:cr_card_id]).fees.find(params[:fee_id]), fee_type: current_user.company.credit_cards.find(params[:cr_card_id]).type_of_fee }
   end
 
+  def associate_invoice
+    invoices = [current_user.company.invoices.find(params[:invoice_id])]
+    invoices.first.notes.each{|n| invoices << n}
+    render :json => invoices.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_debt, tipo: invoice.nombre_comprobante, associated_invoices_total: invoice.confirmed_notes.sum(:total), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_receipt
@@ -129,8 +135,6 @@ class ReceiptsController < ApplicationController
 
     def build_account_movement
       @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
-      pp "////////////////////// ACCOUNT MOVEMENT //////////////////////////"
-      pp @account_movement
       @account_movement_payments = @account_movement.account_movement_payments
       # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
     end
