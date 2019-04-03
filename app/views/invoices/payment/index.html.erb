@@ -20,20 +20,20 @@
 					<tr>
 						<td>
               <% case payment.type_of_payment %>
-              <% when "4" %>
-                <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
-              <% when "1" %>
-                <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.installments %> cuotas
-              <% when "3" %>
-                <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
-              <% when "7" %>
-                <%= payment.payment_name %> - Banco <%= payment.debit_payment.bank.name %>
-              <% when "5" %>
-                <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
-              <% when "8" %>
-                <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
-              <% else %>
-                <%= payment.payment_name %>
+                <% when "4" %>
+                  <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
+                <% when "1" %>
+                  <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.installments %> cuotas
+                <% when "3" %>
+                  <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
+                <% when "7" %>
+                  <%= payment.payment_name %> - Banco <%= payment.debit_payment.bank.name %>
+                <% when "5" %>
+                  <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
+                <% when "8" %>
+                  <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
+                <% else %>
+                  <%= payment.payment_name %>
               <% end %>
             </td>
 						<td><%= payment.total %></td>

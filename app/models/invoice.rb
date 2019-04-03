@@ -434,11 +434,12 @@ class Invoice < ApplicationRecord
         IvaBook.add_from_invoice(self)
       end
 
-      # def created_at
-      #   if not super.blank?
-      #     I18n.l(super)
-      #   end
-      # end
+      def delete_barcode path
+         File.delete(path) if File.exist?(path)
+      end
+      handle_asynchronously :delete_barcode, :run_at => Proc.new { 5.seconds.from_now }
+      # correr en consola: rake jobs:work
+
 
       def set_state
         if editable? && (total.to_f != 0.0)

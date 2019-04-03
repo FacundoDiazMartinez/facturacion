@@ -32,10 +32,11 @@ class InvoicesController < ApplicationController
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"
-        File.delete(@barcode_path) if File.exist?(@barcode_path)
+
       end
     end
 
+    @invoice.delete_barcode(@barcode_path)
   end
 
   # GET /invoices/new
