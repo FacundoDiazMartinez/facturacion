@@ -23,18 +23,23 @@
             Recibimos en concepto de:
           </th>
         </tr>
-        <% @receipt.invoices.each do |i| %>
+        <% @receipt.invoices.only_invoices.each do |i| %>
           <tr class="bg-white">
             <td>
               <% if i.real_total_left > 0 %>
-              Pago parcial <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
+                Pago parcial <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
               <% else %>
-                <% if i.total_left == 0 %>
-                  Cancelación <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
-                <% end %>
+                Cancelación <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
               <% end %>
             </td>
           </tr>
+          <% i.notes.each do |n| %>
+            <tr class="bg-white">
+              <td>
+                Vinculación <%= n.name_with_comp %>  -  Importe $ <%= n.total %>
+              </td>
+            </tr>
+          <% end -%>
         <% end %>
       </table>
     <% end %>
