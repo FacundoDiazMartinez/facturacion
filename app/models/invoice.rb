@@ -393,13 +393,15 @@ class Invoice < ApplicationRecord
           @band = true
           pay = self.income_payments.new(type_of_payment: "6", payment_date: Date.today, generated_by_system: true, account_movement_id: am.id)
           pay.total = (am.amount_available.to_f >= self.real_total_left.to_f) ? self.real_total_left.to_f : am.amount_available.to_f
-          @r = pay.save
-          @last_pay = pay
-          am.update_column(:amount_available, am.amount_available - pay.total)
-          break if self.real_total_left == 0 || r
+          result = pay.save
+          if result
+            @last_pay = pay
+            am.update_column(:amount_available, am.amount_available - pay.total)
+          end
+          break if self.real_total_left == 0 || !result
         end
         if @band
-          if @r
+          if result
             return {response:  true, messages: ["Se generó el pago correctamente."]}
           else
             return {response:  false, messages: @last_pay.errors.full_messages}
