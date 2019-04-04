@@ -23,8 +23,12 @@
                 <% when "4" %>
                   <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
                 <% when "1" %>
-                  <% @intallment_id = payment.card_payment.installments %>
-                  <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@intallment_id).quantity %> cuotas
+                  <% @installment_id = payment.card_payment.installments %>
+                  <% if @installment_id != 0 %>
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                  <% else %>
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
+                  <% end %>
                 <% when "3" %>
                   <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
                 <% when "7" %>

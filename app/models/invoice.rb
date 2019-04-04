@@ -34,7 +34,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
-    after_touch :update_total_pay, :touch_account_movement, :check_receipt
+    after_touch :update_total_pay #, :touch_account_movement, :check_receipt
 
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
@@ -545,7 +545,6 @@ class Invoice < ApplicationRecord
 
       def sum_payments
         self.income_payments.sum(:total)
-
       end
 
       def cbte_fch
