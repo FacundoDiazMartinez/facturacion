@@ -10,33 +10,39 @@
       <%= form_tag import_products_path(), multipart: true  do %>
         <div class="modal-body">
             <ol>
-              <h5>Para poder importar tus productos primero debes seguir estos pasos</h5>
+              <h5>Para importar productos siga estos pasos:</h5>
               <li>
-                Selecciona a que proveedor pertenecen los productos que estas por importar. En caso de que no pertenezcan a ninguno debes dejar vacio este campo.
+                Seleccione a que proveedor pertenecen los productos que esta por importar. En caso de que no pertenezcan a ninguno debe dejar vacío este campo.
                 <center>
                   <%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}), {include_blank: "Seleccione...", class: 'form-control col-6'} %>
                 </center>
               </li>
               <li>
-                Selecciona el depósito al cual estaran asociados los productos.
+                Seleccione el depósito al cual estarán asociados los productos.
                 <center>
                   <%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}), {include_blank: "Seleccione...",class: 'form-control col-6'} %>
                 </center>
               </li>
               <li>
-                Selecciona en que forma impactará en el inventario. Si selecciona "Cantidad disponible" los valores de la columna Stock (en el archivo importado) reemplazarán las cantidades actuales en stock para cada producto. "Sumar a stock actual" añadirá las cantidades de la columna Stock (del archivo importado) a las cantidades actuales en stock de cada producto.
+                Seleccione en que forma impactará en el inventario. <br>
+                <b>Cantidad disponible:</b> los valores de la columna Stock (en el archivo importado) reemplazarán las cantidades actuales en stock para cada producto.<br>
+                <b>Sumar a stock actual:</b> sumará las cantidades de la columna Stock (del archivo importado) a las cantidades actuales de stock de cada producto.<br>
+                <i>Recuerde que las asociaciones entre productos en el sistema y productos en el archivo se hace mediante el campo "Código de producto".</i>
                 <center>
                   <%= select_tag :type_of_movement, options_for_select([["Cantidad disponible", "0"], ["Sumar a stock actual", "1"]]), {include_blank: "Seleccione...",class: 'form-control col-6'} %>
                 </center>
               </li>
               <li>
-                Descargar este archivo excel que tiene el formato con el que debes trabajar. <%= link_to "#{icon('fas', 'download')} Descargar formato".html_safe, export_products_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday' %>
+                Descargue este archivo excel que posee el formato correcto con el que se debe trabajar.
+                <center>
+                  <%= link_to "#{icon('fas', 'download')} Descargar archivo formateado".html_safe, export_products_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday' %>
+                </center>
               </li>
               <li>
-                Rellenalo con tus productos ordenando cada columna donde corresponda, siempre respetando los campos obligatorios. Los podras reconocer porque tienen un "*" al final del nombre.
+                Complete el archivo anterior con los productos ordenando cada columna como corresponda, siempre respetando los campos obligatorios (indicados con un asterisco "*" ).
               </li>
               <li>
-                Una vez listo tu archivo ya podes subirlo, te avisaremos cuando todos los productos esten disponibles.
+                Por último, cargar el archivo a continuacón, le avisaremos cuando la carga finalice.
               </li>
             </ol>
             <hr>
