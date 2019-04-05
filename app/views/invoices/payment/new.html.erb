@@ -4,4 +4,5 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
+<% DailyCash.current_daily_cash current_user.company_id %>
 <%= render "/invoices/payment/form", form: form %>

@@ -246,9 +246,9 @@ $(document).on('nested:fieldAdded', function(event){
 });
 
 $(document).on('nested:fieldRemoved', function(event){
-	 var field 	= event.field;
-	 subtotal 	= field.find("input.subtotal")
-	 calculateSubtotal(subtotal)
+	var field 	= event.field;
+	subtotal 	= field.find("input.subtotal");
+	calculateSubtotal(subtotal);
 })
 
 

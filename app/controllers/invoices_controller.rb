@@ -100,11 +100,14 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
-    session[:return_to] = session[:return_to] + "/edit"
+    # if !session[:return_to].blank?
+    #   session[:return_to] = session[:return_to] + "/edit"
+    # end
     @client = @invoice.client
     @invoice.user_id = current_user.id
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
+        # session.delete(:return_to)
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.' }
       else
         pp @invoice.errors
