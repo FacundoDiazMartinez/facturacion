@@ -58,7 +58,7 @@ class Invoice < ApplicationRecord
     validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
     validate :cbte_tipo_inclusion
-    validate :at_least_one_detail
+    validate :at_least_one_detail, if: Proc.new{ |i| i.state_was == "Pendiente" && (i.state == "Pagado" || i.state == "Confirmado" )}
     validate :fch_ser_if_service
     validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
 

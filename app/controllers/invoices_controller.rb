@@ -32,7 +32,6 @@ class InvoicesController < ApplicationController
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"
-
       end
     end
 
@@ -101,16 +100,15 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
+    session[:return_to] = session[:return_to] + "/edit"
     @client = @invoice.client
     @invoice.user_id = current_user.id
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.' }
-        format.json { render :show, status: :ok, location: @invoice }
       else
         pp @invoice.errors
         format.html { render :edit }
-        format.json { render json: @invoice.errors, status: :unprocessable_entity }
       end
     end
   end
