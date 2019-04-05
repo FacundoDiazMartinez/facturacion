@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_02_183327) do
+ActiveRecord::Schema.define(version: 2019_04_04_143117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,7 +181,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
     t.float "total", default: 0.0, null: false
     t.text "observation"
     t.boolean "active", default: true, null: false
-    t.string "origin", default: "Propio", null: false
+    t.string "origin", default: "De tercero", null: false
     t.string "entity", null: false
     t.string "number", null: false
     t.bigint "payment_id"

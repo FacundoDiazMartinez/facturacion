@@ -22,13 +22,13 @@
 						<td><%= payment.total %></td>
 						<td><%= payment.payment_date %></td>
 						<td>
-              <% if payment.persisted? && !@invoice.editable? %>
-                <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-                <% end %>
-							<% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
-                <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-								<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-							<% end -%>
+	              		<% if payment.persisted? && !@invoice.editable? && payment.account_movement_id.nil? %>
+	                		<%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+	                	<% end %>
+						<% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
+		                	<%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+							<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+						<% end -%>
 						</td>
 					</tr>
 				<% end -%>
