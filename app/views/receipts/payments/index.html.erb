@@ -25,22 +25,34 @@
 							<tr>
                 <td>
                   <% case payment.type_of_payment %>
-                  <% when "4" %>
-                    <%= payment.payment_name %> - N°: <%= payment.cheque_payment.number %>
-                  <% when "1" %>
-                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.installments %> cuotas
-                  <% when "3" %>
-                    transferencia
-                  <% when "7" %>
-                    tarj debito
-                  <% else %>
-                    <%= payment.payment_name %>
+                    <% when "4" %>
+                      <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
+                    <% when "1" %>
+                    <% @installment_id = payment.card_payment.installments %>
+                    <% if @installment_id != 0 %>
+                      <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                    <% else %>
+                      <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
+                    <% end %>
+                    <% when "3" %>
+                      <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
+                    <% when "7" %>
+                      <%= payment.payment_name %> - Banco <%= payment.debit_payment.bank.name %>
+                    <% when "5" %>
+                      <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
+                    <% when "8" %>
+                      <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
+                    <% else %>
+                      <%= payment.payment_name %>
                   <% end %>
 								</td>
 
 								<td id="pay">$ <%= payment.total %></td>
 								<td><%= payment.payment_date %></td>
-								<td><%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %></td>
+								<td>
+                  <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, receipt_id: @receipt.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+                  <%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %>
+                </td>
 							</tr>
 
 						<% end -%>

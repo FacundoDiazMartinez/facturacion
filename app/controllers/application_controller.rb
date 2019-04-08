@@ -28,6 +28,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from ::Exceptions::DailyCashClose do |exception|
     session[:return_to] ||= request.path # Esto porque, por ejemplo, make_sale de Budget envía info en session[:return_to] y no debe cambiarse el valor.
+    pp "////////////////// return_to /////////////////"
+    pp session[:return_to]
     flash[:alert] =  "Primero debe abrir la caja diaria."
     redirect_to daily_cashes_path
   end

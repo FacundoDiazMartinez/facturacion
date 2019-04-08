@@ -1,5 +1,5 @@
 <%= render '/payments/shared_builder' %>
 
-<%= @builder.fields_for :bank_payment, BankPayment.new(payment_id: @builder.object.id) do |cpf| %>
+<%= @builder.fields_for :bank_payment,@payment.blank? ? BankPayment.new(payment_id: @builder.object.id) : @payment.bank_payment do |cpf| %>
   <%= render "/payments/bank_payments/shared_form", cpf: cpf %>
 <% end -%>

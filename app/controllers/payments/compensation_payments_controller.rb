@@ -17,7 +17,7 @@ class Payments::CompensationPaymentsController < Payments::PaymentsController
   # GET /card_payments/new
   def new
     @compensation_payment = CompensationPayment.new
-    @compensation_client_id = params[:invoice_client_id]
+    @compensation_client_id = params[:invoice_client_id].blank? ? params[:receipt_client_id] : params[:invoice_client_id]
     # @invoice_client = current_user.company.clients.find(params[:invoice_client_id])
     super
   end

@@ -33,10 +33,19 @@ class CreditCard < ApplicationRecord
           payment_date: Date.today,
           flow: flow,
           company_id: self.company_id
-        ).build_bank_payment(
-          bank_id: flow == "income" ? params[:bank] : self.id,
-          total: params[:amount].to_f
-        ).save
+        )
+        if flow == "income"
+          pay.build_bank_payment(
+            bank_id:  params[:bank],
+            total: params[:amount].to_f
+          )
+        else
+          pay.build_card_payment(
+            credit_card_id: self.id,
+            total: params[:amount].to_f
+          )
+        end
+        pay.save
       end
     else
       ["income", "expense"].each do |flow|

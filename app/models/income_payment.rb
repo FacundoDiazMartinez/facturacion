@@ -6,7 +6,7 @@ class IncomePayment < Payment
 
 	after_save :set_total_pay_to_invoice
 	after_save :set_notification
-	after_save :touch_invoice, unless: :generated_by_system
+	#after_save :touch_invoice, unless: :generated_by_system  (ES LO MISMO QUE after_save set_total_pay_to_invoice de arriba)
 	after_destroy :set_amount_available_to_account_movement
 	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_save :check_company_id

@@ -7,12 +7,12 @@
   <div class="row">
     <div class="col">
       <%= cpf.label :subtotal, "Subtotal ($)" %>
-      <%= cpf.number_field :subtotal, class: 'form-control credit-card-subtotal', requried: true %>
+      <%= cpf.number_field :subtotal, class: 'form-control credit-card-subtotal', requried: true, step: :any  %>
     </div>
 
     <div class="col">
       <%= cpf.label :installments, "Cuotas" %>
-      <%= cpf.select :installments,options_for_select(["1"],:installments), {}, class: 'form-control credit-card-installments', requried: true %>
+      <%= cpf.select :installments,options_for_select(["1"]), {}, class: 'form-control credit-card-installments', requried: true %>
     </div>
 
     <div class="col">

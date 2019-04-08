@@ -109,6 +109,7 @@ $(document).on("change",".credit-card-select", function(){
   $(".fee-total").val($(".credit-card-subtotal").val());
   $.get("/receipts/get_cr_card_fees",params,null,"script")
     .done(function(data){
+      console.log(data);
       fees = jQuery.parseJSON(data);
         $(".credit-card-installments")
         .empty()

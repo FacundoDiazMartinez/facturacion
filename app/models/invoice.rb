@@ -34,7 +34,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
-    after_touch :update_total_pay, :touch_account_movement, :check_receipt
+    after_touch :update_total_pay #, :touch_account_movement, :check_receipt
 
     after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
     after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
@@ -58,7 +58,7 @@ class Invoice < ApplicationRecord
     validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
     validates_inclusion_of :state, in: STATES, message: "Estado inválido."
     validate :cbte_tipo_inclusion
-    validate :at_least_one_detail
+    validate :at_least_one_detail, if: Proc.new{ |i| i.state_was == "Pendiente" && (i.state == "Pagado" || i.state == "Confirmado" )}
     validate :fch_ser_if_service
     validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
 
@@ -434,11 +434,12 @@ class Invoice < ApplicationRecord
         IvaBook.add_from_invoice(self)
       end
 
-      # def created_at
-      #   if not super.blank?
-      #     I18n.l(super)
-      #   end
-      # end
+      def delete_barcode path
+         File.delete(path) if File.exist?(path)
+      end
+      handle_asynchronously :delete_barcode, :run_at => Proc.new { 5.seconds.from_now }
+      # correr en consola: rake jobs:work
+
 
       def set_state
         if editable? && (total.to_f != 0.0)
@@ -544,7 +545,6 @@ class Invoice < ApplicationRecord
 
       def sum_payments
         self.income_payments.sum(:total)
-
       end
 
       def cbte_fch
