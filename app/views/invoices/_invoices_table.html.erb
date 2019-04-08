@@ -64,7 +64,7 @@
             <td>$<%= invoice.total %></td>
             <td class="only-desktop"><%= invoice_state(invoice.state) %></td>
             <td>$<%= invoice.total_pay %></td>
-            <td>$<%= invoice.total_left %></td>
+            <td>$<%= invoice.total_left.round(2) %></td>
             <td>
               <%  if !invoice.editable? && invoice.is_invoice? && invoice.state != "Anulado" %>
                 <%= link_to icon('fas', 'eraser').html_safe, cancel_invoice_path(invoice.id), data: {confirm: "Está por anular un comprobante. ¿Está seguro que desea continuar?", "skip-pjax" => true}, class: 'btn btn-sm btn-icon btn-outline-danger' %>
