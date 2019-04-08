@@ -86,7 +86,7 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.quantity").val(1);
 	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot)
 	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
-	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
+	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
 
