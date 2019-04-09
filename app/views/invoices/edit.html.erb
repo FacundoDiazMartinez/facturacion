@@ -8,8 +8,8 @@
 		<div class="col text-right">
 			<%= link_to "#{icon('fas', 'file-pdf')} Ver PDF".html_safe, invoice_path(@invoice.id, format: :pdf), class: 'btn btn-info', target: "_blank" unless @invoice.editable?%>
 			<button class="btn btn-primary " role="button" onclick="toggleHeader()" id="encabezado"><%= icon('fas' ,'eye-slash') %> Ocultar encabezado</button>
-			<% if @invoice.is_invoice? && !@invoice.editable? %>
-				<% if @invoice.delivery_notes.last.nil?  %>
+			<% if @invoice.is_invoice? && !@invoice.editable? && @invoice.credit_notes.blank? %>
+				<% if @invoice.delivery_notes.last.nil? %>
 					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 				<% else %>
 					<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.delivery_notes.last.id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
