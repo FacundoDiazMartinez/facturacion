@@ -32,7 +32,7 @@ class Payments::PaymentsController < ApplicationController
   end
 
   def update
-		@payment = current_user.company.income_payments.find(params[:id])
+		@payment = current_user.company.income_payments.unscoped.find(params[:id])  # CHEQUEAR ESTO, agregue el unscoped porque sino no lo encuentra al pago del recibo
 		respond_to do |format|
 			if @payment.update(payment_params)
 				format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), notice: "Pago actualizado")}
