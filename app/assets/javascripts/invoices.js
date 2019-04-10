@@ -345,6 +345,16 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 	cbte_tipo = $("#invoice_cbte_tipo");
 	concepto = $("#invoice_concepto");
 	$.get(form.attr("action")+'/change_attributes', {cbte_tipo: cbte_tipo.val(), concepto: concepto.val()}, null, "script");
+
+	// if ($("#invoice_cbte_tipo").val() != "01" && $("#invoice_cbte_tipo").val() != "06") {
+	// 	$("#ipayments").hide();
+	// 	$("#itributes").hide();
+	// } else {
+	// 	$("#payment_title").html("Pagos");
+	// 	$("#ipayments").show();
+	// 	$("#itributes").show();
+	// }
+
 });
 
 $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){
