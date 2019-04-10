@@ -62,13 +62,11 @@ class AccountMovementPayment < Payment
 		    if mode == :hard
 		      	super()
 		    else
-			    self.update_column(:active, false)
-					pp "REMIL ENTRO"
-					p = self
-			    self.run_callbacks :destroy
-					self.set_total_pay_to_invoice
-					self.update_total_to_receipt
-			    self.freeze
+			    update_column(:active, false)
+			    run_callbacks :destroy
+					set_total_pay_to_invoice
+					update_total_to_receipt
+			    freeze
 		    end
 		end
 	#PRECESOS

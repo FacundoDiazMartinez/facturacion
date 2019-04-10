@@ -19,7 +19,7 @@
     <% end -%>
   <% end -%>
 <% elsif @payment %>
-  <% nested_form_for @payment do |form| %>
+  <% nested_form_for @payment, url: payments_payment_path(@payment.id) do |form| %>
     <% @builder = form %>
   <% end -%>
 <% else %>

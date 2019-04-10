@@ -21,7 +21,11 @@ class Payments::PaymentsController < ApplicationController
 	end
 
 	def edit
-		@payment = current_user.company.payments.unscoped.find(params[:id])
+		if !params[:receipt_id].blank?
+			@payment = current_user.company.account_movement_payments.unscoped.find(params[:id])
+		else
+			@payment = current_user.company.payments.unscoped.find(params[:id])
+		end
 		render template: "/payments/edit.js.erb"
 	end
 
@@ -32,14 +36,27 @@ class Payments::PaymentsController < ApplicationController
   end
 
   def update
-		@payment = current_user.company.income_payments.unscoped.find(params[:id])  # CHEQUEAR ESTO, agregue el unscoped porque sino no lo encuentra al pago del recibo
-		respond_to do |format|
-			if @payment.update(payment_params)
-				format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), notice: "Pago actualizado")}
-			else
-				format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), alert: "Error al actualizar el pago. Revise por favor.")}
+		if !params[:account_movement_payment].empty?
+			@payment = current_user.company.account_movement_payments.unscoped.find(params[:id])
+			respond_to do |format|
+				if @payment.update(payment_params)
+					format.html {redirect_back(fallback_location: receipt_path(@payment.account_movement.receipt_id), notice: "Pago actualizado")}
+				else
+					format.html {redirect_back(fallback_location: receipt_path(@payment.account_movement.receipt_id), alert: "Error al actualizar el pago. Revise por favor.")}
+				end
+			end
+		else
+			@payment = current_user.company.income_payments.unscoped.find(params[:id])
+			respond_to do |format|
+				if @payment.update(payment_params)
+					format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), notice: "Pago actualizado")}
+				else
+					format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), alert: "Error al actualizar el pago. Revise por favor.")}
+				end
 			end
 		end
+		#@payment = current_user.company.payments.unscoped.find(params[:id])  # CHEQUEAR ESTO, agregue el unscoped porque sino no lo encuentra al pago del recibo
+
   end
 
   def destroy
@@ -74,7 +91,7 @@ class Payments::PaymentsController < ApplicationController
     end
 
 		def payment_params
-				params.require(:payment).permit(:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
+				params.require(eval("#{params[:account_movement_payment].empty? ? ':payment' : ':account_movement_payment'}")).permit(:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
 					cash_payment_attributes: [:id, :total],
 					debit_payment_attributes: [:id, :total, :bank_id],
 					card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
