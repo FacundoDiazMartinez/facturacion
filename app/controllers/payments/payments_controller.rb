@@ -36,7 +36,7 @@ class Payments::PaymentsController < ApplicationController
   end
 
   def update
-		if !params[:account_movement_payment].empty?
+		if !params[:account_movement_payment].blank?
 			@payment = current_user.company.account_movement_payments.unscoped.find(params[:id])
 			respond_to do |format|
 				if @payment.update(payment_params)
@@ -91,7 +91,7 @@ class Payments::PaymentsController < ApplicationController
     end
 
 		def payment_params
-				params.require(eval("#{params[:account_movement_payment].empty? ? ':payment' : ':account_movement_payment'}")).permit(:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
+				params.require(eval("#{params[:account_movement_payment].blank? ? ':payment' : ':account_movement_payment'}")).permit(:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
 					cash_payment_attributes: [:id, :total],
 					debit_payment_attributes: [:id, :total, :bank_id],
 					card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
