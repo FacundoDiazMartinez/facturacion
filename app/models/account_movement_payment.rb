@@ -27,11 +27,16 @@ class AccountMovementPayment < Payment
 		end
 
 		def set_total_to_receipt
-			self.account_movement.receipt.total += total - total_was
+			if active && !marked_for_destruction?
+				self.account_movement.receipt.total += total - total_was
+			end
 		end
 
 		def update_total_to_receipt
 			receipt = self.account_movement.receipt
+			pp "//////////////////////////////"
+			pp receipt.total.to_s
+			pp total.to_s
 			receipt.update_column(:total, receipt.total - total)
 		end
 
@@ -65,7 +70,6 @@ class AccountMovementPayment < Payment
 			    update_column(:active, false)
 			    run_callbacks :destroy
 					set_total_pay_to_invoice
-					update_total_to_receipt
 			    freeze
 		    end
 		end

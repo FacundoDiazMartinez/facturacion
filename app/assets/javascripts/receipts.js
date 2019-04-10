@@ -11,7 +11,7 @@ $(document).on('pjax:complete', function() { calculateTotalLeft() })
 
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
   var band = false
-  $(".invoice_comp_number").each(function(){
+  $(".invoice_comp_number").filter(':visible').each(function(){
     if ($(this).val() == data.item.comp_number){
       band = true
       alert("Este comprobante ya ha sido asignado.");
