@@ -104,7 +104,7 @@
         <% if @receipt.editable? %>
         	<center>
         		<div class="m-2">
-        			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar factura</span>".html_safe, :receipt_details, class: 'btn btn-success', data: {target: '#details'} %>
+        			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar factura</span>".html_safe, :receipt_details, class: 'btn btn-success', data: {target: '#details'}, hidden: true %>
         		</div>
         	</center>
         <% end %>
