@@ -733,8 +733,8 @@ ActiveRecord::Schema.define(version: 2019_04_04_143117) do
     t.string "cbte_tipo", default: "00", null: false
     t.bigint "client_id"
     t.bigint "sale_point_id"
-    t.string "state", default: "Pendiente"
     t.bigint "user_id"
+    t.string "state", default: "Pendiente"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
