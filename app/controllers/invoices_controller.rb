@@ -163,7 +163,7 @@ class InvoicesController < ApplicationController
 
   def autocomplete_associated_invoice
     term = params[:term]
-    invoices = current_user.company.invoices.where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%")
+    invoices = current_user.company.invoices.where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%").order('comp_number DESC')
     render :json => invoices.map{|i| {:id => i.id, :label => "Factura Nº: #{i.comp_number}", :value => i.comp_number}}
   end
 
