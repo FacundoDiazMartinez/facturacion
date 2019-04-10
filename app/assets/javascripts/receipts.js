@@ -57,6 +57,23 @@ function calculateTotalLeft(){
     }
     $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
   })
+    return total;
+}
+
+$(document).ready(function(){
+    calculateTotalPayed();
+});
+
+function calculateTotalPayed(){
+  total_left = calculateTotalLeft();
+  total_payed = 0;
+  $('.pay').each(function(){
+    var pag = $(this).text().replace("$ ", "");
+      total_payed += parseFloat(pag);
+    $('#total_pagado').text('Total pagado: $ ' + total_payed.toFixed(2));
+    saldo = total_left - total_payed;
+    $('#totales').text('Facturas $' + total_left + '   - Acumulado pagos: $' + total_payed.toFixed(2) + '   - A pagar: $' + (saldo).toFixed(2));
+  })
 }
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -67,6 +84,12 @@ $(document).on('nested:fieldRemoved', function(event){
   })
 
   $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
+
+  calculateTotalPayed();
+});
+
+$(document).on('nested:fieldAdded:account_movement', function(event){
+  calculateTotalPayed();
 });
 
 $(document).on('keyup','.receipt_associated-invoice-autocomplete_field', function(){

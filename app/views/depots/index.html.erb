@@ -22,7 +22,7 @@
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
             </div>
-            <%= select_tag :state, options_for_select([["Disponible"], ["LLeno"]]), {prompt: 'Buscar por disponibilidad...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+            <%= select_tag :state, options_for_select([["Disponible"], ["Lleno"]]), {prompt: 'Buscar por disponibilidad...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
           <!-- BUSCAR POR DISPONIBILIDAD-->
         <% end %>
