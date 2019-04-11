@@ -164,16 +164,17 @@ function calculateSubtotal(subtotal){
 	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left.toFixed(2));
+	console.log(total_left);
 	if ($("#invoice_cbte_tipo").length != 0) {
 		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
-	}else{
-		var is_invoice = false
 	}
 	if ($("#invoice_cbte_tipo").length != 0) {
-		if (total_left > 0 || not(is_invoice)) {
+		if (total_left > 0 || is_invoice < 0) {
+			console.log("normal");
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
+			console.log("alert");
 			$("#normal").hide();
 			$("#with_alert").show();
 		}
@@ -304,6 +305,7 @@ $(document).on("change", ".importe", function(){
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
+			console.log("alert");
 			$("#normal").hide();
 			$("#with_alert").show();
 		}
