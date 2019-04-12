@@ -50,9 +50,9 @@
 	              <% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
                 	<%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
                   <% if payment.type_of_payment != "1" %>
-                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                   <% else %>
-                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                   <% end %>
 		            <% end -%>
 						</td>

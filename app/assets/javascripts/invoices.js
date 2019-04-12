@@ -12,10 +12,12 @@ $( document ).ready(function() {
 		total_venta = parseFloat($("#purchase_order_total").val());
 	}
 	showProductNamePopover ();
+
 });
 
 $(document).on('pjax:complete', function() {
 	showProductNamePopover();
+
 });
 
 function showProductNamePopover () {
@@ -371,6 +373,12 @@ function changeView(tipo){
 $(document).on("click","#client_name", function(){
 	$(this).val("");
 });
+
+$(document).on("click", ".remove-invoice-payment",function(event){
+	event.preventDefault();
+	console.log("asd");
+});
+
 
 function addRechargeToDetails(){
 	var recharge = parseFloat($("#client_recharge").val() * -1);
