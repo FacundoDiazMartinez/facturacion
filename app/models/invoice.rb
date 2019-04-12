@@ -123,7 +123,7 @@ class Invoice < ApplicationRecord
   	#FILTROS DE BUSQUEDA
 	  	def self.search_by_client name
 	  		if not name.blank?
-	  			where("clients.name ILIKE ?", "%#{name}%")
+	  			joins(:client).where("clients.name ILIKE ?", "%#{name}%")
 	  		else
 	  			all
 	  		end
