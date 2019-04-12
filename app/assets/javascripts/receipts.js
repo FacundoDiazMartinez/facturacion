@@ -11,10 +11,11 @@ $(document).on('pjax:complete', function() { calculateTotalLeft() })
 
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
   var band = false
-  $(".invoice_comp_number").each(function(){
-    if ($(this).val() == data.item.label){
+  $(".invoice_comp_number").filter(':visible').each(function(){
+    if ($(this).val() == data.item.comp_number){
       band = true
-      alert("Ya asigno este comprobante al remito.")
+      alert("Este comprobante ya ha sido asignado.");
+      $(".receipt_associated-invoice-autocomplete_field").val("");
       return false;
     }
   })
@@ -22,7 +23,6 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
     $.get("/receipts/associate_invoice", {invoice_id: data.item.id}, "", "json")
       .done(function(details){
         $.each(details, function(i, detail){
-          console.log(detail)
           $(".add_nested_fields").click();
           tr = $("tr.fields").last();
           tr.find('input.tipo').val(detail.tipo);
@@ -132,7 +132,6 @@ $(document).on("change",".credit-card-select", function(){
   $(".fee-total").val($(".credit-card-subtotal").val());
   $.get("/receipts/get_cr_card_fees",params,null,"script")
     .done(function(data){
-      console.log(data);
       fees = jQuery.parseJSON(data);
         $(".credit-card-installments")
         .empty()

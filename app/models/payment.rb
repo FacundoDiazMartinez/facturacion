@@ -3,6 +3,7 @@ class Payment < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :company, optional: true
   belongs_to :client, optional: true #TODO VINCULAR
+  belongs_to :purchase_order, optional: true
 
   has_one :delayed_job, dependent: :destroy
   has_one :daily_cash_movement, dependent: :destroy
@@ -64,44 +65,44 @@ class Payment < ApplicationRecord
     end
 
     def cash_payment_attributes=(attribute)
-      self.child.destroy unless self.child.nil?
+      self.child.destroy unless (self.child.nil? || self.child.class.name == "CashPayment")
       self.total = attribute["total"].to_f
       super
     end
 
     def debit_payment_attributes=(attribute)
-      self.child.destroy unless self.child.nil?
+      self.child.destroy unless (self.child.nil? || self.child.class.name == "DebitPayment")
       self.total = attribute["total"].to_f
       super
     end
 
     def card_payment_attributes=(attribute)
-      self.child.destroy unless self.child.nil?
+      self.child.destroy unless (self.child.nil? || self.child.class.name == "CardPayment")
       self.total = attribute["total"]
       # self.credit_card_id = attribute["credit_card_id"]
       super
     end
 
     def bank_payment_attributes=(attribute)
-      self.child.destroy unless self.child.nil?
+      self.child.destroy unless (self.child.nil? || self.child.class.name == "BankPayment")
       self.total = attribute["total"]
       super
     end
 
     def cheque_payment_attributes=(attribute)
-      self.child.destroy unless self.child.nil?
+      self.child.destroy unless (self.child.nil? || self.child.class.name == "ChequePayment")
       self.total = attribute["total"]
       super
     end
 
     def retention_payment_attributes=(attribute)
-      self.child.destroy unless self.child.nil?
+      self.child.destroy unless (self.child.nil? || self.child.class.name == "RetentionPayment")
       self.total = attribute["total"]
       super
     end
 
     def compensation_payment_attributes=(attribute)
-      self.child.destroy unless self.child.nil?
+      self.child.destroy unless (self.child.nil? || self.child.class.name == "CompensationPayment")
       self.total = attribute["total"].to_f
       super
     end

@@ -3,6 +3,9 @@
 	$('#clientModal').on('hidden.bs.modal', function (e) {
   	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
   	$("#invoice_client_id").val("<%= @client.id %>");
+		$("#associated_invoice").attr("disabled", "disabled");
+		// $("#ipayments").show();
+		// $("#itributes").show();
   	var options = <%= raw Invoice.available_cbte_type(current_user.company, @client).to_json %>
   	$('#invoice_cbte_tipo').html("");
   	$.each(options, function(i, option) {

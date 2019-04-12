@@ -37,8 +37,8 @@
             <% end %>
           </div>
           <div class="card-body">
-            <h5><strong>Saldo:</strong> $<%= @client.saldo %></h5>
-            <h6><strong>Disponible para asignar:</strong> $<%= AccountMovement.sum_available_amount_to_asign(@client.id) %></h6>
+            <h5><strong>Saldo:</strong> $<%= @client.saldo.round(2) %></h5>
+            <h6><strong>Disponible para asignar:</strong> $<%= AccountMovement.sum_available_amount_to_asign(@client.id).round(2) %></h6>
             <div id="account_movements_table">
               <%= render 'account_movements_table' %>
             </div>

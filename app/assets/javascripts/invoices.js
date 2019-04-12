@@ -164,16 +164,17 @@ function calculateSubtotal(subtotal){
 	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left.toFixed(2));
+	console.log(total_left);
 	if ($("#invoice_cbte_tipo").length != 0) {
 		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
-	}else{
-		var is_invoice = false
 	}
 	if ($("#invoice_cbte_tipo").length != 0) {
-		if (total_left > 0 || not(is_invoice)) {
+		if (total_left > 0 || is_invoice < 0) {
+			console.log("normal");
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
+			console.log("alert");
 			$("#normal").hide();
 			$("#with_alert").show();
 		}
@@ -304,6 +305,7 @@ $(document).on("change", ".importe", function(){
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
+			console.log("alert");
 			$("#normal").hide();
 			$("#with_alert").show();
 		}
@@ -345,6 +347,16 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 	cbte_tipo = $("#invoice_cbte_tipo");
 	concepto = $("#invoice_concepto");
 	$.get(form.attr("action")+'/change_attributes', {cbte_tipo: cbte_tipo.val(), concepto: concepto.val()}, null, "script");
+
+	// if ($("#invoice_cbte_tipo").val() != "01" && $("#invoice_cbte_tipo").val() != "06") {
+	// 	$("#ipayments").hide();
+	// 	$("#itributes").hide();
+	// } else {
+	// 	$("#payment_title").html("Pagos");
+	// 	$("#ipayments").show();
+	// 	$("#itributes").show();
+	// }
+
 });
 
 $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){

@@ -46,10 +46,9 @@ $(document).on("change", '.prodSubtotal', function(){
 	sumTotalPurchaseOrder()
 });
 
-$(document).on('nested:fieldRemoved', function(event){
+$(document).on('nested:fieldRemoved:purchase_order_details', function(event){
 	sumTotalPurchaseOrder()
 })
-
 
 
 function sumTotalPurchaseOrder(){
@@ -65,6 +64,7 @@ function sumTotalPurchaseOrder(){
 		$("#normal").show();
 		$("#with_alert").hide();
 	}else{
+		console.log("alert");
 		$("#normal").hide();
 		$("#with_alert").show();
 	}
