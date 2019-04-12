@@ -147,7 +147,7 @@ class DailyCashMovement < ApplicationRecord
 
     def update_others_movements dif
       if dif != 0.0
-        next_movements = DailyCashMovement.where("created_at >= ? AND daily_cash_id = ?", created_at, daily_cash_id)
+        next_movements = DailyCashMovement.where("daily_cash_movements.created_at >= ? AND daily_cash_movements.daily_cash_id = ?", created_at, daily_cash_id)
         next_movements.each do |dcm|
           balance = dcm.current_balance + dif
           dcm.update_column(:current_balance, balance)

@@ -52,7 +52,7 @@ class Receipt < ApplicationRecord
 
     def self.search_by_client name
       if not name.blank?
-        joins(invoice: :client).where("clients.name ILIKE ?", "%#{name}%")
+        joins(:client).where("clients.name ILIKE ?", "%#{name}%")
       else
         all
       end

@@ -59,7 +59,12 @@
                 <% when "4" %>
                   <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> - N°: <%= ip.cheque_payment.number %>
                 <% when "1" %>
-                  <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.installments %> cuotas
+                  <% @installment_id = ip.card_payment.installments %>
+                  <% if @installment_id != 0 %>
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                  <% else %>
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único
+                  <% end %>
                 <% when "3" %>
                   <%= ip.payment_name %> - Banco <%= ip.bank_payment.bank.name %>
                 <% when "7" %>
