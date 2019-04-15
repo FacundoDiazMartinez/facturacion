@@ -59,6 +59,7 @@ Rails.application.routes.draw do
     resources :account_movements
     get :autocomplete_invoice, on: :collection
     get :autocomplete_credit_note, on: :collection
+    get :autocomplete_invoice_and_debit_note, on: :collection
     get :get_cr_card_fees, on: :collection
     get :get_fee_details, on: :collection
     get :associate_invoice, on: :collection

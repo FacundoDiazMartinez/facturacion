@@ -39,8 +39,8 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
         $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
         $("#editReceiptClient").tooltip();
 
-        calculateTotalLeft()
-        $(".receipt_associated-invoice-autocomplete_field").val("")
+        calculateTotalLeft();
+        $(".receipt_associated-invoice-autocomplete_field").val("");
       })
   }
 });
@@ -49,7 +49,7 @@ $(document).on("change","#receipt_cbte_tipo",function(){
   if ($("#receipt_cbte_tipo option:selected").val() == "99") {
     $("#comp_number").attr("data-autocomplete","/receipts/autocomplete_credit_note");
   } else if ($("#receipt_cbte_tipo option:selected").val() == "00") {
-    $("#comp_number").attr("data-autocomplete","/receipts/autocomplete_invoice");
+    $("#comp_number").attr("data-autocomplete","/receipts//receipts/autocomplete_invoice_and_debit_note");
   }
 });
 
