@@ -12,12 +12,12 @@ $( document ).ready(function() {
 		total_venta = parseFloat($("#purchase_order_total").val());
 	}
 	showProductNamePopover ();
-
+	setDefaultTributesDescription();
 });
 
 $(document).on('pjax:complete', function() {
 	showProductNamePopover();
-
+	setDefaultTributesDescription();
 });
 
 function showProductNamePopover () {
@@ -251,6 +251,7 @@ $(document).on('nested:fieldAdded', function(event){
 $(document).on('nested:fieldRemoved', function(event){
 	var field 	= event.field;
 	subtotal 	= field.find("input.subtotal");
+	$(".remove-invoice-payment").attr("data-confirm", "¡Atención! Existen conceptos marcados para borrar pero los cambios no han sido guardados aún. ¿Desea continuar de todas formas?")
 	calculateSubtotal(subtotal);
 })
 
@@ -374,10 +375,7 @@ $(document).on("click","#client_name", function(){
 	$(this).val("");
 });
 
-$(document).on("click", ".remove-invoice-payment",function(event){
-	event.preventDefault();
-	console.log("asd");
-});
+
 
 
 function addRechargeToDetails(){
@@ -399,6 +397,12 @@ $(document).on("change", "select.afip_id", function(){
 	$(this).closest("tr.fields").find("input.desc").val($(this).find('option:selected').text());
 })
 
+function setDefaultTributesDescription(){
+	$("#tributes > tbody > tr").each(function(){
+		$(this).find("input.desc").val($(this).find('option:selected').text());
+	})
+}
+
 $(document).on("change", "input.base_imp", function(){
 	calculateTrib($(this));
 })
@@ -410,7 +414,7 @@ $(document).on("change", "input.alic", function(){
 function calculateTrib(e){
 	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
-	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).trigger("change");
+	e.closest("tr.fields").find("input.importe").val((base_imp * ( alic/100)).toFixed(2)).trigger("change");
 }
 
 function toggleHeader(){

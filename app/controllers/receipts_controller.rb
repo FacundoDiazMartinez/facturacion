@@ -113,6 +113,13 @@ class ReceiptsController < ApplicationController
     render :json => invoices.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_debt, comp_number: invoice.comp_number, associated_invoices_total: invoice.confirmed_notes.sum(:total), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 
+  def autocomplete_credit_note
+    @client = Client.find(params[:client_id])
+    term = params[:term]
+    credit_notes = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND total > total_pay AND cbte_tipo IN ('03', '08', '13')", "%#{term}%").order(:comp_number).all
+    render :json => credit_notes.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_debt, comp_number: invoice.comp_number, associated_invoices_total: invoice.confirmed_notes.sum(:total), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
+  end
+
   def get_cr_card_fees
     render json: current_user.company.credit_cards.find(params[:id]).fees.all.map{|a| [a.quantity, a.id]}
   end

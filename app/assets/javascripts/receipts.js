@@ -45,6 +45,14 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
   }
 });
 
+$(document).on("change","#receipt_cbte_tipo",function(){
+  if ($("#receipt_cbte_tipo option:selected").val() == "99") {
+    $("#comp_number").attr("data-autocomplete","/receipts/autocomplete_credit_note");
+  } else if ($("#receipt_cbte_tipo option:selected").val() == "00") {
+    $("#comp_number").attr("data-autocomplete","/receipts/autocomplete_invoice");
+  }
+});
+
 function calculateTotalLeft(){
   total = 0;
   $('.invoice_total_left:visible').each(function(){

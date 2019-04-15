@@ -1,6 +1,6 @@
 <!-- DETALLE -->
 <div class="row">
-  <div class="container" style="height: 650px; font-size: 10px !important;">
+  <div class="container" style="height: 600px; font-size: 10px !important;">
     <table class="width_100">
     <tr>
       <th class="description_header">Codigo</th>
@@ -92,13 +92,13 @@
 
         <tr>
           <td class="text_right"><b>Importe Neto Gravado:</b></td>
-          <td class="text_right"><b><%= @invoice.net_amount_sum %></b></td>
+          <td class="text_right"><b>$ <%= @invoice.net_amount_sum %></b></td>
         </tr>
 
         <% @invoice.tributes.each do |t| %>
         <tr>
           <td class="text_right"><b><%= t.desc %></b></td>
-          <td class="text_right"><b><%= t.importe %> </b></td>
+          <td class="text_right"><b>$ <%= t.importe %> </b></td>
         </tr>
         <% end %>
 
