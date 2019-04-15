@@ -2,6 +2,7 @@ class CardPayment < ApplicationRecord
 	include Subpayment
   	belongs_to :payment
   	belongs_to :credit_card
+		belongs_to :fee, foreign_key: :installments
 
   	after_save :update_credit_card_balance
 
@@ -18,6 +19,15 @@ class CardPayment < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS
+	def intallments_by_credit_card
+		if self.credit_card.blank?
+			["1"]
+		else
+			a = [[1,0]]
+			self.credit_card.fees.map{|f| a << [f.quantity, f.id]}
+			return a
+		end
+	end
 	#ATRIBUTOS
 
 	#PROCESOS
