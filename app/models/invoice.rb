@@ -30,7 +30,7 @@ class Invoice < ApplicationRecord
 
     accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: Proc.new{|ip| ip["type_of_payment"].blank?}
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
-    accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: :all_blank
+    accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: Proc.new{|t| t["afip_id"].blank?}
     accepts_nested_attributes_for :client, reject_if: :all_blank
 
     after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
