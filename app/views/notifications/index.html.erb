@@ -1,5 +1,5 @@
 <% @notifications.each do |notification| %>
-	<a href="<%= notification.link %>">
+	<a href="<%= notification.link %>" id="notification_link">
 		<div class="row">
 			<div class="col-md-2 col-sm-2">
 				<img src="<%= notification.receiver.avatar %>" class="avatar">

@@ -18,7 +18,7 @@ class PurchaseOrder < ApplicationRecord
   before_create :set_number
   after_save :set_sended_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state == "Enviado"}
   after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
-  after_save :set_paid_out  # AQUi---------------------borrar touch_payments
+  after_save :set_paid_out  # se borró touch_payments
   after_touch :set_paid_out
   after_update :update_daily_cash_amount
 
