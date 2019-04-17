@@ -10,14 +10,4 @@ $("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb',
 $("#dynamic_attributes").html("<%= j render '/invoices/dynamic_attributes', form: @builder %>");
 
 
-var COD_ND = ["02", "07", "12"];
-if (COD_ND.indexOf(cbte_tipo.val()) != -1) {
-  concept_codes = $(".code");
-  concept_codes.each(function(){
-    if ($(this).val() == "") {
-      $(this).val("-");
-      $(this).attr("readonly",true);
-      $(this).closest("tr.fields").find(".tipo").val("Servicio"); 
-    }
-  })
-}
+debit_note_selected();

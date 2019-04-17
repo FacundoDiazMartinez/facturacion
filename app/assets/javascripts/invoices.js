@@ -245,7 +245,8 @@ $(document).on('nested:fieldAdded', function(event){
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 
-	toogleConceptInTable()
+	toogleConceptInTable();
+	debit_note_selected();
 });
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -285,6 +286,20 @@ $(document).on('nested:fieldRemoved', function(event){
 // 	complete_payments();
 // 	// iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
 // });
+
+function debit_note_selected(){
+	var COD_ND = ["02", "07", "12"];
+	if (COD_ND.indexOf(cbte_tipo.val()) != -1) {
+	  concept_codes = $(".code");
+	  concept_codes.each(function(){
+	    if ($(this).val() == "") {
+	      $(this).val("-");
+	      $(this).attr("readonly",true);
+	      $(this).closest("tr.fields").find(".tipo").val("Servicio");
+	    }
+	  })
+	}
+}
 
 $(document).on("change", ".importe", function(){
 	var total = parseFloat(0);
