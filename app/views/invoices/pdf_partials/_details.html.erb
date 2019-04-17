@@ -83,7 +83,7 @@
   </div>
 </div>
 <br>
-<% if @invoice.tributes.count > 1 %>
+<% if @invoice.tributes.where("importe > 0").count > 1 %>
   <div class="row footer_top">
     <div class="container border">
       <table class="width_100">
@@ -95,7 +95,7 @@
           <td class="text_right"><b>$ <%= @invoice.net_amount_sum %></b></td>
         </tr>
 
-        <% @invoice.tributes.each do |t| %>
+        <% @invoice.tributes.where("importe > 0").each do |t| %>
         <tr>
           <td class="text_right"><b><%= t.desc %></b></td>
           <td class="text_right"><b>$ <%= t.importe %> </b></td>
