@@ -18,8 +18,9 @@ class PurchaseOrder < ApplicationRecord
   before_create :set_number
   after_save :set_sended_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state == "Enviado"}
   after_save :set_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state != "Enviado"}
-  after_save :touch_payments, :set_paid_out
+  after_save :set_paid_out  # se borró touch_payments
   after_touch :set_paid_out
+  after_update :update_daily_cash_amount
 
   validates_uniqueness_of :number, scope: :company_id, message: "Se están duplicando los números de Órdenes de Compra.", if: :number_changed?
   validates_presence_of :supplier_id, message: "Debe especificar un proveedor."
@@ -111,6 +112,11 @@ class PurchaseOrder < ApplicationRecord
       end
     end
 
+    def update_daily_cash_amount
+      daily_cash = DailyCash.current_daily_cash(company_id)
+      daily_cash.update_current_amount
+    end
+
     def set_number
       last_po = PurchaseOrder.where(company_id: company_id).last
       self.number = last_po.nil? ? "00000001" : (last_po.number.to_i + 1).to_s.rjust(8,padstr= '0')
@@ -136,6 +142,7 @@ class PurchaseOrder < ApplicationRecord
     end
 
     def touch_payments
+      pp "//////////////////// entro a PurchaseOrder.touch_payments ////////////////////"
       expense_payments.map{|p| p.run_callbacks(:save)}
     end
 
@@ -146,6 +153,7 @@ class PurchaseOrder < ApplicationRecord
     # end
 
     def set_paid_out
+      pp "//////////////////// entro a PurchaseOrder.set ////////////////////"
       set_total_pay
       if total.to_f - total_pay == 0
         update_column(:paid_out, true)
