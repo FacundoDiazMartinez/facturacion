@@ -86,6 +86,11 @@ class InvoicesController < ApplicationController
         id = @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
       end
       @invoice.associated_invoice = associated_invoice.id
+      if associated_invoice.tributes.size > 0
+        associated_invoice.tributes.each do |tribute|
+          @invoice.tributes.build(tribute.attributes.except!(*["id", "invoice_id"]))
+        end
+      end
     end
 
     respond_to do |format|
