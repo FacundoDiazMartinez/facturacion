@@ -192,7 +192,6 @@ $(document).on("ready", function(){
 
 $(document).on("click","#notification_link",function(){
   $("#notification-container").hide("slow");
-  alert("asd");
 })
 
 function populateSelect(data, dropdown){
