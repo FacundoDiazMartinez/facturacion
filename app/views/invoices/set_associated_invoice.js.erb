@@ -1,8 +1,10 @@
 <%
-  nested_form_for @invoice do |f| 
+  nested_form_for @invoice do |f|
     @builder = f
   end
 %>
 
 $("#idetails").html("<%= j render template: '/invoices/detail/index.html.erb', locals:{form: @builder} %>");
 $("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb', locals:{form: @builder} %>");
+
+debit_note_selected();
