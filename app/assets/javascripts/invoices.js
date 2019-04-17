@@ -288,6 +288,7 @@ $(document).on('nested:fieldRemoved', function(event){
 // });
 
 function debit_note_selected(){
+	cbte_tipo = $("#invoice_cbte_tipo");
 	var COD_ND = ["02", "07", "12"];
 	if (COD_ND.indexOf(cbte_tipo.val()) != -1) {
 	  concept_codes = $(".code");

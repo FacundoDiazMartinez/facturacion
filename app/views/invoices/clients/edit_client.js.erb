@@ -17,6 +17,7 @@
 		"<% else %>"
 			$("#saldo_disponible").html("");
 		"<% end %>"
+		$("#invoice_cbte_tipo").trigger("change");
 	});
 '<% else %>'
 	$("#client_errors").html("<%= j error_explanation(@client) %>");
