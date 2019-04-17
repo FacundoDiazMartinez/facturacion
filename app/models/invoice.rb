@@ -322,7 +322,8 @@ class Invoice < ApplicationRecord
         company.default_tributes.each do |trib|
           tributes.build(afip_id: trib.tribute_id,
             desc: Invoice::TRIBUTOS.map{|t| t.first if t.last == "1"}.compact.first,
-            base_imp: total.to_f.round(2),
+            # base_imp: total.to_f.round(2),
+            base_imp: 0,
             alic: trib.default_aliquot
           )
         end
