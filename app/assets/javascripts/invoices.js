@@ -13,12 +13,21 @@ $( document ).ready(function() {
 	}
 	showProductNamePopover ();
 	setDefaultTributesDescription();
+	cancel_concept_addition();
 });
 
 $(document).on('pjax:complete', function() {
 	showProductNamePopover();
 	setDefaultTributesDescription();
+	cancel_concept_addition();
 });
+
+function cancel_concept_addition(){
+	if ($.inArray($("#invoice_cbte_tipo").val(), ["03", "08", "13"]) > -1) {
+		$("#add_concept_to_invoice").hide();
+		$("#invoice_cbte_tipo").attr("disabled",true);
+	}
+}
 
 function showProductNamePopover () {
 	$("#details tr.fields").each(function(){  // Mostrar popover del campo nombre con el nombre completo
@@ -354,7 +363,7 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 }
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
-	if ($.inArray($(this).val(), ["03", "08", "13"])) {
+	if ($.inArray($(this).val(), ["03", "08", "13"]) > -1 ) {
 		$("#payment_title").html("Devoluciones de dinero");
 		//$("#total_left").val(0);
 	}else{
