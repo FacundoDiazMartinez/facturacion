@@ -65,7 +65,7 @@ function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
 	$(element).popover('dispose');
 	$(element).popover({
-		title: "Monto I.V.A.: $" + iva_amount,
+		title: "Monto I.V.A.: $ " + iva_amount,
 		trigger: "hover"
 	});
 }
@@ -95,10 +95,9 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 	$(this).closest("tr.fields").find("input.quantity").val(1);
-	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot)
-	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
+	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot);
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
-	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
+	// calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
 
 
@@ -126,7 +125,6 @@ $(document).on("change", ".price, .quantity, .bonus_percentage", function(){
 	total_neto 				= parseFloat(price.val()) * parseFloat(quantity.val());
 	b_amount = (total_neto * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2);
 	bonus_amount.val(b_amount);
-
 	calculateSubtotal(subtotal);
 });
 
@@ -136,7 +134,6 @@ $(document).on("change", ".bonus_amount", function(){
 	total_neto 				= parseFloat(price.val()) * parseFloat(quantity.val());
 	b_percentage 		= (parseFloat(bonus_amount.val()) * 100 / parseFloat(total_neto)).toFixed(2);
 	bonus_percentage.val(b_percentage);
-
 	calculateSubtotal(subtotal);
 });
 
@@ -149,13 +146,12 @@ $(document).on("change", ".iva_aliquot", function(){
 		iva_am = ( (price.val() - bonus_amount.val() ) * parseFloat( iva_aliquot.text() ) * quantity.val() ).toFixed(2);
 	}
 	iva_amount.val(iva_am);
-	updateTooltip22($(this))
+	updateTooltip22($(this));
 	calculateSubtotal(subtotal);
 });
 
 function calculateSubtotal(subtotal){
 	setVars(subtotal);
-
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		iva_am = 0.0
 	}else{
@@ -167,25 +163,29 @@ function calculateSubtotal(subtotal){
 
 	var inv_total = parseFloat(0);
 	$("tr.fields:visible > td > input.subtotal").each(function(){
-	    inv_total = inv_total + parseFloat($(this).val());
+    inv_total = inv_total + parseFloat($(this).val());
 	});
-	$("tr.fields:visible > td > input.importe").each(function(){
-	    inv_total = inv_total + parseFloat($(this).val());
-	});
+
+	$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Insercion de base imponible en tributos (suma de subtotales de cada concepto)
+		base_imp = inv_total.toFixed(2);
+		e = $(this).find("input.base_imp");
+		e.val(base_imp);
+		alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
+		e.closest("tr.fields").find("input.importe").val((base_imp * ( alic/100)).toFixed(2));
+	})
+
 	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left.toFixed(2));
-	console.log(total_left);
+
 	if ($("#invoice_cbte_tipo").length != 0) {
 		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
 	}
 	if ($("#invoice_cbte_tipo").length != 0) {
 		if (total_left > 0 || is_invoice < 0) {
-			console.log("normal");
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
-			console.log("alert");
 			$("#normal").hide();
 			$("#with_alert").show();
 		}
@@ -194,6 +194,7 @@ function calculateSubtotal(subtotal){
 	$("span#total_left_venta").text("$" + total_left);
 
 	subtotal.closest("td").find("strong").html("$" + subtotal.val())
+	e.trigger("change"); // >>>>>>>>>>>> para que se sumen los tributos al TOTAL YA CALCULADO de la factura
 	complete_payments();
 }
 
@@ -265,36 +266,6 @@ $(document).on('nested:fieldRemoved', function(event){
 	calculateSubtotal(subtotal);
 })
 
-
-// $(document).on("change", ".subtotal", function(){
-// 	var total = parseFloat(0);
-// 	$(".subtotal").each(function(){
-// 	    total = total + parseFloat($(this).val());
-// 	});
-// 	$(".importe").each(function(){
-// 	    total = total + parseFloat($(this).val());
-// 	});
-// 	$("#invoice_total").val(total);
-
-// 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
-// 	$("#total_left").val(total_left);
-// 	$("#total_left_venta").val(total_left);
-
-// 	if (total_left > 0 ) {
-// 		$("#normal").show();
-// 		$("#with_alert").hide();
-// 	}else{
-// 		$("#normal").hide();
-// 		$("#with_alert").show();
-// 	}
-
-// 	$("span#total_left_venta").text("$" + total);
-// 	total_venta = total;
-
-// 	$(this).closest("td").find("strong").html("$" + $(this).val())
-// 	complete_payments();
-// 	// iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
-// });
 
 function debit_note_selected(){
 	cbte_tipo = $("#invoice_cbte_tipo");
