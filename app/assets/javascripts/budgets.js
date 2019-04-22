@@ -4,15 +4,16 @@ $(document).on('railsAutocomplete.select', '.budget_detail-autocomplete_field', 
 			$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
 		}
 	}
-		recharge = parseFloat($("#client_recharge").val());
-		bonus = -recharge
+		var recharge = parseFloat($("#client_recharge").val() * -1);
+		bonus = recharge
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
   	$(this).closest("tr.fields").find("input.price").val(data.item.price);
 		$(this).closest("tr.fields").find("input.bonus_percentage").val(bonus);
+		$(this).closest("tr.fields").find("input.bonus_amount").val((data.item.price * ( bonus / 100)).toFixed(2));
   	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-		$(this).closest("tr.fields").find("input.subtotal_budget").val(data.item.price * (1 - bonus / 100)).trigger("change");
-
+		$(this).closest("tr.fields").find("input.subtotal_budget").val((data.item.price * (1 - bonus / 100)).toFixed(2)).trigger("change");
+		$(this).closest("tr.fields").find("select.depot_id option")[1].selected = true;
 		//$(this).closest("tr.fields").find("input.bonus_percentage").trigger("change");
 	$(this).closest("tr.fields").find("input.name").tooltip({
 		title: data.item.name,
@@ -21,13 +22,13 @@ $(document).on('railsAutocomplete.select', '.budget_detail-autocomplete_field', 
 });
 
 $(document).on("change", ".subtotal_budget", function(){
-	calculateBudgetSubtotal($(this))
+	calculateBudgetSubtotal($(this));
 });
 
 $(document).on('nested:fieldRemoved', function(event){
 	 var field 	= event.field;
-	 subtotal 	= field.find("input.subtotal_budget")
-	 calculateBudgetSubtotal(subtotal)
+	 subtotal 	= field.find("input.subtotal_budget");
+	 calculateBudgetSubtotal(subtotal);
 })
 
 function calculateBudgetSubtotal(subtotal){
@@ -54,5 +55,6 @@ $(document).on("change", ".price, .quantity, .bonus_amount, .bonus_percentage", 
 	bonus_amount.val(b_amount);
 	subtotal = ((parseFloat(price.val()) * parseFloat(quantity.val())) - b_amount).toFixed(2);
 	$(this).closest("tr.fields").find("input.subtotal_budget").val(subtotal);
+	console.log(subtotal);
 	$(this).closest("tr.fields").find("input.subtotal_budget").trigger("change");
 });
