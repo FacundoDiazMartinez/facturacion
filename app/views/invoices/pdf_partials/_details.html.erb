@@ -22,18 +22,18 @@
         <td><%= det.product.name %></td>
         <td class="text_right"><%= det.quantity %></td>
         <% if det.bonus_amount < 0 %>
-          <td class="text_right"><%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
+          <td class="text_right"><%= (det.price_per_unit - (det.bonus_amount / det.quantity)).round(2) %></td>
         <% else %>
-          <td class="text_right"><%= det.price_per_unit %></td>
+          <td class="text_right"><%= det.price_per_unit.round(2) %></td>
         <% end %>
         <td class="text_right"><%= det.bonus_amount > 0 ? det.bonus_percentage : 0.0  %></td>
         <td class="text_right"><%= (det.subtotal - det.iva_amount).round(2) %>
         <% if @invoice.cbte_tipo == "01" %>
-          <td class="text_right"><%= det.iva_amount %></td>
+          <td class="text_right"><%= det.iva_amount.round(2) %></td>
         <% end %>
         <!-- <td class="text_right"><%= det.bonus_percentage %></td>
         <td class="text_right"><%= det.bonus_amount %></td> -->
-        <td class="text_right"><%= det.subtotal %></td>
+        <td class="text_right"><%= det.subtotal.round(2) %></td>
       </tr>
     <% end %>
   </table>
@@ -70,14 +70,14 @@
         <td></td>
         <td></td>
         <td class="text_right"><b>Otros Tributos:</b></td>
-        <td class="text_right"><b>$ <%= @invoice.imp_op_ex %> </b></td>
+        <td class="text_right"><b>$ <%= @invoice.imp_op_ex.round(2) %> </b></td>
       </tr>
 
       <tr>
         <td><b>Firma:</b></td>
         <td><b>Dni:</b></td>
         <td class="text_right"><b>Importe Total:</b></td>
-        <td class="text_right"><b>$ <%= @invoice.total %></b></td>
+        <td class="text_right"><b>$ <%= @invoice.total.round(2) %></b></td>
       </tr>
     </table>
   </div>
