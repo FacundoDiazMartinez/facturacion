@@ -100,7 +100,7 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-success', data: {target: '#details'} %>
+			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-success', data: {target: '#details'}, id: "add_concept_to_invoice" %>
 		</div>
 	</center>
 <% end %>

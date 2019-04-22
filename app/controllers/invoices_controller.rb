@@ -82,12 +82,22 @@ class InvoicesController < ApplicationController
     @invoice.cbte_tipo = (associated_invoice.cbte_tipo.to_i + 2).to_s.rjust(2,padstr= '0')
     @invoice.cbte_fch = Date.today
     if @invoice.invoice_details.size == 0 && @invoice.income_payments.size == 0
-      associated_invoice.invoice_details.each do |detail|
-        id = @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
+      associated_invoice.invoice_details.each do |detail| # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DETALLES
+        band = true
+        associated_invoice.credit_notes.each do |cn|
+          cn.invoice_details.each do |cn_detail|
+            if (cn_detail.attributes.except!(*["id", "invoice_id", "created_at", "updated_at", "user_id"]) == detail.attributes.except!(*["id", "invoice_id", "created_at", "updated_at", "user_id"]))
+              band = false
+            end
+          end
+        end
+        if band
+          id = @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
+        end
       end
       @invoice.associated_invoice = associated_invoice.id
       if associated_invoice.tributes.size > 0
-        associated_invoice.tributes.each do |tribute|
+        associated_invoice.tributes.each do |tribute| # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TRIBUTOS
           @invoice.tributes.build(tribute.attributes.except!(*["id", "invoice_id"]))
         end
       end
