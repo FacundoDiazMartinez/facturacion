@@ -9,7 +9,7 @@
 
   <div class="form-group">
     <%= rpf.label :tribute, "Tributo" %><br>
-    <%= rpf.text_field :tribute, class: 'form-control', requried: true %>
+    <%= rpf.select :tribute,options_for_select(["IIBB","Act. Económicas", "Ganancias", "I.V.A.", "T.I.S.S.H."]),{},{class: 'form-control form-control-sm tribute_name', requried: true}  %>
   </div>
 
   <div class="form-group">
