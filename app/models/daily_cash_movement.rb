@@ -90,7 +90,6 @@ class DailyCashMovement < ApplicationRecord
     end
 
   	def self.save_from_payment payment, company_id
-      pp "//////////////////// entro a DailyCashMovement.save_from_payment ////////////////////"
       invoice = Invoice.where(id: payment.invoice_id).first
       daily_cash = DailyCash.current_daily_cash(company_id)
   		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
