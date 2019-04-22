@@ -123,9 +123,6 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def calculate_iva_amount
-      pp "ENTROOOO"
-      pp self.subtotal
-      pp self.iva
       self.iva_amount =  (subtotal.to_f / (1 + iva.to_f) * iva.to_f).round(2)
     end
 

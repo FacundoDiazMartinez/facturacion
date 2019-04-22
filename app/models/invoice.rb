@@ -208,14 +208,6 @@ class Invoice < ApplicationRecord
   			state != 'Confirmado' && state != 'Anulado' && state != 'Anulado parcialmente'
   		end
 
-      def iva_sum
-        total = 0
-        invoice_details.each do |detail|
-          total += detail.iva_amount.to_f.round(2)
-        end
-        return total
-      end
-
       def iva_array
         i = Array.new
         iva_hash = invoice_details.all.group_by{|i_d| i_d.iva_aliquot}.map{|aliquot, inv_det| {aliquot:aliquot, net_amount: inv_det.sum{|id| id.neto}, iva_amount: inv_det.sum{|s| s.iva_amount}}}
