@@ -68,14 +68,14 @@
           <%= render '/invoices/dynamic_attributes', form: form %>
         </div>
 
-        
+
         <hr class="invoice-header">
 
       <!-- BOTONES DE ACCION -->
         <div class="text-center">
           <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
             <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button',  data:{toggle: 'modal', target:'#confirm_invoice_modal'}, class: 'btn btn-primary' %>
-            <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-primary' %>
+            <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger' %>
             <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'openConfirmationModal()', class: 'btn btn-primary' %>
           <% else %>
             <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
@@ -115,7 +115,7 @@
   <center>
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
     <% if @invoice.editable? %>
-      <%= save_button %>
+      <%= save_button_danger %>
     <% end %>
   </center>
 <% end %>

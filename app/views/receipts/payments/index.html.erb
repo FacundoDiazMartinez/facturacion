@@ -65,7 +65,7 @@
 
 		<% if @receipt.editable? %>
 			<center><div class="m-2">
-		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id:'add_payment' %>
+		    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id:'add_payment' %>
 			</div></center>
 		<% end -%>
 	</div>
