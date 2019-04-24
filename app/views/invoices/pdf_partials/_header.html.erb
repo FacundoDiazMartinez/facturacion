@@ -58,15 +58,9 @@
         </tr>
 
         <tr>
-          <td></td>
+          <td><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date.strftime("%d/%m/%Y") %></td>
 
           <td><b>Ingresos Brutos: </b><%= @invoice.company.cuit %></td>
-        </tr>
-
-        <tr>
-          <td></td>
-
-          <td><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date.strftime("%d/%m/%Y") %></td>
         </tr>
       </table>
     </div>
