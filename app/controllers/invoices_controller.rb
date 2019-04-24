@@ -29,7 +29,7 @@ class InvoicesController < ApplicationController
           layout: 'pdf.html',
           template: 'invoices/show',
           #si dejamos el zoom en 1, el numero de página se pasa de página
-          zoom: 0.9,
+          #zoom: 0.9,
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"
