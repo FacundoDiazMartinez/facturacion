@@ -134,34 +134,3 @@
     </table>
   </div>
 <br>
-<<<<<<< HEAD
-<% if @invoice.tributes.where("importe > 0").count > 1 %>
-  <div class="row footer_top">
-    <div class="container border">
-      <table class="width_100">
-        <col width="600">
-        <col width="100">
-
-        <tr>
-          <td class="text_right"><b>IVA:</b></td>
-          <td class="text_right"><b>$ <%= sprintf('%.2f',@invoice.iva_amount_sum) %></b></td>
-        </tr>
-
-        <!-- <tr>
-          <td class="text_right"><b>Importe Neto Gravado:</b></td>
-          <td class="text_right"><b>$ <%= @invoice.net_amount_sum %></b></td>
-        </tr> -->
-
-        <% @invoice.tributes.where("importe > 0").each do |t| %>
-        <tr>
-          <td class="text_right"><b><%= t.desc %>:</b></td>
-          <td class="text_right"><b>$ <%= sprintf('%.2f',t.importe) %> </b></td>
-        </tr>
-        <% end %>
-
-    </table>
-    </div>
-  </div>
-<% end %>
-=======
->>>>>>> 1444a26efc7fe65e69b6d45f70e1e28fd1ae645e
