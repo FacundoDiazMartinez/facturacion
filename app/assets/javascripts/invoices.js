@@ -14,18 +14,14 @@ $( document ).ready(function() {
 	showProductNamePopover ();
 	setDefaultTributesDescription();
 	cancel_concept_addition();
-	if ($("#invoice_total").val() > 0) {
-		calculateSubtotal($("input.subtotal"));
-	}
+	$("input.price").trigger("change");
 });
 
 $(document).on('pjax:complete', function() {
 	showProductNamePopover();
 	setDefaultTributesDescription();
 	cancel_concept_addition();
-	if ($("#invoice_total").val() > 0) {
-		calculateSubtotal($("input.subtotal"));
-	}
+	$("input.price").trigger("change");
 });
 
 function cancel_concept_addition(){

@@ -160,7 +160,6 @@ class Payment < ApplicationRecord
     end
 
     def save_daily_cash_movement
-      pp "///////////////entro a Payment.save_daily_cash_movement////////////////////"
       if type_of_payment == "0"
         if payment_date <= Date.today
           DailyCashMovement.save_from_payment(self, company_id)

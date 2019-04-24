@@ -35,7 +35,8 @@ class Product < ApplicationRecord
   	validates_numericality_of :price, message: "El precio sólo debe contener caracteres numéricos."
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
-  	after_create :create_price_history, :user_activity_for_create
+  	after_create :create_price_history
+    after_create :user_activity_for_create, if: Proc.new{|p| p.name != "Intereses tarjeta de crédito"}
 
   	before_save :check_iva_aliquot, :check_net_price, :check_category_products_count
 

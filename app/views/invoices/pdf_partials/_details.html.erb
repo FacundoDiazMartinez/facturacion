@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="container" style="height: 600px; font-size: 10px !important;">
+  <div class="container" style="height: 560px; font-size: 10px !important;">
     <table class="width_100">
     <tr>
       <th class="description_header">Codigo</th>
@@ -42,18 +42,69 @@
 <!-- FIN DEL DETALLE -->
 
 <div class="row footer_top">
-  <p>
-    <b>
-      <%= @invoice.observation %>
-    </b>
-  </p>
+  <% if @invoice.observation.length > 0 %>
+    <div class="container" style="border-style: dotted;border-width: 1px;">
+      <p>
+        <b>
+          &nbsp Observación:
+        </b>
+         <%= @invoice.observation %>
+      </p>
+    </div>
+    <br>
+  <% end %>
+</div>
+
+
+
+
+
   <div class="container border">
+
     <table class="width_100">
-      <col width="400">
-      <col width="200">
+      <col>
+      <col width="600">
+
       <tr>
-        <td><b>Móvil:</b></td>
-        <td><b>Aclaración:</b></td>
+        <td rowspan="6" style="width: 1px;"></td>
+
+        <td rowspan="6">
+          <% if @invoice.tributes.where("importe > 0").count > 1 %>
+            Otros Tributos:
+            <table style="width:75%;">
+              <thead>
+                <tr>
+                  <th class="description_header">Descripción</th>
+                  <th class="description_header">Alícuota</th>
+                  <th class="description_header">Importe</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @invoice.tributes.where("importe > 0").each do |t| %>
+                  <tr>
+                    <td><b><%= t.desc %></b></td>
+                    <td class="text_right"><%= t.alic %> %</td>
+                    <td class="text_right">$ <%= sprintf('%.2f',t.importe) %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+              <tfoot style="display: table-footer-group;" class="description_header">
+                <tr>
+                  <td> <b>Total tributos</b> </td>
+                  <td></td>
+                  <td class="text_right"><b>$ <%= @invoice.sum_tributes %></b> </td>
+                </tr>
+              </tfoot>
+            </table>
+          <% end %>
+        </td>
+
+        <td> <br> </td>
+        <td> <br> </td>
+        <td rowspan="3" style="width: 1px;"></td>
+      </tr>
+
+      <tr>
         <td class="text_right">
           <b>
             <% if total_pages > 1 %>
@@ -63,26 +114,27 @@
             <% end %>
           </b>
         </td>
-        <td class="text_right"><b>$ <%= sprintf('%.2f',total_of_page)  %></b></td>
+        <td class="text_right">$ <%= sprintf('%.2f',total_of_page)  %></td>
       </tr>
 
       <tr>
-        <td></td>
-        <td></td>
+        <td class="text_right"><b>IVA:</b></td>
+        <td class="text_right">$ <%= sprintf('%.2f', @invoice.iva_amount_sum )%> </td>
+      </tr>
+
+      <tr>
         <td class="text_right"><b>Otros Tributos:</b></td>
-        <td class="text_right"><b>$ <%= sprintf('%.2f',@invoice.tributes.map{ |t| t.importe }.sum() + @invoice.iva_amount_sum.to_f) %> </b></td>
+        <td class="text_right">$ <%= sprintf('%.2f',@invoice.sum_tributes) %> </td>
       </tr>
 
       <tr>
-        <td><b>Firma:</b></td>
-        <td><b>Dni:</b></td>
         <td class="text_right"><b>Importe Total:</b></td>
         <td class="text_right"><b>$ <%= sprintf('%.2f',@invoice.total) %></b></td>
       </tr>
     </table>
   </div>
-</div>
 <br>
+<<<<<<< HEAD
 <% if @invoice.tributes.where("importe > 0").count > 1 %>
   <div class="row footer_top">
     <div class="container border">
@@ -111,3 +163,5 @@
     </div>
   </div>
 <% end %>
+=======
+>>>>>>> 1444a26efc7fe65e69b6d45f70e1e28fd1ae645e
