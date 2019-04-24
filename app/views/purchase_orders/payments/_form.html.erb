@@ -11,7 +11,7 @@
 			<%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker', disabled: !@purchase_order.editable? %>
 		</div>
 		<%= label_tag :amount_left, "Monto faltante: " %>
-		<span id="total_left_venta">$ <%= @purchase_order.total_left %></span>
+		<span id="total_left_venta">$ <%= @purchase_order.total_left.round(2) %></span>
 
 		<div id="payment_detail">   </div>
 

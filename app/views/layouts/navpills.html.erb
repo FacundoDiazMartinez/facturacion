@@ -20,7 +20,7 @@
 						<%= link_to "<span class='nav-span'>Facturación</span>".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Recibos</span>".html_safe, receipts_path, class: 'dropdown-item', title: 'Recibos' if can? :read, Receipt  %>
 						<%= link_to "<span class='nav-span'>Remitos</span>".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
-						<%= link_to "<span class='nav-span'>Expedientes</span>".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
+						<%# link_to "<span class='nav-span'>Expedientes</span>".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Clientes</span>".html_safe, clients_path, class: 'dropdown-item', title: 'Clientes' if can? :read, Client %>
 				</div>
 			</li>

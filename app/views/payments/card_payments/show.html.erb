@@ -23,7 +23,7 @@
                 		Cuotas:
               		</strong>
             	</div>
-            	<span><%= @card_payment.installments %></span>
+            	<span><%= @card_payment.fee.quantity %></span>
           	</li>
           	<li class="list-group-item d-flex justify-content-between lh-condensed">
             	<div>
@@ -39,7 +39,7 @@
                 		Intereses ($):
               		</strong>
             	</div>
-            	<span>$<%= @card_payment.interest_rate_amount %></span>
+            	<span>$<%= (@card_payment.total - @card_payment.subtotal).round(2) %></span>
           	</li>
           	<li class="list-group-item d-flex justify-content-between lh-condensed">
             	<div>
