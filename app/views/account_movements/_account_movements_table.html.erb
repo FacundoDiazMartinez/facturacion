@@ -18,7 +18,13 @@
 		    <tr>
 		    	<td><%= l(am.created_at, format: :only_date) %></td>
 		    	<td><%= comprobante_con_link(am) %></td>
-		    	<td><%= am.days %></td>
+		    	<td>
+						<% if !am.invoice_id.nil? %>
+							<% if ["01","02","06","07","11","12"].include? am.invoice.cbte_tipo %>
+								<%= am.days %>
+							<% end %>
+						<% end %>
+					</td>
 		    	<td><%= am.observation %></td>
 		    	<% if !am.invoice_id.nil? %>
 		    		<% if (am.invoice.real_total - am.invoice.total_pay) > 0 %>

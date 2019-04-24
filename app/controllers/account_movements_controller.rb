@@ -45,7 +45,7 @@ class AccountMovementsController < ApplicationController
     end
   end
 
-  
+
 
   # PATCH/PUT /account_movements/1
   # PATCH/PUT /account_movements/1.json
@@ -74,7 +74,7 @@ class AccountMovementsController < ApplicationController
   def export
     @account_movements = @client.account_movements.where(created_at: params[:since].to_date.beginning_of_day..params[:to].to_date.end_of_day)
     respond_to do |format|
-      format.xlsx { response.headers['Content-Disposition'] = 'attachment; filename="cuenta_corriente.xlsx"' }
+      format.xlsx { response.headers['Content-Disposition'] = 'attachment; filename="Estado de Cuenta - Elasticos M&M SRL.xlsx"' }
     end
   end
 
