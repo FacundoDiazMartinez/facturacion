@@ -22,14 +22,14 @@
               <% if @invoice.check_authorized_invoice %>
                 <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
                 <% outputter = Barby::PngOutputter.new(barcode) %>
-                <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
+                <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 35) } %>
                 <%= image_tag(@barcode_path, class: "img-responsive") %>
               <% else %>
                 -- Comprobante NO Autorizado --
                 <% if !@invoice.cae.blank? %>
                   <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
                   <% outputter = Barby::PngOutputter.new(barcode) %>
-                  <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
+                  <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 35) } %>
                   <%= image_tag(@barcode_path, class: "img-responsive") %>
                   <%= barcode %>
                 <% end %>
