@@ -2,11 +2,6 @@
     <div class="p-2">
       	Conceptos
     </div>
-    <div class="ml-auto p-2">
-      	<% if @purchase_order.editable? %>
-        	<%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-sm btn-success float-md-right', data: {target: '#details'} %>
-      	<% end %>
-    </div>
 </h3>
 <div class="table-responsive">
 	<table class="table" id="details">
@@ -49,3 +44,11 @@
 		</tbody>
 	</table>
 </div>
+
+<% if @purchase_order.editable? %>
+	<center>
+		<div class="m-2">
+		    <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-primary', data: {target: '#details'} %>
+		</div>
+	</center>
+<% end %>

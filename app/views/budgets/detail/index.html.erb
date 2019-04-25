@@ -2,11 +2,6 @@
     <div class="p-2">
       	Conceptos
     </div>
-    <div class="ml-auto p-2">
-      	<% if @budget.editable? %>
-        	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :budget_details, class: 'btn btn-success', data: {target: '#details'} %>
-      	<% end %>
-    </div>
 </h3>
 <div class="table-responsive">
 	<table class="table table-striped budget-table" id="details">
@@ -71,3 +66,11 @@
 		</tbody>
 	</table>
 </div>
+
+<% if @budget.editable? %>
+	<center>
+		<div class="m-2">
+	      	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :budget_details, class: 'btn btn-primary', data: {target: '#details'} %>
+	    </div>
+	</center>
+<% end %>
