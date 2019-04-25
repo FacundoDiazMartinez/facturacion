@@ -199,11 +199,8 @@ class Product < ApplicationRecord
 
 		def set_available_stock
 			update_column(:available_stock, self.stocks.where(state: "Disponible").sum(:quantity))
-      pp "/////////////////////////////// available" + self.available_stock.to_s
-      pp "/////////////////////////////// minimum" + self.minimum_stock.to_s
       if !self.minimum_stock.nil?
         if self.available_stock <= self.minimum_stock
-          pp "//////////////////////////// SI ENTRÓ"
           UserActivity.create_for_minimum_stock_reached(self)
           Notification.create_for_low_stock(self)
         end
