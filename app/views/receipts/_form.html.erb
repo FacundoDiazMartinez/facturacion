@@ -120,7 +120,7 @@
 
   <% if @receipt.state == "Pendiente" %>
     <center>
-      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'confirm_btn', name: 'button', value: "save" %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_receipt', name: 'button', value: "save" %>
       <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'confirm_btn', name: 'button', value: "confirm" %>
 
     </center>
@@ -148,3 +148,17 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).on("change", "select", function(){
+    $("#save_btn_receipt").attr("class","btn btn-danger");
+  });
+
+  $(document).on("keyup", "input:visible", function(){
+    $("#save_btn_receipt").attr("class","btn btn-danger");
+  });
+
+  $(document).on('nested:fieldRemoved', function(){
+    $("#save_btn_invoice").attr("class","btn btn-danger");
+  })
+</script>

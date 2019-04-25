@@ -115,7 +115,7 @@
   <center>
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
     <% if @invoice.editable? %>
-      <%= save_button_danger %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."} %>
     <% end %>
   </center>
 <% end %>
@@ -199,5 +199,17 @@
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
+
+  $(document).on("change", "select", function(){
+  	$("#save_btn_invoice").attr("class","btn btn-danger");
+  });
+
+  $(document).on("keyup", "input:visible", function(){
+  	$("#save_btn_invoice").attr("class","btn btn-danger");
+  });
+
+  $(document).on('nested:fieldRemoved', function(){
+    $("#save_btn_invoice").attr("class","btn btn-danger");
+  })
 
 </script>
