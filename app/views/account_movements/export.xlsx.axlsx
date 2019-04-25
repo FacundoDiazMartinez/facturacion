@@ -8,15 +8,15 @@ debe_rojo = wb.styles.add_style(:fg_color=>"F00000", :sz=>10, alignment: {horizo
 last_row_saldo_rojo = wb.styles.add_style(:bg_color => "FF0000",:fg_color=>"FFFFFF", :sz=>10, alignment: {horizontal: :right})
 last_row_saldo_verde = wb.styles.add_style(:bg_color => "008080",:fg_color=>"FFFFFF", :sz=>10, alignment: {horizontal: :right})
 
-wb.add_worksheet(name: "Cuente Corriente") do |sheet|
+wb.add_worksheet(name: "Cuenta Corriente") do |sheet|
     sheet.add_row(["Fecha", "Comprobante", "Observación", "Debe", "Haber", "Saldo"], :style=> title)
     @account_movements.each_with_index do |am, index|
     	if @account_movements.count == (index + 1)
         	sheet.add_row([l(am.created_at, format: :only_date),
         	 am.comprobante,
-        	 am.observation, 
-        	 am.debe  ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", 
-        	 am.haber ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", 
+        	 am.observation,
+        	 am.debe  ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "",
+        	 am.haber ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "",
         	 "#{number_to_currency(am.saldo, separator: ",", delimiter: ".", format: "%n", precision: 2)}"])
             sheet.rows[index+1].cells[0].style=center
             sheet.rows[index+1].cells[1].style=body
@@ -31,10 +31,10 @@ wb.add_worksheet(name: "Cuente Corriente") do |sheet|
         		sheet.rows[index+1].cells[5].style=last_row_saldo_verde
         	end
         else
-        	sheet.add_row([l(am.created_at, format: :only_date), 
-            am.comprobante, 
-            am.observation, 
-            am.debe ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", 
+        	sheet.add_row([l(am.created_at, format: :only_date),
+            am.comprobante,
+            am.observation,
+            am.debe ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "",
             am.haber ? "#{number_to_currency(am.total, separator: ",", delimiter: ".", format: "%n", precision: 2)}" : "", "#{number_to_currency(am.saldo, separator: ",", delimiter: ".", format: "%n", precision: 2)}"])
             sheet.rows[index+1].cells[0].style=center
             sheet.rows[index+1].cells[1].style=body
