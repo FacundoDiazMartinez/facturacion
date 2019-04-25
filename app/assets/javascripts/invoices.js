@@ -153,6 +153,7 @@ $(document).on("change", ".iva_aliquot", function(){
 });
 
 function calculateSubtotal(subtotal){
+
 	setVars(subtotal);
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		iva_am = 0.0
