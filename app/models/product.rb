@@ -204,6 +204,7 @@ class Product < ApplicationRecord
       if self.available_stock <= self.minimum_stock
         pp "//////////////////////////// SI ENTRÓ"
         UserActivity.create_for_minimum_stock_reached(self)
+        Notification.create_for_low_stock(self)
       end
 		end
 
@@ -302,6 +303,7 @@ class Product < ApplicationRecord
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save
+      self.set_available_stock
 		end
 
 		def deliver_product attrs={}

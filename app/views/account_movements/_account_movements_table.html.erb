@@ -20,7 +20,7 @@
 		    	<td><%= comprobante_con_link(am) %></td>
 		    	<td>
 						<% if !am.invoice_id.nil? %>
-							<% if ["01","02","06","07","11","12"].include? am.invoice.cbte_tipo %>
+							<% if IvaBook::CBTE_TIPO.map{|k,v| k unless v.include? "NC"}.compact.include? am.invoice.cbte_tipo %>   <!-- Se muestran los días sólo para facturas y notas de debito -->
 								<%= am.days %>
 							<% end %>
 						<% end %>
