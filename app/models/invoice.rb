@@ -777,21 +777,24 @@ class Invoice < ApplicationRecord
 
     def all_payments_string
 
-      pagos = []
-      self.income_payments.each do |p|
-        pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
-      end
-      pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
-
-
-      showed_payment = ""
-      pagos.each_with_index do |arr,i|
-        showed_payment = showed_payment + arr[0]
-        #showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
-        if ((i+1) < pagos.count)
-          showed_payment = showed_payment + " / "
+      if !self.income_payments.nil?
+        pagos = []
+        self.income_payments.each do |p|
+          pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
         end
+        pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
+        showed_payment = ""
+        pagos.each_with_index do |arr,i|
+          showed_payment = showed_payment + arr[0]
+          #showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
+          if ((i+1) < pagos.count)
+            showed_payment = showed_payment + " / "
+          end
+        end
+      else
+        showed_payment = "Cuenta Corriente"
       end
+
       return showed_payment
 
       # if !self.income_payments.nil?

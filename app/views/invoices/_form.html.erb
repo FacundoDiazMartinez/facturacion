@@ -73,7 +73,7 @@
 
       <!-- BOTONES DE ACCION -->
         <div class="text-center">
-          <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
+          <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" && @invoice.state != "Anulado parcialmente" %>
             <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button',  data:{toggle: 'modal', target:'#confirm_invoice_modal'}, class: 'btn btn-primary' %>
             <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger' %>
             <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'openConfirmationModal()', class: 'btn btn-primary' %>

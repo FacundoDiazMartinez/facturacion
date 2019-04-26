@@ -1,6 +1,7 @@
 var total_venta = parseFloat(0);
 var rest = parseFloat(0);
 var index = {};
+var total_left = parseFloat(0);
 
 $( document ).ready(function() {
 	autocomplete_field();
@@ -158,33 +159,45 @@ function calculateSubtotal(subtotal){
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		iva_am = 0.0
 	}else{
-		iva_am = ( (price.val() - bonus_amount.val() ) * parseFloat(iva_aliquot.text()) * quantity.val() ).toFixed(2);
+		iva_am = (((price.val() * quantity.val()) - bonus_amount.val()) * parseFloat(iva_aliquot.text())).toFixed(2);
 	}
+
 	iva_amount.val(iva_am);
 	Stotal = ((parseFloat(price.val())  * parseFloat(quantity.val()) ) + parseFloat(iva_amount.val()) - parseFloat(bonus_amount.val())).toFixed(2)
 	subtotal.val(Stotal);
 
 	var inv_total = parseFloat(0);
 	$("tr.fields:visible > td > input.subtotal").each(function(){
-    inv_total = inv_total + parseFloat($(this).val());
+    inv_total += parseFloat($(this).val());
 	});
 
-	$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Insercion de base imponible en tributos (suma de subtotales de cada concepto)
-		base_imp = inv_total.toFixed(2);
+	$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Cálculo de tributos (suma de subtotales de cada concepto [SIN IVA])
+		var total_neto = 0;
+		$("#details > tbody > tr:visible").each(function(){
+			var neto_unitario = $(this).find("input.price").val();
+		  var cantidad = $(this).find("input.quantity").val();
+			var descuento = $(this).find("input.bonus_amount").val();
+			total_neto += neto_unitario * cantidad - descuento; // >> Subtotal sin IVA
+		});
+
+		base_imp = total_neto.toFixed(2);
 		e = $(this).find("input.base_imp");
 		e.val(base_imp);
 		alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
-		e.closest("tr.fields").find("input.importe").val((base_imp * ( alic/100)).toFixed(2));
+		importe = (base_imp * ( alic/100)).toFixed(2);
+		e.closest("tr.fields").find("input.importe").val(importe);
+		inv_total += parseFloat(importe);
 	})
 
+	// >>>>>>>>>>>>>>>>>>>> Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 	$("#invoice_total").val(inv_total.toFixed(2));
-	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
+	total_left = inv_total - parseFloat($("#invoice_total_pay").val());
 	$("#total_left").val(total_left.toFixed(2));
+	$("#total_left_venta").text("$" + total_left.toFixed(2));
+	// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
 	if ($("#invoice_cbte_tipo").length != 0) {
 		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
-	}
-	if ($("#invoice_cbte_tipo").length != 0) {
 		if (total_left > 0 || is_invoice < 0) {
 			$("#normal").show();
 			$("#with_alert").hide();
@@ -194,11 +207,14 @@ function calculateSubtotal(subtotal){
 		}
 	}
 
-	$("span#total_left_venta").text("$" + total_left);
 
-	subtotal.closest("td").find("strong").html("$" + subtotal.val())
+
+	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Fin calculo TOTAL LEFT
+
+	subtotal.closest("td").find("strong").html("$ " + subtotal.val())
 	e.trigger("change"); // >>>>>>>>>>>> para que se sumen los tributos al TOTAL YA CALCULADO de la factura
-	complete_payments();
+
+	complete_payments(); // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 }
 
 function autocomplete_field() {
@@ -213,7 +229,7 @@ function complete_payments(){
 	var suma = parseFloat(0);
 	var payment_fields = parseFloat(0);
 	$(".amount").each(function(){  /// calculamos la suma total en sector pagos
-		suma = parseFloat(suma) + parseFloat($(this).val());
+		suma += parseFloat($(this).val());
 		payment_fields = payment_fields + 1;
 	});
 	if (payment_fields == 1) { /// si solo hay un tipo de pago, el monto es igual al total de la venta
@@ -307,7 +323,6 @@ $(document).on("change", ".importe", function(){
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
-			console.log("alert");
 			$("#normal").hide();
 			$("#with_alert").show();
 		}
@@ -473,7 +488,7 @@ function getPaymentRequest(url, data, action) {
 }
 
 $(document).on("click", "#with_alert", function(){
-	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
+	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $ 0.00")
 })
 
 function hideConcept(text){

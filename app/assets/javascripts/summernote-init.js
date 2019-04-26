@@ -34,7 +34,20 @@ function loadSummernote(){
   placeholder: 'Confeccione su publicidad aquí...',
   disableDragAndDrop: true,
   lang: 'es-ES',
-  height: 243
+  height: 150,
+  maxHeight: 150,
+  disableResizeEditor: true,
+  callbacks: {
+        onKeydown: function(e) {
+          var t = e.currentTarget.innerText;
+          if (t.trim().length >= 140) {
+            //delete key
+            if (e.keyCode != 8)
+              e.preventDefault();
+            // add other keys ...
+          }
+        }
+      }
   });
 }
 
