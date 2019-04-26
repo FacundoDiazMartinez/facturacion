@@ -145,6 +145,9 @@ class InvoicesController < ApplicationController
   end
 
   def deliver
+    require 'barby'
+    require 'barby/barcode/code_25_interleaved'
+    require 'barby/outputter/ascii_outputter'
     InvoiceMailer.send_to_client(@invoice, params[:email]).deliver
     redirect_to edit_invoice_path(@invoice.id), notice: "Email enviado."
   end
