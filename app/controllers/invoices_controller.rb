@@ -150,7 +150,7 @@ class InvoicesController < ApplicationController
     require 'barby/outputter/ascii_outputter'
     require 'barby/outputter/png_outputter'
     @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
-    InvoiceMailer.send_to_client(@invoice, params[:email]).deliver
+    InvoiceMailer.send_to_client(@invoice, params[:email], @barcode_path).deliver
     redirect_to edit_invoice_path(@invoice.id), notice: "Email enviado."
     @invoice.delete_barcode(@barcode_path)
   end
