@@ -158,8 +158,9 @@ function calculateSubtotal(subtotal){
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		iva_am = 0.0
 	}else{
-		iva_am = ( (price.val() - bonus_amount.val() ) * parseFloat(iva_aliquot.text()) * quantity.val() ).toFixed(2);
+		iva_am = (((price.val() * quantity.val()) - bonus_amount.val()) * parseFloat(iva_aliquot.text())).toFixed(2);
 	}
+
 	iva_amount.val(iva_am);
 	Stotal = ((parseFloat(price.val())  * parseFloat(quantity.val()) ) + parseFloat(iva_amount.val()) - parseFloat(bonus_amount.val())).toFixed(2)
 	subtotal.val(Stotal);
@@ -170,7 +171,16 @@ function calculateSubtotal(subtotal){
 	});
 
 	$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Insercion de base imponible en tributos (suma de subtotales de cada concepto)
-		base_imp = inv_total.toFixed(2);
+
+		var total_neto = 0;
+		$("#details > tbody > tr:visible").each(function(){
+			var neto_unitario = $(this).find("input.price").val();
+		  var cantidad = $(this).find("input.quantity").val();
+			var descuento = $(this).find("input.bonus_amount").val();
+			total_neto += neto_unitario * cantidad - descuento;
+		});
+
+		base_imp = total_neto.toFixed(2);
 		e = $(this).find("input.base_imp");
 		e.val(base_imp);
 		alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
@@ -196,7 +206,7 @@ function calculateSubtotal(subtotal){
 
 	$("span#total_left_venta").text("$" + total_left);
 
-	subtotal.closest("td").find("strong").html("$" + subtotal.val())
+	subtotal.closest("td").find("strong").html("$ " + subtotal.val())
 	e.trigger("change"); // >>>>>>>>>>>> para que se sumen los tributos al TOTAL YA CALCULADO de la factura
 	complete_payments();
 }
@@ -473,7 +483,7 @@ function getPaymentRequest(url, data, action) {
 }
 
 $(document).on("click", "#with_alert", function(){
-	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $0.")
+	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $ 0.00")
 })
 
 function hideConcept(text){
