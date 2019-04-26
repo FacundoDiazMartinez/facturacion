@@ -20,32 +20,41 @@
 					<tr>
 						<td>
               <% case payment.type_of_payment %>
-              <% when "4" %>
-                <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
-              <% when "1" %>
-                <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.installments %> cuotas
-              <% when "3" %>
-                <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
-              <% when "7" %>
-                <%= payment.payment_name %> - Banco <%= payment.debit_payment.bank.name %>
-              <% when "5" %>
-                <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
-              <% when "8" %>
-                <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
-              <% else %>
-                <%= payment.payment_name %>
+                <% when "4" %>
+                  <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
+                <% when "1" %>
+                  <% @installment_id = payment.card_payment.installments %>
+                  <% if @installment_id != 0 %>
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                  <% else %>
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
+                  <% end %>
+                <% when "3" %>
+                  <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
+                <% when "7" %>
+                  <%= payment.payment_name %> - Banco <%= payment.debit_payment.bank.name %>
+                <% when "5" %>
+                  <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
+                <% when "8" %>
+                  <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
+                <% else %>
+                  <%= payment.payment_name %>
               <% end %>
             </td>
 						<td><%= payment.total %></td>
 						<td><%= payment.payment_date %></td>
 						<td>
-              <% if payment.persisted? && !@invoice.editable? %>
-                <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-                <% end %>
-							<% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
-                <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-								<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-							<% end -%>
+            		<% if payment.persisted? && !@invoice.editable? && payment.account_movement_id.nil? %>
+              		<%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+              	<% end %>
+	              <% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
+                	<%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+                  <% if payment.type_of_payment != "1" %>
+                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
+                  <% else %>
+                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
+                  <% end %>
+		            <% end -%>
 						</td>
 					</tr>
 				<% end -%>
@@ -56,8 +65,8 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-success', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
+    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
+    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-primary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
 		</div>
 	</center>
 <% end %>

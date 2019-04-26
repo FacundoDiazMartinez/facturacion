@@ -33,7 +33,7 @@
               <div class="form-group row">
                 <%= label_tag :total_left, "Monto faltante", class:'col-4 col-form-label col-form-label-sm' %>
                 <div class="col-8">
-                  <%= text_field_tag :total_left, @invoice.total_left.round(2), class: 'form-control', readonly: true %>
+                  <%= text_field_tag :total_left, @invoice.total_left.round(2), class: 'form-control',style: "font-weight: bold;", readonly: true %>
                 </div>
               </div>
             </div>
@@ -67,13 +67,15 @@
         <div class="row" id="dynamic_attributes">
           <%= render '/invoices/dynamic_attributes', form: form %>
         </div>
+
+
         <hr class="invoice-header">
 
       <!-- BOTONES DE ACCION -->
         <div class="text-center">
           <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" %>
             <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button',  data:{toggle: 'modal', target:'#confirm_invoice_modal'}, class: 'btn btn-primary' %>
-            <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-primary' %>
+            <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger' %>
             <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'openConfirmationModal()', class: 'btn btn-primary' %>
           <% else %>
             <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
@@ -113,7 +115,7 @@
   <center>
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
     <% if @invoice.editable? %>
-      <%= save_button %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."} %>
     <% end %>
   </center>
 <% end %>
@@ -197,5 +199,17 @@
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });
+
+  $(document).on("change", "select", function(){
+  	$("#save_btn_invoice").attr("class","btn btn-danger");
+  });
+
+  $(document).on("keyup", "input:visible", function(){
+  	$("#save_btn_invoice").attr("class","btn btn-danger");
+  });
+
+  $(document).on('nested:fieldRemoved', function(){
+    $("#save_btn_invoice").attr("class","btn btn-danger");
+  })
 
 </script>

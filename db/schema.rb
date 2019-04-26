@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_02_183327) do
+ActiveRecord::Schema.define(version: 2019_04_24_182508) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -177,11 +177,11 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
 
   create_table "cheque_payments", force: :cascade do |t|
     t.string "state", default: "No cobrado", null: false
-    t.date "expiration", default: -> { "('now'::text)::date" }, null: false
+    t.date "expiration", default: -> { "CURRENT_DATE" }, null: false
     t.float "total", default: 0.0, null: false
     t.text "observation"
     t.boolean "active", default: true, null: false
-    t.string "origin", default: "Propio", null: false
+    t.string "origin", default: "De tercero", null: false
     t.string "entity", null: false
     t.string "number", null: false
     t.bigint "payment_id"
@@ -217,6 +217,8 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
     t.string "payment_day"
     t.string "observation"
     t.boolean "valid_for_account", default: true, null: false
+    t.string "contact_1"
+    t.string "contact_2"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end
@@ -392,7 +394,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -545,7 +547,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -733,8 +735,8 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
     t.string "cbte_tipo", default: "00", null: false
     t.bigint "client_id"
     t.bigint "sale_point_id"
-    t.string "state", default: "Pendiente"
     t.bigint "user_id"
+    t.string "state", default: "Pendiente"
     t.index ["client_id"], name: "index_receipts_on_client_id"
     t.index ["company_id"], name: "index_receipts_on_company_id"
     t.index ["sale_point_id"], name: "index_receipts_on_sale_point_id"
@@ -784,7 +786,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
     t.bigint "responsable_id", null: false
     t.string "observation"
     t.string "number", null: false
-    t.date "init_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -852,7 +854,7 @@ ActiveRecord::Schema.define(version: 2019_04_02_183327) do
     t.string "number", null: false
     t.string "state", default: "Pendiente", null: false
     t.string "observation"
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.bigint "from_depot_id", null: false
     t.bigint "to_depot_id", null: false
     t.boolean "active", default: true, null: false

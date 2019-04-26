@@ -11,12 +11,19 @@ class DailyCashMovement < ApplicationRecord
   before_validation :set_payment_type
 
 
+
+
   TYPES = ["Pago", "Ajuste"]
 
   FLOW_TYPES = {
     "Egreso"    => "expense",
     "Ingreso"   => "income"
    }
+
+   def self.default_scope
+     left_joins(payment: :purchase_order).where("purchase_orders.state = 'Finalizada' OR payments.purchase_order_id IS NULL")
+   end
+
 
   #FILTROS DE BUSQUEDA
     def self.search_by_user user
@@ -64,7 +71,7 @@ class DailyCashMovement < ApplicationRecord
         when "income"
           "/invoices/#{payment.invoice_id}/edit" unless payment.invoice_id.nil?
         when "expense"
-         "/purchase_orders/#{payment.purchase_order_id}/edit" unless payment.purchase_order_id.nil?
+         "/purchase_orders/#{ExpensePayment.unscoped.find(payment_id).purchase_order_id}/edit" unless ExpensePayment.unscoped.find(payment_id).purchase_order_id.nil?
         end
       end
     end
@@ -140,7 +147,7 @@ class DailyCashMovement < ApplicationRecord
 
     def update_others_movements dif
       if dif != 0.0
-        next_movements = DailyCashMovement.where("created_at >= ? AND daily_cash_id = ?", created_at, daily_cash_id)
+        next_movements = DailyCashMovement.where("daily_cash_movements.created_at >= ? AND daily_cash_movements.daily_cash_id = ?", created_at, daily_cash_id)
         next_movements.each do |dcm|
           balance = dcm.current_balance + dif
           dcm.update_column(:current_balance, balance)

@@ -72,7 +72,7 @@
         </h3>
         <div class="p-2 col-12 col-sm-6 col-md-3">
           <%= label_tag :comp_number, "Vincular comprobante" %>
-          <%= autocomplete_field_tag :comp_number, nil, autocomplete_invoice_receipts_path, :fields => {:client_id => '#receipt_client_id'}, class: 'receipt_associated-invoice-autocomplete_field form-control form-control-sm comp_number' , disabled: !@receipt.editable?, placeholder: "Ingrese nº de comprobante" %>
+          <%= autocomplete_field_tag :comp_number, nil, autocomplete_invoice_and_debit_note_receipts_path, :fields => {:client_id => '#receipt_client_id'}, class: 'receipt_associated-invoice-autocomplete_field form-control form-control-sm comp_number' , disabled: !@receipt.editable?, placeholder: "Ingrese nº de comprobante" %>
         </div>
         <div class="row">
           <div class="table-responsive">
@@ -98,13 +98,13 @@
           </div>
         </div>
         <div style="padding-left: 70% !important;">
-          <%= label_tag :total_faltante, "Total faltante", id:'total_faltante' %>
+          <%= label_tag :total_faltante, "Total faltante: $ 0.00", id:'total_faltante' %>
         </div>
         <hr>
         <% if @receipt.editable? %>
         	<center>
         		<div class="m-2">
-        			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar factura</span>".html_safe, :receipt_details, class: 'btn btn-success', data: {target: '#details'} %>
+        			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar factura</span>".html_safe, :receipt_details, class: 'btn btn-success', data: {target: '#details'}, hidden: true %>
         		</div>
         	</center>
         <% end %>
@@ -119,7 +119,11 @@
   <!-- PAGOS -->
 
   <% if @receipt.state == "Pendiente" %>
-    <center> <%= button_tag "#{icon('fas', 'save')} Confirmar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'confirm_btn', name: 'button', value: "confirm" %> </center>
+    <center>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_receipt', name: 'button', value: "save" %>
+      <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'confirm_btn', name: 'button', value: "confirm" %>
+
+    </center>
   <% end %>
 
 
@@ -135,3 +139,26 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade bd-example-modal-lg" id="editPaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="edit_payment_modal">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).on("change", "select", function(){
+    $("#save_btn_receipt").attr("class","btn btn-danger");
+  });
+
+  $(document).on("keyup", "input:visible", function(){
+    $("#save_btn_receipt").attr("class","btn btn-danger");
+  });
+
+  $(document).on('nested:fieldRemoved', function(){
+    $("#save_btn_invoice").attr("class","btn btn-danger");
+  })
+</script>

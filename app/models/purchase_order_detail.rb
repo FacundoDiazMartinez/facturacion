@@ -6,7 +6,7 @@ class PurchaseOrderDetail < ApplicationRecord
 
   accepts_nested_attributes_for :product, reject_if: :all_blank, allow_destroy: true
 
-  after_save :set_total_to_purchase_order
+  # after_save :set_total_to_purchase_order
 
   validates_presence_of :product_id, message: "Falta id de producto."
   validates_presence_of :price, message: "Falta precio unitario."

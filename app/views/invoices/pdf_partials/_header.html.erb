@@ -2,7 +2,7 @@
   <div class="row">
     <% if !@invoice.check_authorized_invoice %>
       <div class="text_center">
-        <% if @current_user.company.environment != "production" %>
+        <% if current_user.company.environment != "production" %>
           -- ATENCIÓN: COMPROBANTE NO AUTORIZADO --
         <% end %>
       </div>
@@ -12,62 +12,57 @@
 <!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
     <div class=" border">
       <table class="width_100">
-        <tr style="line-height: 20px !important;">
-          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 400px; line-height: 60px;"><%= @invoice.company.name %></th>
+        <tr style="line-height: 10px !important;">
+          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 400px; line-height: 10px;"><%= @invoice.company.name %></th>
           <th class="text_size_invoice_type invoice_type"><%= Invoice.available_cbte_type(@invoice.company, @invoice.client).first.first.last %>
             <table>
               <tbody>
-                <tr>
-                  <td style="font-size: 11px;" class="invoice_type_code"> <br> COD.11</td>
-                </tr>
+                <td>
+                  <td style="font-size: 11px;"> <br> COD.11 </td>
+                </td>
               </tbody>
             </table>
           </th>
           <th class="text_size_25 header_word_break" style="width: 400px;">
-            <%= @invoice.nombre_comprobante %>
+            <%= @invoice.nombre_comprobante.upcase %>
           </th>
         </tr>
       </table>
 
 
-  <table class="width_100" style="font-size: 11px !important;">
-      <tr>
-        <td style="width: 50%;"> <b>Razon Social: </b> <%= @invoice.company.society_name %> </td>
-        <td rowspan="5" class="right_border"></td>
-        <td rowspan="5" style="width: 1px;"></td>
-        <td>
-          <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
-            <% if !@invoice.fill_comp_number.nil? %>
-             - Comp.Nro: <%= @invoice.fill_comp_number %>
-            <% end %>
-          </b>
-        </td>
-      </tr>
+      <table class="width_100" >
+        <tr>
+          <td rowspan="5" style="width: 1px;"></td>
+          <td style="width: 50%;"> <b>Razon Social: </b> <%= @invoice.company.society_name %> </td>
+          <td rowspan="5" class="right_border"></td>
+          <td rowspan="5" style="width: 1px;"></td>
+          <td>
+            <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
+              <% if !@invoice.fill_comp_number.nil? %>
+               - Comp.Nro: <%= @invoice.fill_comp_number %>
+              <% end %>
+            </b>
+          </td>
+        </tr>
 
-      <tr>
-        <td><b>Domicilio Comercial:</b> <%= @invoice.company.address %></td>
+        <tr>
+          <td><b>Domicilio Comercial:</b> <%= @invoice.company.address %></td>
 
-        <td><b>Fecha de Emision:</b> <%= @invoice.created_at.strftime("%d/%m/%Y") %></td>
-      </tr>
+          <td><b>Fecha de Emision:</b> <%= @invoice.created_at.strftime("%d/%m/%Y") %></td>
+        </tr>
 
-      <tr>
-        <td><b>Condicion frente al IVA:</b> <%= @invoice.company.iva_cond %></td>
+        <tr>
+          <td><b>Condicion frente al IVA:</b> <%= @invoice.company.iva_cond %></td>
 
-        <td ><b>CUIT: </b><%= @invoice.company.cuit %></td>
-      </tr>
+          <td ><b>CUIT: </b><%= @invoice.company.cuit %></td>
+        </tr>
 
-      <tr>
-        <td></td>
+        <tr>
+          <td><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date.strftime("%d/%m/%Y") %></td>
 
-        <td><b>Ingresos Brutos: </b><%= @invoice.company.cuit %></td>
-      </tr>
-
-      <tr>
-        <td></td>
-
-        <td><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date.strftime("%d/%m/%Y") %></td>
-      </tr>
-    </table>
+          <td><b>Ingresos Brutos: </b><%= @invoice.company.cuit %></td>
+        </tr>
+      </table>
     </div>
   <!-- FIN DEL ENCABEZADO -->
 
@@ -76,6 +71,7 @@
   <div class="container border">
     <table class="width_100">
     <tr>
+      <td rowspan="3" style="width: 1px;"></td>
       <td style="width: 51%;"><b>CUIT: </b><%= @invoice.client.document_number %></td>
       <td><b>Cliente / Razon Social: </b> <%= @invoice.client.name %></td>
     </tr>
@@ -90,10 +86,6 @@
       <td></td>
     </tr>
 
-    <tr>
-      <td><!--<b>Saldo a cta. corriente: </b>$ <%= @invoice.total_left %>--></td>
-      <td></td>
-    </tr>
   </table>
   </div>
 </div>

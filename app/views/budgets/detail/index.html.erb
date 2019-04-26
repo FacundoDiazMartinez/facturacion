@@ -2,11 +2,6 @@
     <div class="p-2">
       	Conceptos
     </div>
-    <div class="ml-auto p-2">
-      	<% if @budget.editable? %>
-        	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :budget_details, class: 'btn btn-success', data: {target: '#details'} %>
-      	<% end %>
-    </div>
 </h3>
 <div class="table-responsive">
 	<table class="table table-striped budget-table" id="details">
@@ -16,12 +11,12 @@
 				<th scope="col">Código</th>
 				<th scope="col">Concepto</th>
 				<th scope="col">Depósito</th>
-				<th scope="col">Precio</th>
+				<th scope="col">Precio ($)</th>
 				<th scope="col" style="width:10%;"class="only-desktop">Medida</th>
 				<th scope="col" style="width:1%;">Cantidad</th>
 				<th scope="col" style="width:7%;" class="only-desktop">Desc.(%)</th>
 				<th scope="col" style="width:7%;" class="only-desktop">Desc.($)</th>
-				<th scope="col" style="width:9%;">Subtotal</th>
+				<th scope="col" style="width:9%;">Subtotal ($)</th>
 				<th scope="col"></th>
 			</tr>
 		</thead>
@@ -61,7 +56,7 @@
 						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', readonly: true %>
 					</td>
 					<td>
-						<%= f.number_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: !@budget.editable? %>
+						<%= f.number_field :subtotal, class: 'form-control form-control-sm subtotal_budget', readonly: true, disabled: !@budget.editable? %>
 					</td>
 					<% if @budget.editable? %>
 						<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
@@ -71,3 +66,11 @@
 		</tbody>
 	</table>
 </div>
+
+<% if @budget.editable? %>
+	<center>
+		<div class="m-2">
+	      	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :budget_details, class: 'btn btn-primary', data: {target: '#details'} %>
+	    </div>
+	</center>
+<% end %>

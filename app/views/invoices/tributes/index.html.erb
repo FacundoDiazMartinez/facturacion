@@ -11,12 +11,12 @@
 				<th scope="col">Descripción</th>
 				<th scope="col">Base imponible</th>
 				<th scope="col">Alícuota (%)</th>
-				<th scope="col">Importe</th>
+				<th scope="col">Importe ($)</th>
 				<th scope="col"></th>
 			</tr>
 		</thead>
 		<tbody>
-			<%= form.fields_for :tributes, (@invoice.get_default_tributes unless !form.object.tributes.empty?) ,wrapper: false do |f| %>
+			<%= form.fields_for :tributes, (@invoice.get_default_tributes unless (!form.object.tributes.empty? || form.object.persisted?)) ,wrapper: false do |f| %>
 		      	<tr class="fields">
 		      		<td><%= f.hidden_field :desc, class: 'desc' %>
 		      			<%= f.select :afip_id, Invoice.get_tributos(current_user.company), {prompt: "Seleccione..."}, {class: 'form-control form-control-sm afip_id', style: 'min-width: 100px;', disabled: !@invoice.editable?} %>
@@ -38,7 +38,7 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-success', data: {target: '#tributes'}%>
+			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-primary', data: {target: '#tributes'}%>
 		</div>
 	</center>
 <% end %>

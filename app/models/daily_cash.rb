@@ -10,6 +10,8 @@ class DailyCash < ApplicationRecord
   validates_uniqueness_of :date, scope:  :company_id, message: "No se puede abrir dos veces caja en el mismo día."
   validates_presence_of :initial_amount, message: "Debe especificar un valor de inicio."
 
+
+
   STATES = ["Abierta", "Cerrada"]
 
   PAYMENT_TYPES = {

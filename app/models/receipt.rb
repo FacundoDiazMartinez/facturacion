@@ -7,7 +7,7 @@ class Receipt < ApplicationRecord
 
   has_one  :account_movement
   has_many :account_movement_payments, through: :account_movement
-  has_many :receipt_details
+  has_many :receipt_details, dependent: :destroy
   has_many :invoices, through: :receipt_details
   # has_many :invoice_details, through: :invoices
 
@@ -52,7 +52,7 @@ class Receipt < ApplicationRecord
 
     def self.search_by_client name
       if not name.blank?
-        joins(invoice: :client).where("clients.name ILIKE ?", "%#{name}%")
+        joins(:client).where("clients.name ILIKE ?", "%#{name}%")
       else
         all
       end
@@ -69,7 +69,7 @@ class Receipt < ApplicationRecord
       if new_record?
         errors.add(:total, "No se puede crear un recibo por un monto nulo.") unless total > 0.0
       else
-        destroy unless total >= 0.0
+        destroy unless total >= 0.0 || self.account_movement_payments.sum(:total) >= 0
       end
     end
 
@@ -131,9 +131,9 @@ class Receipt < ApplicationRecord
       end
     end
 
-    def set_total
-      self.total = total_without_invoices
-    end
+    # def set_total
+    #   self.total = total_without_invoices
+    # end
 
 
   #PROCESOS

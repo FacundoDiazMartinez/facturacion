@@ -190,7 +190,9 @@ $(document).on("ready", function(){
   });
 })
 
-
+$(document).on("click","#notification_link",function(){
+  $("#notification-container").hide("slow");
+})
 
 function populateSelect(data, dropdown){
 	select = $("#"+dropdown)
@@ -202,6 +204,7 @@ function populateSelect(data, dropdown){
 };
 
 function setProduct(product, index, depot_id){
+  console.log(product);
   $("#"+index).find("input.product_id").val(product["id"]);
   $("#"+index).find("input.code").val(product["code"]);
   $("#"+index).find("input.name").val(product["name"]);
@@ -212,9 +215,16 @@ function setProduct(product, index, depot_id){
   $("#"+index).find("input.supplier_code").val(product["supplier_code"]);
   $("#"+index).find("select.depot_id").val(depot_id);
   $("#"+index).find("input.prodPrice").val(product["cost_price"]).trigger("change");
+  $("#"+index).find("input.quantity").val(1);
+  $("#"+index).find("select.iva_aliquot").val(product["iva_aliquot"]);
+  var recharge = parseFloat($("#client_recharge").val() * -1);
+  $("#"+index).find("input.bonus_percentage").val(recharge).trigger("change");
 
 
   subtotal = $("#"+index).find("input.subtotal");
-  $("#search_product_modal").modal('hide')
-  subtotal.trigger("change");
+  $("#search_product_modal").modal('hide');
+
+
+  calculateSubtotal(subtotal);
+  //subtotal.trigger("change"); // ESte es el original (PARA PURCHASE ORDER)
 };

@@ -5,7 +5,7 @@ class AccountMovementsController < ApplicationController
   # GET /account_movements
   # GET /account_movements.json
   def index
-    @account_movements = @client.account_movements.order("created_at ASC").paginate(page: params[:page], per_page: 25)
+    @account_movements = @client.account_movements.search_by_cbte_tipo(params[:cbte_tipo]).search_by_date(params[:from], params[:to]).order("created_at ASC").paginate(page: params[:page], per_page: 25)
   end
 
   # GET /account_movements/1
@@ -45,7 +45,7 @@ class AccountMovementsController < ApplicationController
     end
   end
 
-  
+
 
   # PATCH/PUT /account_movements/1
   # PATCH/PUT /account_movements/1.json
@@ -72,9 +72,9 @@ class AccountMovementsController < ApplicationController
   end
 
   def export
-    @account_movements = @client.account_movements.where(created_at: params[:since].to_date.beginning_of_day..params[:to].to_date.end_of_day)
+    @account_movements = @client.account_movements.where(created_at: params[:since].to_date.beginning_of_day..params[:to].to_date.end_of_day).order("created_at ASC")
     respond_to do |format|
-      format.xlsx { response.headers['Content-Disposition'] = 'attachment; filename="cuenta_corriente.xlsx"' }
+      format.xlsx { response.headers['Content-Disposition'] = 'attachment; filename="Estado de Cuenta - Elasticos M&M SRL.xlsx"' }
     end
   end
 

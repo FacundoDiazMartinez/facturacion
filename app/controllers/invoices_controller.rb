@@ -28,14 +28,14 @@ class InvoicesController < ApplicationController
         render pdf: "Factura_#{@invoice.comp_number}_#{@invoice.client.name}",
           layout: 'pdf.html',
           template: 'invoices/show',
-          #zoom: 3.1,
+          #zoom: 1, si en local se ve mal, poner en 3.5 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"
-        File.delete(@barcode_path) if File.exist?(@barcode_path)
       end
     end
 
+    @invoice.delete_barcode(@barcode_path)
   end
 
   # GET /invoices/new
@@ -82,10 +82,25 @@ class InvoicesController < ApplicationController
     @invoice.cbte_tipo = (associated_invoice.cbte_tipo.to_i + 2).to_s.rjust(2,padstr= '0')
     @invoice.cbte_fch = Date.today
     if @invoice.invoice_details.size == 0 && @invoice.income_payments.size == 0
-      associated_invoice.invoice_details.each do |detail|
-        id = @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
+      associated_invoice.invoice_details.each do |detail| # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DETALLES
+        band = true
+        associated_invoice.credit_notes.each do |cn|
+          cn.invoice_details.each do |cn_detail|
+            if (cn_detail.attributes.except!(*["id", "invoice_id", "created_at", "updated_at", "user_id"]) == detail.attributes.except!(*["id", "invoice_id", "created_at", "updated_at", "user_id"]))
+              band = false
+            end
+          end
+        end
+        if band
+          id = @invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
+        end
       end
       @invoice.associated_invoice = associated_invoice.id
+      if associated_invoice.tributes.size > 0
+        associated_invoice.tributes.each do |tribute| # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TRIBUTOS
+          @invoice.tributes.build(tribute.attributes.except!(*["id", "invoice_id"]))
+        end
+      end
     end
 
     respond_to do |format|
@@ -100,16 +115,18 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
+    # if !session[:return_to].blank?
+    #   session[:return_to] = session[:return_to] + "/edit"
+    # end
     @client = @invoice.client
     @invoice.user_id = current_user.id
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])
+        # session.delete(:return_to)
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.' }
-        format.json { render :show, status: :ok, location: @invoice }
       else
         pp @invoice.errors
         format.html { render :edit }
-        format.json { render json: @invoice.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -161,7 +178,8 @@ class InvoicesController < ApplicationController
 
   def autocomplete_associated_invoice
     term = params[:term]
-    invoices = current_user.company.invoices.where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%")
+    client_id = params[:client_id]
+    invoices = current_user.company.clients.find(client_id).invoices.where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%").order('comp_number DESC')
     render :json => invoices.map{|i| {:id => i.id, :label => "Factura Nº: #{i.comp_number}", :value => i.comp_number}}
   end
 

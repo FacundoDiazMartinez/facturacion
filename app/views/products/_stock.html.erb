@@ -1,26 +1,31 @@
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Ubicación</th>
-      <th scope="col">Estado</th>
-      <th scope="col">Cantidad</th>
-      <th colspan="2"></th>
-    </tr>
-  </thead>
+<%= nested_form_for @product do |form| %>
 
-  <tbody>
-    <% @stocks.each do |stock| %>
+  <table class="table table-striped" id="stock_fields">
+    <thead>
       <tr>
-        <td><%= stock.depot_name %></td>
-        <td><%= stock.state %></td>
-        <td><%= stock.quantity %></td>
-        <td>
-          <%# link_to icon('fas', 'eye'), depot_path(stock.depot.id), class: 'btn btn-sm btn-outline-secondary' %>
-          <%= link_to icon('fas', 'edit'), edit_product_stock_path(@product.id, stock.id), class: 'btn btn-sm btn-outline-secondary', data:{toggle: 'modal', target: '#stockModal', remote: true} %>
-        </td>
+        <th scope="col">Depósito</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Cantidad</th>
+        <th colspan="1"></th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
 
-<%= paginate @stocks %>
+    <tbody>
+      <%= form.fields_for :stocks, @product.stocks.order(:depot_id), wrapper: false do |f|%>
+        <tr class="fields">
+            <td><%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}, f.object.depot_id), {}, {class: 'form-control'} %></td>
+            <td><%= f.select :state, Stock::STATES, {}, {class: 'form-control'} %></td>
+            <td><%= f.number_field :quantity, required: true, class: 'form-control' %></td>
+            <td><%= f.link_to_remove icon('fas', 'trash'), class: 'btn btn-danger' %></td>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+  <div class="row">
+    <div class="col text-center mb-3">
+      <%= form.link_to_add "Agregar", :stocks, class: 'btn btn-success', data:{target: "#stock_fields"} %>
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </div>
+  </div>
+
+<% end %>

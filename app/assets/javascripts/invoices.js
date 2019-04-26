@@ -12,11 +12,24 @@ $( document ).ready(function() {
 		total_venta = parseFloat($("#purchase_order_total").val());
 	}
 	showProductNamePopover ();
+	setDefaultTributesDescription();
+	cancel_concept_addition();
+	$("input.price").trigger("change");
 });
 
 $(document).on('pjax:complete', function() {
 	showProductNamePopover();
+	setDefaultTributesDescription();
+	cancel_concept_addition();
+	$("input.price").trigger("change");
 });
+
+function cancel_concept_addition(){
+	if ($.inArray($("#invoice_cbte_tipo").val(), ["03", "08", "13"]) > -1) {
+		$("#add_concept_to_invoice").hide();
+		$("#invoice_cbte_tipo").attr("disabled",true);
+	}
+}
 
 function showProductNamePopover () {
 	$("#details tr.fields").each(function(){  // Mostrar popover del campo nombre con el nombre completo
@@ -54,7 +67,7 @@ function updateTooltip22(element) {
 	var iva_amount = element.closest("td").find("input.iva_amount").val();
 	$(element).popover('dispose');
 	$(element).popover({
-		title: "Monto I.V.A.: $" + iva_amount,
+		title: "Monto I.V.A.: $ " + iva_amount,
 		trigger: "hover"
 	});
 }
@@ -84,10 +97,9 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 	$(this).closest("tr.fields").find("input.quantity").val(1);
-	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot)
-	$(this).closest("tr.fields").find("select.iva_aliquot").trigger("change")
-	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge);
-	calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
+	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot);
+	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
+	// calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
 });
 
 
@@ -115,7 +127,6 @@ $(document).on("change", ".price, .quantity, .bonus_percentage", function(){
 	total_neto 				= parseFloat(price.val()) * parseFloat(quantity.val());
 	b_amount = (total_neto * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2);
 	bonus_amount.val(b_amount);
-
 	calculateSubtotal(subtotal);
 });
 
@@ -125,7 +136,6 @@ $(document).on("change", ".bonus_amount", function(){
 	total_neto 				= parseFloat(price.val()) * parseFloat(quantity.val());
 	b_percentage 		= (parseFloat(bonus_amount.val()) * 100 / parseFloat(total_neto)).toFixed(2);
 	bonus_percentage.val(b_percentage);
-
 	calculateSubtotal(subtotal);
 });
 
@@ -138,13 +148,13 @@ $(document).on("change", ".iva_aliquot", function(){
 		iva_am = ( (price.val() - bonus_amount.val() ) * parseFloat( iva_aliquot.text() ) * quantity.val() ).toFixed(2);
 	}
 	iva_amount.val(iva_am);
-	updateTooltip22($(this))
+	updateTooltip22($(this));
 	calculateSubtotal(subtotal);
 });
 
 function calculateSubtotal(subtotal){
-	setVars(subtotal);
 
+	setVars(subtotal);
 	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
 		iva_am = 0.0
 	}else{
@@ -156,21 +166,26 @@ function calculateSubtotal(subtotal){
 
 	var inv_total = parseFloat(0);
 	$("tr.fields:visible > td > input.subtotal").each(function(){
-	    inv_total = inv_total + parseFloat($(this).val());
+    inv_total = inv_total + parseFloat($(this).val());
 	});
-	$("tr.fields:visible > td > input.importe").each(function(){
-	    inv_total = inv_total + parseFloat($(this).val());
-	});
+
+	$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Insercion de base imponible en tributos (suma de subtotales de cada concepto)
+		base_imp = inv_total.toFixed(2);
+		e = $(this).find("input.base_imp");
+		e.val(base_imp);
+		alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
+		e.closest("tr.fields").find("input.importe").val((base_imp * ( alic/100)).toFixed(2));
+	})
+
 	$("#invoice_total").val(inv_total.toFixed(2));
 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
 	$("#total_left").val(total_left.toFixed(2));
+
 	if ($("#invoice_cbte_tipo").length != 0) {
 		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
-	}else{
-		var is_invoice = false
 	}
 	if ($("#invoice_cbte_tipo").length != 0) {
-		if (total_left > 0 || not(is_invoice)) {
+		if (total_left > 0 || is_invoice < 0) {
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
@@ -182,6 +197,7 @@ function calculateSubtotal(subtotal){
 	$("span#total_left_venta").text("$" + total_left);
 
 	subtotal.closest("td").find("strong").html("$" + subtotal.val())
+	e.trigger("change"); // >>>>>>>>>>>> para que se sumen los tributos al TOTAL YA CALCULADO de la factura
 	complete_payments();
 }
 
@@ -242,45 +258,32 @@ $(document).on('nested:fieldAdded', function(event){
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 
-	toogleConceptInTable()
+	toogleConceptInTable();
+	debit_note_selected();
 });
 
 $(document).on('nested:fieldRemoved', function(event){
-	 var field 	= event.field;
-	 subtotal 	= field.find("input.subtotal")
-	 calculateSubtotal(subtotal)
+	var field 	= event.field;
+	subtotal 	= field.find("input.subtotal");
+	$(".remove-invoice-payment").attr("data-confirm", "¡Atención! Existen conceptos marcados para borrar pero los cambios no han sido guardados aún. ¿Desea continuar de todas formas?")
+	calculateSubtotal(subtotal);
 })
 
 
-// $(document).on("change", ".subtotal", function(){
-// 	var total = parseFloat(0);
-// 	$(".subtotal").each(function(){
-// 	    total = total + parseFloat($(this).val());
-// 	});
-// 	$(".importe").each(function(){
-// 	    total = total + parseFloat($(this).val());
-// 	});
-// 	$("#invoice_total").val(total);
-
-// 	total_left = $("#invoice_total").val() - $("#invoice_total_pay").val();
-// 	$("#total_left").val(total_left);
-// 	$("#total_left_venta").val(total_left);
-
-// 	if (total_left > 0 ) {
-// 		$("#normal").show();
-// 		$("#with_alert").hide();
-// 	}else{
-// 		$("#normal").hide();
-// 		$("#with_alert").show();
-// 	}
-
-// 	$("span#total_left_venta").text("$" + total);
-// 	total_venta = total;
-
-// 	$(this).closest("td").find("strong").html("$" + $(this).val())
-// 	complete_payments();
-// 	// iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
-// });
+function debit_note_selected(){
+	cbte_tipo = $("#invoice_cbte_tipo");
+	var COD_ND = ["02", "07", "12"];
+	if (COD_ND.indexOf(cbte_tipo.val()) != -1) {
+	  concept_codes = $(".code");
+	  concept_codes.each(function(){
+	    if ($(this).val() == "") {
+	      $(this).val("-");
+	      $(this).attr("readonly",true);
+	      $(this).closest("tr.fields").find(".tipo").val("Servicio");
+	    }
+	  })
+	}
+}
 
 $(document).on("change", ".importe", function(){
 	var total = parseFloat(0);
@@ -304,6 +307,7 @@ $(document).on("change", ".importe", function(){
 			$("#normal").show();
 			$("#with_alert").hide();
 		}else{
+			console.log("alert");
 			$("#normal").hide();
 			$("#with_alert").show();
 		}
@@ -333,7 +337,7 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 }
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
-	if ($.inArray($(this).val(), ["03", "08", "13"])) {
+	if ($.inArray($(this).val(), ["03", "08", "13"]) > -1 ) {
 		$("#payment_title").html("Devoluciones de dinero");
 		//$("#total_left").val(0);
 	}else{
@@ -345,6 +349,18 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 	cbte_tipo = $("#invoice_cbte_tipo");
 	concepto = $("#invoice_concepto");
 	$.get(form.attr("action")+'/change_attributes', {cbte_tipo: cbte_tipo.val(), concepto: concepto.val()}, null, "script");
+
+
+
+	// if ($("#invoice_cbte_tipo").val() != "01" && $("#invoice_cbte_tipo").val() != "06") {
+	// 	$("#ipayments").hide();
+	// 	$("#itributes").hide();
+	// } else {
+	// 	$("#payment_title").html("Pagos");
+	// 	$("#ipayments").show();
+	// 	$("#itributes").show();
+	// }
+
 });
 
 $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){
@@ -359,6 +375,9 @@ function changeView(tipo){
 $(document).on("click","#client_name", function(){
 	$(this).val("");
 });
+
+
+
 
 function addRechargeToDetails(){
 	var recharge = parseFloat($("#client_recharge").val() * -1);
@@ -379,6 +398,12 @@ $(document).on("change", "select.afip_id", function(){
 	$(this).closest("tr.fields").find("input.desc").val($(this).find('option:selected').text());
 })
 
+function setDefaultTributesDescription(){
+	$("#tributes > tbody > tr").each(function(){
+		$(this).find("input.desc").val($(this).find('option:selected').text());
+	})
+}
+
 $(document).on("change", "input.base_imp", function(){
 	calculateTrib($(this));
 })
@@ -390,7 +415,7 @@ $(document).on("change", "input.alic", function(){
 function calculateTrib(e){
 	base_imp = parseFloat(e.closest("tr.fields").find("input.base_imp").val());
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
-	e.closest("tr.fields").find("input.importe").val(base_imp * ( alic/100)).trigger("change");
+	e.closest("tr.fields").find("input.importe").val((base_imp * ( alic/100)).toFixed(2)).trigger("change");
 }
 
 function toggleHeader(){

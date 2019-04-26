@@ -30,7 +30,7 @@
 				<th scope="col" style="width:1%;">Cantidad</th>
 				<th scope="col">Depósito</th>
 				<th scope="col" class="only-desktop">Medida</th>
-				<th scope="col">Precio</th>
+				<th scope="col">Precio ($)</th>
         <th scope="col" class="only-desktop">Bonificado (%)</th>
 		        <% if @invoice.editable? %>
 		          	<th scope="col" class="only-desktop">Comisionantes</th>
@@ -74,7 +74,7 @@
 						<%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, 7),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?, style: 'width: 100px;'} %>
 					</td>
 					<td>
-						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"popover"}, disabled: !@invoice.editable? %>
+						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"popover"}, step: :any, disabled: !@invoice.editable? %>
 					</td>
           <td class="only-desktop"><%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', disabled: !@invoice.editable? %>
 						<%= f.hidden_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
@@ -100,7 +100,7 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-success', data: {target: '#details'} %>
+			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-primary', data: {target: '#details'}, id: "add_concept_to_invoice" %>
 		</div>
 	</center>
 <% end %>

@@ -24,7 +24,7 @@ module Subpayment
   end
 
   def update_payment
-    payment.update(total: self.total)
+    payment.update_column(:total,self.total)
   end
 
   def client

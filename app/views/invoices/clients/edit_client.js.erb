@@ -3,18 +3,32 @@
 	$('#clientModal').on('hidden.bs.modal', function (e) {
   	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
   	$("#invoice_client_id").val("<%= @client.id %>");
+		$("#associated_invoice").attr("disabled", "disabled");
+		// $("#ipayments").show();
+		// $("#itributes").show();
   	var options = <%= raw Invoice.available_cbte_type(current_user.company, @client).to_json %>
   	$('#invoice_cbte_tipo').html("");
   	$.each(options, function(i, option) {
 	    $('#invoice_cbte_tipo').append( new Option(option[0],option[1]) );
 		});
-		addRechargeToDetails();
+		// addRechargeToDetails();
 		"<% if @client.saldo.to_f < 0.0 && @client.valid_for_account %>"
 			$("#saldo_disponible").html("Saldo disponible en cuenta corriente: $<%= -@client.saldo.to_f %>");
 		"<% else %>"
 			$("#saldo_disponible").html("");
 		"<% end %>"
+		$("#invoice_cbte_tipo").trigger("change");
 	});
 '<% else %>'
 	$("#client_errors").html("<%= j error_explanation(@client) %>");
 '<% end %>'
+
+$("#invoice_total").val("0.00");
+$("#total_left").val("0.00");
+$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Insercion de base imponible en tributos (suma de subtotales de cada concepto)
+	base_imp = 0;
+	e = $(this).find("input.base_imp");
+	e.val(base_imp);
+	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
+	e.closest("tr.fields").find("input.importe").val((base_imp * ( alic/100)).toFixed(2));
+})

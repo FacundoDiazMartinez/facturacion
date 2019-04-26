@@ -1,11 +1,16 @@
 
 <!-- PIE DE PAGINA -->
 <div class="row footer_bottom">
-  <p>
-    <b>
-      <%= @invoice.company.invoice_footer.html_safe %>
-    </b>
-  </p>
+  <% if @invoice.company.invoice_footer.length > 0 %>
+    <div class="container" style="border-style: dotted;border-width: 1px; padding: 5px;">
+      <p>
+        <b>
+          <%= @invoice.company.invoice_footer.html_safe %>
+        </b>
+      </p>
+    </div>
+  <% end %>
+
   <div class="container">
     <table class="width_100">
       <tr>
@@ -17,14 +22,14 @@
               <% if @invoice.check_authorized_invoice %>
                 <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
                 <% outputter = Barby::PngOutputter.new(barcode) %>
-                <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
+                <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 35) } %>
                 <%= image_tag(@barcode_path, class: "img-responsive") %>
               <% else %>
                 -- Comprobante NO Autorizado --
                 <% if !@invoice.cae.blank? %>
                   <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
                   <% outputter = Barby::PngOutputter.new(barcode) %>
-                  <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 40) } %>
+                  <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 35) } %>
                   <%= image_tag(@barcode_path, class: "img-responsive") %>
                   <%= barcode %>
                 <% end %>
@@ -43,10 +48,33 @@
       </tr>
     </table>
   </div>
+
+  <div class="container border">
+    <br>
+    <table class="width_100">
+      <col>
+      <col width="450">
+      <col>
+      <tr>
+        <td rowspan="3" style="width: 1px;"></td>
+        <td><b>Móvil:</b></td>
+        <td><b>Aclaración:</b></td>
+      </tr>
+      <tr>
+        <td colspan="2"> <br> </td>
+      </tr>
+      <tr>
+        <td><b>Firma:</b></td>
+        <td><b>DNI:</b></td>
+      </tr>
+      <tr>
+        <td colspan="2"> <br> </td>
+      </tr>
+    </table>
+  </div>
 </div>
 <div class="text_center">
   <br>
   Página <%= page_number %> de <%= total_pages%>
 </div>
-
 <!-- FIN PIE DE PAGINA -->

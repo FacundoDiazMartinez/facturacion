@@ -35,7 +35,8 @@ class Product < ApplicationRecord
   	validates_numericality_of :price, message: "El precio sólo debe contener caracteres numéricos."
 
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
-  	after_create :create_price_history, :user_activity_for_create
+  	after_create :create_price_history
+    after_create :user_activity_for_create, if: Proc.new{|p| p.name != "Intereses tarjeta de crédito"}
 
   	before_save :check_iva_aliquot, :check_net_price, :check_category_products_count
 
@@ -198,6 +199,12 @@ class Product < ApplicationRecord
 
 		def set_available_stock
 			update_column(:available_stock, self.stocks.where(state: "Disponible").sum(:quantity))
+      if !self.minimum_stock.nil?
+        if self.available_stock <= self.minimum_stock
+          UserActivity.create_for_minimum_stock_reached(self)
+          Notification.create_for_low_stock(self)
+        end
+      end
 		end
 
 		def iva
@@ -295,6 +302,7 @@ class Product < ApplicationRecord
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
 			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 			s.save
+      self.set_available_stock
 		end
 
 		def deliver_product attrs={}

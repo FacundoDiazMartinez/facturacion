@@ -135,6 +135,7 @@ end
 group :production do
   # Use Puma as the app server
   gem 'puma', '~> 3.11'
+  gem 'rails_12factor'
 end
 
 group :test do

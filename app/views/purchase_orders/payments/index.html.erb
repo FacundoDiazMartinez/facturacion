@@ -23,7 +23,7 @@
 						<td><%= payment.payment_date %></td>
 						<td>
 							<% unless (payment.errors.any? || payment.id.blank?) || !@purchase_order.editable? %>
-								<%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+								<%= link_to icon('fas', 'trash'), payment_path(payment.id,purchase_order_id: @purchase_order.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
 							<% end -%>
 						</td>
 					</tr>
@@ -35,8 +35,8 @@
 <% if @purchase_order.editable? %>
 	<center>
 		<div class="m-2">
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-success', type: 'button', id: "normal", style: "display: #{@purchase_order.total_left > 0 ? 'block' : 'none'};" %>
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-success', type: 'button', remote: true, id: "with_alert", style: "display: #{@purchase_order.total_left <= 0 ? 'block' : 'none'};" %>
+    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id: "normal", style: "display: #{@purchase_order.total_left > 0 ? 'block' : 'none'};" %>
+    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-primary', type: 'button', remote: true, id: "with_alert", style: "display: #{@purchase_order.total_left <= 0 ? 'block' : 'none'};" %>
 		</div>
 	</center>
 <% end %>

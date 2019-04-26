@@ -83,6 +83,16 @@ class UserActivity < ApplicationRecord
       )
   end
 
+  def self.create_for_minimum_stock_reached product
+      UserActivity.create(
+          user_id: product.created_by,
+          photo: "/images/product.png",
+          title: "El producto #{product.name} posee stock bajo",
+          body: "El día #{I18n.l(Date.today)} el producto #{product.name} alcanzó su stock mínimo, con una cantidad de #{product.available_stock} #{product.measurement_unit_name}.",
+          link: "/products/#{product.id}"
+      )
+  end
+
   def self.create_for_product_price_history product_price_history #Se crea cuando el precio del producto cambia
     title = "El usuario #{product_price_history.user.name} actualizó precio de"
     activities = product_price_history.user.user_activities.where("DATE(created_at) = ? AND title ILIKE ?", Date.today, "#{title}%") #Busca si existen actividades del mismo tipo

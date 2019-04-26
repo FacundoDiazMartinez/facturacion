@@ -2,7 +2,7 @@
 	<div class="form-group row">
 	  	<%= form.label :state, class:'col-4 col-form-label col-form-label-sm' %>
 	  	<div class="col-8">
-	  		<%= form.text_field :state, class: 'form-control', readonly: true %>
+	  		<%= form.text_field :state, class: 'form-control',style: "font-weight: bold;", readonly: true %>
 	  	</div>
 	</div>
 </div>
@@ -39,7 +39,7 @@
 	<div class="form-group row">
 		<%= form.label :associated_invoice, "Factura asociada", class:'col-4 col-form-label col-form-label-sm' %>
 		<div class="col-8">
-			<%= autocomplete_field_tag :associated_invoice, form.object.invoice_comp_number, autocomplete_associated_invoice_invoices_path, class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: !@invoice.is_debit_note?, autofocus: true, id_element: "#invoice_associated_invoice" %>
+			<%= autocomplete_field_tag :associated_invoice, form.object.invoice_comp_number, autocomplete_associated_invoice_invoices_path, :fields => {:client_id => '#invoice_client_id'} , class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: !@invoice.is_debit_note?, autofocus: true, id_element: "#invoice_associated_invoice" %>
 			<%= form.hidden_field :associated_invoice %>
 		</div>
 	</div>

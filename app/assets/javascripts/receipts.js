@@ -1,5 +1,6 @@
 $(document).on('ready',function(){
-  calculateTotalLeft()
+  calculateTotalPayed();
+
   if ($('#details > tbody > tr.fields').filter(":visible").length > 0) {
     $("#editReceiptClient").attr('data-toggle', 'tooltip');
     $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
@@ -7,14 +8,18 @@ $(document).on('ready',function(){
   }
 })
 
-$(document).on('pjax:complete', function() { calculateTotalLeft() })
+$(document).on('pjax:complete', function() {
+  calculateTotalPayed();
+
+})
 
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
   var band = false
-  $(".invoice_comp_number").each(function(){
-    if ($(this).val() == data.item.label){
+  $(".invoice_comp_number").filter(':visible').each(function(){
+    if ($(this).val() == data.item.comp_number){
       band = true
-      alert("Ya asigno este comprobante al remito.")
+      alert("Este comprobante ya ha sido asignado.");
+      $(".receipt_associated-invoice-autocomplete_field").val("");
       return false;
     }
   })
@@ -22,7 +27,6 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
     $.get("/receipts/associate_invoice", {invoice_id: data.item.id}, "", "json")
       .done(function(details){
         $.each(details, function(i, detail){
-          console.log(detail)
           $(".add_nested_fields").click();
           tr = $("tr.fields").last();
           tr.find('input.tipo').val(detail.tipo);
@@ -38,10 +42,18 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
         $("#editReceiptClient").attr('data-toggle', 'tooltip');
         $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
         $("#editReceiptClient").tooltip();
+        calculateTotalPayed();
+      });
+    $(".receipt_associated-invoice-autocomplete_field").val("");
 
-        calculateTotalLeft()
-        $(".receipt_associated-invoice-autocomplete_field").val("")
-      })
+  }
+});
+
+$(document).on("change","#receipt_cbte_tipo",function(){
+  if ($("#receipt_cbte_tipo option:selected").val() == "99") {
+    $("#comp_number").attr("data-autocomplete","/receipts/autocomplete_credit_note");
+  } else if ($("#receipt_cbte_tipo option:selected").val() == "00") {
+    $("#comp_number").attr("data-autocomplete","/receipts//receipts/autocomplete_invoice_and_debit_note");
   }
 });
 
@@ -57,6 +69,21 @@ function calculateTotalLeft(){
     }
     $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
   })
+  return total;
+}
+
+function calculateTotalPayed(){
+  total_left = calculateTotalLeft();
+  total_payed = 0;
+  if ($(".pay").length > 0) {
+    $('.pay').each(function(){
+      var pag = $(this).text().replace("$ ", "");
+        total_payed += parseFloat(pag);
+      $('#total_pagado').text('Total pagado: $ ' + total_payed.toFixed(2));
+    });
+  }
+  saldo = total_left - total_payed;
+  $('#totales').text('Total facturas: $ ' + total_left + '   - Pagos acumulados: $ ' + total_payed.toFixed(2) + '   - A pagar: $ ' + (saldo).toFixed(2));
 }
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -67,6 +94,12 @@ $(document).on('nested:fieldRemoved', function(event){
   })
 
   $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
+
+  calculateTotalPayed();
+});
+
+$(document).on('nested:fieldAdded:account_movement', function(event){
+  calculateTotalPayed();
 });
 
 $(document).on('keyup','.receipt_associated-invoice-autocomplete_field', function(){
