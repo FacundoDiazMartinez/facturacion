@@ -1,1 +1,2 @@
-$("#edit_payment_modal").html("<%= j render template: '/payments/edit.html.erb' %>")
+$("#edit_payment_modal").html("<%= j render template: '/payments/edit.html.erb' %>");
+$("#edit_payment_modal").find("#total_left_venta").text("$ " + $("#total_left").val());
