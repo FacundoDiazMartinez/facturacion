@@ -792,7 +792,7 @@ class Invoice < ApplicationRecord
           end
         end
       else
-        showed_payment = "Cuenta Corriente"
+        showed_payment = "Cta. Cte."
       end
 
       return showed_payment
