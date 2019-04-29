@@ -777,7 +777,7 @@ class Invoice < ApplicationRecord
 
     def all_payments_string
 
-      if !self.income_payments.nil?
+      if !self.income_payments.blank?
         pagos = []
         self.income_payments.each do |p|
           pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
