@@ -147,7 +147,6 @@ class InvoicesController < ApplicationController
   def deliver
     require 'barby'
     require 'barby/barcode/code_25_interleaved'
-    require 'barby/outputter/ascii_outputter'
     require 'barby/outputter/png_outputter'
     @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
     InvoiceMailer.send_to_client(@invoice, params[:email], @barcode_path).deliver
