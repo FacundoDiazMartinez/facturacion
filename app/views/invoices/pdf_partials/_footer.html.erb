@@ -2,12 +2,12 @@
 <!-- PIE DE PAGINA -->
 <div class="row footer_bottom">
   <% if @invoice.company.invoice_footer.length > 0 %>
-    <div class="container" style="border-style: dotted;border-width: 1px; padding: 5px;">
-      <p>
-        <b>
+    <div class="container" style="border-style: dotted;border-width: 1px; padding: 20px;">
+
           <%= @invoice.company.invoice_footer.html_safe %>
-        </b>
-      </p>
+          <% pp "///////////////////////////////" %>
+          <% pp @invoice.company.invoice_footer.html_safe.split("</span>").count %>
+
     </div>
   <% end %>
 
