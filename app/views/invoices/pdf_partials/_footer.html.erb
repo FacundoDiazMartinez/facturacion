@@ -1,8 +1,9 @@
 
 <!-- PIE DE PAGINA -->
+<br>
 <div class="row footer_bottom">
   <% if @invoice.company.invoice_footer.length > 0 %>
-    <div class="container" style="border-style: dotted;border-width: 1px; padding: 20px;">
+    <div class="container" style="border-style: dotted;border-width: 1px; padding: 10px; height:100px; overflow: hidden;">
       <%= @invoice.company.invoice_footer.html_safe %>
       <% pp "///////////////////////////////" %>
       <% pp @invoice.company.invoice_footer.html_safe.split("</span>").count %>
