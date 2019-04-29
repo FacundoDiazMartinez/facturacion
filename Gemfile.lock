@@ -12,7 +12,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    Afip (1.1.0)
+    Afip (1.1.1)
       httpi
       savon
     actioncable (5.2.3)
@@ -921,7 +921,7 @@ GEM
     nenv (0.3.0)
     nested_form (0.3.2)
     nio4r (2.3.1)
-    nokogiri (1.10.2)
+    nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
     nori (2.6.0)
     notiffany (0.1.1)
@@ -944,7 +944,7 @@ GEM
       pry (>= 0.10.4)
     public_suffix (3.0.3)
     puma (3.12.1)
-    rack (2.0.6)
+    rack (2.0.7)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.3)
