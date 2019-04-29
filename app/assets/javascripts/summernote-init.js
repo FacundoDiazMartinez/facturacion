@@ -11,18 +11,18 @@ function loadSummernote(){
     toolbar: [
       // [groupName, [list of button]]
       // ['style', ['style']],
-      ['style', ['bold', 'italic', 'underline', 'clear']],
+      // ['style', ['bold', 'italic', 'underline', 'clear']],
       ['undo', ['undo', 'redo']],
-      ['font', ['font']],
+      // ['font', ['font']],
       // ['fontsize', ['fontsize']],
       ['color', ['color']],
-      ['hr', ['hr']],
+      // ['hr', ['hr']],
       ['para', ['ul', 'ol', 'paragraph']],
       // ['height', ['height']],
-      ['table', ['table']],
-      ['link', ['link']],
+      // ['table', ['table']],
+      // ['link', ['link']],
       // ['fullscreen', ['fullscreen']],
-      ['codeview', ['codeview']]
+      // ['codeview', ['codeview']]
     ],
     popover: {
       air: [
@@ -42,7 +42,7 @@ function loadSummernote(){
         var t = e.currentTarget.innerText;
 
         t.split(/\n/).forEach(function(line){  //Limite por cada linea
-          if (line.length > 130) {
+          if (line.length > 230) {
             if (e.keyCode != 8)
               e.preventDefault();
           }
@@ -52,7 +52,7 @@ function loadSummernote(){
           if (e.keyCode != 8)
             e.preventDefault();
         }
-        
+
         // if (t.trim().length >= 400) { // Limite cantidad de caracteres
         //   //delete key
         //   if (e.keyCode != 8)
