@@ -58,18 +58,18 @@ $(document).on("change","#receipt_cbte_tipo",function(){
 });
 
 function calculateTotalLeft(){
-  total = 0;
+  left = 0;
   $('.invoice_total_left:visible').each(function(){
     var res = $(this).val().replace("$ ", "");
     tipo = $(this).closest("tr.fields").find('input.tipo').val()
     if (tipo == "Nota de Crédito"){
-      total -= parseFloat(res);
+      left -= parseFloat(res);
     }else{
-      total += parseFloat(res);
+      left += parseFloat(res);
     }
-    $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
-  })
-  return total;
+    // $('#total_faltante').text('Total faltante: $ ' + left.toFixed(2));
+  });
+  return left;
 }
 
 function calculateTotalPayed(){
@@ -84,6 +84,11 @@ function calculateTotalPayed(){
   }
   saldo = total_left - total_payed;
   $('#totales').text('Total facturas: $ ' + total_left + '   - Pagos acumulados: $ ' + total_payed.toFixed(2) + '   - A pagar: $ ' + (saldo).toFixed(2));
+  if ($("#receipt_state").val() != "Finalizado") {
+    $('#total_faltante').text('Total faltante: $ ' + saldo.toFixed(2));
+  } else {
+    $('#total_faltante').hide();
+  }
 }
 
 $(document).on('nested:fieldRemoved', function(event){
@@ -114,7 +119,7 @@ $(document).on('click','#add_payment', function(){
   $("#total_left").empty();
   total_left = 0;
   $('#details > tbody > tr.fields').filter(":visible").each(function() {
-    total_left = total_left + parseInt($(this).find('input.invoice_total_left').val());
+    total_left += parseInt($(this).find('input.invoice_total_left').val());
   });
 
   if (total_left > 0) {

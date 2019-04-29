@@ -5,6 +5,11 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 /afip
 /config/initializers/afip.rb
+
+/afip
+/config/initializers/afip.rb
+/config/database.yml
+
 # Ignore bundler config.
 /.bundle
 
@@ -29,3 +34,4 @@
 
 #/config/initializers/afip.rb
 /config/database.yml
+
