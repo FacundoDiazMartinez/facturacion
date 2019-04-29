@@ -27,23 +27,3 @@
     border-radius: 100%;
     border: solid 3px white;
 }
-
-/* ESTILOS PARA EL SUMMERNOTE para no mostrar algunas de las opciones de estilos */
-.note-height {
-    display: none;
-}
-.note-table {
-    display: none;
-}
-.note-link {
-    display: none;
-}
-.note-view {
-    display: none;
-}
-.note-insert {
-    display: none;
-}
-.note-style {
-    display: none;
-}

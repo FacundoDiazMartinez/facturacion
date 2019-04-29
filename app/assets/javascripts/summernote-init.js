@@ -31,7 +31,7 @@ function loadSummernote(){
       ]
     },
     airMode: false,
-    placeholder: 'Confeccione su publicidad aquí...',
+    placeholder: 'Ingrese su texto aquí...',
     disableDragAndDrop: true,
     lang: 'es-ES',
     height: 150,
