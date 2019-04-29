@@ -28,7 +28,8 @@ class InvoicesController < ApplicationController
         render pdf: "Factura_#{@invoice.comp_number}_#{@invoice.client.name}",
           layout: 'pdf.html',
           template: 'invoices/show',
-          #zoom: 1, si en local se ve mal, poner en 3.5 solo para local
+          #zoom: 3.5, 
+          #si en local se ve mal, poner en 3.5 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"
