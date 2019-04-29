@@ -43,12 +43,12 @@ function loadSummernote(){
 
         t.split(/\n/).forEach(function(line){  //Limite por cada linea
           if (line.length > 230) {
-            if (e.keyCode != 8)
+            if (e.keyCode != 7)
               e.preventDefault();
           }
         });
 
-        if (t.split(/\n/).length > 6) { // Limite cantidad de lineas
+        if (t.split(/\n/).length > 5) { // Limite cantidad de lineas
           if (e.keyCode != 8)
             e.preventDefault();
         }
