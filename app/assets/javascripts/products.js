@@ -41,6 +41,10 @@ function setPrecioFinal(){
 	final.val((neto * (1 + iva)).toFixed(2));
 };
 
+function removeRequired(removeButton){
+	removeButton.closest("tr.fields").find("input").removeAttr("required");
+};
+
 function setCostPrice(){
 	var neto 		= parseFloat($("#product_net_price").val());
 	var costo 		= $("#product_cost_price").val();

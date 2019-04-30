@@ -278,7 +278,8 @@ $(document).on('nested:fieldAdded', function(event){
 	debit_note_selected();
 });
 
-$(document).on('nested:fieldRemoved', function(event){
+$(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes', function(event){
+	alert("asd");
 	var field 	= event.field;
 	subtotal 	= field.find("input.subtotal");
 	$(".remove-invoice-payment").attr("data-confirm", "¡Atención! Existen conceptos marcados para borrar pero los cambios no han sido guardados aún. ¿Desea continuar de todas formas?")
