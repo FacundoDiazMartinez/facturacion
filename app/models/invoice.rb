@@ -202,7 +202,8 @@ class Invoice < ApplicationRecord
       # end
 
   		def total_left
-  			total.to_f - total_pay.to_f
+  			left = total.to_f - total_pay.to_f
+        return left.round(2)
   		end
 
   		def editable?
@@ -526,7 +527,10 @@ class Invoice < ApplicationRecord
   		end
 
       def sum_details
-        self.invoice_details.sum(:subtotal) + self.tributes.sum(:importe)
+        total = 0
+        self.invoice_details.map{|d| total += d.subtotal}
+        self.tributes.map{|t| total += t.importe}
+        return total
       end
 
       def confirmed_notes
