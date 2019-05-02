@@ -51,7 +51,7 @@ class Invoice < ApplicationRecord
     COD_NC = ["03", "08", "13"]
 
     validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
-    validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice?}
+    #validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice?}
     validates_presence_of :total, message: "El total no debe estar en blanco."
     validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0."
     validates_presence_of :total_pay, message: "El total pagado no debe estar en blanco."

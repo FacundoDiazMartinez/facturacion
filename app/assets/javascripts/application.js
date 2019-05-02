@@ -204,7 +204,6 @@ function populateSelect(data, dropdown){
 };
 
 function setProduct(product, index, depot_id){
-  console.log(product);
   $("#"+index).find("input.product_id").val(product["id"]);
   $("#"+index).find("input.code").val(product["code"]);
   $("#"+index).find("input.name").val(product["name"]);

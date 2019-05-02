@@ -65,7 +65,7 @@ class ReceiptsController < ApplicationController
         # if @receipt.state = "Finalizado"
         #   @receipt.touch_account_movement
         # end
-        format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue creado correctamente.' }
+        format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El medio de pago fue creado/imputado correctamente.' }
       else
         build_account_movement
         format.html { render :new }

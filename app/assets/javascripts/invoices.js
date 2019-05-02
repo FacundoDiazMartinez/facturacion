@@ -278,7 +278,8 @@ $(document).on('nested:fieldAdded', function(event){
 	debit_note_selected();
 });
 
-$(document).on('nested:fieldRemoved', function(event){
+$(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes', function(event){
+	alert("asd");
 	var field 	= event.field;
 	subtotal 	= field.find("input.subtotal");
 	$(".remove-invoice-payment").attr("data-confirm", "¡Atención! Existen conceptos marcados para borrar pero los cambios no han sido guardados aún. ¿Desea continuar de todas formas?")
@@ -364,17 +365,6 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 	cbte_tipo = $("#invoice_cbte_tipo");
 	concepto = $("#invoice_concepto");
 	$.get(form.attr("action")+'/change_attributes', {cbte_tipo: cbte_tipo.val(), concepto: concepto.val()}, null, "script");
-
-
-
-	// if ($("#invoice_cbte_tipo").val() != "01" && $("#invoice_cbte_tipo").val() != "06") {
-	// 	$("#ipayments").hide();
-	// 	$("#itributes").hide();
-	// } else {
-	// 	$("#payment_title").html("Pagos");
-	// 	$("#ipayments").show();
-	// 	$("#itributes").show();
-	// }
 
 });
 
