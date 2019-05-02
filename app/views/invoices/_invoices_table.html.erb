@@ -55,7 +55,7 @@
       </thead>
 
       <tbody>
-        <% @invoices.only_invoices.each do |invoice| %>
+        <% @invoices.unassociated_invoices.each do |invoice| %>
           <tr>
             <td colspan="2"><%= invoice.full_number %></td>
             <td class="only-desktop"><%= invoice.cbte_fch %></td>
