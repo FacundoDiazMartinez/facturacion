@@ -33,7 +33,11 @@
 
             <div class="form-group">
               <%= form.label :state %>
-              <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?)}%>
+              <% if @purchase_order.new_record? && @purchase_order.state != "Finalizada" %>
+                <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
+              <% else %>
+                <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?)}%>
+              <% end %>
             </div>
 
           </div>
@@ -70,6 +74,9 @@
           </div>
           <!-- TERCERA COLUMNA -->
         </div>
+        <% if @purchase_order.new_record? && @purchase_order.state != "Finalizada" %>
+          El estado de la OC debe ser "Finalizada" para que los pagos impacten en contabilidad.
+        <% end %>
 
         <!-- BOTONES DE ACCION -->
         <center>
