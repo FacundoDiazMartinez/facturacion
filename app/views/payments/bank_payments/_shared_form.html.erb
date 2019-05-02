@@ -5,10 +5,10 @@
 
 <div class="form-group">
   <%= cpf.label :total, "Total ($)" %>
-  <%= cpf.number_field :total, class: 'form-control subpayment_total', requried: true %>
+  <%= cpf.number_field :total, class: 'form-control subpayment_total', requried: true , step: :any %>
 </div>
 
 <div class="form-group">
   <%= cpf.label :ticket, "Ticket" %><br>
-  <%= cpf.file_field :ticket, step: :any, requried: true %>
+  <%= cpf.file_field :ticket, requried: true %>
 </div>
