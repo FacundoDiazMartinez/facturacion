@@ -6,6 +6,8 @@ class ChequePayment < ApplicationRecord
 
   	ORIGINS =["Propio", "De tercero"]
 
+  	before_save :complete_with_zeros
+
   	#FILTROS DE BUSQEUDA
 	  	def self.search_by_number number
 	  		if !number.blank?
@@ -23,6 +25,13 @@ class ChequePayment < ApplicationRecord
 	#ATRIBUTOS
 
 	#PROCESOS
+		def complete_with_zeros
+			if !self.number.nil?
+				self.number = self.number.to_s.rjust(8,padstr= '0')
+				pp self.number
+			end
+		end
+
 		def update_credit_card_balance
 	  		self.credit_card.update_balance_from_payment(self.payment)
 	  	end

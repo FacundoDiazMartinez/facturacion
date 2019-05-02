@@ -1,9 +1,8 @@
-
 <!-- PIE DE PAGINA -->
 <br>
 <div class="row footer_bottom">
   <% if @invoice.company.invoice_footer.length > 0 %>
-    <div class="container" style="border-style: dotted;border-width: 1px; padding-left: 15px; padding-right: 15px; height:100px; overflow-y: hidden;">
+    <div class="container" style="border-style: dotted;border-width: 1px; padding-right: : 10px; padding-left: 10px; height:90px; overflow: hidden; font-size: 10px !important;">
       <%= @invoice.company.invoice_footer.html_safe %>
     </div>
   <% end %>

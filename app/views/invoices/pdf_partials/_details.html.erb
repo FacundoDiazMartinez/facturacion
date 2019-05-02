@@ -26,7 +26,7 @@
           <td class="text_right"><%= det.price_per_unit %></td>
         <%# end %> -->
         <td class="text_right"><%= det.price_per_unit.round(2) %></td>
-        <td class="text_right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %> % </td>
+        <td class="text_right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
         <td class="text_right"><%= (det.subtotal - det.iva_amount).round(2) %>
         <% if @invoice.cbte_tipo == "01" %>
           <td class="text_right"><%= det.iva_amount %></td>

@@ -22,8 +22,13 @@ wb.add_worksheet(name: "Cuenta Corriente") do |sheet|
             sheet.rows[index+1].cells[0].style=center
             sheet.rows[index+1].cells[1].style=body
             sheet.rows[index+1].cells[2].style=body
-            sheet.rows[index+1].cells[3].style=body_right
-            sheet.rows[index+1].cells[3].style=debe_rojo
+            if !am.invoice_id.nil?
+                if (am.invoice.real_total - am.invoice.total_pay) > 0 
+                    sheet.rows[index+1].cells[3].style=debe_rojo
+                else
+                    sheet.rows[index+1].cells[3].style=body_right
+                end
+            end
             sheet.rows[index+1].cells[4].style=body_bold
             sheet.rows[index+1].cells[5].style=body_right
         	if sheet.rows[index+1].cells[5] != 0
@@ -41,14 +46,13 @@ wb.add_worksheet(name: "Cuenta Corriente") do |sheet|
             sheet.rows[index+1].cells[1].style=body
             sheet.rows[index+1].cells[2].style=body
             if !am.invoice_id.nil?
-              if (am.invoice.total - am.invoice.total_pay) > 0
-                  sheet.rows[index+1].cells[3].style=body_right
+              if (am.invoice.real_total - am.invoice.total_pay) > 0 
                   sheet.rows[index+1].cells[3].style=debe_rojo
               else
                   sheet.rows[index+1].cells[3].style=body_right
               end
             else
-              sheet.rows[index+1].cells[3].style=body_bold
+              sheet.rows[index+1].cells[3].style=body_right
             end
             sheet.rows[index+1].cells[4].style=body_bold
             sheet.rows[index+1].cells[5].style=body_right

@@ -28,7 +28,8 @@ class InvoicesController < ApplicationController
         render pdf: "Factura_#{@invoice.comp_number}_#{@invoice.client.name}",
           layout: 'pdf.html',
           template: 'invoices/show',
-          #zoom: 1, si en local se ve mal, poner en 3.5 solo para local
+          #zoom: 3.4, 
+          #si en local se ve mal, poner en 3.5 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"
@@ -145,8 +146,13 @@ class InvoicesController < ApplicationController
   end
 
   def deliver
-    InvoiceMailer.send_to_client(@invoice, params[:email]).deliver
+    require 'barby'
+    require 'barby/barcode/code_25_interleaved'
+    require 'barby/outputter/png_outputter'
+    @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
+    InvoiceMailer.send_to_client(@invoice, params[:email], @barcode_path).deliver
     redirect_to edit_invoice_path(@invoice.id), notice: "Email enviado."
+    @invoice.delete_barcode(@barcode_path)
   end
 
   def paid_invoice_with_debt

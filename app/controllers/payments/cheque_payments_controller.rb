@@ -2,6 +2,7 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
   before_action :set_cheque_payment, only: [:show, :edit, :update, :destroy, :charge, :new_charge]
   layout :false, only: :new
 
+
   # GET /cheque_payments
   # GET /cheque_payments.json
   def index
@@ -26,7 +27,6 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
   # POST /cheque_payments.json
   def create
     @cheque_payment = ChequePayment.new(cheque_payment_params)
-
     respond_to do |format|
       if @cheque_payment.save
         format.html { redirect_to @cheque_payment, notice: 'Cheque payment was successfully created.' }
