@@ -74,7 +74,6 @@ $(document).on("change", ".edit_type_of_payment", function(){
 			getPaymentRequest("/payments/debit_payments/new", data, "edit_");
 			break;
 		case '8':
-			alert("asd");
 			getPaymentRequest("/payments/compensation_payments/new", data, "edit_");
 			break;
 

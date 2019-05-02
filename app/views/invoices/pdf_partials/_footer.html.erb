@@ -3,10 +3,8 @@
 <br>
 <div class="row footer_bottom">
   <% if @invoice.company.invoice_footer.length > 0 %>
-    <div class="container" style="border-style: dotted;border-width: 1px; padding: 10px; height:100px; overflow: hidden;">
+    <div class="container" style="border-style: dotted;border-width: 1px; padding-left: 15px; padding-right: 15px; height:100px; overflow-y: hidden;">
       <%= @invoice.company.invoice_footer.html_safe %>
-      <% pp "///////////////////////////////" %>
-      <% pp @invoice.company.invoice_footer.html_safe.split("</span>").count %>
     </div>
   <% end %>
 
@@ -72,8 +70,7 @@
     </table>
   </div>
 </div>
-<div class="text_center">
-  <br>
+<div class="text_center" style="padding: 25px;">
   Página <%= page_number %> de <%= total_pages%>
 </div>
 <!-- FIN PIE DE PAGINA -->
