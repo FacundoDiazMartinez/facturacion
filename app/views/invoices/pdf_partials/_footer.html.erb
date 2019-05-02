@@ -4,8 +4,6 @@
   <% if @invoice.company.invoice_footer.length > 0 %>
     <div class="container" style="border-style: dotted;border-width: 1px; padding-right: : 10px; padding-left: 10px; height:90px; overflow: hidden; font-size: 10px !important;">
       <%= @invoice.company.invoice_footer.html_safe %>
-      <% pp "///////////////////////////////" %>
-      <% pp @invoice.company.invoice_footer.html_safe.split("</span>").count %>
     </div>
   <% end %>
 
@@ -71,8 +69,7 @@
     </table>
   </div>
 </div>
-<div class="text_center">
-  <br>
+<div class="text_center" style="padding: 25px;">
   Página <%= page_number %> de <%= total_pages%>
 </div>
 <!-- FIN PIE DE PAGINA -->
