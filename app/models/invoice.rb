@@ -61,6 +61,7 @@ class Invoice < ApplicationRecord
     validate :at_least_one_detail, if: Proc.new{ |i| i.state_was == "Pendiente" && (i.state == "Pagado" || i.state == "Confirmado" )}
     validate :fch_ser_if_service
     validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
+    validates_numericality_of :bonification, :greater_than => -100, :less_than => 100
 
     TRIBUTOS = [
        ["Impuestos nacionales", "1"],
@@ -253,6 +254,9 @@ class Invoice < ApplicationRecord
         total = 0
         invoice_details.each do |detail|
           total += detail.iva_amount.to_f.round(2)
+        end
+        if bonification != 0
+          total -= total * (bonification / 100)
         end
         return total
       end
@@ -528,6 +532,9 @@ class Invoice < ApplicationRecord
       def sum_details
         total = 0
         self.invoice_details.map{|d| total += d.subtotal}
+        if self.bonification != 0
+          total -= total * (self.bonification / 100)
+        end
         self.tributes.map{|t| total += t.importe}
         return total
       end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_24_182508) do
+ActiveRecord::Schema.define(version: 2019_05_03_122839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -495,6 +495,7 @@ ActiveRecord::Schema.define(version: 2019_04_24_182508) do
     t.bigint "sales_file_id"
     t.bigint "budget_id"
     t.boolean "expired", default: false
+    t.float "bonification", default: 0.0, null: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
