@@ -194,21 +194,19 @@ function calculateTotalOfInvoice(){
 		var inv_total = parseFloat(0); // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Suma de totales [CON IVA]  (para sumarles luego los tributos CON DESCUENTO)
 		$("tr.fields:visible > td > input.subtotal").each(function(){
 			inv_total += parseFloat($(this).val());
+			console.log(inv_total);
 		});
 		bonif_gral = $("#invoice_bonification").val();
 		if (bonif_gral != 0) {
 			inv_total -= (inv_total * (bonif_gral / 100));  // >>>>>>>>>>>>>>>> Descuento general al TOTAL
 		}
 		$("#bonifications > tbody > tr:visible").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
-			inv_total -= $(this).find($("input.bonif_amount")).val();
+			percentage = $(this).find($("input.bonif_percentage")).val();
+			inv_total -= (inv_total * (percentage / 100)).toFixed(2);
 		});
-
-		alert(inv_total);
-
 
 		var total_neto = calculateNeto();
 
-		alert(total_neto);
 
 		$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Cálculo de tributos en base a suma de subtotales sin iva
 			base_imp = total_neto.toFixed(2);
@@ -307,19 +305,19 @@ $(document).on('nested:fieldAdded', function(event){
 });
 
 $(document).on('nested:fieldAdded:bonifications', function(event){
-	if (calculateNeto() > 0) {
-		var field 	= event.field;
-		bonif_subtotal 	= field.find("input.bonif_subtotal");
-		bonif_subtotal.val(calculateNeto());
-	} else {
-		alert("No es posible agregar descuentos con Total de factura nulo.");
-	}
+	var field 	= event.field;
+	bonif_subtotal 	= field.find("input.bonif_subtotal");
+	bonif_subtotal.val(calculateNeto());
 })
 
 $(document).on('change',".bonif_percentage",function(){
 	bonif_subtotal = $(this).closest("tr.fields").find($("input.bonif_subtotal")).val();
 	bonif_percentage = $(this).val();
 	$(this).closest("tr.fields").find($("input.bonif_amount")).val((bonif_subtotal * (bonif_percentage / 100)).toFixed(2));
+	calculateTotalOfInvoice();
+})
+
+$(document).on('nested:fieldRemoved:bonifications', function(event){
 	calculateTotalOfInvoice();
 })
 
