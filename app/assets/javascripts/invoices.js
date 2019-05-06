@@ -191,8 +191,10 @@ function calculateSubtotal(subtotal){
 
 	// >>>>>>>>>>>>>>>>>>>> Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 	$("#invoice_total").val(inv_total.toFixed(2));
+	$("#total_invoice").text('Total factura: $ ' + inv_total.toFixed(2));
 	total_left = inv_total - parseFloat($("#invoice_total_pay").val());
 	$("#total_left").val(total_left.toFixed(2));
+	$("#total_left_invoice").text('Total faltante: $ ' + total_left.toFixed(2));
 	$("#total_left_venta").text("$" + total_left.toFixed(2));
 	// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
@@ -310,7 +312,9 @@ $(document).on("change", ".importe", function(){
 	    total = total + parseFloat($(this).val());
 	});
 	$("#invoice_total").val(total.toFixed(2));
+	$("#total_invoice").text('Total factura: $ ' + total.toFixed(2)); //e/
 	$("#total_left").val((parseFloat($("#invoice_total").val()) - parseFloat($("#invoice_total_pay").val())).toFixed(2));
+	$("#total_left_invoice").text('Total faltante: $ ' + (parseFloat($("#invoice_total").val()) - parseFloat($("#invoice_total_pay").val())).toFixed(2));
 	$("span#total_left_venta").text("$ " + $("#total_left").val());
 	total_left = $("#total_left").val();
 	if ($("#invoice_cbte_tipo").length != 0) {

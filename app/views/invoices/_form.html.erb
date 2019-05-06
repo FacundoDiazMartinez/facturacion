@@ -93,13 +93,6 @@
   </div>
   <!-- PRODUCTOS -->
 
-  <hr>
-  <!-- PAGOS -->
-  <div class="card shadow" id="ipayments">
-    <%= render template: '/invoices/payment/index.html.erb', locals:{form: form} %>
-  </div>
-  <!-- PAGOS -->
-
   <!-- TRIBUTOS -->
   <% if current_user.company.iva_cond == "Responsable Inscripto" %>
     <div id="itributes">
@@ -110,6 +103,13 @@
     </div>
   <% end %>
   <!-- TRIBUTOS -->
+
+  <hr>
+  <!-- PAGOS -->
+  <div class="card shadow" id="ipayments">
+    <%= render template: '/invoices/payment/index.html.erb', locals:{form: form} %>
+  </div>
+  <!-- PAGOS -->
 
   <hr>
   <center>

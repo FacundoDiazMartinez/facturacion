@@ -35,10 +35,12 @@
 
             <div class="form-group">
               <%= form.label :state %>
-              <% if @purchase_order.new_record? && @purchase_order.state != "Finalizada" %>
+              <% if @purchase_order.new_record? || @purchase_order.state == "Pendiente" %>
                 <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
+              <% elsif @purchase_order.state == "Aprobado" %>
+                  <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: orange;'}%>
               <% else %>
-                <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?)}%>
+                  <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: green;'}%>
               <% end %>
             </div>
 
@@ -76,7 +78,7 @@
           </div>
           <!-- TERCERA COLUMNA -->
         </div>
-        <% if @purchase_order.new_record? && @purchase_order.state != "Finalizada" %>
+        <% if @purchase_order.state != "Finalizada" %>
           El estado de la OC debe ser "Finalizada" para que los pagos impacten en contabilidad.
         <% end %>
 
@@ -84,7 +86,7 @@
         <center>
           <% if not @purchase_order.new_record? %>
             <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-primary' %>
-            <% if not @purchase_order.delivered && @purchase_order.state != "Pendiente de aprobación" %>
+            <% if not @purchase_order.delivered && @purchase_order.state != "Pendiente" %>
               <%= button_tag "#{icon('fas', 'envelope')} Enviar a proveedor".html_safe, type: 'button', class: 'btn btn-info', data:{toggle: 'modal', target: '#sendMailModal'} %>
             <% end -%>
           <% end %>

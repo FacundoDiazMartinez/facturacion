@@ -29,7 +29,7 @@ class PurchaseOrder < ApplicationRecord
 
   before_validation :check_pending_arrival_notes, if: Proc.new{|po| po.state_changed? && po.state == "Finalizada"}
 
-  STATES = ["Pendiente de aprobación", "Aprobado", "Anulado", "Finalizada"]
+  STATES = ["Pendiente", "Aprobado", "Anulado", "Finalizada"]
 
   #ATRIBUTOS
   	def total_left
@@ -155,7 +155,7 @@ class PurchaseOrder < ApplicationRecord
     def set_paid_out
       pp "//////////////////// entro a PurchaseOrder.set ////////////////////"
       set_total_pay
-      if total.to_f - total_pay == 0
+      if total.to_f - total_pay <= 0
         update_column(:paid_out, true)
       end
     end
