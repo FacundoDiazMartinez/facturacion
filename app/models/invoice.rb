@@ -25,6 +25,7 @@ class Invoice < ApplicationRecord
     has_many :tributes, dependent: :destroy
     has_many :receipt_details
     has_many :receipts, through: :receipt_details
+    has_many :bonifications, dependent: :destroy
 
     has_one  :account_movement, dependent: :destroy
 
@@ -32,6 +33,7 @@ class Invoice < ApplicationRecord
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
     accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: Proc.new{|t| t["afip_id"].blank?}
     accepts_nested_attributes_for :client, reject_if: :all_blank
+    accepts_nested_attributes_for :bonifications, allow_destroy: true, reject_if: :all_blank
 
     after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
     after_touch :update_total_pay #, :touch_account_movement, :check_receipt
