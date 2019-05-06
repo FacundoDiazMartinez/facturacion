@@ -25,8 +25,11 @@
       </div>
      <!-- FIN HEADER ORIGINAL/DUPLICADO -->
 
-
       <% total_page = details_page.map {|a| (a.subtotal.to_f - a.iva_amount.to_f) unless a.nil?}.compact.reduce(:+).to_f %>
+      <% if @invoice.bonification != 0 %>
+        <% total_page -= total_page * (@invoice.bonification / 100) %>
+      <% end %>
+      
       <div class="invoice_pdf">
         <%= render template: '/invoices/pdf_partials/_header.html.erb' %>
         <%= render template: '/invoices/pdf_partials/_details.html.erb', :locals => { :details => details_page, :total_of_page => total_page, :total_pages => @group_details.count} %>

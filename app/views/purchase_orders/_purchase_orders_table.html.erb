@@ -18,7 +18,7 @@
         <td><strong><%= purchase_order.number %></strong></td>
         <td><%= link_to purchase_order.supplier.name, supplier_path(purchase_order.supplier_id) %></td>
         <td><%= link_to purchase_order.user.name, user_path(purchase_order.user_id) %></td>
-        <td><%= state_label_helper(purchase_order) %></td>
+        <td><%= po_state_label_helper(purchase_order) %></td>
         <td><%= purchase_order.total %></td>
         <td style="text-align: center;"><%= boolean_to_icon(purchase_order.paid_out)%></td>
         <td style="text-align: center;"><%= purchase_order.created_at %></td>

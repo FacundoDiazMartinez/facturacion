@@ -1,5 +1,5 @@
 module PurchaseOrdersHelper
-	def state_label_helper purchase_order
+	def po_state_label_helper purchase_order
 	    case purchase_order.state
 	    when 'Pendiente'
 	      	label_span('badge badge-pill badge-warning', 'Pendiente')

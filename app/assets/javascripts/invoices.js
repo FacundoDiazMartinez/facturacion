@@ -154,69 +154,95 @@ $(document).on("change", ".iva_aliquot", function(){
 });
 
 function calculateSubtotal(subtotal){
+		setVars(subtotal);
+		if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
+			iva_am = 0.0
+		}else{
+			iva_am = (((price.val() * quantity.val()) - bonus_amount.val()) * parseFloat(iva_aliquot.text())).toFixed(2);
+		}
+		iva_amount.val(iva_am);
+		Stotal = ((parseFloat(price.val())  * parseFloat(quantity.val()) ) + parseFloat(iva_amount.val()) - parseFloat(bonus_amount.val())).toFixed(2)
+		subtotal.val(Stotal);
 
-	setVars(subtotal);
-	if (iva_aliquot.val() == "01" || iva_aliquot.val() == "02") {
-		iva_am = 0.0
-	}else{
-		iva_am = (((price.val() * quantity.val()) - bonus_amount.val()) * parseFloat(iva_aliquot.text())).toFixed(2);
+		calculateTotalOfInvoice();  // >>>>>>>>>>>  Impacto sobre el resto de la factura
+
+		subtotal.closest("td").find("strong").html("$ " + subtotal.val());
+}
+
+function calculateNeto(){
+	var total_neto = 0;
+	$("#details > tbody > tr:visible").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Suma de subtotales de cada concepto [SIN IVA]
+		var neto_unitario = $(this).find("input.price").val();
+		var cantidad = $(this).find("input.quantity").val();
+		var descuento = $(this).find("input.bonus_amount").val();
+		total_neto += neto_unitario * cantidad - descuento; // >> Subtotal sin IVA
+	});
+	if (bonif_gral != 0) {
+		total_neto -= (total_neto * (bonif_gral / 100)); // >>>>>>> Descuento a subtotal
 	}
 
-	iva_amount.val(iva_am);
-	Stotal = ((parseFloat(price.val())  * parseFloat(quantity.val()) ) + parseFloat(iva_amount.val()) - parseFloat(bonus_amount.val())).toFixed(2)
-	subtotal.val(Stotal);
 
-	var inv_total = parseFloat(0);
-	$("tr.fields:visible > td > input.subtotal").each(function(){
-    inv_total += parseFloat($(this).val());
+	$("#bonifications > tbody > tr:visible").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Se restan descuentos NESTED al neto anterior
+		var monto = $(this).find("input.bonif_amount").val();
+		total_neto -= monto;
 	});
 
-	$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Cálculo de tributos (suma de subtotales de cada concepto [SIN IVA])
-		var total_neto = 0;
-		$("#details > tbody > tr:visible").each(function(){
-			var neto_unitario = $(this).find("input.price").val();
-		  var cantidad = $(this).find("input.quantity").val();
-			var descuento = $(this).find("input.bonus_amount").val();
-			total_neto += neto_unitario * cantidad - descuento; // >> Subtotal sin IVA
+	return total_neto;
+}
+
+function calculateTotalOfInvoice(){
+		var inv_total = parseFloat(0); // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Suma de totales [CON IVA]  (para sumarles luego los tributos CON DESCUENTO)
+		$("tr.fields:visible > td > input.subtotal").each(function(){
+			inv_total += parseFloat($(this).val());
+		});
+		bonif_gral = $("#invoice_bonification").val();
+		if (bonif_gral != 0) {
+			inv_total -= (inv_total * (bonif_gral / 100));  // >>>>>>>>>>>>>>>> Descuento general al TOTAL
+		}
+		$("#bonifications > tbody > tr:visible").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
+			inv_total -= $(this).find($("input.bonif_amount")).val();
 		});
 
-		base_imp = total_neto.toFixed(2);
-		e = $(this).find("input.base_imp");
-		e.val(base_imp);
-		alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
-		importe = (base_imp * ( alic/100)).toFixed(2);
-		e.closest("tr.fields").find("input.importe").val(importe);
-		inv_total += parseFloat(importe);
-	})
+		alert(inv_total);
 
-	// >>>>>>>>>>>>>>>>>>>> Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
-	$("#invoice_total").val(inv_total.toFixed(2));
-	$("#total_invoice").text('Total factura: $ ' + inv_total.toFixed(2));
-	total_left = inv_total - parseFloat($("#invoice_total_pay").val());
-	$("#total_left").val(total_left.toFixed(2));
-	$("#total_left_invoice").text('Total faltante: $ ' + total_left.toFixed(2));
-	$("#total_left_venta").text("$" + total_left.toFixed(2));
-	// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
-	if ($("#invoice_cbte_tipo").length != 0) {
-		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
-		if (total_left > 0 || is_invoice < 0) {
-			$("#normal").show();
-			$("#with_alert").hide();
-		}else{
-			$("#normal").hide();
-			$("#with_alert").show();
+		var total_neto = calculateNeto();
+
+		alert(total_neto);
+
+		$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Cálculo de tributos en base a suma de subtotales sin iva
+			base_imp = total_neto.toFixed(2);
+			e = $(this).find("input.base_imp");
+			e.val(base_imp);
+			alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
+			importe = (base_imp * ( alic/100)).toFixed(2);
+			e.closest("tr.fields").find("input.importe").val(importe);
+			inv_total += parseFloat(importe);
+		})
+
+
+		// >>>>>>>>>>>>>>>>>>>> Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
+		$("#invoice_total").val(inv_total.toFixed(2));
+		total_left = inv_total - parseFloat($("#invoice_total_pay").val());
+		$("#total_left").val(total_left.toFixed(2));
+		$("#total_left_venta").text("$" + total_left.toFixed(2));
+		// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
+
+		if ($("#invoice_cbte_tipo").length != 0) {
+			var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
+			if (total_left > 0 || is_invoice < 0) {
+				$("#normal").show();
+				$("#with_alert").hide();
+			}else{
+				$("#normal").hide();
+				$("#with_alert").show();
+			}
 		}
-	}
 
 
+		//e.trigger("change"); // >>>>>>>>>>>> para que se sumen los tributos al TOTAL YA CALCULADO de la factura
 
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Fin calculo TOTAL LEFT
-
-	subtotal.closest("td").find("strong").html("$ " + subtotal.val())
-	e.trigger("change"); // >>>>>>>>>>>> para que se sumen los tributos al TOTAL YA CALCULADO de la factura
-
-	complete_payments(); // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+		complete_payments();
 }
 
 function autocomplete_field() {
@@ -271,7 +297,7 @@ $(document).on('nested:fieldAdded', function(event){
       startView: 2
   });
 
-	custom_bonus = false; // Al empezar a trabajar con un nuevo producto, se resetea el custom_bonus (Definido al principio)
+
 	autocomplete_field();
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
@@ -279,6 +305,23 @@ $(document).on('nested:fieldAdded', function(event){
 	toogleConceptInTable();
 	debit_note_selected();
 });
+
+$(document).on('nested:fieldAdded:bonifications', function(event){
+	if (calculateNeto() > 0) {
+		var field 	= event.field;
+		bonif_subtotal 	= field.find("input.bonif_subtotal");
+		bonif_subtotal.val(calculateNeto());
+	} else {
+		alert("No es posible agregar descuentos con Total de factura nulo.");
+	}
+})
+
+$(document).on('change',".bonif_percentage",function(){
+	bonif_subtotal = $(this).closest("tr.fields").find($("input.bonif_subtotal")).val();
+	bonif_percentage = $(this).val();
+	$(this).closest("tr.fields").find($("input.bonif_amount")).val((bonif_subtotal * (bonif_percentage / 100)).toFixed(2));
+	calculateTotalOfInvoice();
+})
 
 $(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes', function(event){
 	var field 	= event.field;
@@ -303,38 +346,8 @@ function debit_note_selected(){
 	}
 }
 
-$(document).on("change", ".importe", function(){
-	var total = parseFloat(0);
-	$("td:visible > .subtotal").each(function(){
-	    total = total + parseFloat($(this).val());
-	});
-	$(".importe:visible").each(function(){
-	    total = total + parseFloat($(this).val());
-	});
-	$("#invoice_total").val(total.toFixed(2));
-	$("#total_invoice").text('Total factura: $ ' + total.toFixed(2)); //e/
-	$("#total_left").val((parseFloat($("#invoice_total").val()) - parseFloat($("#invoice_total_pay").val())).toFixed(2));
-	$("#total_left_invoice").text('Total faltante: $ ' + (parseFloat($("#invoice_total").val()) - parseFloat($("#invoice_total_pay").val())).toFixed(2));
-	$("span#total_left_venta").text("$ " + $("#total_left").val());
-	total_left = $("#total_left").val();
-	if ($("#invoice_cbte_tipo").length != 0) {
-		var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), ["01", "06", "11"] )
-	}else{
-		var is_invoice = false
-	}
-	if ($("#invoice_cbte_tipo").length != 0) {
-		if (total_left > 0 || !(is_invoice)) {
-			$("#normal").show();
-			$("#with_alert").hide();
-		}else{
-			$("#normal").hide();
-			$("#with_alert").show();
-		}
-	}
-
-	$(this).closest("td").find("strong").html("$" + $(this).val())
-	complete_payments();
-	iva_aliquot	 		= $(this).closest("tr.fields").find("select.iva_aliquot").trigger("change");
+$(document).on("change", ".importe, #invoice_bonification", function(){
+	calculateTotalOfInvoice();
 });
 
 $(document).on("change", ".amount", function(){
@@ -468,7 +481,6 @@ function getPaymentRequest(url, data, action) {
     contentType: "application/html",
     dataType: "html"
   }).done(function(response) {
-		console.log(response)
     $("#" + action + "payment_detail").html(response)
 		$('.datepicker').datepicker({
 	      language: "es",

@@ -55,6 +55,6 @@ $(document).on("change", ".price, .quantity, .bonus_amount, .bonus_percentage", 
 	bonus_amount.val(b_amount);
 	subtotal = ((parseFloat(price.val()) * parseFloat(quantity.val())) - b_amount).toFixed(2);
 	$(this).closest("tr.fields").find("input.subtotal_budget").val(subtotal);
-	console.log(subtotal);
+	console.log("budget.js");
 	$(this).closest("tr.fields").find("input.subtotal_budget").trigger("change");
 });

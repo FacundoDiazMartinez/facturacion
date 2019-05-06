@@ -73,16 +73,23 @@
     <tr>
       <td rowspan="3" style="width: 1px;"></td>
       <td style="width: 51%;"><b>CUIT: </b><%= @invoice.client.document_number %></td>
-      <td><b>Cliente / Razon Social: </b> <%= @invoice.client.name %></td>
+      <td><b>Cliente / Razon Social: </b> &nbsp <%= @invoice.client.name %></td>
     </tr>
 
     <tr>
-      <td><b>Condicion frente al IVA: </b><%= @invoice.client.iva_cond %></td>
-      <td><b>Domicilio: </b> <%= @invoice.client.address %></td>
+      <td><b>Condicion frente al IVA: </b> &nbsp <%= @invoice.client.iva_cond %></td>
+      <td><b>Domicilio: </b>&nbsp <%= @invoice.client.address %></td>
     </tr>
 
     <tr>
-      <td><b>Medios de pago: </b><%= @invoice.all_payments_string %></td>
+      <td>
+        <b>Medios de pago: </b>&nbsp <%= @invoice.all_payments_string %>
+        <% if @invoice.bonification > 0 %>
+          (Bonificación: <%= @invoice.bonification %> %)
+        <% else %>
+
+        <% end %>
+      </td>
       <td></td>
     </tr>
 
