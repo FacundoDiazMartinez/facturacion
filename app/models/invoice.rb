@@ -541,7 +541,7 @@ class Invoice < ApplicationRecord
           total -= total * (bon.percentage / 100)
         end
         self.tributes.map{|t| total += t.importe}
-        return total
+        return total.round(2)
       end
 
       def confirmed_notes
