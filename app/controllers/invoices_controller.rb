@@ -246,7 +246,7 @@ class InvoicesController < ApplicationController
           commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
         client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
         tributes_attributes: [:id, :afip_id, :desc, :base_imp, :alic, :importe, :_destroy],
-        bonifications_attributes: [:id, :subtotal, :observation, :percentage, :amount]
+        bonifications_attributes: [:id, :subtotal, :observation, :percentage, :amount, :_destroy]
       )
     end
 
