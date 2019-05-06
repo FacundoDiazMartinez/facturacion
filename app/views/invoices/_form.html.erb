@@ -95,6 +95,13 @@
   </div>
   <!-- PRODUCTOS -->
 
+  <hr>
+  <!-- DESCUENTOS -->
+  <div class="card shadow" id="ibonifications">
+    <%= render template: '/invoices/bonifications/index.html.erb', locals:{form: form} %>
+  </div>
+  <!-- DESCUENTOS -->
+
   <!-- TRIBUTOS -->
   <% if current_user.company.iva_cond == "Responsable Inscripto" %>
     <div id="itributes">
