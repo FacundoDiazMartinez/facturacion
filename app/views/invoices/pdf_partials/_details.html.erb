@@ -66,9 +66,9 @@
       <col width="600">
 
       <tr>
-        <td rowspan="6" style="width: 1px;"></td>
+        <td rowspan="8" style="width: 1px;"></td>
 
-        <td rowspan="6">
+        <td rowspan="8">
           <% if @invoice.tributes.where("importe > 0").count > 0 %>
             Otros Tributos:
             <table style="width:75%;">
@@ -114,8 +114,23 @@
             <% end %>
           </b>
         </td>
-        <td class="text_right">$ <%= sprintf('%.2f',total_of_page)  %></td>
+        <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif)  %></td>
       </tr>
+
+
+      <% if @invoice.bonification != 0  %>
+        <tr>
+          <td class="text_right"><b> Desc. (<%= @invoice.bonification %>%) - Subtotal:</b></td>
+          <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif -=  total_of_page_without_bonif * (@invoice.bonification / 100)) %> </td>
+        </tr>
+      <% end %>
+
+      <% @invoice.bonifications.each do |bon| %>
+        <tr>
+          <td class="text_right"><b> Desc. (<%= bon.percentage %>%) - Subtotal:</b></td>
+          <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif -=  total_of_page_without_bonif * (bon.percentage / 100)) %> </td>
+        </tr>
+      <% end %>
 
       <tr>
         <td class="text_right"><b>IVA:</b></td>
@@ -131,5 +146,6 @@
         <td class="text_right"><b>Importe Total:</b></td>
         <td class="text_right"><b>$ <%= sprintf('%.2f',@invoice.total) %></b></td>
       </tr>
+
     </table>
   </div>
