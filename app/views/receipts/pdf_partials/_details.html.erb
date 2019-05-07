@@ -61,7 +61,7 @@
                 <% when "1" %>
                   <% @installment_id = ip.card_payment.installments %>
                   <% if @installment_id != 0 %>
-                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas
                   <% else %>
                     <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único
                   <% end %>
@@ -76,7 +76,7 @@
                 <% else %>
                   <%= ip.payment_name %>
               <% end %>
-              - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
+              - Fecha de pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
             </td>
           </tr>
         <% end %>

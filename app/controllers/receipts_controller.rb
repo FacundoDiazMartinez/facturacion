@@ -45,20 +45,17 @@ class ReceiptsController < ApplicationController
   # GET /receipts/1/edit
   def edit
     @client = @receipt.client
-
     AccountMovement.unscoped do
       build_account_movement
       # @account_movement = @receipt.account_movement
       # @account_movement_payments = @account_movement.account_movement_payments
     end
-
   end
 
   # POST /receipts
   # POST /receipts.json
   def create
     @receipt = current_user.company.receipts.new(receipt_params)
-
     @client = @receipt.client
     respond_to do |format|
       if @receipt.save
@@ -67,6 +64,7 @@ class ReceiptsController < ApplicationController
         # end
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El medio de pago fue creado/imputado correctamente.' }
       else
+        pp @receipt.errors
         build_account_movement
         format.html { render :new }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
@@ -88,6 +86,7 @@ class ReceiptsController < ApplicationController
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
+        pp @receipt.errors
         @client = @receipt.client
         build_account_movement
         format.html { render :edit }

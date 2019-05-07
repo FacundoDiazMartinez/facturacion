@@ -30,7 +30,7 @@
 				                    <% when "1" %>
 				                    <% @installment_id = payment.card_payment.installments %>
 				                    <% if @installment_id != 0 %>
-				                      <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+				                      <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas
 				                    <% else %>
 				                      <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
 				                    <% end %>
