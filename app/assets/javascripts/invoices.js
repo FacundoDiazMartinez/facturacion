@@ -307,7 +307,7 @@ $(document).on('nested:fieldAdded', function(event){
 $(document).on('nested:fieldAdded:bonifications', function(event){
 	var field 	= event.field;
 	bonif_subtotal 	= field.find("input.bonif_subtotal");
-	bonif_subtotal.val(calculateNeto());
+	bonif_subtotal.val(calculateNeto().toFixed(2));
 })
 
 $(document).on('change',".bonif_percentage",function(){
