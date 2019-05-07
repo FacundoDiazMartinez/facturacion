@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="container" style="height: 500px; font-size: 10px !important;">
+  <div class="container" style="height: 480px; font-size: 10px !important;">
     <table class="width_100">
     <tr>
       <th class="description_header">Codigo</th>
@@ -63,12 +63,12 @@
 
     <table class="width_100">
       <col>
-      <col width="600">
+      <col width="500">
 
       <tr>
-        <td rowspan="8" style="width: 1px;"></td>
+        <td rowspan="10" style="width: 1px;"></td>
 
-        <td rowspan="8">
+        <td rowspan="10">
           <% if @invoice.tributes.where("importe > 0").count > 0 %>
             Otros Tributos:
             <table style="width:75%;">
@@ -101,7 +101,7 @@
 
         <td> <br> </td>
         <td> <br> </td>
-        <td rowspan="3" style="width: 1px;"></td>
+        <td rowspan="10" style="width: 1px;"></td>
       </tr>
 
       <tr>
@@ -120,14 +120,14 @@
 
       <% if @invoice.bonification != 0  %>
         <tr>
-          <td class="text_right"><b> Desc. (<%= @invoice.bonification %>%) - Subtotal:</b></td>
+          <td class="text_right"><b> Desc. Gral (<%= @invoice.bonification %>% - $ <%= sprintf('%.2f',total_of_page_without_bonif * (@invoice.bonification / 100)) %>) - Subtotal:</b></td>
           <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif -=  total_of_page_without_bonif * (@invoice.bonification / 100)) %> </td>
         </tr>
       <% end %>
 
-      <% @invoice.bonifications.each do |bon| %>
+      <% @invoice.bonifications.each_with_index do |bon,index| %>
         <tr>
-          <td class="text_right"><b> Desc. (<%= bon.percentage %>%) - Subtotal:</b></td>
+          <td class="text_right"><b> Desc. <%= index + 1 %> (<%= bon.percentage %>% - $ <%= sprintf('%.2f',total_of_page_without_bonif * (bon.percentage / 100)) %>) - Subtotal:</b></td>
           <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif -=  total_of_page_without_bonif * (bon.percentage / 100)) %> </td>
         </tr>
       <% end %>
@@ -137,9 +137,15 @@
         <td class="text_right">$ <%= sprintf('%.2f', iva_of_page )%> </td>
       </tr>
 
+      <% if page_number == 1 %>
+        <tr>
+          <td class="text_right"><b>Otros Tributos:</b></td>
+          <td class="text_right">$ <%= sprintf('%.2f',@invoice.sum_tributes) %> </td>
+        </tr>
+      <% end %>
+
       <tr>
-        <td class="text_right"><b>Otros Tributos:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f',@invoice.sum_tributes) %> </td>
+        <td colspan="2"> <hr> </td>
       </tr>
 
       <tr>
