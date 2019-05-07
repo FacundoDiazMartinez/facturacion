@@ -13,7 +13,7 @@
     <div class=" border">
       <table class="width_100">
         <tr style="line-height: 10px !important;">
-          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 400px; line-height: 10px;"><%= @invoice.company.name %></th>
+          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 415px; line-height: 10px;"><%= @invoice.company.name %></th>
           <th class="text_size_invoice_type invoice_type"><%= Invoice.available_cbte_type(@invoice.company, @invoice.client).first.first.last %>
             <table>
               <tbody>
@@ -68,7 +68,7 @@
 
 <!-- DATOS CLIENTE -->
 <div>
-  <div class="container border">
+  <div class="container" style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black;">
     <table class="width_100">
     <tr>
       <td rowspan="3" style="width: 1px;"></td>
@@ -84,11 +84,6 @@
     <tr>
       <td>
         <b>Medios de pago: </b>&nbsp <%= @invoice.all_payments_string %>
-        <% if @invoice.bonification > 0 %>
-          (Bonificación: <%= @invoice.bonification %> %)
-        <% else %>
-
-        <% end %>
       </td>
       <td></td>
     </tr>
