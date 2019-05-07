@@ -36,7 +36,7 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar descuento/recargo</span>".html_safe, :bonifications, class: 'btn btn-primary', data: {target: '#bonifications'}%>
+			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar descuento/recargo</span>".html_safe, :bonifications, class: 'btn btn-primary', data: {target: '#bonifications'}, id: 'bonifications_add_button'%>
 		</div>
 	</center>
 <% end %>
