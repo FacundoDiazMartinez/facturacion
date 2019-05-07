@@ -30,6 +30,7 @@
 
         <% total_page = details_page.map {|a| (a.subtotal.to_f - a.iva_amount.to_f) unless a.nil?}.compact.reduce(:+).to_f %>
         <% iva_page = details_page.map {|a| (a.iva_amount.to_f) unless a.nil?}.compact.reduce(:+).to_f %>
+
         <% if @invoice.bonification != 0 %>
           <% total_page -= total_page * (@invoice.bonification / 100) %>
           <% iva_page -= iva_page * (@invoice.bonification / 100) %>
