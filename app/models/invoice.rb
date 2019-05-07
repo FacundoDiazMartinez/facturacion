@@ -538,6 +538,9 @@ class Invoice < ApplicationRecord
         if self.bonification != 0
           total -= total * (self.bonification / 100)
         end
+        self.bonifications.each do |bon|
+          total -= total * (bon.percentage / 100)
+        end
         self.tributes.map{|t| total += t.importe}
         return total
       end
