@@ -308,6 +308,9 @@ $(document).on('nested:fieldAdded:bonifications', function(event){
 	var field 	= event.field;
 	bonif_subtotal 	= field.find("input.bonif_subtotal");
 	bonif_subtotal.val(calculateNeto().toFixed(2));
+	if ($("#bonifications > tbody > tr:visible").length >= 2) {
+		$("#bonifications_add_button").hide();
+	}
 })
 
 $(document).on('change',".bonif_percentage",function(){
@@ -319,6 +322,9 @@ $(document).on('change',".bonif_percentage",function(){
 
 $(document).on('nested:fieldRemoved:bonifications', function(event){
 	calculateTotalOfInvoice();
+	if ($("#bonifications > tbody > tr:visible").length < 2) {
+		$("#bonifications_add_button").show();
+	}
 })
 
 $(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes', function(event){
