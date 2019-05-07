@@ -261,6 +261,9 @@ class Invoice < ApplicationRecord
         if bonification != 0
           total -= total * (bonification / 100)
         end
+        self.bonifications.each do |bon|
+          total -= total * (bon.percentage / 100)
+        end
         return total
       end
 
