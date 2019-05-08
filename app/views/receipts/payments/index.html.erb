@@ -16,6 +16,7 @@
 						<th scope="col">Tipo de pago</th>
 						<th scope="col">Monto</th>
 						<th scope="col">Fecha de pago</th>
+						<th scope="col">Fecha de cobro</th>
 						<th scope="col"></th>
 					</tr>
 				</thead>
@@ -26,7 +27,7 @@
 				                <td>
 				                  <% case payment.type_of_payment %>
 				                    <% when "4" %>
-				                      <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
+				                      <%= payment.payment_name %> N°<%= payment.cheque_payment.number %>
 				                    <% when "1" %>
 				                    <% @installment_id = payment.card_payment.installments %>
 				                    <% if @installment_id != 0 %>
@@ -48,6 +49,11 @@
 								</td>
 								<td class="pay">$ <%= payment.total %></td>
 								<td><%= payment.payment_date %></td>
+								<% if payment.type_of_payment == '4' %>
+									<td><%= payment.cheque_payment.expiration %></td>
+								<% else %>
+									<td></td>
+								<% end %>
 								<td>
 				                  <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, receipt_id: @receipt.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
 				                  <%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %>

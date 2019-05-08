@@ -81,8 +81,18 @@
       <div class="col-sm">
         <div class="form-group">
           <div style="padding-left: 30% !important;">
-            <%= label_tag :total_invoice, "Total factura: $ 0.00", id:'total_invoice' %>
-            <%= label_tag :total_left_invoice, "Total faltante: $ 0.00", id:'total_left_invoice' %>
+            <table>
+              <tr>
+                <th>
+                  <%= label_tag :total_invoice, "Total factura: $ 0.00", id:'total_invoice' %>
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  <%= label_tag :total_left_invoice, "Total faltante: $ 0.00", id:'total_left_invoice' %>
+                </th>
+              </tr>
+            </table>
           </div>
         </div>
       </div>
