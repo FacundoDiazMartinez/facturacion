@@ -62,14 +62,43 @@
 		</tbody>
 	</table>
 </div>
-<% if @invoice.editable? %>
-	<center>
-		<div class="m-2">
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-primary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
-		</div>
-	</center>
-<% end %>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-sm">
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <% if @invoice.editable? %>
+          	<center>
+          		<div class="m-2">
+              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
+              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-primary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
+          		</div>
+          	</center>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <div style="padding-left: 30% !important;">
+            <table>
+              <tr>
+                <th>
+                  <%= label_tag :total_invoice, "Total factura: $ 0.00", id:'total_invoice' %>
+                </th>
+              </tr>
+              <tr>
+                <th>
+                  <%= label_tag :total_left_invoice, "Total faltante: $ 0.00", id:'total_left_invoice' %>
+                </th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">

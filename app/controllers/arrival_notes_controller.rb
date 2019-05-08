@@ -48,7 +48,7 @@ class ArrivalNotesController < ApplicationController
         format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: 'El Remito fue creado correctamente.' }
         format.json { render :show, status: :created, location: @arrival_note }
       else
-        pp @arrival_note.errors
+        @arrival_note.purchase_order_id = nil
         format.html { render :new }
         format.json { render json: @arrival_note.errors, status: :unprocessable_entity }
       end

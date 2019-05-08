@@ -9,6 +9,8 @@ class Supplier < ApplicationRecord
   after_validation   :set_create_activity, on: :create
   after_validation   :set_update_activity, on: :update
 
+  default_scope { where(active: true ) }
+
   #ATRIBUTOS
 	def full_document
 	"#{Afip::DOCUMENTOS.key(document_type)}: #{document_number}"
@@ -34,6 +36,11 @@ class Supplier < ApplicationRecord
 
   	def set_update_activity
   		UserActivity.create_for_updated_supplier self, current_user
+  	end
+
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
   	end
   #PROCESOS
 

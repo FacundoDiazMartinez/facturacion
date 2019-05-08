@@ -168,6 +168,11 @@ class Payment < ApplicationRecord
         end
       end
     end
+
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
+  	end
   #PROCESOS
 
   #FUNCIONES

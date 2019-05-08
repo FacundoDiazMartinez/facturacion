@@ -126,6 +126,11 @@ class InvoiceDetail < ApplicationRecord
       self.iva_amount =  (subtotal.to_f / (1 + iva.to_f) * iva.to_f).round(2)
     end
 
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
+  	end
+
   #PROCESOS
 
   #ATRIBUTOS

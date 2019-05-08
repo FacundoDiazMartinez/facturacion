@@ -52,7 +52,11 @@ class PurchaseOrderDetail < ApplicationRecord
     end
 
     def left_quantity
-      quantity - associates_arrival_note_details.sum(:quantity)
+      unless self.nil?
+        quantity - associates_arrival_note_details.sum(:quantity)
+      else
+        0
+      end
     end
   #PROCESOS
 end

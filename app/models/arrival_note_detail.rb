@@ -13,8 +13,6 @@ class ArrivalNoteDetail < ApplicationRecord
   validates_presence_of     :quantity, message: "El detalle debe poseer una cantidad."
   validates_numericality_of :quantity, greater_than: 0.0, message: "El detalle posee una cantidad inválida. Debe ser mayor a 0."
 
-
-
   # TABLA
     # create_table "arrival_note_details", force: :cascade do |t|
     #   t.bigint "arrival_note_id"
@@ -66,6 +64,7 @@ class ArrivalNoteDetail < ApplicationRecord
         self.product.remove_stock(quantity: -difference, depot_id: self.arrival_note.depot_id)
       end
     end
+
   #PROCESOS
 
   #FUNCION

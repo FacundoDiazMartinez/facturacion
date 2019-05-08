@@ -24,6 +24,9 @@ class Budget < ApplicationRecord
 
   STATES = ["Generado", "Válido", "Vencido", "Concretado"]
 
+  default_scope { where(active: true ) }
+
+
   #VALIDACIONES
     def expiration_date_cannot_be_in_the_past
       if expiration_date.present? && expiration_date < Date.today
@@ -101,6 +104,11 @@ class Budget < ApplicationRecord
       end
     end
     handle_asynchronously :change_state_to_expirated, :run_at => Proc.new { |budget| budget.expiration_date + 1.days }
+
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
+  	end
   #PROCESOS
 
   #ATRIBUTOS

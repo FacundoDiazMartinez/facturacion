@@ -21,7 +21,7 @@
                     <td><%= link_to budget.client.name, client_path(budget.client_id) %></td>
                     <td><%= l(budget.date) %></td>
                     <td><%= budget.expiration_date %></td>
-                    <td><%= budget.state %></td>
+                    <td><%= state_label_helper_budget(budget) %></td>
                     <td>$<%= budget.total %></td>
                     <td><%= link_to budget.user.name, user_path(budget.user_id) %></td>
                     <td>

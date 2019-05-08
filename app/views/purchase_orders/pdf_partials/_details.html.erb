@@ -16,7 +16,7 @@
           <td><%= det.product.name %></td>
           <td class="text_right"><%= det.quantity %></td>
           <td class="text_right"><%= det.product.measurement_unit_name %></td>
-          <td class="text_right"><%= det.product.price %></td>
+          <td class="text_right"><%= det.product.cost_price.nil? ? "Sin precio de costo" : det.product.cost_price %></td>
           <td class="text_right"><%= det.total %></td>
         </tr>
     <% end %>

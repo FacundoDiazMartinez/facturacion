@@ -19,4 +19,9 @@ class BankPayment < ApplicationRecord
 			pp payment
 			self.bank.update_balance_from_payment(self.payment)
 		end
+
+		def destroy
+			update_column(:active, false)
+			run_callbacks :destroy
+		end
 end

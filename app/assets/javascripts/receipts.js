@@ -83,7 +83,7 @@ function calculateTotalPayed(){
     });
   }
   saldo = total_left - total_payed;
-  $('#totales').text('Total facturas: $ ' + total_left + '   - Pagos acumulados: $ ' + total_payed.toFixed(2) + '   - A pagar: $ ' + (saldo).toFixed(2));
+  $('#totales').text('Total facturas: $ ' + total_left.toFixed(2) + '   - Pagos acumulados: $ ' + total_payed.toFixed(2) + '   - A pagar: $ ' + (saldo).toFixed(2));
   if ($("#receipt_state").val() != "Finalizado") {
     $('#total_faltante').text('Total faltante: $ ' + saldo.toFixed(2));
   } else {

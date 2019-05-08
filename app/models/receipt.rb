@@ -131,6 +131,11 @@ class Receipt < ApplicationRecord
       end
     end
 
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
+  	end
+
     # def set_total
     #   self.total = total_without_invoices
     # end

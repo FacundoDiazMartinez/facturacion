@@ -8,6 +8,8 @@ class ChequePayment < ApplicationRecord
 
   	before_save :complete_with_zeros
 
+		default_scope { where(active: true ) }
+
   	#FILTROS DE BUSQEUDA
 	  	def self.search_by_number number
 	  		if !number.blank?
@@ -68,5 +70,10 @@ class ChequePayment < ApplicationRecord
 		    end
 		    pay.save
 		  end
+
+			def destroy
+				update_column(:active, false)
+				run_callbacks :destroy
+			end
 	#PROCESOS
 end

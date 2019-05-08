@@ -18,7 +18,7 @@
         <td><%= arrival_note.created_at.strftime("%d/%m/%Y")%></td>
         <td><%= link_to arrival_note.purchase_order.number, edit_purchase_order_path(arrival_note.purchase_order_id) %></td>
         <td><%= link_to arrival_note.user.name, user_path(arrival_note.user_id) %></td>
-        <td><%= arrival_note.state %></td>
+        <td><%= arrival_state_label_helper(arrival_note) %></td>
         <td>
           <%= link_to icon('fas', 'eye').html_safe, arrival_note_path(arrival_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_arrival_note_path(arrival_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, ArrivalNote %>

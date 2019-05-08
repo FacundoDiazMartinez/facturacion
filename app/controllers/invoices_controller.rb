@@ -14,7 +14,7 @@ class InvoicesController < ApplicationController
 
     # la siguiene variable la cree para el pdf:
     Product.unscoped do
-      @group_details = @invoice.invoice_details.includes(:product).in_groups_of(20, fill_with= nil)
+      @group_details = @invoice.invoice_details.includes(:product).in_groups_of(15, fill_with= nil)
     end
 
     respond_to do |format|

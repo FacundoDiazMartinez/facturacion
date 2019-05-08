@@ -97,6 +97,30 @@ class AccountMovement < ApplicationRecord
     Invoice.unscoped { super }
   end
 
+  def comprobante
+    if not invoice_id.nil?
+      "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{invoice.comp_number}" #Transforma Nota de Crédito A => NCA
+    else
+      "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{receipt.number}"
+    end
+  end
+
+  def user_id=(user_id)
+    @user_id = user_id
+  end
+
+  def user_id
+    @user_id
+  end
+
+  def company_id=(company_id)
+    @company_id = company_id
+  end
+
+  def company_id
+    @company_id
+  end
+
   #ATRIBUTOS
 
   #VALIDACIONES
@@ -184,32 +208,6 @@ class AccountMovement < ApplicationRecord
     end
   #FUNCIONES
 
-  #ATRIBUTOS
-    def comprobante
-      if not invoice_id.nil?
-        "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{invoice.comp_number}" #Transforma Nota de Crédito A => NCA
-      else
-        "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{receipt.number}"
-      end
-    end
-
-    def user_id=(user_id)
-      @user_id = user_id
-    end
-
-    def user_id
-      @user_id
-    end
-
-    def company_id=(company_id)
-      @company_id = company_id
-    end
-
-    def company_id
-      @company_id
-    end
-  #ATRIBUTOS
-
   #PROCESOS
 
     def set_attrs_to_receipt
@@ -285,5 +283,11 @@ class AccountMovement < ApplicationRecord
           return am
         end
     end
+
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
+    end
+
   #PROCESOS
 end

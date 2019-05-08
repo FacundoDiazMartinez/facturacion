@@ -109,5 +109,10 @@ class IvaBook < ApplicationRecord
       ib.total      = ib.net_amount + ib.iva_amount
       ib.save
     end
+
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
+  	end
   #PROCESOS
 end
