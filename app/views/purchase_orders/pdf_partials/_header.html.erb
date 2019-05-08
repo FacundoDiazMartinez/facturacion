@@ -3,9 +3,9 @@
     <div class="border">
       <table class="width_100">
         <tr>
-          <td><%= wicked_pdf_image_tag @purchase_order.company.logo.gsub('https', 'http') ,:height => "90"%></td>
-          <td class="width_75"><h1 class="text_size_25 text_center">ORDEN DE COMPRA</h1></td>
-          <td class="width_25">
+          <td class="width_20"><%= @purchase_order.company.society_name %></td>
+          <td class="width_60"><h1 class="text_size_25 text_center">ORDEN DE COMPRA</h1></td>
+          <td class="width_20">
             <table class="width_100">
               <tr>
                 <td>N° <%= @purchase_order.number %></td>

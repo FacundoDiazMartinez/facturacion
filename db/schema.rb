@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_24_182508) do
+ActiveRecord::Schema.define(version: 2019_05_06_123416) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -110,6 +110,17 @@ ActiveRecord::Schema.define(version: 2019_04_24_182508) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_banks_on_company_id"
+  end
+
+  create_table "bonifications", force: :cascade do |t|
+    t.float "subtotal", null: false
+    t.string "observation"
+    t.float "percentage", default: 0.0, null: false
+    t.float "amount", default: 0.0, null: false
+    t.bigint "invoice_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_bonifications_on_invoice_id"
   end
 
   create_table "budget_details", force: :cascade do |t|
@@ -495,6 +506,7 @@ ActiveRecord::Schema.define(version: 2019_04_24_182508) do
     t.bigint "sales_file_id"
     t.bigint "budget_id"
     t.boolean "expired", default: false
+    t.float "bonification", default: 0.0, null: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
@@ -962,6 +974,7 @@ ActiveRecord::Schema.define(version: 2019_04_24_182508) do
   add_foreign_key "bank_payments", "banks"
   add_foreign_key "bank_payments", "payments"
   add_foreign_key "banks", "companies"
+  add_foreign_key "bonifications", "invoices"
   add_foreign_key "budget_details", "budgets"
   add_foreign_key "budget_details", "depots"
   add_foreign_key "budget_details", "products"

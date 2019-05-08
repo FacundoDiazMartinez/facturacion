@@ -1,3 +1,5 @@
+<% DailyCash.current_daily_cash current_user.company_id %>
+
 <%= nested_form_for @purchase_order do |form| %>
 
   <%= error_explanation @purchase_order %>
@@ -80,7 +82,7 @@
             <% end -%>
           <% end %>
           <% if @purchase_order.state != PurchaseOrder::STATES[1] && !@purchase_order.new_record? && @purchase_order.state != PurchaseOrder::STATES[3]%>
-            <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-success' %>
+            <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-danger' %>
           <% end %>
           <% if @purchase_order.delivered %>
             <p class="text-muted">Presupuesto enviado</p>
@@ -115,7 +117,7 @@
 
   <center>
     <% if @purchase_order.editable? %>
-      <%= save_button %>
+      <%= save_button_danger %>
     <% end %>
   </center>
 

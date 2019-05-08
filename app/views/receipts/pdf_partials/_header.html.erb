@@ -1,8 +1,8 @@
 <!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
-    <div class=" border">
+    <div class="container border">
       <table class="width_100">
         <tr>
-          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 400px;"><%= @receipt.company.name %></th>
+          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 406px;"><%= @receipt.company.name %></th>
           <th class="text_size_invoice_type invoice_type"><%= @receipt.letra_tipo %>
             <table>
               <tbody>
@@ -17,58 +17,60 @@
       </table>
 
 
-  <table class="width_100">
-      <tr>
-        <td> <b>Razon Social: </b> <%= @receipt.company.society_name %></td>
-        <td rowspan="5" class="right_border"></td>
-        <td rowspan="5" style="width: 25px;"></td>
-        <td>
-          <b>N° <%= @receipt.sale_point.fill_name %> <%= @receipt.number %> </b>
-        </td>
-      </tr>
+      <table class="width_100">
+          <tr>
+            <td rowspan="5" style="width: 10px;"></td>
+            <td><b>Razon Social: </b> <%= @receipt.company.society_name %></td>
+            <td rowspan="5" class="right_border"></td>
+            <td rowspan="5" style="width: 25px;"></td>
+            <td>
+              <b>N° <%= @receipt.sale_point.fill_name %> <%= @receipt.number %> </b>
+            </td>
+          </tr>
 
-      <tr>
-        <td><b>Domicilio Comercial:</b> <%= @receipt.company.address %></td>
+          <tr>
+            <td><b>Domicilio Comercial:</b> <%= @receipt.company.address %></td>
 
-        <td><b>Fecha de Emision:</b> <%= @receipt.date.strftime("%d/%m/%Y") %></td>
-      </tr>
+            <td><b>Fecha de Emision:</b> <%= @receipt.date.strftime("%d/%m/%Y") %></td>
+          </tr>
 
-      <tr>
-        <td><b>Condicion frente al IVA:</b> <%= @receipt.company.iva_cond %></td>
+          <tr>
+            <td><b>Condicion frente al IVA:</b> <%= @receipt.company.iva_cond %></td>
 
-        <td ><b>CUIT: </b><%= @receipt.company.cuit %></td>
-      </tr>
+            <td ><b>CUIT: </b><%= @receipt.company.cuit %></td>
+          </tr>
 
-      <tr>
-        <td></td>
+          <tr>
+            <td></td>
 
-        <td><b>Ingresos Brutos: </b><%= @receipt.company.cuit %></td>
-      </tr>
+            <td><b>Ingresos Brutos: </b><%= @receipt.company.cuit %></td>
+          </tr>
 
-      <tr>
-        <td></td>
+          <tr>
+            <td></td>
 
-        <td><b>Fecha de Inicio de Actividades: </b> <%= @receipt.company.activity_init_date.strftime("%d/%m/%Y") %></td>
-      </tr>
-    </table>
+            <td><b>Fecha de Inicio de Actividades: </b> <%= @receipt.company.activity_init_date.strftime("%d/%m/%Y") %></td>
+          </tr>
+        </table>
     </div>
   <!-- FIN DEL ENCABEZADO -->
 
 <!-- DATOS CLIENTE -->
 <div>
-  <br>
-  <div class="container border">
+  <div class="container" style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black;">
     <table class="width_100">
     <tr>
-      <td><b>CUIT: </b><%= @receipt.client.document_number %></td>
+      <td rowspan="2" style="width: 10px;"></td>
+      <td style="width: 50%;"><b>CUIT: </b><%= @receipt.client.document_number %></td>
+      <td rowspan="2" style="width: 18px;"></td>
       <td><b>Cliente / Razón Social: </b> <%= @receipt.client.name %></td>
-      <td></td>
+
     </tr>
 
     <tr>
       <td><b>Condicion frente al IVA: </b><%= @receipt.client.iva_cond %></td>
       <td><b>Domicilio: </b> <%= @receipt.client.address %></td>
-      <td></td>
+
     </tr>
   </table>
   </div>

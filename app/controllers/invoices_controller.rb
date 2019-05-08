@@ -28,7 +28,8 @@ class InvoicesController < ApplicationController
         render pdf: "Factura_#{@invoice.comp_number}_#{@invoice.client.name}",
           layout: 'pdf.html',
           template: 'invoices/show',
-          #zoom: 1, si en local se ve mal, poner en 3.5 solo para local
+          #zoom: 3.4,
+          #si en local se ve mal, poner en 3.5 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"
@@ -145,8 +146,13 @@ class InvoicesController < ApplicationController
   end
 
   def deliver
-    InvoiceMailer.send_to_client(@invoice, params[:email]).deliver
+    require 'barby'
+    require 'barby/barcode/code_25_interleaved'
+    require 'barby/outputter/png_outputter'
+    @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
+    InvoiceMailer.send_to_client(@invoice, params[:email], @barcode_path).deliver
     redirect_to edit_invoice_path(@invoice.id), notice: "Email enviado."
+    @invoice.delete_barcode(@barcode_path)
   end
 
   def paid_invoice_with_debt
@@ -225,7 +231,7 @@ class InvoicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired,
+      params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :bonification,
         income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
           cash_payment_attributes: [:id, :total],
           debit_payment_attributes: [:id, :total, :bank_id],
@@ -239,7 +245,8 @@ class InvoicesController < ApplicationController
           product_attributes: [:id, :code, :company_id, :name, :tipo],
           commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
         client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
-        tributes_attributes: [:id, :afip_id, :desc, :base_imp, :alic, :importe, :_destroy]
+        tributes_attributes: [:id, :afip_id, :desc, :base_imp, :alic, :importe, :_destroy],
+        bonifications_attributes: [:id, :subtotal, :observation, :percentage, :amount, :_destroy]
       )
     end
 

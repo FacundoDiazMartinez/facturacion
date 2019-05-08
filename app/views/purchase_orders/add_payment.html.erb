@@ -1,62 +1,92 @@
+<% DailyCash.current_daily_cash current_user.company_id %>
+
 <%= nested_form_for @purchase_order do |form| %>
 
-<div class="p-4">
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-    <h1 class="h2">
-      Órden de Compra para:
-      <%= @purchase_order.supplier.name %>
-    </h1>
-  </div>
-  <hr>
-
-  <div class="page-section">
-    <div class="col-6 offset-3">
-      <div class="card shadow">
-        <div class="fields">
-
-          <div class="margins_top_right_left_1rem">
-            <label for="">Registrar pagos para Órden de Compra N°:
-              <%= @purchase_order.number %></label>
-          </div>
-          <hr>
-          <div class="form-group m-4">
-            <b>Total:</b>
-            $<%= @purchase_order.total %>
-            -
-            <b>Monto faltante:</b>
-            $<label id="faltante" style="font-weight: 400;"><%= @purchase_order.total.to_f - Payment.where(purchase_order_id: @purchase_order.id).sum(:total).to_f %></label>
-            <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, :expense_payments, class: 'btn btn-sm btn-success float-right mr-4', data: {target: '#payments'}%>
-          </div>
-
-          <div class="payments">
-            <div class="table-responsive-sm m-4">
-              <table class="table table-striped invoice-table" id="payments" style="width: 100%;">
-                <thead>
-                  <tr>
-                    <th scope="col">Tipo de pago</th>
-                    <th scope="col">Monto</th>
-                    <th scope="col">Fecha de pago</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <%= form.fields_for :expense_payments, form.object.expense_payments.build, wrapper: false do |f| %>
-                  <tr class="fields">
-                    <td><%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm', style: 'min-width: 100px;'} %></td>
-                    <td><%= f.number_field :total, class: 'form-control form-control-sm purchase_order_payment_amount', default: 0.0 %></td>
-                    <td><%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker' %></td>
-                    <td><%= f.link_to_remove icon('fas', 'trash') %></td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <%= save_button %>
+  <div class="p-4">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
+      <h1 class="h2">
+        Proveedor:
+        <%= @purchase_order.supplier.name %>
+      </h1>
     </div>
-  </div>
-</div>
+    <hr>
 
-</div>
+
+    <div class="page-section" >
+
+      <div class="col-6 offset-3">
+        <div class="card shadow">
+          <div class="fields" style="margin:25px;">
+
+            <div class="margins_top_right_left_1rem">
+              <label for="">Registrar pagos para Órden de Compra N°:
+                <%= @purchase_order.number %></label>
+            </div>
+            <hr>
+            <div class="form-group m-4">
+              <b>Total:</b>
+              $<%= @purchase_order.total %>
+              -
+              <b>Monto faltante:</b>
+              $<label id="faltante" style="font-weight: 400;"><%= @purchase_order.total.to_f - Payment.where(purchase_order_id: @purchase_order.id).sum(:total).to_f %></label>
+              <%# form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, :expense_payments, class: 'btn btn-sm btn-success float-right mr-4', data: {target: '#payments'}%>
+            </div>
+
+
+
+            <%= form.fields_for :expense_payments, form.object.expense_payments.build do |f| %>
+            	<%= hidden_field_tag :purchase_order_id_for_payment, form.object.id %>
+
+            		<div class="form-group">
+            			<%= f.label :type_of_payment, "Tipo de pago" %>
+            			 <%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k] unless k == "6"}.compact, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', disabled: @purchase_order.paid_out?} %>
+            		</div>
+
+            		<div class="form-group">
+            			<%= f.label :payment_date, "Fecha" %>
+            			<%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker', disabled: @purchase_order.paid_out? %>
+            		</div>
+            		<%= label_tag :amount_left, "Monto faltante: " %>
+            		<span id="total_left_venta">$ <%= @purchase_order.total_left.round(2) %></span>
+
+            		<div id="payment_detail">  </div>
+
+
+            <% end %>
+
+
+            <!-- <div class="payments">
+              <div class="table-responsive-sm m-4">
+                <table class="table table-striped invoice-table" id="payments" style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th scope="col">Tipo de pago</th>
+                      <th scope="col">Monto</th>
+                      <th scope="col">Fecha de pago</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <%# form.fields_for :expense_payments, form.object.expense_payments.build, wrapper: false do |f| %>
+                    <tr class="fields">
+                      <td><%# f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {}, {class: 'form-control form-control-sm', style: 'min-width: 100px;'} %></td>
+                      <td><%# f.number_field :total, class: 'form-control form-control-sm purchase_order_payment_amount', default: 0.0 %></td>
+                      <td><%# f.text_field :payment_date, class: 'form-control form-control-sm datepicker' %></td>
+                      <td><%# f.link_to_remove icon('fas', 'trash') %></td>
+                    </tr>
+                  <%# end %>
+                </tbody>
+              </table>
+            </div>
+          </div> -->
+
+
+        </div>
+        <%= save_button %>
+      </div>
+    </div>
+
+
+  </div>
+  </div>
 <% end -%>

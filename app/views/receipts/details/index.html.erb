@@ -17,7 +17,7 @@
       <%= text_field_tag :invoice_total_pay, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_pay.to_s, style: "text-align: right;" , class: 'form-control form-control-sm invoice_total_pay', data: {toggle:"tooltip"}, disabled: true %>
     </td>
     <td>
-      <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_left.to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
+      <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_left.round(2).to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
     </td>
     <!-- <td>
       <%# f.number_field :total, class: 'form-control form-control-sm total', data: {toggle:"tooltip"}, disabled: !@receipt.editable?, value: 0 %>

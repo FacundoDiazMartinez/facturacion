@@ -7,6 +7,12 @@
 	</div>
 </div>
 <div class="col-md-4">
+	<div class="form-group row">
+		<%= form.label :bonification, "Bonif. Gral. (%)", class:'col-4 col-form-label col-form-label-sm' %>
+		<div class="col-8">
+			<%= form.number_field :bonification, class: 'form-control', step: :any, disabled: !@invoice.editable? %>
+		</div>
+	</div>
 	<% if @invoice.concepto != "Productos" && !@invoice.concepto.nil? %>
 		<div class="form-group row">
 			<%= label_tag :fecha, "Fecha", class:'col-4 col-form-label col-form-label-sm' %>
@@ -29,6 +35,7 @@
 	    </div>
 	<% end %>
 </div>
+
 <div class="col-md-4">
 	<div class="form-group row">
 		<%= form.label :observation, "Observación", class:'col-4 col-form-label col-form-label-sm' %>
@@ -39,7 +46,7 @@
 	<div class="form-group row">
 		<%= form.label :associated_invoice, "Factura asociada", class:'col-4 col-form-label col-form-label-sm' %>
 		<div class="col-8">
-			<%= autocomplete_field_tag :associated_invoice, form.object.invoice_comp_number, autocomplete_associated_invoice_invoices_path, :fields => {:client_id => '#invoice_client_id'} , class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: !@invoice.is_invoice?, disabled: !@invoice.is_debit_note?, autofocus: true, id_element: "#invoice_associated_invoice" %>
+			<%= autocomplete_field_tag :associated_invoice, form.object.invoice_comp_number, autocomplete_associated_invoice_invoices_path, :fields => {:client_id => '#invoice_client_id'} , class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: false, disabled: !@invoice.is_debit_note?, autofocus: true, id_element: "#invoice_associated_invoice" %>
 			<%= form.hidden_field :associated_invoice %>
 		</div>
 	</div>

@@ -25,13 +25,15 @@ class Invoice < ApplicationRecord
     has_many :tributes, dependent: :destroy
     has_many :receipt_details
     has_many :receipts, through: :receipt_details
+    has_many :bonifications, dependent: :destroy
 
     has_one  :account_movement, dependent: :destroy
 
     accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: Proc.new{|ip| ip["type_of_payment"].blank?}
     accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
-    accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: :all_blank
+    accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: Proc.new{|t| t["afip_id"].blank?}
     accepts_nested_attributes_for :client, reject_if: :all_blank
+    accepts_nested_attributes_for :bonifications, allow_destroy: true, reject_if: :all_blank
 
     after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
     after_touch :update_total_pay #, :touch_account_movement, :check_receipt
@@ -51,7 +53,7 @@ class Invoice < ApplicationRecord
     COD_NC = ["03", "08", "13"]
 
     validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
-    validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice?}
+    #validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice?}
     validates_presence_of :total, message: "El total no debe estar en blanco."
     validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0."
     validates_presence_of :total_pay, message: "El total pagado no debe estar en blanco."
@@ -61,6 +63,7 @@ class Invoice < ApplicationRecord
     validate :at_least_one_detail, if: Proc.new{ |i| i.state_was == "Pendiente" && (i.state == "Pagado" || i.state == "Confirmado" )}
     validate :fch_ser_if_service
     validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
+    validates_numericality_of :bonification, :greater_than => -100, :less_than => 100
 
     TRIBUTOS = [
        ["Impuestos nacionales", "1"],
@@ -201,7 +204,8 @@ class Invoice < ApplicationRecord
       # end
 
   		def total_left
-  			total.to_f - total_pay.to_f
+  			left = total.to_f - total_pay.to_f
+        return left.round(2)
   		end
 
   		def editable?
@@ -252,6 +256,12 @@ class Invoice < ApplicationRecord
         total = 0
         invoice_details.each do |detail|
           total += detail.iva_amount.to_f.round(2)
+        end
+        if bonification != 0
+          total -= total * (bonification / 100)
+        end
+        self.bonifications.each do |bon|
+          total -= total * (bon.percentage / 100)
         end
         return total
       end
@@ -525,7 +535,16 @@ class Invoice < ApplicationRecord
   		end
 
       def sum_details
-        self.invoice_details.sum(:subtotal) + self.tributes.sum(:importe)
+        total = 0
+        self.invoice_details.map{|d| total += d.subtotal}
+        if self.bonification != 0
+          total -= total * (self.bonification / 100)
+        end
+        self.bonifications.each do |bon|
+          total -= total * (bon.percentage / 100)
+        end
+        self.tributes.map{|t| total += t.importe}
+        return total.round(2)
       end
 
       def confirmed_notes
@@ -777,21 +796,24 @@ class Invoice < ApplicationRecord
 
     def all_payments_string
 
-      pagos = []
-      self.income_payments.each do |p|
-        pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
-      end
-      pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
-
-
-      showed_payment = ""
-      pagos.each_with_index do |arr,i|
-        showed_payment = showed_payment + arr[0]
-        #showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
-        if ((i+1) < pagos.count)
-          showed_payment = showed_payment + " / "
+      if !self.income_payments.blank?
+        pagos = []
+        self.income_payments.each do |p|
+          pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
         end
+        pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
+        showed_payment = ""
+        pagos.each_with_index do |arr,i|
+          showed_payment = showed_payment + arr[0]
+          #showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
+          if ((i+1) < pagos.count)
+            showed_payment = showed_payment + " / "
+          end
+        end
+      else
+        showed_payment = "Cta. Cte."
       end
+
       return showed_payment
 
       # if !self.income_payments.nil?

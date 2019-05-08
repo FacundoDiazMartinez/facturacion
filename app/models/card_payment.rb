@@ -2,7 +2,7 @@ class CardPayment < ApplicationRecord
 	include Subpayment
   	belongs_to :payment
   	belongs_to :credit_card
-		belongs_to :fee, foreign_key: :installments
+		belongs_to :fee, foreign_key: :installments, optional: true
 
   	after_save :update_credit_card_balance
 

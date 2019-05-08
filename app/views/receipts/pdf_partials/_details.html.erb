@@ -1,7 +1,7 @@
 <!-- DETALLE -->
 <div class="row">
   <br>
-  <div class="container" style="height: 820px;">
+  <div class="container" style="height: 800px; overflow-y: hidden;">
     <table class="width_100 TFtable">
       <tr>
         <th class="text_left">Recibo manual: </th>
@@ -61,7 +61,7 @@
                 <% when "1" %>
                   <% @installment_id = ip.card_payment.installments %>
                   <% if @installment_id != 0 %>
-                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas
                   <% else %>
                     <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único
                   <% end %>
@@ -76,7 +76,7 @@
                 <% else %>
                   <%= ip.payment_name %>
               <% end %>
-              - Fecha de pago <%= ip.payment_date %> - Importe $ <%= ip.total %>
+              - Fecha de pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
             </td>
           </tr>
         <% end %>
@@ -86,7 +86,7 @@
 <!-- FIN DEL DETALLE -->
 
 <div class="row footer_top">
-  <div class="container border">
+  <div class="container border" style="padding:10px;">
     <table class="width_100">
       <col width="600">
       <col width="100">
@@ -97,5 +97,4 @@
     </table>
   </div>
 </div>
-<p><b>Recibi la suma de: </b></p>
-<p><%= I18n.with_locale(:es) { @receipt.total.to_i.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1 * 100).to_i.round(2).to_words } %> centavos.</p>
+<p><b>Recibi la suma de:  </b> <%= I18n.with_locale(:es) { @receipt.total.to_i.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1 * 100).to_i.round(2).to_words } %> centavos.</p>
