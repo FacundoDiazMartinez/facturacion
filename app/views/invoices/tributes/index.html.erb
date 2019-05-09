@@ -38,7 +38,7 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-primary', data: {target: '#tributes'}%>
+			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-secondary', data: {target: '#tributes'}%>
 		</div>
 	</center>
 <% end %>

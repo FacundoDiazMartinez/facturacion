@@ -1,6 +1,6 @@
 <h3 class="d-flex mb-2">
     <div class="p-2">
-      	Descuentos/Recargos
+      	Descuentos
     </div>
 </h3>
 <div id="saldo_disponible" class="text-muted ml-4"></div>
@@ -36,7 +36,7 @@
 <% if @invoice.editable? %>
 	<center>
 		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar descuento/recargo</span>".html_safe, :bonifications, class: 'btn btn-primary', data: {target: '#bonifications'}, id: 'bonifications_add_button'%>
+			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar descuento</span>".html_safe, :bonifications, class: 'btn btn-secondary', data: {target: '#bonifications'}, id: 'bonifications_add_button'%>
 		</div>
 	</center>
 <% end %>

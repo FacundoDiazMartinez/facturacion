@@ -95,18 +95,18 @@
   </div>
   <!-- PRODUCTOS -->
 
-  <hr>
+  <hr class="bonifications" style="display: flex;">
   <!-- DESCUENTOS -->
-  <div class="card shadow" id="ibonifications">
+  <div class="card shadow bonifications" id="ibonifications">
     <%= render template: '/invoices/bonifications/index.html.erb', locals:{form: form} %>
   </div>
   <!-- DESCUENTOS -->
 
+  <hr class="tributes" style="display: flex;">
   <!-- TRIBUTOS -->
   <% if current_user.company.iva_cond == "Responsable Inscripto" %>
-    <div id="itributes">
-      <hr>
-      <div class="card shadow">
+    <div class="" id="itributes">
+      <div class="card shadow tributes" style="display: flex;">
         <%= render template: '/invoices/tributes/index.html.erb', locals:{form: form} %>
       </div>
     </div>
