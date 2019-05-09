@@ -20,8 +20,8 @@
         <td><%= flow_type(card_payment.payment.flow) %></td>
         <td>
           <%= link_to icon('fas', 'eye').html_safe,  payments_card_payment_path(card_payment, invoice_id: card_payment.payment.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'edit').html_safe, edit_payments_card_payment_path(card_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'trash').html_safe, payments_card_payment_path(card_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
+          <%#= link_to icon('fas', 'edit').html_safe, edit_payments_card_payment_path(card_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%#= link_to icon('fas', 'trash').html_safe, payments_card_payment_path(card_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
         </td>
       </tr>
     <% end %>
