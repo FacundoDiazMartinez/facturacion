@@ -6,7 +6,7 @@ class BudgetDetail < ApplicationRecord
   after_validation :adjust_reserved_stock
   after_destroy :remove_reserved_stock
 
-  default_scope { where(active: true ) }
+  # default_scope { where(active: true ) }
 
   #ATRIBUTOS
   	def product_code
@@ -32,10 +32,10 @@ class BudgetDetail < ApplicationRecord
         end
       end
 
-      def destroy
-    		update_column(:active, false)
-    		run_callbacks :destroy
-    	end
+      # def destroy
+    	# 	update_column(:active, false)
+    	# 	run_callbacks :destroy
+    	# end
    #PROCEOS
 
 end
