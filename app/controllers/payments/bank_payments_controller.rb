@@ -59,7 +59,7 @@ class Payments::BankPaymentsController < Payments::PaymentsController
   def destroy
     @bank_payment.destroy
     respond_to do |format|
-      format.html { redirect_to bank_payments_url, notice: 'Bank payment was successfully destroyed.' }
+      format.html { redirect_to bank_payments_path, notice: 'Bank payment was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

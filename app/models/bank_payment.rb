@@ -1,7 +1,6 @@
 class BankPayment < ApplicationRecord
-	include Subpayment
+		include Subpayment
   	belongs_to :bank
-  	belongs_to :payment
 
 		after_save :update_bank_balance
 
