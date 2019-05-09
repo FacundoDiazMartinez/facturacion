@@ -21,12 +21,12 @@
         <td>
           <% if movement.type_of_payment == "3" %>
             <%= link_to icon('fas', 'eye').html_safe,  payments_bank_payment_path(movement.bank_payment, invoice_id: movement.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-            <%= link_to icon('fas', 'edit').html_safe, edit_payments_bank_payment_path(movement.bank_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-            <%= link_to icon('fas', 'trash').html_safe, payments_bank_payment_path(movement.bank_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
+            <%# link_to icon('fas', 'edit').html_safe, edit_payments_bank_payment_path(movement.bank_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <%# link_to icon('fas', 'trash').html_safe, payments_bank_payment_path(movement.bank_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
           <% else %>
           <%= link_to icon('fas', 'eye').html_safe,  payments_debit_payment_path(movement.debit_payment, invoice_id: movement.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'edit').html_safe, edit_payments_debit_payment_path(movement.debit_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'trash').html_safe, payments_debit_payment_path(movement.debit_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
+          <%# link_to icon('fas', 'edit').html_safe, edit_payments_debit_payment_path(movement.debit_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%# link_to icon('fas', 'trash').html_safe, payments_debit_payment_path(movement.debit_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
           <% end %>
         </td>
       </tr>

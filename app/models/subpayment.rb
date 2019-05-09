@@ -1,9 +1,10 @@
 module Subpayment
 	extend ActiveSupport::Concern
-
+	
   included do
     after_save :update_payment
     after_destroy :update_invoice
+		belongs_to :payment
     #before_validation :update_account_movement
 
     def self.search_by_date date
@@ -22,6 +23,7 @@ module Subpayment
       end
     end
   end
+
 
   def update_payment
     payment.update_column(:total,self.total)
