@@ -6,6 +6,8 @@ class BudgetDetail < ApplicationRecord
   after_validation :adjust_reserved_stock
   after_destroy :remove_reserved_stock
 
+  default_scope { where(active: true ) }
+
   #ATRIBUTOS
   	def product_code
   		product.nil? ? "" : product.code
@@ -29,6 +31,11 @@ class BudgetDetail < ApplicationRecord
           self.product.rollback_reserved_stock(quantity: quantity, depot_id: depot_id)
         end
       end
+
+      def destroy
+    		update_column(:active, false)
+    		run_callbacks :destroy
+    	end
    #PROCEOS
 
 end

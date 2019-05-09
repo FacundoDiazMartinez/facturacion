@@ -20,9 +20,12 @@ class ExpensePayment < Payment
 	end
 
 	def touch_purchase_order
-		pp "//////////////////// entro a ExpensePayment.touch_purchase_order ////////////////////"
 		self.purchase_order.set_total_pay
+	end
 
+	def destroy
+		update_column(:active, false)
+		run_callbacks :destroy
 	end
 
 end

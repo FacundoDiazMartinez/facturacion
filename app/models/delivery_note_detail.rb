@@ -15,6 +15,8 @@ class DeliveryNoteDetail < ApplicationRecord
 
   after_validation :adjust_product_stock, if: Proc.new{|detail| detail.delivery_note.state == "Finalizado"}
 
+  default_scope { where(active: true ) }
+
   #ATRIBUTOS
   	def product_name
   		product.nil? ? "" : product.name
@@ -69,5 +71,10 @@ class DeliveryNoteDetail < ApplicationRecord
       end
     end
   end
+
+  def destroy
+		update_column(:active, false)
+		run_callbacks :destroy
+	end
 
 end

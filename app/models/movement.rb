@@ -1,4 +1,6 @@
 class Movement < Payment
+
+  default_scope { where(active: true ) }
   #include Subpayment
   self.table_name = "payments"
 
@@ -45,5 +47,10 @@ class Movement < Payment
       "Pago con débito"
     end
   end
+
+  def destroy
+		update_column(:active, false)
+		run_callbacks :destroy
+	end
 
 end

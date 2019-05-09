@@ -30,6 +30,8 @@ class DeliveryNote < ApplicationRecord
   after_initialize :set_default_number, if: :new_record?
   after_initialize :set_date, if: :new_record?
 
+  default_scope { where(active: true ) }
+
 
   #FILTROS DE BUSQUEDA
   	def self.without_system
@@ -121,6 +123,11 @@ class DeliveryNote < ApplicationRecord
     def set_number
       self.number = self.number.to_s.rjust(8,padstr= '0')
     end
+
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
+  	end
 
   #PROCESOS
 
