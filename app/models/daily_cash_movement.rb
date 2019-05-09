@@ -10,7 +10,7 @@ class DailyCashMovement < ApplicationRecord
   after_destroy { |movement| movement.touch_daily_cash_current_amount }
   before_validation :set_payment_type
 
-
+  default_scope { where(active: true ) }
 
 
   TYPES = ["Pago", "Ajuste"]
@@ -153,6 +153,11 @@ class DailyCashMovement < ApplicationRecord
           dcm.update_column(:current_balance, balance)
         end
       end
+    end
+
+    def destroy
+    	update_column(:active, false)
+    	run_callbacks :destroy
     end
   #PROCESOS
 end

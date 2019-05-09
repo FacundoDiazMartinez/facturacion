@@ -19,6 +19,8 @@ class TransferRequest < ApplicationRecord
 
   accepts_nested_attributes_for :transfer_request_details, reject_if: :all_blank, allow_destroy: true
 
+  default_scope { where(active: true ) }
+
   before_save :check_state
 
   def self.search_by_number number
@@ -89,6 +91,11 @@ class TransferRequest < ApplicationRecord
     transfer_request_details.each do |detail|
       detail.product.add_stock(depot_id: self.to_depot_id, quantity: detail.quantity)
     end
+  end
+
+  def destroy
+  	update_column(:active, false)
+  	run_callbacks :destroy
   end
 
 end

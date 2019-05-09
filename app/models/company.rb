@@ -72,6 +72,8 @@ class Company < ApplicationRecord
 	accepts_nested_attributes_for :banks, allow_destroy: true, reject_if: :all_blank
 	accepts_nested_attributes_for :credit_cards, allow_destroy: true, reject_if: :all_blank
 
+	default_scope { where(active: true ) }
+
 	# TABLA
 	# 	create_table "companies", force: :cascade do |t|
 	# 	    t.string "email", null: false
@@ -149,6 +151,11 @@ class Company < ApplicationRecord
 	#PROCESOS
 		def create_default_deposit
 			self.depots.create(name: "Central", stock_count: 0, filled: false, location: address)
+		end
+
+		def destroy
+			update_column(:active, false)
+			run_callbacks :destroy
 		end
 	#PROCESOS
 end

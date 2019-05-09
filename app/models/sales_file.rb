@@ -9,6 +9,8 @@ class SalesFile < ApplicationRecord
 
   before_validation :set_number
 
+  default_scope { where(active: true ) }
+
   STATES = ["Abierto", "Cerrado"]
 
   #FILTROS DE BUSQUEDA
@@ -57,5 +59,10 @@ class SalesFile < ApplicationRecord
       last_sales_file = SalesFile.where(company_id: company_id).last
       self.number ||= last_sales_file.nil? ? "00000001" : (last_sales_file.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
+
+    def destroy
+  		update_column(:active, false)
+  		run_callbacks :destroy
+  	end
   #PROCESOS
 end

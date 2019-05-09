@@ -4,6 +4,8 @@ class CreditCard < ApplicationRecord
   has_many 	 :card_payments
   has_many   :fees
 
+  default_scope { where(active: true ) }
+
   accepts_nested_attributes_for :fees, reject_if: :all_blank, allow_destroy: true
 
   TYPES_OF_FEE = ["Porcentaje", "Coeficiente"]
@@ -69,6 +71,11 @@ class CreditCard < ApplicationRecord
         pay.save
       end
     end
+  end
+
+  def destroy
+  	update_column(:active, false)
+  	run_callbacks :destroy
   end
 
 end

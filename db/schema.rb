@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_06_123416) do
+ActiveRecord::Schema.define(version: 2019_05_09_151812) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.bigint "province_id", null: false
     t.bigint "locality_id", null: false
     t.string "invoice_footer"
+    t.boolean "active", default: true, null: false
     t.index ["locality_id"], name: "index_companies_on_locality_id"
     t.index ["province_id"], name: "index_companies_on_province_id"
   end
@@ -308,6 +309,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.boolean "enabled", default: true, null: false
     t.string "type_of_fee", default: "Porcentaje", null: false
     t.string "fav_logo", default: "credit-card", null: false
+    t.boolean "active", default: true, null: false
     t.index ["company_id"], name: "index_credit_cards_on_company_id"
   end
 
@@ -324,6 +326,8 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.string "observation"
     t.bigint "user_id"
     t.float "current_balance", default: 0.0, null: false
+    t.boolean "active", default: true, null: false
+    t.bigint "updated_by"
     t.index ["daily_cash_id"], name: "index_daily_cash_movements_on_daily_cash_id"
     t.index ["payment_id"], name: "index_daily_cash_movements_on_payment_id"
     t.index ["user_id"], name: "index_daily_cash_movements_on_user_id"
@@ -338,6 +342,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.datetime "updated_at", null: false
     t.date "date", null: false
     t.float "current_amount", null: false
+    t.boolean "active", default: true, null: false
     t.index ["company_id"], name: "index_daily_cashes_on_company_id"
   end
 
@@ -445,6 +450,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.string "subject_class"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
   end
 
   create_table "invoice_details", force: :cascade do |t|
@@ -471,7 +477,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
   end
 
   create_table "invoices", force: :cascade do |t|
-    t.boolean "active"
+    t.boolean "active", default: true, null: false
     t.bigint "client_id"
     t.string "state", default: "Pendiente", null: false
     t.float "total", default: 0.0, null: false
@@ -538,6 +544,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.bigint "province_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["province_id"], name: "index_localities_on_province_id"
   end
 
@@ -583,6 +590,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.bigint "friendly_name_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["friendly_name_id"], name: "index_permissions_on_friendly_name_id"
   end
 
@@ -631,7 +639,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
   create_table "products", force: :cascade do |t|
     t.string "code"
     t.string "name"
-    t.boolean "active"
+    t.boolean "active", default: true, null: false
     t.bigint "product_category_id"
     t.bigint "company_id"
     t.float "cost_price"
@@ -664,6 +672,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.integer "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
   end
 
   create_table "purchase_invoices", force: :cascade do |t|
@@ -781,6 +790,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["company_id"], name: "index_roles_on_company_id"
   end
 
@@ -789,6 +799,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["company_id"], name: "index_sale_points_on_company_id"
   end
 
@@ -803,6 +814,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state", default: "Abierto", null: false
+    t.boolean "active", default: true, null: false
     t.index ["client_id"], name: "index_sales_files_on_client_id"
     t.index ["company_id"], name: "index_sales_files_on_company_id"
   end
@@ -908,6 +920,7 @@ ActiveRecord::Schema.define(version: 2019_05_06_123416) do
     t.bigint "role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "active", default: true, null: false
     t.index ["role_id"], name: "index_user_roles_on_role_id"
     t.index ["user_id"], name: "index_user_roles_on_user_id"
   end

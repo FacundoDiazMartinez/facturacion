@@ -10,7 +10,7 @@ class DailyCash < ApplicationRecord
   validates_uniqueness_of :date, scope:  :company_id, message: "No se puede abrir dos veces caja en el mismo día."
   validates_presence_of :initial_amount, message: "Debe especificar un valor de inicio."
 
-
+  default_scope { where(active: true ) }
 
   STATES = ["Abierta", "Cerrada"]
 
@@ -144,6 +144,11 @@ class DailyCash < ApplicationRecord
           current_balance: self.final_amount,
           observation:  "Cierre de caja. Se registra un monto de cierre de #{self.final_amount} a la fecha.."
         )
+    end
+
+    def destroy
+    	update_column(:active, false)
+    	run_callbacks :destroy
     end
   #PROCESOS
 end

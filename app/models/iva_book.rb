@@ -4,7 +4,7 @@ class IvaBook < ApplicationRecord
   belongs_to :purchase_invoice, optional: true
   belongs_to :company
 
-  default_scope { where(active: true) }
+  # default_scope { where(active: true) }
 
   CBTE_TIPO = {
     "01"=>"FA",
@@ -110,9 +110,9 @@ class IvaBook < ApplicationRecord
       ib.save
     end
 
-    def destroy
-  		update_column(:active, false)
-  		run_callbacks :destroy
-  	end
+    # def destroy
+  	# 	update_column(:active, false)
+  	# 	run_callbacks :destroy
+  	# end
   #PROCESOS
 end
