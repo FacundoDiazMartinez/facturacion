@@ -447,15 +447,30 @@ function toggleHeader(){
 	var display = $(".invoice-header").css('display');
 	if (display == 'flex'){
 		$(".invoice-header").hide('fast');
-		$("#encabezado").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#encabezado").append(' Ver encabezado');
 	}
 	else{
 		$(".invoice-header").show('fast');
-		$("#encabezado").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
-		$("#encabezado").append(' Ocultar encabezado');
 	}
+}
 
+function toggleBonification(){
+	var display = $(".bonifications").css('display');
+	if (display == 'flex'){
+		$(".bonifications").hide('fast');
+	}
+	else{
+		$(".bonifications").show('fast');
+	}
+}
+
+function toggleTribute(){
+	var display = $(".tributes").css('display');
+	if (display == 'flex'){
+		$(".tributes").hide('fast');
+	}
+	else{
+		$(".tributes").show('fast');
+	}
 }
 
 function toggleTributes(){

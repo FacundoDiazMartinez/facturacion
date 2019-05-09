@@ -71,8 +71,8 @@
           <% if @invoice.editable? %>
           	<center>
           		<div class="m-2">
-              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
-              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-primary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
+              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-secondary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
+              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-secondary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
           		</div>
           	</center>
           <% end %>
