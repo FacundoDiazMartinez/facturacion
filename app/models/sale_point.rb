@@ -1,6 +1,8 @@
 class SalePoint < ApplicationRecord
   belongs_to :company
 
+  has_many :invoices
+
   before_validation :fill_name
 
   validates_numericality_of :name, message: "El punto de venta debe ser un número entero."
