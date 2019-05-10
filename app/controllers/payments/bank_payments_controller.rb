@@ -1,5 +1,6 @@
 class Payments::BankPaymentsController < Payments::PaymentsController
   before_action :set_bank_payment, only: [:show, :edit, :update, :destroy]
+  before_action :set_purchase_order, only: [:show]
 
   # GET /bank_payments
   # GET /bank_payments.json
@@ -73,5 +74,9 @@ class Payments::BankPaymentsController < Payments::PaymentsController
     # Never trust parameters from the scary internet, only allow the white list through.
     def bank_payment_params
       params.require(:bank_payment).permit(:bank_id, :total, :ticket)
+    end
+
+    def set_purchase_order
+      @purchase_order = params[:purchase_order_id].blank? ? PurchaseOrder.new : current_user.company.purchase_orders.unscoped.find(params[:purchase_order_id])
     end
 end

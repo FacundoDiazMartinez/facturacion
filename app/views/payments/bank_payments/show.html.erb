@@ -4,7 +4,7 @@
           	<li class="list-group-item d-flex justify-content-between lh-condensed">
             	<div>
               		<strong class="my-0">
-                		Nombre:
+                		Banco:
               		</strong>
             	</div>
             	<span><%= @bank_payment.bank.name %></span>
@@ -24,7 +24,7 @@
               		</strong>
             	</div>
 
-            	<span><% @bank_payment.payment.payment_date %></span>
+            	<span><%= @bank_payment.payment.payment_date %></span>
           	</li>
           	<li class="list-group-item d-flex justify-content-between lh-condensed">
             	<div>
@@ -74,6 +74,44 @@
 					</ul>
 				</div>
 			</div>
+		<% else %>
+			<% if !@bank_payment.payment.purchase_order_id.nil? %>
+				<div class="bank-shadow mb-4">
+					<hr>
+					<div class="m-4">
+						<p class="text-muted">Órden de compra asociada</p>
+						<ul class="list-unstyled rounded">
+								<li class="media">
+									<img class="mr-3" src="/images/invoice.png" alt="Órden de compra">
+									<div class="media-body">
+											<h5 class="mt-0 mb-1">Órden de Compra a <%= @purchase_order.supplier.name %></h5>
+											<strong>Nº:</strong> <%= @purchase_order.number %><br>
+											<strong>Estado:</strong> <%= po_state_label_helper(@purchase_order) %><br>
+											<i><%= icon('fas', 'clock') %> <%= @purchase_order.created_at %></i><br>
+									</div>
+								</li>
+								<li>
+									<div class="row">
+											<div class="col-md-9" style="padding: 5px 0px 0px 15px;">
+													<h5>Total: <span class="text-info">$<%= @purchase_order.total %></span></h5>
+											</div>
+											<div class="col-md-3 float-right">
+												<div class="row">
+														<%  if !@purchase_order.editable? %>
+															<%= link_to icon('fas', 'eye').html_safe, purchase_order_path(@purchase_order.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
+														<% end %>
+														<%= link_to icon('fas', 'pencil-alt').html_safe, edit_purchase_order_path(@purchase_order.id), class: 'btn btn-link' %>
+														<%#  if @purchase_order.editable? %>
+															<%# link_to icon('fas', 'trash').html_safe, @purchase_order, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-link' %>
+														<%# end -%>
+												</div>
+											</div>
+									</div>
+								</li>
+						</ul>
+					</div>
+				</div>
+			<% end %>
 		<% end %>
 
 

@@ -79,7 +79,7 @@ class Payments::PaymentsController < ApplicationController
     end
 
   	def set_invoice
-      @invoice = params[:invoice_id].blank? ? Invoice.new : current_user.company.invoices.find(params[:invoice_id])
+      @invoice = params[:invoice_id].blank? ? Invoice.new : current_user.company.invoices.unscoped.find(params[:invoice_id])
     end
 
     def set_client
