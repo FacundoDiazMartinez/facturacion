@@ -1,5 +1,6 @@
 class Payments::DebitPaymentsController < Payments::PaymentsController
   before_action :set_debit_payment, only: [:show, :edit, :update, :destroy]
+  before_action :set_purchase_order, only: [:show]
   layout :false
 
   # GET /bank_payments
@@ -74,5 +75,9 @@ class Payments::DebitPaymentsController < Payments::PaymentsController
     # Never trust parameters from the scary internet, only allow the white list through.
     def debit_payment_params
       params.fetch(:debit_payment, {})
+    end
+
+    def set_purchase_order
+      @purchase_order = params[:purchase_order_id].blank? ? PurchaseOrder.new : current_user.company.purchase_orders.unscoped.find(params[:purchase_order_id])
     end
 end

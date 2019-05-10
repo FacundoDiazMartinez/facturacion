@@ -37,7 +37,7 @@
         </ul>
     </div>
 
-		<% if !@bank_payment.payment.invoice_id.nil? %>
+		<% if !@bank_payment.payment.invoice_id.blank? %>
 			<div class="bank-shadow mb-4">
 				<hr>
 				<div class="m-4">
