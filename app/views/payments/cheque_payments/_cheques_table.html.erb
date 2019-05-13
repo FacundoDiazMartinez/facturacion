@@ -17,8 +17,14 @@
       <tr>
         <td><%= cheque_state(cheque_payment.state) %></td>
         <td><%= cheque_payment.complete_with_zeros %></td>
-        <td><%= cheque_payment.client.name %></td>
-        <td>$<%= cheque_payment.total %></td>
+        <td>
+          <% if !cheque_payment.payment.purchase_order_id.blank? %>
+            <%= current_user.company.name %>
+          <% else %>
+            <%= cheque_payment.client.name %>
+          <% end %>
+        </td>
+        <td>$ <%= cheque_payment.total %></td>
         <td><%= cheque_payment.entity %></td>
         <td><%= l(cheque_payment.payment.payment_date) %></td>
         <td><%= flow_type(cheque_payment.payment.flow) %></td>
