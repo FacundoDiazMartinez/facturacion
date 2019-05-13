@@ -127,16 +127,19 @@
 
       <% @invoice.bonifications.each_with_index do |bon,index| %>
         <tr>
-          <td class="text_right"><b>Desc. <%= index + 1 %> (<%= bon.percentage %>%)</b>
+          <td class="text_right"><b>Desc. (<%= bon.percentage.round(0) %>%)</b>
           </td>
           <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif * (bon.percentage / 100)) %>
           </td>
         </tr>
-        <tr>
-          <td class="text_right"><b>Subtotal:</b>
-          </td>
-          <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif -=  total_of_page_without_bonif * (bon.percentage / 100)) %>
-          </td>
+        <% if !(index == @invoice.bonifications.size - 1) %>
+          <tr>
+            <td class="text_right"><b>Subtotal:</b>
+            </td>
+            <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif -=  total_of_page_without_bonif * (bon.percentage / 100)) %>
+            </td>
+          </tr>
+        <% end %>
       <% end %>
 
       <tr>
