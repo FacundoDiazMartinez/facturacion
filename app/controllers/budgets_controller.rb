@@ -87,17 +87,22 @@ class BudgetsController < ApplicationController
     @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id, total: @budget.total, budget_id: @budget.id)
     @budget.budget_details.each do |bd|
       detail = @invoice.invoice_details.build(
+
         quantity: bd.quantity,
         measurement_unit: bd.measurement_unit,
-        price_per_unit: bd.product.net_price,
+        price_per_unit: bd.price_per_unit,
         bonus_percentage: bd.bonus_percentage,
         bonus_amount: bd.bonus_amount,
-        iva_aliquot: bd.product.iva_aliquot,
-        iva_amount: ((bd.product.net_price * bd.product.iva / 100) * bd.quantity).round(2),
-        subtotal: bd.subtotal,
+        iva_aliquot: bd.iva_aliquot,
+        iva_amount: bd.iva_amount,
+        subtotal: (bd.price_per_unit * bd.quantity ) + bd.iva_amount - bd.bonus_amount,
         depot_id: bd.depot_id
       )
-      detail.product = bd.product
+      if !bd.product.blank?
+        detail.product = bd.product
+      else
+        detail.product = Product.new(name: bd.product_name)
+      end
     end
 
     if current_user.company.daily_cashes.where(state: "Abierta").find_by_date(Date.today).blank?
@@ -122,7 +127,7 @@ class BudgetsController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.price, measurement_unit: product.measurement_unit, depots: product.depots.map{|d| [d.id, d.name]}} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, depots: product.depots.map{|d| [d.id, d.name]}, iva_aliquot: product.iva_aliquot || "03"} }
   end
 
   def search_product
@@ -139,6 +144,6 @@ class BudgetsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def budget_params
       params.require(:budget).permit(:number, :expiration_date, :total, :client_id, :reserv_stock,
-        budget_details_attributes: [:id, :product_id, :product_name, :depot_id, :price_per_unit, :measurement_unit, :quantity, :bonus_percentage, :bonus_amount, :subtotal, :_destroy])
+        budget_details_attributes: [:id, :product_id, :product_name, :depot_id, :price_per_unit, :measurement_unit, :quantity, :bonus_percentage, :bonus_amount, :subtotal, :iva_aliquot, :iva_amount, :_destroy])
     end
 end
