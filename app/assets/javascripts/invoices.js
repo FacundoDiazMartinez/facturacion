@@ -455,21 +455,21 @@ function toggleHeader(){
 
 function toggleBonification(){
 	var display = $(".bonifications").css('display');
-	if (display == 'flex'){
-		$(".bonifications").hide('fast');
+	if (display == 'none'){
+		$(".bonifications").show('fast');
 	}
 	else{
-		$(".bonifications").show('fast');
+		$(".bonifications").hide('fast');
 	}
 }
 
 function toggleTribute(){
 	var display = $(".tributes").css('display');
-	if (display == 'flex'){
-		$(".tributes").hide('fast');
+	if (display == 'none'){
+		$(".tributes").show('fast');
 	}
 	else{
-		$(".tributes").show('fast');
+		$(".tributes").hide('fast');
 	}
 }
 
