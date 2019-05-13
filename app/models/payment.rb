@@ -128,6 +128,23 @@ class Payment < ApplicationRecord
       end
     end
 
+    def associated_document_active_record
+      if !invoice_id.nil?
+        Invoice.find(invoice_id)
+      elsif !purchase_order_id.nil?
+        PurchaseOrder.find(purchase_order_id)
+      elsif !account_movement_id.nil?
+        am = AccountMovement.unscoped.find(account_movement_id)
+        if am.receipt_id.nil?
+          nil
+        else
+          am.receipt
+        end
+      else
+        nil
+      end
+    end
+
     # def user_id
     #   if !invoice_id.nil?
     #     invoice.user_id

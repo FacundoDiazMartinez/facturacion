@@ -73,6 +73,18 @@ class PurchaseOrder < ApplicationRecord
     def editable?
       state != "Anulado" && state != "Finalizada"
     end
+
+    def nombre_comprobante
+      "Órden de Compra"
+    end
+
+    def full_number
+      number
+    end
+
+    def type_of_model
+      "purchase_order"
+    end 
   #ATRIBUTOS
 
   #FILTROS DE BUSQUEDA
@@ -142,7 +154,6 @@ class PurchaseOrder < ApplicationRecord
     end
 
     def touch_payments
-      pp "//////////////////// entro a PurchaseOrder.touch_payments ////////////////////"
       expense_payments.map{|p| p.run_callbacks(:save)}
     end
 
@@ -153,7 +164,6 @@ class PurchaseOrder < ApplicationRecord
     # end
 
     def set_paid_out
-      pp "//////////////////// entro a PurchaseOrder.set ////////////////////"
       set_total_pay
       if total.to_f - total_pay <= 0
         update_column(:paid_out, true)

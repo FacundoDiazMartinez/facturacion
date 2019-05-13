@@ -96,6 +96,10 @@ class Receipt < ApplicationRecord
       CBTE_TIPO[cbte_tipo]
     end
 
+    def type_of_model
+      "receipt"
+    end 
+
   #ATRIBUTOS
 
   #PROCESOS
@@ -189,6 +193,10 @@ class Receipt < ApplicationRecord
 
     def account_movement_attributes=(attributes)
       AccountMovement.unscoped { super }
+    end
+
+    def full_number
+      number
     end
   #ATRIBUTOS
 

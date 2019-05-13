@@ -1,0 +1,57 @@
+<% @doc = @payment.associated_document_active_record %>
+<% if !@doc.nil? %>
+  <div class="card-shadow mb-4">
+    <hr>
+    <div class="m-4">
+      <p class="text-muted"> Documento asociado: </p>
+      <ul class="list-unstyled rounded">
+          <li class="media">
+            <img class="mr-3" src="/images/invoice.png" alt="doc asociado">
+            <div class="media-body">
+                <h5 class="mt-0 mb-1"><%= @doc.nombre_comprobante %>
+                    <% if @doc.nombre_comprobante != "Órden de Compra" %>
+                      a <%= @doc.client_name %>
+                    <% else %>
+                      a <%= @doc.supplier.name %>
+                    <% end %>
+                 </h5>
+                <strong>Nº:</strong> <%= @doc.full_number %><br>
+                <% if @doc.nombre_comprobante != "Órden de Compra" %>
+                  <strong>Tipo:</strong> <%= @doc.tipo %><br>
+                <% end %>
+                <strong>Estado:</strong> <%= assoc_doc_state_label_helper(@doc.state) %><br>
+                <i><%= icon('fas', 'clock') %> <%= assoc_doc_fecha_helper(@doc)%></i><br>
+            </div>
+          </li>
+          <li>
+            <div class="row">
+                <div class="col-md-9" style="padding: 5px 0px 0px 15px;">
+                    <h5>Total: <span class="text-info">$ <%= @doc.total %></span></h5>
+                </div>
+                <div class="col-md-3 float-right">
+                  <div class="row">
+
+                    <% case @doc.type_of_model %>
+                      <% when "invoice" %>
+                        <% if !@doc.editable? %>
+                          <%= link_to icon('fas', 'eye').html_safe, invoice_path(@doc.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
+                        <% end %>
+                        <%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(@doc.id), class: 'btn btn-link' %>
+                      <% when "receipt" %>
+                        <% if !@doc.editable? %>
+                          <%= link_to icon('fas', 'eye').html_safe, receipt_path(@doc.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
+                        <% end %>
+                        <%= link_to icon('fas', 'pencil-alt').html_safe, edit_receipt_path(@doc.id), class: 'btn btn-link' %>
+                      <% when "purchase_order" %>
+                        <% if !@doc.editable? %>
+                          <%= link_to icon('fas', 'eye').html_safe, purchase_order_path(@doc.id, format: :pdf), target: '_blank', class: 'btn btn-link' %>
+                        <% end %>
+                        <%= link_to icon('fas', 'pencil-alt').html_safe, edit_purchase_order_path(@doc.id), class: 'btn btn-link' %>
+                    <% end %>
+                  </div>
+                </div>
+            </div>
+          </li>
+      </ul>
+  </div>
+<% end %>
