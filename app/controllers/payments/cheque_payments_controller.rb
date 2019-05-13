@@ -1,5 +1,6 @@
 class Payments::ChequePaymentsController < Payments::PaymentsController
   before_action :set_cheque_payment, only: [:show, :edit, :update, :destroy, :charge, :new_charge]
+  before_action :set_purchase_order, only: [:show]
   layout :false, only: :new
 
 
@@ -85,5 +86,9 @@ class Payments::ChequePaymentsController < Payments::PaymentsController
     # Never trust parameters from the scary internet, only allow the white list through.
     def cheque_payment_params
       params.require(:cheque_payment).permit(:state, :expiration, :total, :observation, :origin, :entity, :number)
+    end
+
+    def set_purchase_order
+      @purchase_order = params[:purchase_order_id].blank? ? PurchaseOrder.new : current_user.company.purchase_orders.unscoped.find(params[:purchase_order_id])
     end
 end

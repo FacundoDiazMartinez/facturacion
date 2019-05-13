@@ -30,7 +30,7 @@
         <td><%= flow_type(cheque_payment.payment.flow) %></td>
         <td><%= link_to icon('fas', 'dollar-sign'), new_charge_payments_cheque_payment_path(cheque_payment.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data: {target: '#chargeModal', toggle: 'modal', remote: true} unless cheque_payment.state == "Cobrado"%></td>
         <td>
-          <%= link_to icon('fas', 'eye').html_safe,  payments_cheque_payment_path(cheque_payment, invoice_id: cheque_payment.payment.invoice_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'eye').html_safe,  payments_cheque_payment_path(cheque_payment, invoice_id: cheque_payment.payment.invoice_id, purchase_order_id: cheque_payment.payment.purchase_order_id), data:{toggle: 'modal', target: '#showModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%#= link_to icon('fas', 'edit').html_safe, edit_payments_cheque_payment_path(cheque_payment.id), data:{toggle: 'modal', target: '#editModal', remote: true}, class: 'btn btn-sm btn-icon btn-outline-secondary' unless cheque_payment.state == "Cobrado"%>
           <%#= link_to icon('fas', 'trash').html_safe, payments_cheque_payment_path(cheque_payment), method: :delete, class: 'btn btn-sm btn-icon btn-outline-secondary', data: {confirm: "Esta por realizar una acción destructiva. ¿Desea continuar?"} %>
         </td>

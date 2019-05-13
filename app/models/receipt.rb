@@ -88,6 +88,14 @@ class Receipt < ApplicationRecord
       Client.unscoped{ super }
     end
 
+    def client_name
+      client.nil? ? "Sin nombre" : client.name
+    end
+
+    def nombre_comprobante
+      CBTE_TIPO[cbte_tipo]
+    end
+
   #ATRIBUTOS
 
   #PROCESOS
