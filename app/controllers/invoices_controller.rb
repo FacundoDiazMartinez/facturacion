@@ -29,7 +29,7 @@ class InvoicesController < ApplicationController
           layout: 'pdf.html',
           template: 'invoices/show',
           #zoom: 3.4,
-          #si en local se ve mal, poner en 3.5 solo para local
+          #si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"

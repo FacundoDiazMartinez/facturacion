@@ -66,7 +66,7 @@
     </div>
     <div class="col">
       <%= f.label :observation, "Observación" %>
-      <%= f.text_area :observation, class: 'form-control form-control-sm', rows:1 %>
+      <%= f.text_area :observation, class: 'form-control form-control-sm', rows:2 %>
     </div>
   </div>
 </div>
@@ -122,4 +122,7 @@
     onstyle: "sm btn-primary",
     offstyle: "sm btn-secondary"
   });
+
+Event.observe(document, ‘keypress’, function(event) { if(event.keyCode
+== Event.KEY_RETURN) document.getElementById(‘.client_observation’).submit();});
 </script>

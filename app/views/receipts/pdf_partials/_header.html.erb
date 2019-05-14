@@ -59,20 +59,17 @@
 <div style="font-size: 13px !important;">
   <div class="container" style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black;">
     <table class="width_100">
-    <tr>
-      <td rowspan="2" style="width: 10px;"></td>
-      <td style="width: 50%;"><b>CUIT: </b><%= @receipt.client.document_number %></td>
-      <td rowspan="2" style="width: 18px;"></td>
-      <td><b>Cliente / Razón Social: </b> <%= @receipt.client.name %></td>
+      <tr>
+        <td rowspan="3" style="width: 1px;"></td>
+        <td style="width: 51%;"><b>CUIT: </b><%= @receipt.client.document_number %></td>
+        <td><b>Cliente / Razon Social: </b> &nbsp <%= @receipt.client.name %></td>
+      </tr>
 
-    </tr>
-
-    <tr>
-      <td><b>Condicion frente al IVA: </b><%= @receipt.client.iva_cond %></td>
-      <td><b>Domicilio: </b> <%= @receipt.client.address %></td>
-
-    </tr>
-  </table>
+      <tr>
+        <td><b>Condicion frente al IVA: </b> &nbsp <%= @receipt.client.iva_cond %></td>
+        <td><b>Domicilio: </b>&nbsp <%= @receipt.client.address %></td>
+      </tr>
+    </table>
   </div>
 </div>
 <!-- FIN DATOS CLIENTE -->

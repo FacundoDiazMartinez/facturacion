@@ -195,6 +195,7 @@ function calculateTotalOfInvoice(){
 		$("tr.fields:visible > td > input.subtotal").each(function(){
 			inv_total += parseFloat($(this).val());
 			console.log(inv_total);
+			$("#total_details").text("Total concepto: $" + inv_total);  //>>>>>> Muestra el total de los conceptos
 		});
 		bonif_gral = $("#invoice_bonification").val();
 		if (bonif_gral != 0) {
@@ -207,7 +208,6 @@ function calculateTotalOfInvoice(){
 
 		var total_neto = calculateNeto();
 
-
 		$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Cálculo de tributos en base a suma de subtotales sin iva
 			base_imp = total_neto.toFixed(2);
 			e = $(this).find("input.base_imp");
@@ -218,11 +218,12 @@ function calculateTotalOfInvoice(){
 			inv_total += parseFloat(importe);
 		})
 
-
 		// >>>>>>>>>>>>>>>>>>>> Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 		$("#invoice_total").val(inv_total.toFixed(2));
+		$("#total_invoice").text("Total factura: $"+ inv_total.toFixed(2));
 		total_left = inv_total - parseFloat($("#invoice_total_pay").val());
 		$("#total_left").val(total_left.toFixed(2));
+		$("#total_left_invoice").text("Total faltante: $ " + total_left.toFixed(2));
 		$("#total_left_venta").text("$" + total_left.toFixed(2));
 		// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
@@ -236,7 +237,6 @@ function calculateTotalOfInvoice(){
 				$("#with_alert").show();
 			}
 		}
-
 
 		//e.trigger("change"); // >>>>>>>>>>>> para que se sumen los tributos al TOTAL YA CALCULADO de la factura
 
@@ -473,24 +473,24 @@ function toggleTribute(){
 	}
 }
 
-function toggleTributes(){
-	var display = $("#itributes").css('display');
-	if (display == 'block'){
-		$("#itributes").hide('fast');
-		$("#tributos").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#tributos").append(' Ver tributos');
-	}
-	else{
-		$("#itributes").show('fast');
-		$("#tributos").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
-		$("#tributos").append(' Ocultar tributos');
-		$([document.documentElement, document.body]).animate({
-	        scrollTop: $("#itributes").offset().top
-    }, 500, function(){
-    	$("#itributes").effect( "shake" )
-    });
-	}
-}
+// function toggleTributes(){
+// 	var display = $("#itributes").css('display');
+// 	if (display == 'block'){
+// 		$("#itributes").hide('fast');
+// 		$("#tributos").html("").append($("<i class='fa fa-eye'></i>")).button();
+// 		$("#tributos").append(' Ver tributos');
+// 	}
+// 	else{
+// 		$("#itributes").show('fast');
+// 		$("#tributos").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+// 		$("#tributos").append(' Ocultar tributos');
+// 		$([document.documentElement, document.body]).animate({
+// 	        scrollTop: $("#itributes").offset().top
+//     }, 500, function(){
+//     	$("#itributes").effect( "shake" )
+//     });
+// 	}
+// }
 
 
 function getPaymentRequest(url, data, action) {

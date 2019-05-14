@@ -97,10 +97,33 @@
 	</table>
 </div>
 
-<% if @invoice.editable? %>
-	<center>
-		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-secondary', data: {target: '#details'}, id: "add_concept_to_invoice" %>
-		</div>
-	</center>
-<% end %>
+<div class="card-body">
+    <div class="row">
+      <div class="col-sm">
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <% if @invoice.editable? %>
+          	<center>
+          		<div class="m-2">
+					<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-secondary', data: {target: '#details'}, id: "add_concept_to_invoice" %>
+				</div>
+          	</center>
+          <% end %>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <div style="padding-left: 30% !important;">
+            <table>
+              <tr>
+                <th>
+                  <%= label_tag :total_details, "Total conceptos: $ 0.00", id:'total_details' %>
+                </th>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
