@@ -50,7 +50,7 @@ class InvoicesController < ApplicationController
       @client = current_user.company.clients.find(@invoice.client_id)
     else
       @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
-      @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.sale_points.first.id, user_id: current_user.id)
+      @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.first_sale_point, user_id: current_user.id)
     end
   end
 

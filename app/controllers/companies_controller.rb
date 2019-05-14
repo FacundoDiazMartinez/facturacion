@@ -43,8 +43,14 @@ class CompaniesController < ApplicationController
   def update
     respond_to do |format|
       if @company.update(company_params)
-        format.html { redirect_to @company, notice: 'Compañía actualizada con éxito.' }
-        format.json { render :show, status: :ok, location: @company }
+        if session[:return_to].blank?
+          format.html { redirect_to @company, notice: 'Compañía actualizada con éxito.' }
+          format.json { render :show, status: :ok, location: @company }
+        else
+          pp session[:return_to]
+          format.html { redirect_to session.delete(:return_to), notice: 'Ahora puede continuar con su operación.' }
+          format.json { render :show, status: :ok, location: @company }
+        end
       else
         format.html { render :edit }
         format.json { render json: @company.errors, status: :unprocessable_entity }

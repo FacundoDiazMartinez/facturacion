@@ -140,6 +140,23 @@ class Company < ApplicationRecord
 		def iva_cond_sym
 			iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
 		end
+
+		def first_sale_point
+		  if sale_points.first.nil?
+				raise Exceptions::EmptySalePoint
+			else
+				sale_points.first.id
+			end
+		end
+
+		def last_depot
+		  if depots.last.nil?
+		  	raise Exceptions::EmptyDepot
+			else
+				depots.last.id
+		  end
+		end
+
 	#Fin atributos
 
 	#FUNCIONES
