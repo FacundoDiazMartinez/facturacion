@@ -16,14 +16,17 @@
 				<th scope="col" style="width:1%;">Cantidad</th>
 				<th scope="col" style="width:7%;" class="only-desktop">Desc.(%)</th>
 				<th scope="col" style="width:7%;" class="only-desktop">Desc.($)</th>
+        <th scope="col">IVA (%)</th>
 				<th scope="col" style="width:9%;">Subtotal ($)</th>
-				<th scope="col"></th>
+      	<% if @budget.editable? %>
+				    <th scope="col"></th>
+        <% end %>
 			</tr>
 		</thead>
 		<tbody>
 			<%= form.fields_for :budget_details, wrapper: false do |f| %>
 		    	<tr class="fields" id="<%= f.index %>">
-					<td>
+					  <td>
               <% if @budget.editable? %>
                 	<%= link_to icon('fas', 'search'), search_product_budgets_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary', min_length: 3 %>
               <% else %>
@@ -40,27 +43,31 @@
 			  		<td>
 			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id', disabled: !@budget.editable?} %>
 			  		</td>
-					<td>
-						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', readonly: true, style: 'width: 90px;' %>
-					</td>
-					<td class="only-desktop">
-						<%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@budget.editable?} %>
-					</td>
-					<td>
-						<%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@budget.editable? %>
-					</td>
-					<td class="only-desktop">
-						<%= f.number_field :bonus_percentage,  class: 'form-control form-control-sm bonus_percentage', disabled: !@budget.editable? %>
-					</td>
-					<td class="only-desktop">
-						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', readonly: true %>
-					</td>
-					<td>
-						<%= f.number_field :subtotal, class: 'form-control form-control-sm subtotal_budget', readonly: true, disabled: !@budget.editable? %>
-					</td>
-					<% if @budget.editable? %>
-						<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
-					<% end %>
+  					<td>
+  						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', readonly: true, style: 'width: 90px;' %>
+  					</td>
+  					<td class="only-desktop">
+  						<%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, "7"),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@budget.editable?} %>
+  					</td>
+  					<td>
+  						<%= f.number_field :quantity, class: 'form-control form-control-sm quantity', min: 0, disabled: !@budget.editable? %>
+  					</td>
+  					<td class="only-desktop">
+  						<%= f.number_field :bonus_percentage,  class: 'form-control form-control-sm bonus_percentage', disabled: !@budget.editable? %>
+  					</td>
+  					<td class="only-desktop">
+  						<%= f.number_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', readonly: true %>
+  					</td>
+            <td>
+  						<%= f.hidden_field :iva_amount, class: 'form-control form-control-sm budget_iva_amount' %>
+  						<%= f.select :iva_aliquot, options_for_select(Afip::ALIC_IVA.map{|iva, id| [id, iva]}, f.object.iva_aliquot.blank? ? "03" : f.object.iva_aliquot ), {}, {class: 'form-control form-control-sm budget_iva_aliquot', data: {toggle:"tooltip"}, style: 'width: 100px;', disabled: !@budget.editable?} %>
+  					</td>
+  					<td>
+  						<%= f.number_field :subtotal, class: 'form-control form-control-sm subtotal_budget', readonly: true, disabled: !@budget.editable? %>
+  					</td>
+  					<% if @budget.editable? %>
+  						<td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
+  					<% end %>
 	    		</tr>
 		    <% end %>
 		</tbody>

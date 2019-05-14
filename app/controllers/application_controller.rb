@@ -26,17 +26,21 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  rescue_from ::Exceptions::EmptySalePoint do |exception|
+    session[:return_to] ||= request.path
+    flash[:alert] =  "Primero debe crear al menos un punto de venta."
+    redirect_to edit_company_path(current_user.company.id)
+  end
+
   rescue_from ::Exceptions::DailyCashClose do |exception|
     session[:return_to] ||= request.path # Esto porque, por ejemplo, make_sale de Budget envía info en session[:return_to] y no debe cambiarse el valor.
-    pp "////////////////// return_to /////////////////"
-    pp session[:return_to]
     flash[:alert] =  "Primero debe abrir la caja diaria."
     redirect_to daily_cashes_path
   end
 
   rescue_from ::Exceptions::EmptyDepot do |exception|
     session[:return_to] ||= request.path
-    flash[:alert] = "Primero debe cargar un depósito."
+    flash[:alert] = "Primero debe cargar un deposito."
     redirect_to depots_path()
   end
 

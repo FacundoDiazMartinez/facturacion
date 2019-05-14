@@ -73,11 +73,7 @@ function updateTooltip22(element) {
 	});
 }
 
-$(document).on('keypress', function(e){
-	if (e.keyCode == 13) {
-    return false;
-  }
-})
+
 
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){

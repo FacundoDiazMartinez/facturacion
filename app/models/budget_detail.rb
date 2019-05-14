@@ -10,7 +10,7 @@ class BudgetDetail < ApplicationRecord
 
   #ATRIBUTOS
   	def product_code
-  		product.nil? ? "" : product.code
+		  product.nil? ? "" : product.code
   	end
   #ATRIBUTOS
 

@@ -621,6 +621,10 @@ class Invoice < ApplicationRecord
           "Factura: #{name}"
         end
       end
+
+      def type_of_model
+        "invoice"
+      end 
   	#ATRIBUTOS
 
 
