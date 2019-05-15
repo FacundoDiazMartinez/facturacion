@@ -393,6 +393,8 @@ class Invoice < ApplicationRecord
       end
 
       def paid_invoice_from_client_debt
+        result = false
+
         client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
           @band = true
           pay = self.income_payments.new(type_of_payment: "6", payment_date: Date.today, generated_by_system: true, account_movement_id: am.id)
@@ -401,6 +403,8 @@ class Invoice < ApplicationRecord
           if result
             @last_pay = pay
             am.update_column(:amount_available, am.amount_available - pay.total)
+          else
+            pay.errors
           end
           break if self.real_total_left == 0 || !result
         end
@@ -624,7 +628,7 @@ class Invoice < ApplicationRecord
 
       def type_of_model
         "invoice"
-      end 
+      end
   	#ATRIBUTOS
 
 
