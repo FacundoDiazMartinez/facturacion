@@ -447,9 +447,13 @@ function toggleHeader(){
 	var display = $(".invoice-header").css('display');
 	if (display == 'flex'){
 		$(".invoice-header").hide('fast');
+		$("#toggle_header").html("").append($("<i class='fa fa-eye'></i>")).button();
+		$("#toggle_header").append(' Ver encabezado');
 	}
 	else{
 		$(".invoice-header").show('fast');
+		$("#toggle_header").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+		$("#toggle_header").append(' Ocultar encabezado');
 	}
 }
 
@@ -457,21 +461,20 @@ function toggleBonification(){
 	var display = $(".bonifications").css('display');
 	if (display == 'none'){
 		$(".bonifications").show('fast');
+		$("#toggle_bonifications").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+		$("#toggle_bonifications").append(' Ocultar descuentos');
+		$([document.documentElement, document.body]).animate({
+      scrollTop: $("#div_ibonifications").offset().top
+    }, 500, function(){
+    	$("#div_ibonifications").effect( "shake" );
+    });
 	}
 	else{
 		$(".bonifications").hide('fast');
+		$("#toggle_bonifications").html("").append($("<i class='fa fa-eye'></i>")).button();
+		$("#toggle_bonifications").append(' Ver descuentos');
 	}
 }
-
-// function toggleTribute(){
-// 	var display = $(".tributes").css('display');
-// 	if (display == 'none'){
-// 		$(".tributes").show('fast');
-// 	}
-// 	else{
-// 		$(".tributes").hide('fast');
-// 	}
-// }
 
 function toggleTributes(){
 	var display = $("#div_itributes").css('display');
@@ -485,9 +488,9 @@ function toggleTributes(){
 		$("#toggle_tributes").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
 		$("#toggle_tributes").append(' Ocultar tributos');
 		$([document.documentElement, document.body]).animate({
-	        scrollTop: $("#div_itributes").offset().top
+      scrollTop: $("#div_itributes").offset().top
     }, 500, function(){
-    	$("#div_itributes").effect( "shake" )
+    	$("#div_itributes").effect( "shake" );
     });
 	}
 }
