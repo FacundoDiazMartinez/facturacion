@@ -191,7 +191,7 @@ function calculateTotalOfInvoice(){
 		$("tr.fields:visible > td > input.subtotal").each(function(){
 			inv_total += parseFloat($(this).val());
 			console.log(inv_total);
-			$("#total_details").text("Total concepto: \xa0 \xa0 \xa0 $" + inv_total.toFixed(2));  //>>>>>> Muestra el total de los conceptos
+			$("#total_details").text("Total concepto: \xa0 \xa0 \xa0 $" + inv_total);  //>>>>>> Muestra el total de los conceptos
 		});
 		bonif_gral = $("#invoice_bonification").val();
 		if (bonif_gral != 0) {
@@ -199,7 +199,6 @@ function calculateTotalOfInvoice(){
 		}
 		$("#bonifications > tbody > tr").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
 			if ($(this).css('display') != "none") {
-				alert("asd");
 				percentage = $(this).find($("input.bonif_percentage")).val();
 				inv_total -= (inv_total * (percentage / 100)).toFixed(2);
 			}
