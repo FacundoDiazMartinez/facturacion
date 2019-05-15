@@ -57,26 +57,26 @@
             <td>
               <% case ip.type_of_payment %>
                 <% when "4" %>
-                  <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> - N°: <%= ip.cheque_payment.number %>
+                  <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> N° <%= ip.cheque_payment.number %> - Pago <%= ip.payment_date %> - Cobro: <%= ip.cheque_payment.expiration.to_formatted_s(:default) %> - Importe <b>$ <%= ip.total %> </b>
                 <% when "1" %>
                   <% @installment_id = ip.card_payment.installments %>
                   <% if @installment_id != 0 %>
-                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
                   <% else %>
-                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
                   <% end %>
                 <% when "3" %>
-                  <%= ip.payment_name %> - Banco <%= ip.bank_payment.bank.name %>
+                  <%= ip.payment_name %> - Banco <%= ip.bank_payment.bank.name %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
                 <% when "7" %>
-                  <%= ip.payment_name %> - Banco <%= ip.debit_payment.bank.name %>
+                  <%= ip.payment_name %> - Banco <%= ip.debit_payment.bank.name %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
                 <% when "5" %>
-                  <%= ip.payment_name %> - N° <%= ip.retention_payment.number %>
+                  <%= ip.payment_name %> - N° <%= ip.retention_payment.number %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
                 <% when "8" %>
-                  <%= ip.payment_name %> - Factura asociada: <%= ip.compensation_payment.asociatedClientInvoice %>
+                  <%= ip.payment_name %> - Factura asociada: <%= ip.compensation_payment.asociatedClientInvoice %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
                 <% else %>
-                  <%= ip.payment_name %>
+                  <%= ip.payment_name %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
               <% end %>
-              - Fecha de pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+              
             </td>
           </tr>
         <% end %>

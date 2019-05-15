@@ -47,7 +47,6 @@
           <th scope="col" class="only-desktop">Tipo</th>
           <th scope="col">Total</th>
           <th scope="col" class="only-desktop">Estado</th>
-          <th>Pagado</th>
           <th>Faltante</th>
           <th>Anular</th>
           <th scope="col"></th>
@@ -63,7 +62,6 @@
             <td class="only-desktop"><%= invoice.tipo %></td>
             <td>$<%= invoice.total %></td>
             <td class="only-desktop"><%= invoice_state(invoice.state) %></td>
-            <td>$<%= invoice.total_pay %></td>
             <td>$<%= invoice.total_left%></td>
             <td>
               <%  if !invoice.editable? && invoice.is_invoice? && invoice.state != "Anulado" %>
@@ -94,7 +92,6 @@
                 <td class="only-desktop"><%= note.tipo %></td>
                 <td>$<%= note.total %></td>
                 <td class="only-desktop"><%= invoice_state(note.state) %></td>
-                <td>$<%= note.total_pay %></td>
                 <td>$<%= note.total_left %></td>
                 <td>
                   <%  if !note.editable? && note.is_invoice? && note.state != "Anulado" %>

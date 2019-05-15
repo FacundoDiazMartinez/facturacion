@@ -19,3 +19,4 @@ $(document).on("keyup click", ".client_name", function(){
 		$(".client_document").val("80");
 	}
 })
+

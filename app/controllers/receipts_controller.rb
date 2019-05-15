@@ -144,7 +144,7 @@ class ReceiptsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_receipt
-      @receipt = Receipt.find(params[:id])
+      @receipt = current_user.company.receipts.find(params[:id])
     end
 
     def build_account_movement
