@@ -7,7 +7,7 @@
 		</div>
 		<div class="col-5 text-right">
 			<div class="row">
-				<div class="col-9">
+				<div class="col-8">
 					<% if @invoice.is_invoice? && !@invoice.editable? && @invoice.credit_notes.blank? %>
 						<% if @invoice.delivery_notes.last.nil? %>
 							<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
@@ -17,11 +17,11 @@
 					<% end -%>
 					<%= link_to "#{icon('fas', 'file-pdf')} Ver PDF".html_safe, invoice_path(@invoice.id, format: :pdf), class: 'btn btn-info', target: "_blank" unless @invoice.editable?%>
 				</div>
-				<div class="dropdown col-3">
-					<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<div class="dropdown col-4">
+					<button class="btn btn-primary dropdown-toggle sort filter" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					    Ocultar | Ver
 					</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<div class="dropdown-menu sort filter" aria-labelledby="dropdownMenuButton">
 					    <button class="btn btn-primary dropdown-item" role="button" href="#" onclick="toggleHeader()" id="encabezado"><%= icon('fas' ,'eye-slash') %> Encabezado</button>
 					    <button class="btn btn-primary dropdown-item" role="button" href="#" onclick="toggleBonification()" id="bonifications"><%= icon('fas' ,'eye') %> Descuentos</button>
 					    <button class="btn btn-primary dropdown-item" role="button" href="#" onclick="toggleTribute()" id="tributes"><%= icon('fas' ,'eye') %> Tributos</button>
