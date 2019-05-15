@@ -191,7 +191,7 @@ function calculateTotalOfInvoice(){
 		$("tr.fields:visible > td > input.subtotal").each(function(){
 			inv_total += parseFloat($(this).val());
 			console.log(inv_total);
-			$("#total_details").text("Total concepto:    $" + inv_total);  //>>>>>> Muestra el total de los conceptos
+			$("#total_details").text("Total concepto: \xa0 \xa0 \xa0 $" + inv_total);  //>>>>>> Muestra el total de los conceptos
 		});
 		bonif_gral = $("#invoice_bonification").val();
 		if (bonif_gral != 0) {
@@ -220,10 +220,10 @@ function calculateTotalOfInvoice(){
 
 		// >>>>>>>>>>>>>>>>>>>> Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 		$("#invoice_total").val(inv_total.toFixed(2));
-		$("#total_invoice").text("Total factura:    $"+ inv_total.toFixed(2));
+		$("#total_invoice").text("Total factura: \xa0 \xa0 \xa0 $" + inv_total.toFixed(2));
 		total_left = inv_total - parseFloat($("#invoice_total_pay").val());
 		$("#total_left").val(total_left.toFixed(2));
-		$("#total_left_invoice").text("Total faltante:    $" + total_left.toFixed(2));
+		$("#total_left_invoice").text("Total faltante: \xa0 \xa0 \xa0 $" + total_left.toFixed(2));
 		$("#total_left_venta").text("$" + total_left.toFixed(2));
 		// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
@@ -448,12 +448,12 @@ function toggleHeader(){
 	if (display == 'flex'){
 		$(".invoice-header").hide('fast');
 		$("#toggle_header").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#toggle_header").append(' Ver encabezado');
+		$("#toggle_header").append(' Encabezado');
 	}
 	else{
 		$(".invoice-header").show('fast');
 		$("#toggle_header").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
-		$("#toggle_header").append(' Ocultar encabezado');
+		$("#toggle_header").append(' Encabezado');
 	}
 }
 
@@ -462,7 +462,7 @@ function toggleBonification(){
 	if (display == 'none'){
 		$(".bonifications").show('fast');
 		$("#toggle_bonifications").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
-		$("#toggle_bonifications").append(' Ocultar descuentos');
+		$("#toggle_bonifications").append(' Descuentos');
 		$([document.documentElement, document.body]).animate({
       scrollTop: $("#div_ibonifications").offset().top
     }, 500, function(){
@@ -472,7 +472,7 @@ function toggleBonification(){
 	else{
 		$(".bonifications").hide('fast');
 		$("#toggle_bonifications").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#toggle_bonifications").append(' Ver descuentos');
+		$("#toggle_bonifications").append(' Descuentos');
 	}
 }
 
@@ -481,12 +481,12 @@ function toggleTributes(){
 	if (display != 'none'){
 		$("#div_itributes").hide('fast');
 		$("#toggle_tributes").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#toggle_tributes").append(' Ver tributos');
+		$("#toggle_tributes").append(' Tributos');
 	}
 	else{
 		$("#div_itributes").show('fast');
 		$("#toggle_tributes").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
-		$("#toggle_tributes").append(' Ocultar tributos');
+		$("#toggle_tributes").append(' Tributos');
 		$([document.documentElement, document.body]).animate({
       scrollTop: $("#div_itributes").offset().top
     }, 500, function(){
