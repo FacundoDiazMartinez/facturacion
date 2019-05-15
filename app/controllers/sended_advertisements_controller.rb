@@ -30,7 +30,7 @@ class SendedAdvertisementsController < ApplicationController
   private
 
     def set_clients
-      @clients = current_user.company.clients.all.map{|a| a if a.has_email?}.compact.paginate(page: params[:page], per_page: 2)
+      @clients = current_user.company.clients.all.map{|a| a if a.has_email?}.compact.paginate(page: params[:page], per_page: 10)
       @unpaginated_clients = current_user.company.clients.all.map{|a| a if a.has_email?}.compact
     end
 
