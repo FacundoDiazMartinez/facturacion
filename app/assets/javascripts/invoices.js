@@ -191,7 +191,7 @@ function calculateTotalOfInvoice(){
 		$("tr.fields:visible > td > input.subtotal").each(function(){
 			inv_total += parseFloat($(this).val());
 			console.log(inv_total);
-			$("#total_details").text("Total concepto: " + "  $" + inv_total);  //>>>>>> Muestra el total de los conceptos
+			$("#total_details").text("Total concepto: \xa0 \xa0 \xa0 $" + inv_total);  //>>>>>> Muestra el total de los conceptos
 		});
 		bonif_gral = $("#invoice_bonification").val();
 		if (bonif_gral != 0) {
@@ -220,10 +220,10 @@ function calculateTotalOfInvoice(){
 
 		// >>>>>>>>>>>>>>>>>>>> Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 		$("#invoice_total").val(inv_total.toFixed(2));
-		$("#total_invoice").text("Total factura:    $"+ inv_total.toFixed(2));
+		$("#total_invoice").text("Total factura: \xa0 \xa0 \xa0 $" + inv_total.toFixed(2));
 		total_left = inv_total - parseFloat($("#invoice_total_pay").val());
 		$("#total_left").val(total_left.toFixed(2));
-		$("#total_left_invoice").text("Total faltante:    $" + total_left.toFixed(2));
+		$("#total_left_invoice").text("Total faltante: \xa0 \xa0 \xa0 $" + total_left.toFixed(2));
 		$("#total_left_venta").text("$" + total_left.toFixed(2));
 		// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
