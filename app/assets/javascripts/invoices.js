@@ -223,7 +223,7 @@ function calculateTotalOfInvoice(){
 		$("#total_invoice").text("Total factura:    $"+ inv_total.toFixed(2));
 		total_left = inv_total - parseFloat($("#invoice_total_pay").val());
 		$("#total_left").val(total_left.toFixed(2));
-		$("#total_left_invoice").text("Total faltante:    $ " + total_left.toFixed(2));
+		$("#total_left_invoice").text("Total faltante:    $" + total_left.toFixed(2));
 		$("#total_left_venta").text("$" + total_left.toFixed(2));
 		// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
