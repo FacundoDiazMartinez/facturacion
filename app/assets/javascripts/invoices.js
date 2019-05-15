@@ -197,9 +197,12 @@ function calculateTotalOfInvoice(){
 		if (bonif_gral != 0) {
 			inv_total -= (inv_total * (bonif_gral / 100));  // >>>>>>>>>>>>>>>> Descuento general al TOTAL
 		}
-		$("#bonifications > tbody > tr:visible").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
-			percentage = $(this).find($("input.bonif_percentage")).val();
-			inv_total -= (inv_total * (percentage / 100)).toFixed(2);
+		$("#bonifications > tbody > tr").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
+			if ($(this).css('display') != "none") {
+				alert("asd");
+				percentage = $(this).find($("input.bonif_percentage")).val();
+				inv_total -= (inv_total * (percentage / 100)).toFixed(2);
+			}
 		});
 
 		var total_neto = calculateNeto();
