@@ -29,3 +29,7 @@ table.invoice-table > tbody > tr > td{
 .text-centered {
   text-align: center;
 }
+
+.dropdown-menu.show{
+  transform: translate3d(5px, 38px, 0px) !important;
+}
