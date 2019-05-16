@@ -4,17 +4,17 @@
   <div class="alwaysbreak">
 
     <!-- HEADER ORIGINAL/DUPLICADO -->
-    <div class="container">
+    <!-- <div class="container">
       <div class="row">
         <div class="border">
-              <center>
-                <h2 class="text_size_25">
-                     ORIGINAL
-                </h2>
-              </center>
+            <center>
+              <h2 class="text_size_25">
+                PRESUPUESTO
+              </h2>
+            </center>
         </div>
       </div>
-    </div>
+    </div> -->
    <!-- FIN HEADER ORIGINAL/DUPLICADO -->
 
 
@@ -24,4 +24,3 @@
     <%= render template: '/budgets/pdf_partials/_footer.html.erb', :locals => { :page_number => (index + 1), :total_pages => @group_details.count } %>
   </div>
 <% end %>
-
