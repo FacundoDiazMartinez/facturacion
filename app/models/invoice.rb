@@ -364,14 +364,23 @@ class Invoice < ApplicationRecord
       # end
 
       def self.paid_unpaid_invoices client
+        pp 'EEeeeeeeeeeeeeeeEEEEEEEEEENNNNNNTRRRRO A PAID UNPAID INVOICES'
         client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
+          pp am
           am.receipt.receipt_details.each do |rd|
             if am.amount_available > 0
+              pp "SI ENTRO AL IF"
               invoice = rd.invoice
               unless invoice.is_credit_note?
+                pp "UNLESSSSSS"
                 pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
                 pay.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
-                pay.save
+                if pay.save
+                pp "SI GUARDOOOOO"
+                else
+                  pp "NOOOO GUARDO"
+                  pp pay.errors
+                end
                 am.update_column(:amount_available, am.amount_available - pay.total)
                 break if am.amount_available < 1
               end
