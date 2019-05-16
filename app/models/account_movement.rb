@@ -11,6 +11,7 @@ class AccountMovement < ApplicationRecord
 
   before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
   before_save         :set_total_if_subpayments
+  before_save         :check_amount_available
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
   after_save          :update_debt
@@ -131,6 +132,12 @@ class AccountMovement < ApplicationRecord
         errors.add(:base, "Cliente incorrecto") unless self.client_id == self.receipt.client_id
       end
     end
+
+    def check_amount_available
+		  if amount_available < 0
+				amount_available = 0
+			end
+		end
   #VALIDACIONES
 
   #FUNCIONES
