@@ -11,8 +11,8 @@ class Invoice < ApplicationRecord
     default_scope { where(active: true) }
     scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
     scope :unassociated_invoices, -> { where(associated_invoice: nil) }
-    scope :debit_notes, -> { where(cbte_tipo: COD_ND) }
-    scope :credit_notes, -> { where(cbte_tipo: COD_NC) }
+    scope :debit_notes, -> { where(cbte_tipo: COD_ND).where(state: "Confirmado") }
+    scope :credit_notes, -> { where(cbte_tipo: COD_NC).where(state: "Confirmado") }
 
     has_many :notes, foreign_key: :associated_invoice, class_name: 'Invoice'
     has_many :debit_notes, -> { debit_notes }, foreign_key: :associated_invoice, class_name: 'Invoice'
@@ -364,23 +364,16 @@ class Invoice < ApplicationRecord
       # end
 
       def self.paid_unpaid_invoices client
-        pp 'EEeeeeeeeeeeeeeeEEEEEEEEEENNNNNNTRRRRO A PAID UNPAID INVOICES'
         client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
           pp am
           am.receipt.receipt_details.each do |rd|
             if am.amount_available > 0
-              pp "SI ENTRO AL IF"
               invoice = rd.invoice
               unless invoice.is_credit_note?
-                pp "UNLESSSSSS"
                 pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
                 pay.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
-                if pay.save
-                pp "SI GUARDOOOOO"
-                else
-                  pp "NOOOO GUARDO"
-                  pp pay.errors
-                end
+                pay.save
+                pp pay.errors
                 am.update_column(:amount_available, am.amount_available - pay.total)
                 break if am.amount_available < 1
               end
