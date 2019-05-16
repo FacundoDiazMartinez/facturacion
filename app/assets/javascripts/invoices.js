@@ -190,8 +190,7 @@ function calculateTotalOfInvoice(){
 		var inv_total = parseFloat(0); // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Suma de totales [CON IVA]  (para sumarles luego los tributos CON DESCUENTO)
 		$("tr.fields:visible > td > input.subtotal").each(function(){
 			inv_total += parseFloat($(this).val());
-			console.log(inv_total);
-			$("#total_details").text("Total concepto: \xa0 \xa0 \xa0 $" + inv_total);  //>>>>>> Muestra el total de los conceptos
+			$("#total_details").text("Total concepto: \xa0 \xa0 \xa0 $ " + inv_total.toFixed(2));  //>>>>>> Muestra el total de los conceptos
 		});
 		bonif_gral = $("#invoice_bonification").val();
 		if (bonif_gral != 0) {

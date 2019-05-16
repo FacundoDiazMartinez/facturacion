@@ -11,8 +11,8 @@ class Invoice < ApplicationRecord
     default_scope { where(active: true) }
     scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
     scope :unassociated_invoices, -> { where(associated_invoice: nil) }
-    scope :debit_notes, -> { where(cbte_tipo: COD_ND) }
-    scope :credit_notes, -> { where(cbte_tipo: COD_NC) }
+    scope :debit_notes, -> { where(cbte_tipo: COD_ND).where(state: "Confirmado") }
+    scope :credit_notes, -> { where(cbte_tipo: COD_NC).where(state: "Confirmado") }
 
     has_many :notes, foreign_key: :associated_invoice, class_name: 'Invoice'
     has_many :debit_notes, -> { debit_notes }, foreign_key: :associated_invoice, class_name: 'Invoice'
