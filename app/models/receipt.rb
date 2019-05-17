@@ -98,7 +98,7 @@ class Receipt < ApplicationRecord
 
     def type_of_model
       "receipt"
-    end 
+    end
 
   #ATRIBUTOS
 

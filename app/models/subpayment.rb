@@ -1,6 +1,6 @@
 module Subpayment
 	extend ActiveSupport::Concern
-	
+
   included do
     after_save :update_payment
     after_destroy :update_invoice
