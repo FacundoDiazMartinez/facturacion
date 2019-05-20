@@ -24,9 +24,9 @@ function manageArray(item_value) {
   }
 }
 
-function all_checked(item_value){
+function all_checked(item_value, item){
   var index = checked_ids.indexOf(parseInt(item_value));
-  if (index == -1) {
+  if ($(item).is(":checked")) {
     $('#clients_table #client_ids').each(function(){
       $(this).prop('checked', true); //tildamos todos los checkbox de la tabla
     });

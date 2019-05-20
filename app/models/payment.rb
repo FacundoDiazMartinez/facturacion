@@ -21,7 +21,7 @@ class Payment < ApplicationRecord
   after_update :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
 
   default_scope { where(active: true) }
-  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0 }
+  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
@@ -187,7 +187,7 @@ class Payment < ApplicationRecord
 
     def save_daily_cash_movement
       if type_of_payment == "0"
-        if payment_date <= Date.today
+        if payment_date == Date.today
           DailyCashMovement.save_from_payment(self, company_id)
         else
           DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)

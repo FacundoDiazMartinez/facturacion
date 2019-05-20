@@ -2,7 +2,7 @@
   <table class="table table-hover" id="clients_table">
     <thead>
       <tr>
-        <th style="width: 15%;"><%= check_box_tag 'select_all', 'all_checked', false, { onchange: 'all_checked(this.value)' } %> Seleccionar todos</th>
+        <th style="width: 15%;"><%= check_box_tag 'select_all', 'all_checked', false, { onchange: 'all_checked(this.value, this)' } %> Seleccionar todos</th>
         <th>Nombre</th>
         <th>Dirección</th>
         <th>Documento</th>
