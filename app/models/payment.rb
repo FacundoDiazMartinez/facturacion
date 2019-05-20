@@ -18,6 +18,7 @@ class Payment < ApplicationRecord
 
   after_initialize :set_payment_date
   after_save :save_daily_cash_movement
+  after_update :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
 
   default_scope { where(active: true) }
   accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0 }
@@ -46,6 +47,10 @@ class Payment < ApplicationRecord
   #VALIDACIONES
 
   #ATRIBUTOS
+    def account_movement
+      AccountMovement.unscoped.find(account_movement_id) unless account_movement_id.blank?
+    end
+
     def child
       if not cash_payment.nil?
         return cash_payment
@@ -174,6 +179,10 @@ class Payment < ApplicationRecord
   #PROCESOS
     def set_payment_date
       self.payment_date ||= Date.today
+    end
+
+    def touch_receipt
+      self.account_movement.receipt.touch_account_movement
     end
 
     def save_daily_cash_movement

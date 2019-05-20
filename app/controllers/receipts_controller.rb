@@ -80,9 +80,9 @@ class ReceiptsController < ApplicationController
     end
     respond_to do |format|
       if @receipt.update(receipt_params)
-        if params[:button] == "confirm"
-          @receipt.touch_account_movement
-        end
+        # if params[:button] == "confirm"
+        #   @receipt.touch_account_movement
+        # end
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
