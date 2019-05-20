@@ -14,7 +14,7 @@ class AccountMovement < ApplicationRecord
   before_save         :check_amount_available
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
-  after_save          :update_debt
+  after_save          :update_debt, if: Proc.new{ |p| p.receipt.try(:state) == "Finalizado" }
   after_destroy       :update_debt
   after_destroy       :destroy_receipt
   #before_validation :check_receipt_attributes
@@ -263,7 +263,7 @@ class AccountMovement < ApplicationRecord
         am.haber       = receipt.cbte_tipo != "99"
         am.total       = receipt.total.to_f
         am.saldo       = receipt.client.saldo - receipt.total.to_f
-        am.active      = true
+        am.active      = receipt.state == "Finalizado"
         am.save
       end
     end

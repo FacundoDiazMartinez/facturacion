@@ -15,7 +15,7 @@ class Receipt < ApplicationRecord
   before_validation :validate_receipt_detail
   before_validation :set_number, on: :create
   before_validation :check_total
-  # after_update :touch_account_movement if Proc.new{ |r| r.state == "Finalizado" }   Ahora se ejecuta desde el controlador (update)
+  #after_update :touch_account_movement #if Proc.new{ |r| r.state == "Finalizado" }   Ahora se ejecuta desde el controlador (update)
 
   validates_uniqueness_of :number, scope: [:company, :active], message: "No se puede repetir el numero de recibo."
 
@@ -106,6 +106,10 @@ class Receipt < ApplicationRecord
 
   	def touch_account_movement
 		  AccountMovement.create_from_receipt(self)
+      self.account_movement.reload
+      AccountMovement.unscoped do
+        self.update_column(:total, self.account_movement.total)
+      end
     end
 
     def set_number
