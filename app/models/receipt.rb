@@ -108,7 +108,7 @@ class Receipt < ApplicationRecord
 		  AccountMovement.create_from_receipt(self)
       self.account_movement.reload
       AccountMovement.unscoped do
-        self.update_column(:total, self.account_movement.total)
+        self.update(total: self.account_movement.total)
       end
     end
 

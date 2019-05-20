@@ -269,6 +269,7 @@ class AccountMovement < ApplicationRecord
     end
 
     def update_debt
+      pp "///////////////////////// UPDATE DEBT"
   		self.client.update_debt
   	end
 
