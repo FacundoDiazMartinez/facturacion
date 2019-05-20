@@ -190,7 +190,9 @@ class Payment < ApplicationRecord
         if payment_date == Date.today
           DailyCashMovement.save_from_payment(self, company_id)
         else
-          DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)
+          if payment_date > Date.today
+            DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)
+          end
         end
       end
     end
