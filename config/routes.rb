@@ -212,6 +212,7 @@ Rails.application.routes.draw do
     get :set_associated_invoice, on: :member
     get :deliver, on: :member
     get :paid_invoice_with_debt, on: :member
+    get :get_associated_invoice_details, on: :member
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

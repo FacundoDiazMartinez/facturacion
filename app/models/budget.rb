@@ -14,6 +14,7 @@ class Budget < ApplicationRecord
   validates_presence_of :user_id, message: "El presupuesto debe estar asociado a un usuario."
   validates_presence_of :client_id, message: "El presupuesto debe estar asociado a un cliente."
   validates_presence_of :expiration_date, message: "Debe seleccionar una fecha de vencimiento."
+  validates_presence_of :budget_details, message: "Debe ingresar al menos un detalle."
 
   # before_validation :set_number
   after_initialize :set_number, if: :new_record?

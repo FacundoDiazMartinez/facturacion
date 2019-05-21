@@ -391,7 +391,7 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 
 $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){
 	form = $(this).parents('form:first');
-	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");
+	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");  // En el set_associated_invoice.js se cargan los detalles del associated invoice
 });
 
 function changeView(tipo){
