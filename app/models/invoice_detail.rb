@@ -74,12 +74,7 @@ class InvoiceDetail < ApplicationRecord
       rescue => error
         iva_percentage = 0
       end
-
-      if iva_percentage != nil
-        product.price           ||= price_per_unit * (1 + iva_percentage)
-      else
-        product.price           ||= price_per_unit
-      end
+      product.price             ||= price_per_unit * (1 + iva_percentage)
       product.save
     end
 
