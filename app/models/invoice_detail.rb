@@ -61,14 +61,21 @@ class InvoiceDetail < ApplicationRecord
 
   #PROCESOS
     def check_product
-        product.company_id          = invoice.company_id
-        product.updated_by          = invoice.user_id
-        product.created_by          = invoice.user_id
-        product.price             ||= price_per_unit
-        product.iva_aliquot       ||= self.iva_aliquot
-        product.measurement_unit  ||= measurement_unit
-        product.active              = false unless product.persisted? || product.tipo != "Servicio"
-        product.save
+      product.company_id          = invoice.company_id
+      product.updated_by          = invoice.user_id
+      product.created_by        ||= invoice.user_id
+      product.net_price         ||= price_per_unit
+      product.iva_aliquot       ||= self.iva_aliquot
+      product.measurement_unit  ||= measurement_unit
+      product.active              = false unless product.persisted? || product.tipo != "Servicio"
+
+      begin
+        iva_percentage = Float(Afip::ALIC_IVA.map{|k,v| v if k == iva_aliquot}.compact[0])
+      rescue => error
+        iva_percentage = 0
+      end
+      product.price             ||= price_per_unit * (1 + iva_percentage)
+      product.save
     end
 
     def set_total_to_invoice
