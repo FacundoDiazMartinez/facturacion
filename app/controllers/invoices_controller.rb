@@ -189,6 +189,32 @@ class InvoicesController < ApplicationController
     render :json => invoices.map{|i| {:id => i.id, :label => "Factura Nº: #{i.comp_number}", :value => i.comp_number}}
   end
 
+  def get_associated_invoice_details
+    associated_invoice = Invoice.find(params[:id])
+    invoice_details = associated_invoice.invoice_details
+    render :json => invoice_details.map {
+      |detail| {
+        :id => detail.id,
+        :product_attributes => {
+          :id => detail.product.id,
+          :code => detail.product.code,
+          :name => detail.product.name,
+          :tipo => detail.product.tipo,
+          :company_id => detail.product.company_id
+        },
+        :quantity => detail.quantity,
+        :depot_id => detail.depot_id,
+        :measurement_unit => detail.measurement_unit,
+        :price_per_unit => detail.price_per_unit,
+        :bonus_percentage => detail.bonus_percentage ,
+        :bonus_amount => detail.bonus_amount,
+        :iva_amount => detail.iva_amount,
+        :iva_aliquot => detail.iva_aliquot,
+        :subtotal => detail.subtotal
+      }
+    }
+  end
+
   def search_product
     @products = Product.unscoped.includes(stocks: :depot).where(
     active: true, company_id: current_user.company_id).search_by_supplier_id(params[:supplier_id]).search_by_category(params[:product_category_id]).search_by_depot(params[:depot_id]).search_by_name(params[:product_name]).search_by_code(params[:product_code]).paginate(page: params[:page], per_page: 10)
