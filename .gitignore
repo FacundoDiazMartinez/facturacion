@@ -5,9 +5,6 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 /afip
 /config/initializers/afip.rb
-
-/afip
-/config/initializers/afip.rb
 /config/database.yml
 
 # Ignore bundler config.
@@ -31,7 +28,3 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
-
-#/config/initializers/afip.rb
-/config/database.yml
-
