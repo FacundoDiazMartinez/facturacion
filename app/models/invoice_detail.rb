@@ -21,7 +21,7 @@ class InvoiceDetail < ApplicationRecord
   #validates_presence_of :invoice_id, message: "El detalle debe estar vinculado a una factura."
   validates_presence_of :product, message: "El detalle debe estar vinculado a un producto."
   validates_presence_of :quantity, message: "El detalle debe especificar una cantidad."
-  validates_presence_of :depot_id, message: "El detalle debe especificar un deposito."
+  validates_presence_of :depot_id, message: "El detalle debe especificar un deposito.", if: Proc.new{|detail| detail.product.tipo == "Producto"}
   validates_numericality_of :quantity, greater_than: 0.0, message: "La cantidad debe ser mayor a 0."
   validates_inclusion_of :measurement_unit, in: Product::MEASUREMENT_UNITS.keys, message: "Unidad de medida inválida.", if: Proc.new{|id| not id.product.nil?}
   validates_presence_of :measurement_unit, message: "Debe especificar la unidad de medida en el detalle de la factura.", if: Proc.new{|id| not id.product.nil?}
