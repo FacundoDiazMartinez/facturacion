@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_13_182600) do
+ActiveRecord::Schema.define(version: 2019_05_22_182344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(version: 2019_05_13_182600) do
     t.bigint "payment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "issuance_date", default: -> { "('now'::text)::date" }, null: false
     t.index ["payment_id"], name: "index_cheque_payments_on_payment_id"
   end
 
