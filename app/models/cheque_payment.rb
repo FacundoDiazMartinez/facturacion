@@ -1,7 +1,7 @@
 class ChequePayment < ApplicationRecord
 	include Subpayment
   	belongs_to :payment
-		validates_uniqueness_of :number, scope: [:active, :company], if: :active, message: "Este número de cheque ya existe."
+
 		validates_numericality_of :number, message: "Sólo se permite ingresar números."
 
   	STATES = ["Cobrado", "No cobrado"]
@@ -29,6 +29,7 @@ class ChequePayment < ApplicationRecord
 		#ATRIBUTOS
 
 		#PROCESOS
+
 			def complete_with_zeros
 				if !self.number.nil?
 					self.number = self.number.to_s.rjust(8,padstr= '0')
