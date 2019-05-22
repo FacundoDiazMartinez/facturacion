@@ -6,7 +6,7 @@
     </div>
     <div class="col">
       <%= f.label :origin, "Origen" %>
-      <%= f.select :origin, ChequePayment::ORIGINS, {include_blank: "Seleccione..."}, {class: 'form-control'} %>
+      <%= f.select :origin, ChequePayment::ORIGINS, {include_blank: "Seleccione...", selected: 'Propio'}, {class: 'form-control'} %>
     </div>
   </div>
 </div>

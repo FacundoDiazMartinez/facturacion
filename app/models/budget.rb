@@ -70,6 +70,15 @@ class Budget < ApplicationRecord
         all
       end
     end
+
+    def self.search_by_stock reserv_stock
+      if not reserv_stock.blank?
+        where("reserv_stock = ?", "#{reserv_stock}")
+      else
+        all
+      end
+    end
+
   #FILTROS DE BUSQUEDA
 
   #PROCESOS
