@@ -57,7 +57,7 @@
             <td>
               <% case ip.type_of_payment %>
                 <% when "4" %>
-                  <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> N° <%= ip.cheque_payment.number %> - Pago <%= ip.payment_date %> - Cobro: <%= ip.cheque_payment.expiration.to_formatted_s(:default) %> - Importe <b>$ <%= ip.total %> </b>
+                  <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> N° <%= ip.cheque_payment.number %> - Cobro: <%= ip.cheque_payment.expiration.to_formatted_s(:default) %> - Importe <b>$ <%= ip.total %> </b>
                 <% when "1" %>
                   <% @installment_id = ip.card_payment.installments %>
                   <% if @installment_id != 0 %>

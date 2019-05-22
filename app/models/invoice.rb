@@ -365,6 +365,7 @@ class Invoice < ApplicationRecord
 
       def self.paid_unpaid_invoices client
         client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
+          pp am
           am.receipt.receipt_details.each do |rd|
             if am.amount_available > 0
               invoice = rd.invoice

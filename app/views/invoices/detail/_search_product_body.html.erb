@@ -1,13 +1,13 @@
-<%= form_tag search_product_invoices_path(), id: 'serach_form' do %>
+<%= form_tag search_product_invoices_path(), id: 'search_form' do %>
 	<%= hidden_field_tag :index_id, params[:index_id] %>
 	<div class="form-row">
 	    <div class="col">
 			<%= label_tag :product_name, "Nombre" %>
-			<%= text_field_tag :product_name, params[:product_name], onkeyup: "remoteSubmit('#serach_form')", class: 'form-control', placeholder: "Nombre de producto" %>
+			<%= text_field_tag :product_name, params[:product_name], onkeyup: "remoteSubmit('#search_form')", class: 'form-control', placeholder: "Nombre de producto" %>
 		</div>
 		<div class="col">
 			<%= label_tag :product_code, "Código" %>
-			<%= text_field_tag :product_code, params[:product_code], onkeyup: "remoteSubmit('#serach_form')", class: 'form-control', placeholder: "Código de producto" %>
+			<%= text_field_tag :product_code, params[:product_code], onkeyup: "remoteSubmit('#search_form')", class: 'form-control', placeholder: "Código de producto" %>
 		</div>
 	</div>
 	<hr>

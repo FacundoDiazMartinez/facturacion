@@ -14,7 +14,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		<% @account_movements.each_with_index do |am, index| %>
+		<% @account_movements.each do |am| %>
 		    <tr>
 		    	<td><%= l(am.created_at, format: :only_date) %></td>
 		    	<td><%= comprobante_con_link(am) %></td>
@@ -36,7 +36,7 @@
 		    		<td class="text-bold"><%= "$ #{am.total}" unless !am.debe %></td>
 		    	<% end %>
 		    	<td class="text-bold"><%= "$ #{am.total}" unless !am.haber %></td>
-		    	<% if @account_movements.count == (index + 1) %>
+		    	<% if am == @ultimo %>
 		    		<% if am.saldo > 0 %>
 		    			<td class="text-white text-bold" style="background-color: red;"> $ <%= am.saldo %></td>
 		    		<% else %>
