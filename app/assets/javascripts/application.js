@@ -206,6 +206,7 @@ function populateSelect(data, dropdown){
 function setProduct(product, index, depot_id){
   $("#"+index).find("input.product_id").val(product["id"]);
   $("#"+index).find("input.code").val(product["code"]);
+  $("#"+index).find("select.tipo").val(product["tipo"]);
   $("#"+index).find("input.name").val(product["name"]);
   $("#"+index).find("input.name").prop('title', product["name"]);
   $("#"+index).find("input.price").val(product["net_price"]);
