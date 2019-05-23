@@ -16,7 +16,7 @@ class InvoiceDetail < ApplicationRecord
   after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.product.tipo == "Producto"}
 
 
-  # default_scope {where(active: true)}
+  default_scope {where(active: true)}
 
   #validates_presence_of :invoice_id, message: "El detalle debe estar vinculado a una factura."
   validates_presence_of :product, message: "El detalle debe estar vinculado a un producto."

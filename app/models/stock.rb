@@ -3,7 +3,7 @@ class Stock < ApplicationRecord
   belongs_to :depot
 
 
-  # after_save :set_stock_to_product
+  after_save :set_stock_to_product
   after_save :set_stock_to_depot
   after_destroy :reduce_stock_in_depot
 
