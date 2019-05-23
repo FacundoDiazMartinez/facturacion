@@ -23,6 +23,8 @@ class Product < ApplicationRecord
   	# validates_uniqueness_of :supplier_code, scope: [:company_id, :active], message: "Ya existe un producto con el mismo código de proveedor."
 
   	validates_presence_of :price, message: "Debe ingresar el precio del producto."
+  	validates_numericality_of :price, message: "El precio sólo debe contener caracteres numéricos."
+
   	#validates_presence_of :net_price, message: "Debe ingresar el precio neto del producto."
   	#validates_presence_of :cost_price, message: "Debe ingresar el precio de costo del producto."
   	validates_presence_of :created_by, message: "Debe ingresar el usuario creador del producto."
@@ -32,13 +34,12 @@ class Product < ApplicationRecord
   	validates_presence_of :company_id, message: "El producto debe estar asociado a su compañía."
   	validates_presence_of :iva_aliquot, message: "Ingrese un valor para el IVA."
 
-  	validates_numericality_of :price, message: "El precio sólo debe contener caracteres numéricos."
-
   	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
   	after_create :create_price_history
     after_create :user_activity_for_create, if: Proc.new{|p| p.name != "Intereses tarjeta de crédito"}
 
   	before_save :check_iva_aliquot, :check_net_price, :check_category_products_count
+    before_validation :validate_price
 
   	accepts_nested_attributes_for :stocks, reject_if: :all_blank, allow_destroy: true
 
@@ -201,8 +202,13 @@ class Product < ApplicationRecord
 			update_column(:available_stock, self.stocks.where(state: "Disponible").sum(:quantity))
       if !self.minimum_stock.nil?
         if self.available_stock <= self.minimum_stock
-          UserActivity.create_for_minimum_stock_reached(self)
-          Notification.create_for_low_stock(self)
+          if !self.notification_sended?
+            UserActivity.create_for_minimum_stock_reached(self)
+            Notification.create_for_low_stock(self)
+            self.update_column(:notification_sended, true) #se marca el envío de notificación para que no se vuelva a generar si se sigue operando con el producto
+          end
+        else
+          self.update_column(:notification_sended, false) #Reseteo de notificacion cuando ingresó el stock necesario
         end
       end
 		end
@@ -263,6 +269,10 @@ class Product < ApplicationRecord
 			self.iva_aliquot = "05" if self.iva_aliquot.blank?
 		end
 
+    def validate_price
+      self.errors.add(:price, "El precio del producto debe ser positivo") unless self.price > 0
+    end
+
 		def check_net_price
 			if net_price.to_f == 0.0
 				self.net_price = (price.to_f / (1 + simple_iva_aliquot.to_f)).round(2)
@@ -321,7 +331,7 @@ class Product < ApplicationRecord
 			if s.save
 				remove_stock attrs
 			else
-				pp s.errors
+				s.errors
 			end
 		end
 

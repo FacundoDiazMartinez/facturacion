@@ -172,7 +172,7 @@ class InvoicesController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03",depots: product.depots.map{|d| [d.id, d.name]}} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03",depot: product.depots.order(stock_count: :desc).first.id} }
   end
 
   def autocomplete_invoice_number
@@ -216,7 +216,6 @@ class InvoicesController < ApplicationController
   end
 
   def search_product
-    pp current_user.company_id
     @products = Product.unscoped.includes(stocks: :depot).where(active: true, company_id: current_user.company_id).search_by_supplier_id(params[:supplier_id]).search_by_category(params[:product_category_id]).search_by_depot(params[:filter_depot_id]).search_by_name(params[:product_name]).search_by_code(params[:product_code]).paginate(page: params[:page], per_page: 10)
     render '/invoices/detail/search_product'
   end

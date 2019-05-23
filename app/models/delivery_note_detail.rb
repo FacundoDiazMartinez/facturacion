@@ -42,13 +42,13 @@ class DeliveryNoteDetail < ApplicationRecord
   def adjust_product_stock
     if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
       difference = invoice_detail.quantity.to_f - quantity.to_f
-      self.product.rollback_reserved_stock(quantity: difference, depot_id: self.depot_id)
-      self.product.deliver_product(quantity: quantity, depot_id: self.depot_id, from: "Reservado")
+      self.product.rollback_reserved_stock(quantity: difference, depot_id: self.depot_id)  #Se descuenta diferencia restante de STOCK RESERVADO y se la suma a STOCK DISPONIBLE WTF(?)
+      self.product.deliver_product(quantity: quantity, depot_id: self.depot_id, from: "Reservado")  #Agrega cantidad entregada en STOCK ENTREGADO y se la resta de STOCK RESERVADO ?
     elsif !invoice_detail.blank? && invoice_detail.depot_id != self.depot_id
-      self.product.rollback_reserved_stock(quantity: quantity.to_f, depot_id: self.depot_id)
-      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible")
+      self.product.rollback_reserved_stock(quantity: quantity.to_f, depot_id: self.depot_id) #Se descuenta cantidad entregada de STOCK RESERVADO y suma a STOCK DISPONIBLE WTF(?)
+      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible") #Agrega cantidad entregada en STOCK ENTREGADO y se la resta de STOCK DISPONIBLE ?
     else
-      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible")
+      self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible") #Agrega cantidad entregada en STOCK ENTREGADO y se la resta de STOCK DISPONIBLE ?
     end
   end
 

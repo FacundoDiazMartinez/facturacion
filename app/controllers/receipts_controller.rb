@@ -57,6 +57,7 @@ class ReceiptsController < ApplicationController
   def create
     @receipt = current_user.company.receipts.new(receipt_params)
     @client = @receipt.client
+    @receipt.user_id = current_user.id   #Se agregó el 22/5 para que los recibos tengan un usuario y no quede el campo en nil
     respond_to do |format|
       if @receipt.save
         # if @receipt.state = "Finalizado"
@@ -75,6 +76,7 @@ class ReceiptsController < ApplicationController
   # PATCH/PUT /receipts/1
   # PATCH/PUT /receipts/1.json
   def update
+    @receipt.user_id = current_user.id   #Se agregó el 22/5 para que los recibos tengan un usuario y no quede el campo en nil
     if params[:button] == "confirm"
       @receipt.state = "Finalizado"
     end
