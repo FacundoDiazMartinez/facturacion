@@ -1,28 +1,26 @@
-$(document).on('pjax:complete', function() {
-	$(document).on("change","#product_cost_price", function(){
-		setPrecioNeto();
-	});
-
-	$(document).on("change","#product_gain_margin", function(){
-		setPrecioNeto();
-	});
-
-	$(document).on("change","#product_iva_aliquot", function(){
-		setPrecioFinal();
-	});
-
-	$(document).on("change","#product_net_price", function(){
-		setPrecioFinal();
-	});
-
-	$(document).on("change","#product_price", function(){
-		setCostPrice();
-	});
-
-	$(document).on('change', '#product_product_category_id', function(){
-		$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIva(data)}, "script")
-	})
+$(document).on("change","#product_cost_price", function(){
+	setPrecioNeto();
 });
+
+$(document).on("change","#product_gain_margin", function(){
+	setPrecioNeto();
+});
+
+$(document).on("change","#product_iva_aliquot", function(){
+	setPrecioFinal();
+});
+
+$(document).on("change","#product_net_price", function(){
+	setPrecioFinal();
+});
+
+$(document).on("change","#product_price", function(){
+	setCostPrice();
+});
+
+$(document).on('change', '#product_product_category_id', function(){
+	$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIva(data)}, "script")
+})
 
 function setPrecioNeto(){
 	var costo 		= parseFloat($("#product_cost_price").val());
