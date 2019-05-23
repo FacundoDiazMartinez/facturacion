@@ -1,42 +1,30 @@
 <% if not @services.empty? %>
-	<div class="row d-flex align-items-stretch">
-		<% @services.each do |service|%>
-		<div class="col-xs-12 col-md-6 col-lg-4 mb-4">
-			<div class="card card-shadow" style="height:100%;">
-				<%= link_to service_path(service.id) do %>
-				<br>
-				<div class="card-div-img-top" style="background: url('<%= service.photo %>')">
-				</div>
-				<div class="card-body">
-					<center>
-						<h5 class="card-title"><%= service.name %></h5>
-						<p class="card-text text-muted"><%= service.category_name %></p>
-					</center>
-
-						<table style="width: 100%"> <!--  Tabla para alinear horizontalmente precio y botón eliminar -->
-							<tr>
-								<td style="width: 33%;"></td>
-								<td style="width: 34%">
-									<center>
-										<p class="card-text"><strong><span class="green">$ <%= number_with_delimiter(service.price) %></span></strong></p>
-									</center>
-								</td>
-								<td style="width: 33%;">
-									<center>
-										<%= link_to icon('fas', 'trash').html_safe, service , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-									</center>
-								</td>
-							</tr>
-						</table>
-
-				</div>
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Código</th>
+					<th>Servicio</th>
+					<th>Categoría</th>
+					<th>Precio</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @services.each do |service| %>
+					<tr>
+						<td><%= service.code %></td>
+						<td><%= service.name %></td>
+						<td><%= service.category_name %></td>
+						<td><%= service.price %></td>
+						<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{service.attributes.to_json}, #{params[:index_id]}, $(this).closest('tr').find('.depot').val())" %></td>
+					</tr>
 				<% end -%>
-			</div>
-		</div>
-
-		<% end %>
+			</tbody>
+		</table>
 	</div>
-	<%= paginate @services %>
+
+<%= paginate @services %>
 
 <% else %>
   <center><h1>¡Todavia no cargaste ningún servicio!</h1></center>
