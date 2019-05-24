@@ -463,8 +463,8 @@ function toggleBonification(){
 	var display = $(".bonifications").css('display');
 	if (display == 'none'){
 		$(".bonifications").show('fast');
-		$("#toggle_bonifications").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
-		$("#toggle_bonifications").append(' Descuentos');
+		//$("#toggle_bonifications").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+		//$("#toggle_bonifications").append(' Descuentos');
 		$([document.documentElement, document.body]).animate({
       scrollTop: $("#div_ibonifications").offset().top
     }, 500, function(){
@@ -472,29 +472,42 @@ function toggleBonification(){
     });
 	}
 	else{
-		$(".bonifications").hide('fast');
-		$("#toggle_bonifications").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#toggle_bonifications").append(' Descuentos');
+		//$(".bonifications").hide('fast');
+		//$("#toggle_bonifications").html("").append($("<i class='fa fa-eye'></i>")).button();
+		//$("#toggle_bonifications").append(' Descuentos');
 	}
 }
+
+function toggleBonification2(){
+	$(".bonifications").click(function(){
+  	$(".bonifications").toggle();
+	});
+}
+
 
 function toggleTributes(){
 	var display = $("#div_itributes").css('display');
 	if (display != 'none'){
-		$("#div_itributes").hide('fast');
-		$("#toggle_tributes").html("").append($("<i class='fa fa-eye'></i>")).button();
-		$("#toggle_tributes").append(' Tributos');
+		//$("#div_itributes").hide('fast');
+		//$("#toggle_tributes").html("").append($("<i class='fa fa-eye'></i>")).button();
+		//$("#toggle_tributes").append(' Tributos');
 	}
 	else{
 		$("#div_itributes").show('fast');
-		$("#toggle_tributes").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
-		$("#toggle_tributes").append(' Tributos');
+		//$("#toggle_tributes").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+		//$("#toggle_tributes").append(' Tributos');
 		$([document.documentElement, document.body]).animate({
       scrollTop: $("#div_itributes").offset().top
     }, 500, function(){
     	$("#div_itributes").effect( "shake" );
     });
 	}
+}
+
+function toggleTributes2(){
+	$("#div_itributes").click(function(){
+  	$("#div_itributes").toggle();
+	});
 }
 
 

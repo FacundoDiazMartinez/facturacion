@@ -35,9 +35,6 @@ class AccountMovementPayment < Payment
 
 		def update_total_to_receipt
 			receipt = self.account_movement.receipt
-			pp "//////////////////////////////"
-			pp receipt.total.to_s
-			pp total.to_s
 			receipt.update_column(:total, receipt.total - total)
 		end
 

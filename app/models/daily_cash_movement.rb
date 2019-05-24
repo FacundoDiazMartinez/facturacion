@@ -68,10 +68,16 @@ class DailyCashMovement < ApplicationRecord
     def associated_document_link
       if not payment_id.nil?
         case flow
-        when "income"
-          "/invoices/#{payment.invoice_id}/edit" unless payment.invoice_id.nil?
-        when "expense"
-         "/purchase_orders/#{ExpensePayment.unscoped.find(payment_id).purchase_order_id}/edit" unless ExpensePayment.unscoped.find(payment_id).purchase_order_id.nil?
+          when "income"
+            if !payment.invoice_id.nil?
+              "/invoices/#{payment.invoice_id}/edit"
+            else
+              if !payment.account_movement.receipt_id.nil?
+                "/receipts/#{payment.account_movement.receipt_id}/edit"
+              end
+            end
+          when "expense"
+           "/purchase_orders/#{ExpensePayment.unscoped.find(payment_id).purchase_order_id}/edit" unless ExpensePayment.unscoped.find(payment_id).purchase_order_id.nil?
         end
       end
     end
