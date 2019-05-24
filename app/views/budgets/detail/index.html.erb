@@ -41,7 +41,7 @@
 			  			<%= f.text_field :product_name, class: 'form-control form-control-sm name', placeholder: "Concepto", disabled: !@budget.editable? %>
 			  		</td>
 			  		<td>
-			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id', disabled: !@budget.editable?} %>
+			  			<%= f.select :depot_id, options_for_select(current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}), {prompt: "Elegir..."}, {class: 'form-control form-control-sm depot_id', disabled: !@budget.editable?} %>
 			  		</td>
   					<td>
   						<%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', readonly: true, style: 'width: 90px;' %>
