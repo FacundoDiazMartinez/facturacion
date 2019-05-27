@@ -206,6 +206,7 @@ es:
       default: "%d/%m/%Y"
       long: "%A, %d de %B de %Y"
       short: "%d de %b"
+      custom: "%d/%m/%Y - %H:%M"
     month_names:
     -
     - enero

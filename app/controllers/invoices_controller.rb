@@ -25,7 +25,7 @@ class InvoicesController < ApplicationController
         require 'barby/barcode/code_25_interleaved'
         require 'barby/outputter/png_outputter'
 
-        render pdf: "Factura_#{@invoice.comp_number}_#{@invoice.client.name}",
+        render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
           layout: 'pdf.html',
           template: 'invoices/show',
           #zoom: 3.4,

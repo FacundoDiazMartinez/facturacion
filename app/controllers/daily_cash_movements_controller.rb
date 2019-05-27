@@ -6,6 +6,7 @@ class DailyCashMovementsController < ApplicationController
 
   	def new
   		@daily_cash_movement = current_user.daily_cash_movements.build()
+      @daily_cash_movement.date = Time.now
   	end
 
   	def edit
@@ -50,6 +51,6 @@ class DailyCashMovementsController < ApplicationController
   		end
 
   		def daily_cash_movement_params
-  			params.require(:daily_cash_movement).permit(:amount, :associated_document, :movement_type, :payment_type, :flow, :observation, :user_id)
+  			params.require(:daily_cash_movement).permit(:amount, :associated_document, :movement_type, :payment_type, :flow, :observation, :user_id, :date)
   		end
 end

@@ -4,6 +4,7 @@ class Payment < ApplicationRecord
   belongs_to :company, optional: true
   belongs_to :client, optional: true #TODO VINCULAR
   belongs_to :purchase_order, optional: true
+  belongs_to :invoice, optional: true
 
   has_one :delayed_job, dependent: :destroy
   has_one :daily_cash_movement, dependent: :destroy
