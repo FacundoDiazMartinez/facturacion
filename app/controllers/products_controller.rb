@@ -69,7 +69,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
       @product.updated_by = current_user.id
       if @product.update(product_params)
-        format.html { redirect_to @product, notice: 'El producto fue actualizado con éxito.' }
+        format.html { render :show, notice: 'El producto fue actualizado con éxito.' }
         format.json { render :show, status: :ok, location: @product }
       else
         format.html { render :edit }
