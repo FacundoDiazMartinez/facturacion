@@ -6,16 +6,17 @@ $(document).on('railsAutocomplete.select', '.budget_detail-autocomplete_field', 
 	}
 		var recharge = parseFloat($("#client_recharge").val() * -1);
 		bonus = recharge
-  	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
-  	$(this).closest("tr.fields").find("input.name").val(data.item.name);
-  	$(this).closest("tr.fields").find("input.price").val(data.item.price);
+  		$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
+  		$(this).closest("tr.fields").find("input.name").val(data.item.name);
+  		$(this).closest("tr.fields").find("input.price").val(data.item.price);
 		$(this).closest("tr.fields").find("input.bonus_percentage").val(bonus);
 		$(this).closest("tr.fields").find("input.bonus_amount").val((data.item.price * ( bonus / 100)).toFixed(2));
-  	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
+  		$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 		$(this).closest("tr.fields").find("input.subtotal_budget").val((data.item.price * (1 - bonus / 100)).toFixed(2)).trigger("change");
 		$(this).closest("tr.fields").find("input.quantity").val(1);
 		$(this).closest("tr.fields").find("select.budget_iva_aliquot").val(data.item.iva_aliquot).trigger("change");
-		$(this).closest("tr.fields").find("select.depot_id option")[1].selected = true;
+		//$(this).closest("tr.fields").find("select.depot_id option")[1].selected = true;
+		$(this).closest("tr.fields").find("select.depot_id").val(data.item.depot);
 		//$(this).closest("tr.fields").find("input.bonus_percentage").trigger("change");
 		$(this).closest("tr.fields").find("input.name").tooltip({
 			title: data.item.name,

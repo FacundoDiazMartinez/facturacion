@@ -127,7 +127,7 @@ class BudgetsController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, depots: product.depots.map{|d| [d.id, d.name]}, iva_aliquot: product.iva_aliquot || "03"} }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, depot: product.depots.order(stock_count: :desc).first.id, iva_aliquot: product.iva_aliquot || "03"} }
   end
 
   def search_product
