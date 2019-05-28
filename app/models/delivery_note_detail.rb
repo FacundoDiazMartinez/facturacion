@@ -59,7 +59,7 @@ class DeliveryNoteDetail < ApplicationRecord
 
     if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
       if reservado < self.quantity.to_f
-        errors.add(:quantity, "Se esta intentando entregar mayor cantidad que la que se reservo cuando se realizo la factura. Si desea proceeder borre este detalle (fila) y cree uno nuevamente")
+        errors.add(:quantity, "Se esta intentando entregar mayor cantidad que la que se reservo cuando se realizo la factura. Verifique depósito seleccionado. Si desea proceeder borre este detalle (fila) y cree uno nuevamente")
       end
     elsif !invoice_detail.blank? && invoice_detail.depot_id != self.depot_id
       if disponible < self.quantity.to_f
