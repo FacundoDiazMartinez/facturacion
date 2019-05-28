@@ -56,17 +56,17 @@ class ArrivalNotesController < ApplicationController
   end
 
   def update
-    pp arrival_note_params_array = arrival_note_params       #arrival_note_params es un método así que no se le pueden quitar elementos
+    arrival_note_params_array = arrival_note_params       #arrival_note_params es un método así que no se le pueden quitar elementos
     purchase_order_attributes = arrival_note_params_array
     respond_to do |format|
       if @arrival_note.update(arrival_note_params)
-        if purchase_order_attributes["state"] == "Finalizada"
-          if @arrival_note.purchase_order.update(state: "Finalizada")
-            message = 'Remito y su respectiva Orden de Compra fueron cerrados correctamente.'
-          else
-            message = 'El Remito fue actualizado correctamente, pero hubo un problema al cerrar la Orden de Compra'
-          end
-        end
+        # if purchase_order_attributes["state"] == "Finalizada"
+        #   if @arrival_note.purchase_order.update(state: "Finalizada")
+        #     message = 'Remito y su respectiva Orden de Compra fueron cerrados correctamente.'
+        #   else
+        #     message = 'El Remito fue actualizado correctamente, pero hubo un problema al cerrar la Orden de Compra'
+        #   end
+        # end
         format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: 'El Remito fue actualizado correctamente.' }
       else
         @arrival_note.state = @arrival_note.state_was

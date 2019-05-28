@@ -27,11 +27,19 @@ class PurchaseOrder < ApplicationRecord
   validates_presence_of :user_id, message: "Debe especificar un usuario."
   validates_presence_of :company_id, message: "Debe especificar una compañía."
 
-  before_validation :check_pending_arrival_notes, if: Proc.new{|po| po.state_changed? && po.state == "Finalizada"}
+  before_validation :check_pending_arrival_notes, if: Proc.new{|po| po.state_changed? && po.state ==  "Finalizada"}
 
   STATES = ["Pendiente", "Aprobado", "Anulado", "Finalizada"]
 
   #ATRIBUTOS
+    def arrival_note_id_to_avoid=(value)
+      @arrival_note_id_to_avoid = value
+    end
+
+    def arrival_note_id_to_avoid
+      @arrival_note_id_to_avoid
+    end
+
   	def total_left
   		(total - total_pay).round(2)
   	end
@@ -84,7 +92,7 @@ class PurchaseOrder < ApplicationRecord
 
     def type_of_model
       "purchase_order"
-    end 
+    end
   #ATRIBUTOS
 
   #FILTROS DE BUSQUEDA
@@ -116,7 +124,7 @@ class PurchaseOrder < ApplicationRecord
   #PROCESOS
     def check_pending_arrival_notes
       self.arrival_notes.each do |an|
-        if an.editable?
+        if an.editable? && self.arrival_note_id_to_avoid != an.id  #Aqui no tomamos en cuenta el estado del remito que está generando el cierre de la OC
           errors.add(:state, "No se pudo cerrar Orden de Compra. Existen remitos asociados pendientes.")
           self.state = state_was
           break
