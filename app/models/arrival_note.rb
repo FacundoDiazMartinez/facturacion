@@ -52,7 +52,6 @@ class ArrivalNote < ApplicationRecord
   #ATRIBUTOS
     def purchase_order_attributes=(attributes)
       self.purchase_order_id = attributes["id"]
-      self.purchase_order.arrival_note_id_to_avoid = self.id
       super
     end
 

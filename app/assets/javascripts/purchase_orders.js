@@ -50,6 +50,22 @@ $(document).on('nested:fieldRemoved:purchase_order_details', function(event){
 	sumTotalPurchaseOrder()
 })
 
+$(document).on('nested:fieldRemoved:purchase_order_details', function(){
+	console.log("AAAAAA");
+	if ($("#details > tbody > tr:visible").length < 1) {
+		
+		$("#purchase_order_supplier_id").attr("disabled",false);
+	}else {
+		console.log("BBBBBB");
+		$("#purchase_order_supplier_id").attr("disabled",true);
+	}
+})
+
+$(document).on('nested:fieldAdded:purchase_order_details', function(){
+	console.log("CCCCCCCf");
+	$("#purchase_order_supplier_id").attr("disabled",true);
+})
+
 
 function sumTotalPurchaseOrder(){
 	sumaTotales = parseFloat(0);

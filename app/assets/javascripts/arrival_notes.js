@@ -17,6 +17,26 @@ $(document).on("click", "#modal_button_an", function(){
 	}
 })
 
+$(document).on('nested:fieldRemoved:arrival_note_details', function(){
+	if ($("#details > tbody > tr:visible").length < 1) {
+		$("#purchase_order_id").attr("disabled",false);
+	}else {
+		$("#purchase_order_id").attr("disabled",true);
+	}
+})
+
+function disable_purchase_order_id(){
+	$("#purchase_order_id").attr("disabled",true);
+}
+
+$(document).on('pjax:complete', function() {
+	disable_purchase_order_id();
+})
+
+$( document ).ready(function() {
+	disable_purchase_order_id();
+})
+
 $(document).on('railsAutocomplete.select', '.arrival_note-purchase_order-autocomplete_field', function(event, data){
 	params = {
 		purchase_order_id: data.item.id, 
@@ -26,6 +46,7 @@ $(document).on('railsAutocomplete.select', '.arrival_note-purchase_order-autocom
 	}
 	form = $(this).parents('form:first');
 	$.get(form.attr("action") + "/set_purchase_order", params, null, "script");
+	$(this).attr("disabled",true);
 })
 
 
