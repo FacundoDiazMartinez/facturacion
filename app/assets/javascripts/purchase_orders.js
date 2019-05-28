@@ -50,21 +50,18 @@ $(document).on('nested:fieldRemoved:purchase_order_details', function(event){
 	sumTotalPurchaseOrder()
 })
 
-$(document).on('nested:fieldRemoved:purchase_order_details', function(){
-	console.log("AAAAAA");
-	if ($("#details > tbody > tr:visible").length < 1) {
+// $(document).on('nested:fieldRemoved:purchase_order_details', function(){
+// 	if ($("#details > tbody > tr:visible").length > 0) {
 		
-		$("#purchase_order_supplier_id").attr("disabled",false);
-	}else {
-		console.log("BBBBBB");
-		$("#purchase_order_supplier_id").attr("disabled",true);
-	}
-})
+// 		$("#purchase_order_supplier_id").attr("disabled",false);
+// 	}else {
+// 		$("#purchase_order_supplier_id").attr("disabled",true);
+// 	}
+// })
 
-$(document).on('nested:fieldAdded:purchase_order_details', function(){
-	console.log("CCCCCCCf");
-	$("#purchase_order_supplier_id").attr("disabled",true);
-})
+// $(document).on('nested:fieldAdded:purchase_order_details', function(){
+// 	$("#purchase_order_supplier_id").attr("readonly",true);
+// })
 
 
 function sumTotalPurchaseOrder(){

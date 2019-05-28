@@ -18,15 +18,15 @@ $(document).on("click", "#modal_button_an", function(){
 })
 
 $(document).on('nested:fieldRemoved:arrival_note_details', function(){
-	if ($("#details > tbody > tr:visible").length < 1) {
-		$("#purchase_order_id").attr("disabled",false);
-	}else {
-		$("#purchase_order_id").attr("disabled",true);
-	}
+	disable_purchase_order_id();
 })
 
 function disable_purchase_order_id(){
-	$("#purchase_order_id").attr("disabled",true);
+	if ($("#details > tbody > tr:visible").length > 0) {
+		$("#purchase_order_id").attr("readonly",true);
+	}else {
+		$("#purchase_order_id").attr("readonly",false);
+	}
 }
 
 $(document).on('pjax:complete', function() {
