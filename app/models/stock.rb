@@ -8,7 +8,7 @@ class Stock < ApplicationRecord
   after_destroy :reduce_stock_in_depot
 
   validate :check_company_of_depot
-  validates_uniqueness_of :state, scope: :depot_id, message: "No puede generar dos estados iguales para un mismo deposito"
+  validates_uniqueness_of :state, scope: [:product_id, :depot_id], message: "No puede generar dos estados iguales para un mismo deposito"
   #validates_uniqueness_of :state, scope: [:product_id, :depot_id], message: "Esta intentando generar estados duplicados para un mismo depósito."
 
 
