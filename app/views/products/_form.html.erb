@@ -43,7 +43,7 @@
               <div class="form-group col-md-4">
                 <%= f.label :measurement_unit, "Medida" %>
                 <div class="input-group mb-3">
-                  <%= f.text_field :measurement, :class => 'form-control col-8' %>
+                  <%= f.text_field :measurement, :class => 'form-control col-8', value: "1" %>
                   <div class="input-group-append col-4 p-0">
                     <%= f.select :measurement_unit, Product::MEASUREMENT_UNITS.map{|k,v| [v, k]},{ prompt: "Seleccione..."}, class: ' form-control input-group-text' %>
                   </div>

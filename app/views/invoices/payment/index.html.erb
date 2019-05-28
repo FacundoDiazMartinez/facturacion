@@ -37,6 +37,8 @@
                   <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
                 <% when "8" %>
                   <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
+                <% when "6" %>
+                  <%= payment.payment_name %> - RX:<%= payment.account_movement.receipt.number %>
                 <% else %>
                   <%= payment.payment_name %>
               <% end %>

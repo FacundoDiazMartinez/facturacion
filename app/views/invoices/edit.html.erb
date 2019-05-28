@@ -9,7 +9,7 @@
 			<div class="row">
 				<div class="col-8">
 					<% if @invoice.is_invoice? && !@invoice.editable? && @invoice.credit_notes.blank? %>
-						<% if @invoice.delivery_notes.last.nil? %>
+						<% if @invoice.delivery_notes.where(state: "Pendiente").last.nil? %>
 							<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>
 						<% else %>
 							<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.delivery_notes.last.id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'btn btn-success' %>

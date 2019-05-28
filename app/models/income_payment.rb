@@ -71,6 +71,11 @@ class IncomePayment < Payment
 		end
 	end
 
+	def payment_name_with_receipt
+		if type_of_payment == "06"
+			"Cuenta Corriente - RX:  #{self.account_movement.receipt.number}"
+		end
+	end
 
 		def set_amount_available_to_account_movement
 			unless self.account_movement.nil?
@@ -81,6 +86,8 @@ class IncomePayment < Payment
 		def touch_invoice
 			invoice.touch
 		end
+
+
 
 		def destroy
 	      	update_column(:active, false)

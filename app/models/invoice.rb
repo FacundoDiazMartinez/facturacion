@@ -810,7 +810,11 @@ class Invoice < ApplicationRecord
       if !self.income_payments.blank?
         pagos = []
         self.income_payments.each do |p|
-          pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
+          if p.type_of_payment = "06"
+            pagos << {type: p.type_of_payment, name: p.payment_name_with_receipt, total: p.total}
+          else
+            pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
+          end
         end
         pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
         showed_payment = ""
