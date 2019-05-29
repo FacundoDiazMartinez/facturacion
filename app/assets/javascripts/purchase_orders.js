@@ -51,7 +51,6 @@ $(document).on('nested:fieldRemoved:purchase_order_details', function(event){
 });
 
 $(document).on("change", '.select-pu-supplier', function(){
-	console.log("asd");
 	$(".pu-supplier-id").val($(".select-pu-supplier").val());
 });
 

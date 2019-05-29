@@ -104,7 +104,6 @@ class DeliveryNotesController < ApplicationController
     else
       new
     end
-
     @associated = true
     @associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice_id] || @delivery_note.invoice_id).first
     @client = @associated_invoice.client
@@ -114,10 +113,24 @@ class DeliveryNotesController < ApplicationController
       @delivery_note.delivery_note_details.build(
         product_id: detail.product_id,
         depot_id: detail.depot_id,
-        quantity: detail.quantity,
+        quantity: get_product_quantity_left(detail.product_id,@associated_invoice, detail.quantity.to_f),
         invoice_detail_id: detail.id
       )
     end
+  end
+
+  def get_product_quantity_left product_id, invoice, invoice_detail_quantity
+    delivered = 0
+    invoice.delivery_notes.where(state: "Finalizado").each do |dn|
+      dn.delivery_note_details.where(product_id: product_id).each do |dn_detail|
+        delivered += dn_detail.quantity
+      end
+    end
+    prod_quantity = invoice_detail_quantity - delivered
+    if prod_quantity < 0
+      prod_quantity = 0
+    end
+    return prod_quantity.to_f
   end
 
   def autocomplete_invoice
