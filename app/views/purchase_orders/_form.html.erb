@@ -13,8 +13,8 @@
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :supplier_id, "Proveedor" %>
-              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control', disabled: !@purchase_order.editable?} %>
-              <%= hidden_field_tag :supplier_id , params[:supplier_id] %>
+              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier', disabled: !@purchase_order.editable?} %>
+              <%= form.hidden_field :supplier_id, class: 'pu-supplier-id' %>
             </div>
             <div id="supplier_form">
               <%= render '/purchase_orders/supplier_column' %>

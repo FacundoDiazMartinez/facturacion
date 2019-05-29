@@ -50,14 +50,14 @@ $(document).on('nested:fieldRemoved:purchase_order_details', function(event){
 	sumTotalPurchaseOrder()
 });
 
-$(document).on("change", '#purchase_order_supplier_id', function(){
-	sup = $("#purchase_order_supplier_id").val();
-	$("#supplier_id").text(sup);
+$(document).on("change", '.select-pu-supplier', function(){
+	console.log("asd");
+	$(".pu-supplier-id").val($(".select-pu-supplier").val());
 });
 
 $(document).on('nested:fieldRemoved:purchase_order_details', function(){
 	if ($("#details > tbody > tr:visible").length > 0) {
-		
+
 		$("#purchase_order_supplier_id").attr("disabled",false);
 	}else {
 		$("#purchase_order_supplier_id").attr("disabled",true);
