@@ -108,7 +108,7 @@ class DeliveryNotesController < ApplicationController
     @associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice_id] || @delivery_note.invoice_id).first
     @client = @associated_invoice.client
     @delivery_note.client_id = @associated_invoice.client_id
-    @delivery_note.delivery_note_details.each{ |dnd| dnd.mark_for_destruction  }
+    #@delivery_note.delivery_note_details.each{ |dnd| dnd.mark_for_destruction  }
     @associated_invoice.invoice_details.joins(:product).where("products.tipo = 'Producto'").each do |detail|
       @delivery_note.delivery_note_details.build(
         product_id: detail.product_id,

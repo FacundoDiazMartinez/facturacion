@@ -13,7 +13,8 @@ class DeliveryNote < ApplicationRecord
   accepts_nested_attributes_for :delivery_note_details, reject_if: :all_blank, allow_destroy: true
 
   before_validation :set_number
-  after_save :adjust_stocks, if: Proc.new{|dn| saved_change_to_state?}
+  after_save :adjust_stocks_by_dn_cancelled, if: Proc.new{|dn| dn.state == "Anulado"}
+  after_save :adjust_stocks_by_dn_finalized, if: Proc.new{|dn| dn.state == "Finalizado"}
   after_create :create_seles_file, if: Proc.new{|dn| dn.sales_file.nil? && !dn.invoice.nil?}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
@@ -76,12 +77,12 @@ class DeliveryNote < ApplicationRecord
       Client.unscoped{ super }
     end
 
-    def delivery_note_details_attributes=(attributes)
-      self.delivery_note_details.each do |dnd|
-        dnd.mark_for_destruction
-      end
-      super
-    end
+    # def delivery_note_details_attributes=(attributes)
+    #   self.delivery_note_details.each do |dnd|
+    #     dnd.mark_for_destruction
+    #   end
+    #   super
+    # end
   #ATRIBUTOS
 
   #PROCESOS
@@ -100,14 +101,19 @@ class DeliveryNote < ApplicationRecord
       end
     end
 
-    def adjust_stocks
-      if self.state == "Anulado"
-        self.delivery_note_details.each do |dnd|
-          dnd.product.rollback_delivered_stock(quantity: dnd.quantity, depot_id: dnd.depot_id)
-        end
-        self.invoice.invoice_details.each do |id|
-          id.reserve_stock
-        end
+    def adjust_stocks_by_dn_cancelled
+      self.delivery_note_details.each do |dnd|
+        dnd.product.rollback_delivered_stock(quantity: dnd.quantity, depot_id: dnd.depot_id)
+      end
+      self.invoice.invoice_details.each do |id|
+        id.reserve_stock
+      end
+    end
+
+    def adjust_stocks_by_dn_finalized
+      self.delivery_note_details.each do |dnd|
+        pp dnd
+        dnd.adjust_product_stock
       end
     end
 
