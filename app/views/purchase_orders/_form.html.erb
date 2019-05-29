@@ -13,8 +13,8 @@
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :supplier_id, "Proveedor" %>
-              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, id: select_supplier_id, {class: 'form-control', disabled: !@purchase_order.editable?} %>
-              <%= form.hidden_field :supplier_id %>
+              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier', disabled: !@purchase_order.editable?} %>
+              <%= form.hidden_field :supplier_id, class: 'pu-supplier-id' %>
             </div>
             <div id="supplier_form">
               <%= render '/purchase_orders/supplier_column' %>
@@ -37,7 +37,7 @@
             <div class="form-group">
               <%= form.label :state %>
               <% if @purchase_order.new_record? || @purchase_order.state == "Pendiente" %>
-                <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
+                <%= form.select :state, @purchase_order.array_for_new, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
               <% elsif @purchase_order.state == "Aprobado" %>
                   <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: orange;'}%>
               <% else %>
