@@ -346,14 +346,19 @@ class Product < ApplicationRecord
 
     def impact_stock_from_delivery_note_detail attrs={}
       stock = self.stocks.where(depot_id: attrs[:id_depot_id], state: "Reservado").first_or_initialize
-      if stock.quantity >= attrs[:quantity].to_f
-        stock.quantity -= attrs[:quantity].to_f
-      else
+      if stock.quantity.blank? || stock.quantity <= attrs[:quantity].to_f
         stock.quantity = 0
+      else
+        stock.quantity -= attrs[:quantity].to_f
       end
+
       if stock.save
         stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Entregado").first_or_initialize
-        stock.quantity += attrs[:quantity].to_f
+        if stock.quantity.blank?
+          stock.quantity = attrs[:quantity].to_f
+        else
+          stock.quantity += attrs[:quantity].to_f
+        end
         stock.save
       end
     end

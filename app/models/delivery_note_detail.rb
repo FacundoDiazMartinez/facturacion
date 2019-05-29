@@ -40,7 +40,7 @@ class DeliveryNoteDetail < ApplicationRecord
   #ATRIBUTOS
 
   def adjust_product_stock
-    difference = invoice_detail.quantity.to_f - quantity.to_f
+    #difference = invoice_detail.quantity.to_f - quantity.to_f
     self.product.impact_stock_from_delivery_note_detail(id_depot_id: invoice_detail.depot_id, dn_depot_id: depot_id, quantity: quantity)
     # if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
     #   difference = invoice_detail.quantity.to_f - quantity.to_f
