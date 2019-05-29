@@ -30,6 +30,7 @@ class PurchaseOrder < ApplicationRecord
   before_validation :check_pending_arrival_notes, if: Proc.new{|po| po.state_changed? && po.state == "Finalizada"}
 
   STATES = ["Pendiente", "Aprobado", "Anulado", "Finalizada"]
+  STATES_FOR_NEW = ["Pendiente", "Aprobado"]
 
   #ATRIBUTOS
   	def total_left
@@ -202,6 +203,14 @@ class PurchaseOrder < ApplicationRecord
         STATES.reject{|x| x == "Anulado"}
       else
         STATES
+      end
+    end
+
+    def array_for_new
+      if editable?
+        STATES_FOR_NEW.reject{|x| x == "Anulado"}
+      else
+        STATES_FOR_NEW
       end
     end
   #FUNCIONES

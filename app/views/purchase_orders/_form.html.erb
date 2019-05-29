@@ -37,7 +37,7 @@
             <div class="form-group">
               <%= form.label :state %>
               <% if @purchase_order.new_record? || @purchase_order.state == "Pendiente" %>
-                <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
+                <%= form.select :state, @purchase_order.array_for_new, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
               <% elsif @purchase_order.state == "Aprobado" %>
                   <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: orange;'}%>
               <% else %>

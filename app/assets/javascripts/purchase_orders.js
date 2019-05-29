@@ -55,16 +55,27 @@ $(document).on("change", '.select-pu-supplier', function(){
 });
 
 $(document).on('nested:fieldRemoved:purchase_order_details', function(){
-	if ($("#details > tbody > tr:visible").length > 0) {
-
-		$("#purchase_order_supplier_id").attr("disabled",false);
-	}else {
-		$("#purchase_order_supplier_id").attr("disabled",true);
-	}
+	disable_purchase_order_select();
 })
 
 $(document).on('nested:fieldAdded:purchase_order_details', function(){
 	$("#purchase_order_supplier_id").attr("disabled",true);
+})
+
+function disable_purchase_order_select(){
+	if ($("#details > tbody > tr:visible").length > 0) {
+		$("#purchase_order_supplier_id").attr("disabled",true);
+	}else {
+		$("#purchase_order_supplier_id").attr("disabled",false);
+	}
+}
+
+$(document).on('pjax:complete', function() {
+	disable_purchase_order_select();
+})
+
+$( document ).ready(function() {
+	disable_purchase_order_select();
 })
 
 
