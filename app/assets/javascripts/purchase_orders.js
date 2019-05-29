@@ -48,20 +48,25 @@ $(document).on("change", '.prodSubtotal', function(){
 
 $(document).on('nested:fieldRemoved:purchase_order_details', function(event){
 	sumTotalPurchaseOrder()
+});
+
+$(document).on("change", '#purchase_order_supplier_id', function(){
+	sup = $("#purchase_order_supplier_id").val();
+	$("#supplier_id").text(sup);
+});
+
+$(document).on('nested:fieldRemoved:purchase_order_details', function(){
+	if ($("#details > tbody > tr:visible").length > 0) {
+		
+		$("#purchase_order_supplier_id").attr("disabled",false);
+	}else {
+		$("#purchase_order_supplier_id").attr("disabled",true);
+	}
 })
 
-// $(document).on('nested:fieldRemoved:purchase_order_details', function(){
-// 	if ($("#details > tbody > tr:visible").length > 0) {
-		
-// 		$("#purchase_order_supplier_id").attr("disabled",false);
-// 	}else {
-// 		$("#purchase_order_supplier_id").attr("disabled",true);
-// 	}
-// })
-
-// $(document).on('nested:fieldAdded:purchase_order_details', function(){
-// 	$("#purchase_order_supplier_id").attr("readonly",true);
-// })
+$(document).on('nested:fieldAdded:purchase_order_details', function(){
+	$("#purchase_order_supplier_id").attr("disabled",true);
+})
 
 
 function sumTotalPurchaseOrder(){
