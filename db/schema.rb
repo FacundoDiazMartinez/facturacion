@@ -331,7 +331,7 @@ ActiveRecord::Schema.define(version: 2019_05_24_141804) do
     t.float "current_balance", default: 0.0, null: false
     t.boolean "active", default: true, null: false
     t.bigint "updated_by"
-    t.datetime "date", default: -> { "('now'::text)::date" }
+    t.datetime "date"
     t.index ["daily_cash_id"], name: "index_daily_cash_movements_on_daily_cash_id"
     t.index ["payment_id"], name: "index_daily_cash_movements_on_payment_id"
     t.index ["user_id"], name: "index_daily_cash_movements_on_user_id"

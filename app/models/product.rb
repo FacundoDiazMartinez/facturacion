@@ -344,18 +344,37 @@ class Product < ApplicationRecord
 			end
 		end
 
-	    def destroy
-	      	update_columns(active: false, updated_by: updated_by)
-	      	run_callbacks :destroy
-	      	freeze
-	    end
+    def impact_stock_from_delivery_note_detail attrs={}
+      stock = self.stocks.where(depot_id: attrs[:id_depot_id], state: "Reservado").first_or_initialize
+      if stock.quantity.blank? || stock.quantity <= attrs[:quantity].to_f
+        stock.quantity = 0
+      else
+        stock.quantity -= attrs[:quantity].to_f
+      end
 
-	    def rollback_delivered_stock attrs={}
-			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
-			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
-			if s.save
-				add_stock attrs
-			end
+      if stock.save
+        stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Entregado").first_or_initialize
+        if stock.quantity.blank?
+          stock.quantity = attrs[:quantity].to_f
+        else
+          stock.quantity += attrs[:quantity].to_f
+        end
+        stock.save
+      end
+    end
+
+    def destroy
+    	update_columns(active: false, updated_by: updated_by)
+    	run_callbacks :destroy
+    	freeze
+    end
+
+    def rollback_delivered_stock attrs={}
+  		s = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+  		s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+  		if s.save
+  			add_stock attrs
+  		end
 		end
 
     	#IMPORTAR EXCEL o CSV
