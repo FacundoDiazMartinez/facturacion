@@ -200,17 +200,17 @@ class Product < ApplicationRecord
 
 		def set_available_stock
 			update_column(:available_stock, self.stocks.where(state: "Disponible").sum(:quantity))
-      if !self.minimum_stock.nil?
-        if self.available_stock <= self.minimum_stock
-          if !self.notification_sended?
-            UserActivity.create_for_minimum_stock_reached(self)
-            Notification.create_for_low_stock(self)
-            self.update_column(:notification_sended, true) #se marca el envío de notificación para que no se vuelva a generar si se sigue operando con el producto
-          end
-        else
-          self.update_column(:notification_sended, false) #Reseteo de notificacion cuando ingresó el stock necesario
-        end
-      end
+		      if !self.minimum_stock.nil?
+		        if self.available_stock <= self.minimum_stock
+		          if !self.notification_sended?
+		            UserActivity.create_for_minimum_stock_reached(self)
+		            Notification.create_for_low_stock(self)
+		            self.update_column(:notification_sended, true) #se marca el envío de notificación para que no se vuelva a generar si se sigue operando con el producto
+		          end
+		        else
+		          self.update_column(:notification_sended, false) #Reseteo de notificacion cuando ingresó el stock necesario
+		        end
+		      end
 		end
 
 		def iva

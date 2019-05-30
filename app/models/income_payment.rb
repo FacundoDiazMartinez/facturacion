@@ -14,7 +14,7 @@ class IncomePayment < Payment
 	before_validation :set_flow
 	after_create :set_new_detail_if_credit_card
 
-	validate :check_max_total, if: Proc.new{|ip| !ip.invoice.nil? }
+	validate :check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
 	validate :check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
 
 	def self.default_scope
