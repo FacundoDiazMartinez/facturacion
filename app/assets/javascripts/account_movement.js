@@ -16,6 +16,8 @@ $(document).on("change", ".new_type_of_payment", function(){
 
 	data = {invoice_id: invoice_id, purchase_order_id: purchase_order_id, client_id: client_id, receipt_id: receipt_id, account_movement_id: account_movement_id, invoice_client_id: invoice_client_id, receipt_client_id: receipt_client_id}
 
+	$("#payment_date_div").show(); //Escondemos el div de fecha de pago cuando se selecciona cheque, a pedido de carlitos de Martinez Elast.
+
 	switch (selected_payment) {
 		case '0':
 			getPaymentRequest("/payments/cash_payments/new", data, "");
@@ -27,6 +29,11 @@ $(document).on("change", ".new_type_of_payment", function(){
 			getPaymentRequest("/payments/bank_payments/new", data, "");
 			break;
 		case '4':
+			var date=new Date();
+			var now=date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();
+			$(".acc_movement_payment_date").val(now);
+			$("#payment_date_div").hide();
+			
 			getPaymentRequest("/payments/cheque_payments/new", data, "");
 			break;
 		case '5':

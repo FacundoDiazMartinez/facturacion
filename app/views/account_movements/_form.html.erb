@@ -27,9 +27,9 @@
           <%= pf.label :type_of_payment, "Tipo" %>
           <%= pf.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k]}, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', style: 'min-width: 100px;'} %>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="payment_date_div">
           <%= pf.label :payment_date, "Fecha" %>
-          <%= pf.text_field :payment_date, class: 'form-control datepicker' %>
+          <%= pf.text_field :payment_date, class: 'form-control datepicker acc_movement_payment_date' %>
         </div>
         <div id="payment_detail"></div>
       </div>
