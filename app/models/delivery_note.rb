@@ -112,7 +112,6 @@ class DeliveryNote < ApplicationRecord
 
     def adjust_stocks_by_dn_finalized
       self.delivery_note_details.each do |dnd|
-        pp dnd
         dnd.adjust_product_stock
       end
     end

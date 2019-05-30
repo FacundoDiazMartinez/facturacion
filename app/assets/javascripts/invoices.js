@@ -94,7 +94,27 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 	$(this).closest("tr.fields").find("input.quantity").val(1);
-	$(this).closest("tr.fields").find("select.depot_id").val(data.item.depot);
+
+	for (var i = 1; i < $(this).closest("tr.fields").find("select.depot_id > option").length; i++) {
+		name_to_clean = $(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text();
+		index = name_to_clean.indexOf(" [ Stock");
+		if (index >= 0) {
+			depot_name = jQuery.trim(name_to_clean).substring(0, index);
+			$(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text(depot_name);
+		}
+		console.log($(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text());
+	}
+
+	for (var i = 0; i < data.item.depots_with_quantities.length; i++) {
+		for (var j = 1; j < $(this).closest("tr.fields").find('select.depot_id > option').length; j++) {
+			if (data.item.depots_with_quantities[i].depot_id == $(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').val()) {
+				depot_name = $(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').text();
+				$(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').text(depot_name + " [ Stock: " + data.item.depots_with_quantities[i].quantity + " ]")
+			}
+		}
+	}
+
+	$(this).closest("tr.fields").find("select.depot_id").val(data.item.best_depot_id);
 	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot);
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 	// calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
