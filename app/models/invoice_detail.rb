@@ -12,8 +12,8 @@ class InvoiceDetail < ApplicationRecord
   before_validation :check_product
   before_validation :calculate_iva_amount
   after_save :set_total_to_invoice
-  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
-  after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.product.tipo == "Producto"}
+  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"} # Y si es NC???
+  after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.product.tipo == "Producto"}  #Y si es NC????
 
 
   default_scope {where(active: true)}
