@@ -224,6 +224,8 @@ function calculateTotalOfInvoice(){
 		$("#invoice_total").val(inv_total.toFixed(2));
 		$("#total_invoice").text("Total factura: \xa0 \xa0 \xa0 $" + inv_total.toFixed(2));
 		total_left = inv_total - parseFloat($("#invoice_total_pay").val());
+		total_pay = parseFloat($("#invoice_total_pay").val());
+		$("#invoice_total_pay").val(total_pay.toFixed(2));
 		$("#total_left").val(total_left.toFixed(2));
 		$("#total_left_invoice").text("Total faltante: \xa0 \xa0 \xa0 $" + total_left.toFixed(2));
 		$("#total_left_venta").text("$" + total_left.toFixed(2));

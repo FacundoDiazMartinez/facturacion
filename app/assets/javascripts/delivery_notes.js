@@ -7,7 +7,7 @@ $(document).on('railsAutocomplete.select', '.delivery_note-autocomplete_field', 
   	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
   	$(this).closest("tr.fields").find("input.name").val(data.item.name);
 
-		subtotal 			= $(this).closest("tr.fields").find("input.prodSubtotal");
+		subtotal = $(this).closest("tr.fields").find("input.prodSubtotal");
 		subtotal.trigger("change");
 });
 

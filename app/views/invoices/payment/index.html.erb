@@ -43,7 +43,7 @@
                   <%= payment.payment_name %>
               <% end %>
             </td>
-						<td><%= payment.total %></td>
+						<td><%= payment.total.round(2) %></td>
 						<td><%= payment.payment_date %></td>
 						<td>
             		<% if payment.persisted? && !@invoice.editable? && payment.account_movement_id.nil? %>

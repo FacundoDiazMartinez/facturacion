@@ -13,9 +13,9 @@ class DeliveryNoteDetail < ApplicationRecord
 
   validate :depot_has_stock?
 
-  after_validation :adjust_product_stock, if: Proc.new{|detail| detail.delivery_note.state == "Finalizado"}
+  #after_validation :adjust_product_stock, if: Proc.new{|detail| detail.delivery_note.state == "Finalizado"}
 
-  # default_scope { where(active: true ) }
+  default_scope { where(active: true ) }
 
   #ATRIBUTOS
   	def product_name
