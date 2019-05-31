@@ -26,6 +26,7 @@ class AccountMovement < ApplicationRecord
   validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
   validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."
   validates_presence_of :total, message: "Debe definir un total."
+  validates_numericality_of :amount_available, greater_than_or_equal_to: 0.0, message: "El monto a asignar debe ser mayor o igual a 0."
   validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
   validates_presence_of :saldo, message: "Falta definir el saldo actual del cliente."
   validate :check_debe_haber
@@ -142,10 +143,15 @@ class AccountMovement < ApplicationRecord
 
   #FUNCIONES
 
-  def self.sum_available_amount_to_asign(client_id)
-    client = Client.find(client_id)
-    client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").sum(:amount_available)
-  end
+    def self.sum_available_amount_to_asign(client_id)
+      client = Client.find(client_id)
+      sum = client.account_movements.where("account_movements.amount_available > 0 AND account_movements.receipt_id IS NOT NULL").sum(:amount_available)
+      client.invoices.credit_notes.each do |cn|
+        sum += cn.account_movement.amount_available
+      end
+      return sum
+    end
+
   	def days
       if self.invoice.blank?
       else
@@ -283,6 +289,7 @@ class AccountMovement < ApplicationRecord
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
+            am.amount_available = invoice.total.to_f
           else
             am.debe         = true
             am.haber        = false
