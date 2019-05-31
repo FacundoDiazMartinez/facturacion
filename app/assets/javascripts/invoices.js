@@ -95,7 +95,7 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 	$(this).closest("tr.fields").find("input.quantity").val(1);
 
-	for (var i = 1; i < $(this).closest("tr.fields").find("select.depot_id > option").length; i++) {
+	for (var i = 1; i < $(this).closest("tr.fields").find("select.depot_id > option").length; i++) {               //  >> Limpiamos los nombres de los depósitos por si no es un tr nuevo
 		name_to_clean = $(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text();
 		index = name_to_clean.indexOf(" [ Stock");
 		if (index >= 0) {
@@ -105,7 +105,7 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		console.log($(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text());
 	}
 
-	for (var i = 0; i < data.item.depots_with_quantities.length; i++) {
+	for (var i = 0; i < data.item.depots_with_quantities.length; i++) { 																					//  >> Añadimos cantidades en los nombres de los depósitos
 		for (var j = 1; j < $(this).closest("tr.fields").find('select.depot_id > option').length; j++) {
 			if (data.item.depots_with_quantities[i].depot_id == $(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').val()) {
 				depot_name = $(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').text();
