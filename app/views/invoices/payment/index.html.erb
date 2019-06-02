@@ -38,7 +38,7 @@
                 <% when "8" %>
                   <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
                 <% when "6" %>
-                  <%= payment.payment_name %> - RX:<%= payment.account_movement.receipt.number %>
+                  <%= payment.payment_name %> - <%= payment.account_movement.receipt.nil? ? "NC: #{payment.account_movement.invoice.full_number}" : "RX: #{payment.account_movement.receipt.number}" %>
                 <% else %>
                   <%= payment.payment_name %>
               <% end %>
