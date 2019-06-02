@@ -95,26 +95,36 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
 	$(this).closest("tr.fields").find("input.quantity").val(1);
 
-	for (var i = 1; i < $(this).closest("tr.fields").find("select.depot_id > option").length; i++) {               //  >> Limpiamos los nombres de los depósitos por si no es un tr nuevo
-		name_to_clean = $(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text();
-		index = name_to_clean.indexOf(" [ Stock");
-		if (index >= 0) {
-			depot_name = jQuery.trim(name_to_clean).substring(0, index);
-			$(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text(depot_name);
-		}
-		console.log($(this).closest("tr.fields").find('select.depot_id > option[value=' + i + ']').text());
-	}
 
-	for (var i = 0; i < data.item.depots_with_quantities.length; i++) { 																					//  >> Añadimos cantidades en los nombres de los depósitos
-		for (var j = 1; j < $(this).closest("tr.fields").find('select.depot_id > option').length; j++) {
-			if (data.item.depots_with_quantities[i].depot_id == $(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').val()) {
-				depot_name = $(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').text();
-				$(this).closest("tr.fields").find('select.depot_id > option[value=' + j + ']').text(depot_name + " [ Stock: " + data.item.depots_with_quantities[i].quantity + " ]")
+	$(this).closest("tr.fields").find("select.depot_id > option").each(function(ind){    //  >> Limpiamos los nombres de los depósitos por si no es un tr nuevo
+		if (ind > 0) {
+			name_to_clean = $(this).text();
+			index = name_to_clean.indexOf(" [ Stock");
+			if (index >= 0) {
+				depot_name = jQuery.trim(name_to_clean).substring(0, index);
+				$(this).text(depot_name);
 			}
 		}
-	}
+	});
 
-	$(this).closest("tr.fields").find("select.depot_id").val(data.item.best_depot_id);
+	data.item.depots_with_quantities.forEach(function(depot){				//  >> Añadimos cantidades en los nombres de los depósitos
+		$("select.depot_id > option").each(function(index){
+			if (index > 0) {
+				option = $(this);
+				if (depot.depot_id == option.val()) {
+					depot_name = option.text();
+					option.text(depot_name + " [ Stock: " + depot.quantity + " ]");
+				}
+			}
+		});
+	});
+
+	$(this).closest("tr.fields").find("select.depot_id > option").each(function(){
+		if ($(this).val() == data.item.best_depot_id) {
+			$(this).closest("tr.fields").find("select.depot_id").val(data.item.best_depot_id);
+		}
+	});
+
 	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot);
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
 	// calculateSubtotal($(this).closest("tr.fields").find("input.subtotal"));
@@ -194,16 +204,18 @@ function calculateNeto(){
 		var descuento = $(this).find("input.bonus_amount").val();
 		total_neto += neto_unitario * cantidad - descuento; // >> Subtotal sin IVA
 	});
+	return total_neto;
+}
+
+function calculateNeto_withBonifications(){
+	total_neto = calculateNeto();
 	if (bonif_gral != 0) {
 		total_neto -= (total_neto * (bonif_gral / 100)); // >>>>>>> Descuento a subtotal
 	}
-
-
 	$("#bonifications > tbody > tr:visible").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Se restan descuentos NESTED al neto anterior
 		var monto = $(this).find("input.bonif_amount").val();
 		total_neto -= monto;
 	});
-
 	return total_neto;
 }
 
@@ -217,16 +229,25 @@ function calculateTotalOfInvoice(){
 		if (bonif_gral != 0) {
 			inv_total -= (inv_total * (bonif_gral / 100));  // >>>>>>>>>>>>>>>> Descuento general al TOTAL
 		}
+
+		var neto_puro = calculateNeto();
+
 		$("#bonifications > tbody > tr").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
 			if ($(this).css('display') != "none") {
+
+				$(this).find($("input.bonif_subtotal")).val(neto_puro);
 				percentage = $(this).find($("input.bonif_percentage")).val();
-				inv_total -= (inv_total * (percentage / 100)).toFixed(2);
+				$(this).find($("input.bonif_amount")).val((neto_puro * (percentage /100)).toFixed(2));
+				item_bonif_amount = $(this).find($("input.bonif_amount")).val();
+				neto_puro -= item_bonif_amount;
+
+				inv_total -= (inv_total * (percentage / 100)).toFixed(2);  // vamos aplicando descuento al total de la factura
 			}
 		});
 
-		var total_neto = calculateNeto();
+		var total_neto = calculateNeto_withBonifications();
 
-		$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Cálculo de tributos en base a suma de subtotales sin iva
+		$("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Cálculo de tributos en base a suma de subtotales sin iva y descuentos aplicados
 
 			if ($(this).css('display') != "none") {
 				base_imp = total_neto.toFixed(2);
@@ -309,8 +330,7 @@ function complete_payments(){
 	check_payment_limit();
 }
 
-$(document).on('nested:fieldAdded', function(event){
-
+$(document).on('nested:fieldAdded:invoice_details', function(event){
   $('.datepicker').datepicker({
       language: "es",
       dateFormat: "dd/mm/yyyy",
@@ -318,8 +338,6 @@ $(document).on('nested:fieldAdded', function(event){
       autoClose: true,
       startView: 2
   });
-
-
 	autocomplete_field();
 	complete_payments();
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
@@ -328,35 +346,39 @@ $(document).on('nested:fieldAdded', function(event){
 	debit_note_selected();
 });
 
+$(document).on('nested:fieldAdded:tributes', function(event){
+	$("input.price").trigger("change");
+});
+
 $(document).on('nested:fieldAdded:bonifications', function(event){
 	var field 	= event.field;
 	bonif_subtotal 	= field.find("input.bonif_subtotal");
-	bonif_subtotal.val(calculateNeto().toFixed(2));
+	bonif_subtotal.val(calculateNeto_withBonifications().toFixed(2));
 	if ($("#bonifications > tbody > tr:visible").length >= 2) {
 		$("#bonifications_add_button").hide();
 	}
-})
+});
 
 $(document).on('change',".bonif_percentage",function(){
 	bonif_subtotal = $(this).closest("tr.fields").find($("input.bonif_subtotal")).val();
 	bonif_percentage = $(this).val();
 	$(this).closest("tr.fields").find($("input.bonif_amount")).val((bonif_subtotal * (bonif_percentage / 100)).toFixed(2));
 	calculateTotalOfInvoice();
-})
+});
 
 $(document).on('nested:fieldRemoved:bonifications', function(event){
 	calculateTotalOfInvoice();
 	if ($("#bonifications > tbody > tr:visible").length < 2) {
 		$("#bonifications_add_button").show();
 	}
-})
+});
 
 $(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes', function(event){
 	var field 	= event.field;
 	subtotal 	= field.find("input.subtotal");
 	$(".remove-invoice-payment").attr("data-confirm", "¡Atención! Existen conceptos marcados para borrar pero los cambios no han sido guardados aún. ¿Desea continuar de todas formas?")
 	calculateSubtotal(subtotal);
-})
+});
 
 
 function debit_note_selected(){
