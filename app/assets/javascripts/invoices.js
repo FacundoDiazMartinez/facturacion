@@ -107,11 +107,10 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		}
 	});
 
-	this_tr = $(this).closest("tr.fields");
+	current_trow = $(this).closest("tr.fields");
 
 	data.item.depots_with_quantities.forEach(function(depot){				//  >> Añadimos cantidades en los nombres de los depósitos
-	this_tr.find("select.depot_id > option").each(function(i){
-		//$("select.depot_id > option").each(function(i){
+		current_trow.find("select.depot_id > option").each(function(i){
 			if (i > 0) {
 				option = $(this);
 				if (depot.depot_id == option.val()) {
