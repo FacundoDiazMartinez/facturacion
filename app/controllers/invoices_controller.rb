@@ -12,6 +12,7 @@ class InvoicesController < ApplicationController
   # GET /invoices/1.json
   def show
 
+
     # la siguiene variable la cree para el pdf:
     Product.unscoped do
       @group_details = @invoice.invoice_details.includes(:product).in_groups_of(15, fill_with= nil)
