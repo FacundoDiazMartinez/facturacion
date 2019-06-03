@@ -99,17 +99,20 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("select.depot_id > option").each(function(ind){    //  >> Limpiamos los nombres de los depósitos por si no es un tr nuevo
 		if (ind > 0) {
 			name_to_clean = $(this).text();
-			index = name_to_clean.indexOf(" [ Stock");
-			if (index >= 0) {
-				depot_name = jQuery.trim(name_to_clean).substring(0, index);
+			i = name_to_clean.indexOf(" [ Stock");
+			if (i >= 0) {
+				depot_name = jQuery.trim(name_to_clean).substring(0, i);
 				$(this).text(depot_name);
 			}
 		}
 	});
 
+	this_tr = $(this).closest("tr.fields");
+
 	data.item.depots_with_quantities.forEach(function(depot){				//  >> Añadimos cantidades en los nombres de los depósitos
-		$("select.depot_id > option").each(function(index){
-			if (index > 0) {
+	this_tr.find("select.depot_id > option").each(function(i){
+		//$("select.depot_id > option").each(function(i){
+			if (i > 0) {
 				option = $(this);
 				if (depot.depot_id == option.val()) {
 					depot_name = option.text();
