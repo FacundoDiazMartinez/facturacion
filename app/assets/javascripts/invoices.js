@@ -238,7 +238,7 @@ function calculateTotalOfInvoice(){
 		$("#bonifications > tbody > tr").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
 			if ($(this).css('display') != "none") {
 
-				$(this).find($("input.bonif_subtotal")).val(neto_puro);
+				$(this).find($("input.bonif_subtotal")).val(neto_puro.toFixed(2));
 				percentage = $(this).find($("input.bonif_percentage")).val();
 				$(this).find($("input.bonif_amount")).val((neto_puro * (percentage /100)).toFixed(2));
 				item_bonif_amount = $(this).find($("input.bonif_amount")).val();

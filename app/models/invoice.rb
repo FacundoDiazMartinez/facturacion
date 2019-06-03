@@ -418,7 +418,7 @@ class Invoice < ApplicationRecord
             return {response:  false, messages: @last_pay.errors.full_messages}
           end
         else
-          return {response:  false, messages: ["No tiene saldo disponible."]}
+          return {response:  false, messages: ["No tiene saldo disponible para cancelar la factura."]}
         end
       end
 
