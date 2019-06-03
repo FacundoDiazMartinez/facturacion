@@ -145,11 +145,11 @@ class AccountMovement < ApplicationRecord
 
     def self.sum_available_amount_to_asign(client_id)
       client = Client.find(client_id)
-      sum = client.account_movements.where("account_movements.amount_available > 0 AND account_movements.receipt_id IS NOT NULL").sum(:amount_available)
-      client.invoices.credit_notes.each do |cn|
-        sum += cn.account_movement.amount_available
-      end
-      return sum
+      var  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
+      var += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
+      sum = var.map{|am| am.amount_available}.reduce(:+)
+      
+      return sum.nil? ? 0 : sum
     end
 
   	def days

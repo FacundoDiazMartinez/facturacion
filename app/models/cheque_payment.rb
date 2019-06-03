@@ -2,7 +2,7 @@ class ChequePayment < ApplicationRecord
 	include Subpayment
   	belongs_to :payment
 
-		validates_numericality_of :number, message: "Sólo se permite ingresar números."
+		validates_numericality_of :number, message: "Sólo se permite ingresar números, para el campo numeración del cheque."
 
   	STATES = ["Cobrado", "No cobrado"]
 

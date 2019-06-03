@@ -396,12 +396,15 @@ class Invoice < ApplicationRecord
 
       def paid_invoice_from_client_debt
         result = false
-
-        client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
+        var  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
+        var += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
+        var.each do |am|
           @band = true
           pay = self.income_payments.new(type_of_payment: "6", payment_date: Date.today, generated_by_system: true, account_movement_id: am.id)
-          pay.total = (am.amount_available.to_f >= self.real_total_left.to_f) ? self.real_total_left.to_f : am.amount_available.to_f
-          result = pay.save
+          pp "TOTAAAAAAL"
+          pp pay.total = (am.amount_available.to_f >= self.real_total_left.to_f) ? self.real_total_left.to_f : am.amount_available.to_f
+          pp "EEEEEEEEE"
+          pp result = pay.save
           if result
             @last_pay = pay
             am.update_column(:amount_available, am.amount_available - pay.total)

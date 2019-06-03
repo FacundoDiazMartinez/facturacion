@@ -156,8 +156,9 @@ class InvoicesController < ApplicationController
   end
 
   def paid_invoice_with_debt
-    invoice = current_user.company.invoices.where.not(cbte_tipo: Invoice::COD_NC).find(params[:id])
-    result  = invoice.paid_invoice_from_client_debt
+    # invoice = current_user.company.invoices.where.not(cbte_tipo: Invoice::COD_NC).find(params[:id])
+    pp invoice = current_user.company.invoices.find(params[:id])
+    pp result  = invoice.paid_invoice_from_client_debt
     response = result[:response]
     messages = result[:messages].join(", ")
     respond_to do |format|
