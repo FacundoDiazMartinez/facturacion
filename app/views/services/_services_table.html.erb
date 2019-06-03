@@ -17,7 +17,11 @@
 						<td><%= service.name %></td>
 						<td><%= service.category_name %></td>
 						<td><%= service.price %></td>
-						<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{service.attributes.to_json}, #{params[:index_id]}, $(this).closest('tr').find('.depot').val())" %></td>
+						<td>
+							<%= link_to icon('fas', 'edit').html_safe, edit_service_path(service.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+							<%= link_to icon('fas', 'trash').html_safe, service , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+						</td>
+						<!-- <td><%# button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{service.attributes.to_json}, #{params[:index_id]}, $(this).closest('tr').find('.depot').val())" %></td> -->
 					</tr>
 				<% end -%>
 			</tbody>
@@ -27,5 +31,5 @@
 <%= paginate @services %>
 
 <% else %>
-  <center><h1>¡Todavia no cargaste ningún servicio!</h1></center>
+  <center><h1>Sin servicios para mostrar</h1></center>
 <% end %>
