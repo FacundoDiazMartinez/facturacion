@@ -43,7 +43,8 @@ class Invoice < ApplicationRecord
   after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
   after_save :update_expired, if: Proc.new{|i| i.state == "Confirmado"}
   #after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?} >>> Reeplazado por :impact_stock_if_cn
-  after_save :impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note?}
+  after_save :impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
+  after_save :check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
 
   before_validation :check_if_confirmed
   before_destroy :check_if_editable
@@ -343,6 +344,27 @@ class Invoice < ApplicationRecord
     def impact_stock_if_cn
       self.invoice_details.each do |id|
         id.impact_stock_cn
+      end
+    end
+
+    def check_cancelled_state_of_invoice
+      total_cancellation = true
+      associated_invoice = Invoice.find(self.associated_invoice)
+      associated_invoice.invoice_details.each do |id|
+        id_product = id.product
+        id_quantity = id.quantity
+        count = 0
+        associated_invoice.credit_notes.each do |cn|
+          cn.invoice_details.where(product_id: id_product.id).each do |cn_id|
+            count += cn_id.quantity
+          end
+        end
+        if count != id_quantity
+          total_cancellation = false
+        end
+      end
+      if total_cancellation
+        associated_invoice.update_column(:state, "Anulado")
       end
     end
 
