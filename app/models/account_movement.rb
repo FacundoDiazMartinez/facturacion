@@ -11,6 +11,7 @@ class AccountMovement < ApplicationRecord
 
   before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
   before_save         :set_total_if_subpayments
+  before_save         :check_amount_available
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
   after_save          :update_debt, unless: Proc.new{ |p| p.receipt.try(:state) == "Pendiente" }
@@ -133,6 +134,11 @@ class AccountMovement < ApplicationRecord
       end
     end
 
+    def check_amount_available
+		  if amount_available < 0
+				amount_available = 0
+			end
+		end
   #VALIDACIONES
 
   #FUNCIONES
@@ -142,7 +148,7 @@ class AccountMovement < ApplicationRecord
       var  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
       var += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
       sum = var.map{|am| am.amount_available}.reduce(:+)
-      
+
       return sum.nil? ? 0 : sum
     end
 
@@ -280,52 +286,16 @@ class AccountMovement < ApplicationRecord
           am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
           am.observation  = invoice.observation
           if invoice.is_credit_note?
-            pp "AAA"
-            if invoice.invoice.nil?
-              pp "CCC"
-              #NC SIN VINCULAR A LA FACTURA
-              am.amount_available = invoice.total.to_f
-            else
-              pp "DD"
-              #ANULANDO FACTURA
-              if invoice.invoice.total == invoice.invoice.real_total_left
-                pp "EEE"
-                #FACTURA SIN PAGOS
-                am.amount_available = 0
-              else
-                pp "FFF"
-                #FACTURA CON PAGOS
-                #if invoice.invoice.real_total_left >= invoice.total
-                if invoice.total == -(invoice.invoice.real_total_left)
-                  pp "GG"
-                  #TOTAL REAL DE LA FACTURA > TOTAL DE LA FACTURA
-                  #am.amount_available = invoice.total - invoice.invoice.real_total_left
-                  am.amount_available = -(invoice.invoice.real_total_left)
-                else
-                  pp "HH"
-                  #NC MENOR IGUAL A LOS PAGOS DE LA FACTURA
-                  #am.amount_available = 0
-                  if invoice.invoice.real_total_left == 0
-                    pp "II"
-                    am.amount_available = 0
-                  else
-                    pp "JJ"
-                    am.amount_available = invoice.total - invoice.invoice.total_pay
-                  end
-                end
-              end
-            end
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
+            am.amount_available = invoice.total.to_f
           else
-            "BBB"
             am.debe         = true
             am.haber        = false
             am.total        = invoice.total.to_f
           end
-          am.save #unless !am.changed?
-          pp am.errors
+          am.save unless !am.changed?
           return am
         end
     end
