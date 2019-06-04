@@ -50,9 +50,14 @@ function showProductNamePopover () {
 }
 
 function setConfirmParam() {
+	alert("asd");
 	$("#send_to_afip").prop('checked', true);
 	$("#send_to_afip").closest('form').submit();
 }
+
+$(document).on('nested:fieldRemoved', function (event) {  //Remueve los REQUIRED de la fila eliminada 
+  $('[required]', event.field).removeAttr('required');
+});
 
 function openConfirmationModal () {  //carga la modal de advertencia antes de confirmar y la muestra
 	$('#client_name_modal').val($('#invoice_client_name').val());

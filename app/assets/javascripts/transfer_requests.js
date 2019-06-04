@@ -35,7 +35,7 @@ $(document).on("click", "#modal_button_tr", function(){
 
 
 $(document).on("ready", function(){
-	$("button[type='submit']").on("click", function(e){
+	$("#transfer_request_submit").on("click", function(e){
 		$(this).valid()
 	});
 	jQuery.validator.setDefaults({
