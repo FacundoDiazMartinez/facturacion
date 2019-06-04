@@ -38,6 +38,7 @@ class Invoice < ApplicationRecord
 
   after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
   after_touch :update_total_pay #, :touch_account_movement, :check_receipt
+	before_save :old_real_total_left, if: Proc.new{|i| i.is_credit_note?}
 
   after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
   after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
@@ -535,8 +536,12 @@ class Invoice < ApplicationRecord
       set_state
     end
 
+		def old_real_total_left
+		  @old_real_total_left = self.invoice.real_total_left
+		end
+
     def touch_account_movement
-      AccountMovement.create_from_invoice(self)
+      AccountMovement.create_from_invoice(self, @old_real_total_left)
     end
 
     def touch_payments
