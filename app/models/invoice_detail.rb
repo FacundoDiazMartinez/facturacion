@@ -12,9 +12,9 @@ class InvoiceDetail < ApplicationRecord
   before_validation :check_product
   before_validation :calculate_iva_amount
   after_save :set_total_to_invoice
-  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"} # Y si es NC???
-  after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.product.tipo == "Producto"}  #Y si es NC????
-
+  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
+  after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
+  #after_validation :impact_stock_cn, if: Proc.new{|detail| detail.invoice.is_credit_note? && quantity_changed? && detail.product.tipo == "Producto" && detail.invoice.state == "Confirmado"}
 
   default_scope {where(active: true)}
 
@@ -120,12 +120,21 @@ class InvoiceDetail < ApplicationRecord
 
     def reserve_stock
       if quantity_change.nil? || new_record?
-        if self.invoice.budget.nil? || !self.invoice.budget.reserv_stock
-          self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
-        end
+        self.product.reserve_stock(quantity: self.quantity, depot_id: depot_id)
       else
         dif = quantity_change.first.to_f - quantity_change.second.to_f
         self.product.rollback_reserved_stock(quantity: dif, depot_id: depot_id)
+      end
+    end
+
+    def impact_stock_cn
+      if self.product.tipo == "Producto"
+        # if quantity_change.nil? || new_record?
+        self.product.impact_stock_by_cred_note(quantity: self.quantity, depot_id: depot_id)
+        # else
+        #   dif = quantity_change.first.to_f - quantity_change.second.to_f
+        #   self.product.rollback_stock_by_cred_note(quantity: dif, depot_id: depot_id)
+        # end
       end
     end
 

@@ -335,9 +335,37 @@ class Product < ApplicationRecord
 			end
 		end
 
+    def impact_stock_by_cred_note attrs={}
+      reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+      if reserved_stock.quantity >= attrs[:quantity].to_f
+        reserved_stock.quantity -= attrs[:quantity].to_f
+      else
+        remaining_quantity = attrs[:quantity].to_f - reserved_stock.quantity
+        reserved_stock.quantity = 0
+        delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+        delivered_stock.quantity -= remaining_quantity
+        delivered_stock.save
+      end
+      reserved_stock.save
+
+      available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+      available_stock.quantity += attrs[:quantity].to_f
+      available_stock.save
+    end
+
+    # def rollback_stock_by_cred_note
+    #   reserved_stock = self.stocks.where(depot_id: attrs[:id_depot_id], state: "Reservado").first_or_initialize
+    #   delivered_stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Entregado").first_or_initialize
+    #   available_stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Disponible").first_or_initialize
+    #
+    #   available_stock.quantity -= attrs[:quantity].to_f
+    #   reserved_stock.quantity += attrs[:quantity].to_f
+    #   delivered_stock.quantity += attrs[:quantity].to_f
+    # end
+
 		def rollback_reserved_stock attrs={}
 			s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
-			s.quantity = s.quantity.to_f - attrs[:quantity].to_f
+			s.quantity -= attrs[:quantity].to_f
 			s.save
 			if s.save
 				add_stock attrs
@@ -345,21 +373,27 @@ class Product < ApplicationRecord
 		end
 
     def impact_stock_from_delivery_note_detail attrs={}
-      stock = self.stocks.where(depot_id: attrs[:id_depot_id], state: "Reservado").first_or_initialize
-      if stock.quantity.blank? || stock.quantity <= attrs[:quantity].to_f
-        stock.quantity = 0
+      reserved_stock = self.stocks.where(depot_id: attrs[:id_depot_id], state: "Reservado").first_or_initialize
+      if reserved_stock.quantity.blank? || reserved_stock.quantity < attrs[:quantity].to_f
+        if reserved_stock.quantity > 0
+          remaining_quantity = attrs[:quantity].to_f - reserved_stock.quantity
+          available_stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Disponible").first_or_initialize
+          available_stock.quantity -= remaining_quantity
+          available_stock.save
+        end
+        reserved_stock.quantity = 0
       else
-        stock.quantity -= attrs[:quantity].to_f
+        reserved_stock.quantity -= attrs[:quantity].to_f
       end
 
-      if stock.save
-        stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Entregado").first_or_initialize
-        if stock.quantity.blank?
-          stock.quantity = attrs[:quantity].to_f
+      if reserved_stock.save
+        delivered_stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Entregado").first_or_initialize
+        if delivered_stock.quantity.blank?
+          delivered_stock.quantity = attrs[:quantity].to_f
         else
-          stock.quantity += attrs[:quantity].to_f
+          delivered_stock.quantity += attrs[:quantity].to_f
         end
-        stock.save
+        delivered_stock.save
       end
     end
 

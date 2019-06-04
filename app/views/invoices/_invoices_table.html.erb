@@ -91,7 +91,7 @@
                 <td><%= link_to note.client.name, client_path(note.client_id) %></td>
                 <td class="only-desktop"><%= note.tipo %></td>
                 <td>$<%= note.total %></td>
-                <td class="only-desktop"><%= invoice_state(note.state) %></td>
+                <td class="only-desktop"> <%= icon('fas', 'long-arrow-alt-up') %> &nbsp; &nbsp; &nbsp;<%= invoice_state(note.state) %></td>
                 <td>$<%= note.total_left %></td>
                 <td>
                   <%  if !note.editable? && note.is_invoice? && note.state != "Anulado" %>
