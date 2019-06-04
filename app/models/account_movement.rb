@@ -25,7 +25,7 @@ class AccountMovement < ApplicationRecord
   validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
   validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."
   validates_presence_of :total, message: "Debe definir un total."
-  validates_numericality_of :amount_available, greater_than_or_equal_to: 0.0, message: "El monto a asignar debe ser mayor o igual a 0."
+  #validates_numericality_of :amount_available, greater_than_or_equal_to: 0.0, message: "El monto a asignar debe ser mayor o igual a 0."
   validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
   validates_presence_of :saldo, message: "Falta definir el saldo actual del cliente."
   validate :check_debe_haber
@@ -280,41 +280,7 @@ class AccountMovement < ApplicationRecord
           am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
           am.observation  = invoice.observation
           if invoice.is_credit_note?
-            pp "AAA"
-            if invoice.invoice.nil?
-              pp "CCC"
-              #NC SIN VINCULAR A LA FACTURA
-              am.amount_available = invoice.total.to_f
-            else
-              pp "DD"
-              #ANULANDO FACTURA
-              if invoice.invoice.total == invoice.invoice.real_total_left
-                pp "EEE"
-                #FACTURA SIN PAGOS
-                am.amount_available = 0
-              else
-                pp "FFF"
-                #FACTURA CON PAGOS
-                #if invoice.invoice.real_total_left >= invoice.total
-                if invoice.total == -(invoice.invoice.real_total_left)
-                  pp "GG"
-                  #TOTAL REAL DE LA FACTURA > TOTAL DE LA FACTURA
-                  #am.amount_available = invoice.total - invoice.invoice.real_total_left
-                  am.amount_available = -(invoice.invoice.real_total_left)
-                else
-                  pp "HH"
-                  #NC MENOR IGUAL A LOS PAGOS DE LA FACTURA
-                  #am.amount_available = 0
-                  if invoice.invoice.real_total_left == 0
-                    pp "II"
-                    am.amount_available = 0
-                  else
-                    pp "JJ"
-                    am.amount_available = invoice.total - invoice.invoice.total_pay
-                  end
-                end
-              end
-            end
+            am.amount_available = invoice.total - invoice.invoice.real_total_left
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
@@ -324,7 +290,7 @@ class AccountMovement < ApplicationRecord
             am.haber        = false
             am.total        = invoice.total.to_f
           end
-          am.save #unless !am.changed?
+          am.save unless !am.changed?
           pp am.errors
           return am
         end
