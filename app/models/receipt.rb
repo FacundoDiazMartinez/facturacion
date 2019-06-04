@@ -119,7 +119,7 @@ class Receipt < ApplicationRecord
 
     def self.create_from_invoice invoice
       if invoice.state == "Confirmado"
-        if invoice.receipts.empty?
+        if invoice.receipts.empty? && invoice.total_pay > 0
           r = Receipt.new
           r.cbte_tipo   = invoice.is_credit_note? ? "99" : "00"
           r.total       = invoice.total_pay

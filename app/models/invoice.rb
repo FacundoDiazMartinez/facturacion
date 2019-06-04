@@ -399,11 +399,13 @@ class Invoice < ApplicationRecord
           if am.amount_available > 0
             invoice = rd.invoice
             unless invoice.is_credit_note?
-              pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
-              pay.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
-              pay.save
-              pp pay.errors
-              am.update_column(:amount_available, am.amount_available - pay.total)
+							if invoice.real_total_left.to_f > 0
+								pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
+								pay.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
+								pay.save
+								pp pay.errors
+								am.update_column(:amount_available, am.amount_available - pay.total)
+							end
               break if am.amount_available < 1
             end
           end
