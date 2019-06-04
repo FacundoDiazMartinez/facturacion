@@ -11,6 +11,7 @@ class AccountMovement < ApplicationRecord
 
   before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
   before_save         :set_total_if_subpayments
+  before_save         :check_amount_available
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
   after_save          :update_debt, unless: Proc.new{ |p| p.receipt.try(:state) == "Pendiente" }
@@ -133,6 +134,11 @@ class AccountMovement < ApplicationRecord
       end
     end
 
+    def check_amount_available
+		  if amount_available < 0
+				amount_available = 0
+			end
+		end
   #VALIDACIONES
 
   #FUNCIONES
@@ -142,7 +148,7 @@ class AccountMovement < ApplicationRecord
       var  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
       var += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
       sum = var.map{|am| am.amount_available}.reduce(:+)
-      
+
       return sum.nil? ? 0 : sum
     end
 
@@ -272,7 +278,7 @@ class AccountMovement < ApplicationRecord
   		self.client.update_debt
   	end
 
-    def self.create_from_invoice invoice
+    def self.create_from_invoice invoice, old_real_total_left
       if invoice.state == "Confirmado"
           am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
           am.client_id    = invoice.client_id
@@ -280,8 +286,7 @@ class AccountMovement < ApplicationRecord
           am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
           am.observation  = invoice.observation
           if invoice.is_credit_note?
-            pp invoice.invoice.real_total_left
-            am.amount_available = invoice.total - invoice.invoice.real_total_left
+            am.amount_available = invoice.total - old_real_total_left
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
