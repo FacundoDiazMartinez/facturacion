@@ -186,7 +186,7 @@ class InvoicesController < ApplicationController
   def autocomplete_associated_invoice
     term = params[:term]
     client_id = params[:client_id]
-    invoices = current_user.company.clients.find(client_id).invoices.where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%").order('comp_number DESC')
+    invoices = current_user.company.clients.find(client_id).invoices.where(state: ["Confirmado", "Anulado parcialmente"]).where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%").order('comp_number DESC')
     render :json => invoices.map{|i| {:id => i.id, :label => "Factura Nº: #{i.comp_number}", :value => i.comp_number}}
   end
 
@@ -238,7 +238,7 @@ class InvoicesController < ApplicationController
       set_invoice
     end
     @associated = true
-    associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice], state: "Confirmado").first
+    associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice]).first
     if associated_invoice.is_credit_note?
       associated_invoice.invoice_details.each do |id|
         @invoice.invoice_details.new(id.attributes.except("id"))

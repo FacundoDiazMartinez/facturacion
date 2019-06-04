@@ -309,7 +309,7 @@ class AccountMovement < ApplicationRecord
                     pp "II"
                     am.amount_available = 0
                   else
-                    "JJ"
+                    pp "JJ"
                     am.amount_available = invoice.total - invoice.invoice.total_pay
                   end
                 end
@@ -324,7 +324,8 @@ class AccountMovement < ApplicationRecord
             am.haber        = false
             am.total        = invoice.total.to_f
           end
-          am.save unless !am.changed?
+          am.save #unless !am.changed?
+          pp am.errors
           return am
         end
     end
