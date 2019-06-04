@@ -280,12 +280,12 @@ class AccountMovement < ApplicationRecord
           am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
           am.observation  = invoice.observation
           if invoice.is_credit_note?
+            pp invoice.invoice.real_total_left
             am.amount_available = invoice.total - invoice.invoice.real_total_left
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
           else
-            "BBB"
             am.debe         = true
             am.haber        = false
             am.total        = invoice.total.to_f
