@@ -1,6 +1,6 @@
 class AccountMovementPayment < Payment
 	belongs_to :account_movement
-	belongs_to :invoice
+	belongs_to :invoice, optional: true
 	#belongs_to :receipt, optional: true
 
 	before_validation :set_flow, :set_total_to_receipt
