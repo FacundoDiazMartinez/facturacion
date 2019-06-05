@@ -76,6 +76,38 @@
     	</li>
     </ul>
   </div>
+  <p class="text-muted">Personal autorizado a retirar mercadería</p>
+  <div class="card card-fluid card-shadow">
+    <ul class="list-group">
+      <% @client.authorized_personals.each do |ap| %>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <strong class="my-0">
+                Nombre
+              </strong>
+          </div>
+          <span><%= ap.first_name %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <strong class="my-0">
+                Dni
+              </strong>
+          </div>
+          <span><%= ap.dni %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <strong class="my-0">
+                ¿Requiere de orden de compra para retirar?
+              </strong>
+          </div>
+          <span><%= ap.need_purchase_order? ? "Si" : "No" %></span>
+        </li>
+        <br>
+      <% end %>
+    </ul>
+  </div>
   <p class="text-muted">Información adicional</p>
   <div class="card card-fluid card-shadow">
     <ul class="list-group">
@@ -83,7 +115,7 @@
         <li class="list-group-item d-flex justify-content-between lh-condensed">
           <div>
               <strong class="my-0">
-                Nombre
+                Apellido y nombre
               </strong>
           </div>
           <span><%= cc.name %></span>
