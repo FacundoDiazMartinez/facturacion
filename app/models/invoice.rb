@@ -444,7 +444,7 @@ class Invoice < ApplicationRecord
       end
       if @band
         if result
-          return {response:  true, messages: ["Se generó el pago correctamente."]}
+          return {response:  true, messages: ["Se genero el pago correctamente."]}
         else
           return {response:  false, messages: ["No tiene saldo disponible para cancelar la factura."]}
         end
