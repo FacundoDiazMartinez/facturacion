@@ -26,7 +26,7 @@ class AccountMovement < ApplicationRecord
   validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
   validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."
   validates_presence_of :total, message: "Debe definir un total."
-  validates_numericality_of :amount_available, greater_than_or_equal_to: 0.0, message: "El monto a asignar debe ser mayor o igual a 0."
+  #validates_numericality_of :amount_available, greater_than_or_equal_to: 0.0, message: "El monto a asignar debe ser mayor o igual a 0."
   validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
   validates_presence_of :saldo, message: "Falta definir el saldo actual del cliente."
   validate :check_debe_haber
@@ -148,7 +148,7 @@ class AccountMovement < ApplicationRecord
       var  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
       var += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
       sum = var.map{|am| am.amount_available}.reduce(:+)
-      
+
       return sum.nil? ? 0 : sum
     end
 
@@ -278,7 +278,7 @@ class AccountMovement < ApplicationRecord
   		self.client.update_debt
   	end
 
-    def self.create_from_invoice invoice
+    def self.create_from_invoice invoice, old_real_total_left
       if invoice.state == "Confirmado"
           am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
           am.client_id    = invoice.client_id
@@ -286,16 +286,17 @@ class AccountMovement < ApplicationRecord
           am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
           am.observation  = invoice.observation
           if invoice.is_credit_note?
+            am.amount_available = invoice.total - old_real_total_left
             am.debe         = false
             am.haber        = true
             am.total        = invoice.total.to_f
-            am.amount_available = invoice.total.to_f
           else
             am.debe         = true
             am.haber        = false
             am.total        = invoice.total.to_f
           end
           am.save unless !am.changed?
+          pp am.errors
           return am
         end
     end

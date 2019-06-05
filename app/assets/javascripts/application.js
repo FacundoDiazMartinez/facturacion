@@ -54,6 +54,8 @@ $(document).ready(function() {
     $('#file_input').click();
   })
 
+
+
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 
 
@@ -66,6 +68,13 @@ $(document).ready(function() {
       autoclose: true,
       startView: 2
   });
+});
+
+$(document).on("click", "button[type=submit]", function(){
+  // if ($(document).find("form").valid()) {
+  //   $(this).attr("readonly", true);
+  //   //$(this).closest("form").submit();
+  // }
 });
 
 

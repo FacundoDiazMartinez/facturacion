@@ -64,7 +64,7 @@ $(document).on("click", "#modal_button_dn", function(){
 
 
 $(document).on("ready", function(){
-	$("button[type='submit']").on("click", function(e){
+	$("#save_btn_receipt, #confirm_btn").on("click", function(e){
 		$(this).valid()
 	});
 	jQuery.validator.setDefaults({

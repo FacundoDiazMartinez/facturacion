@@ -54,6 +54,10 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
+$(document).on('nested:fieldRemoved', function (event) {  //Remueve los REQUIRED de la fila eliminada 
+  $('[required]', event.field).removeAttr('required');
+});
+
 function openConfirmationModal () {  //carga la modal de advertencia antes de confirmar y la muestra
 	$('#client_name_modal').val($('#invoice_client_name').val());
 	$('#doc_type_modal').val($('#invoice_cbte_tipo option:selected').text());
@@ -99,17 +103,19 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 	$(this).closest("tr.fields").find("select.depot_id > option").each(function(ind){    //  >> Limpiamos los nombres de los depósitos por si no es un tr nuevo
 		if (ind > 0) {
 			name_to_clean = $(this).text();
-			index = name_to_clean.indexOf(" [ Stock");
-			if (index >= 0) {
-				depot_name = jQuery.trim(name_to_clean).substring(0, index);
+			i = name_to_clean.indexOf(" [ Stock");
+			if (i >= 0) {
+				depot_name = jQuery.trim(name_to_clean).substring(0, i);
 				$(this).text(depot_name);
 			}
 		}
 	});
 
+	current_trow = $(this).closest("tr.fields");
+
 	data.item.depots_with_quantities.forEach(function(depot){				//  >> Añadimos cantidades en los nombres de los depósitos
-		$("select.depot_id > option").each(function(index){
-			if (index > 0) {
+		current_trow.find("select.depot_id > option").each(function(i){
+			if (i > 0) {
 				option = $(this);
 				if (depot.depot_id == option.val()) {
 					depot_name = option.text();
@@ -235,7 +241,7 @@ function calculateTotalOfInvoice(){
 		$("#bonifications > tbody > tr").each(function(){ // >>>>>>>>>>>>>>>>>>>>>>>>> Descuentos NESTED al total
 			if ($(this).css('display') != "none") {
 
-				$(this).find($("input.bonif_subtotal")).val(neto_puro);
+				$(this).find($("input.bonif_subtotal")).val(neto_puro.toFixed(2));
 				percentage = $(this).find($("input.bonif_percentage")).val();
 				$(this).find($("input.bonif_amount")).val((neto_puro * (percentage /100)).toFixed(2));
 				item_bonif_amount = $(this).find($("input.bonif_amount")).val();

@@ -17,7 +17,7 @@
   <% if can? :create, Service %>
     <%= button_new_helper(new_service_path()) %>
   <% end %>
-  
+
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">
@@ -49,7 +49,8 @@
                 <div class="input-group-prepend">
                   <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
                 </div>
-                <%= text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
+                <%= select_tag :category, options_for_select( ProductCategory.all.map { |c| [c.name, c.id] }, params[:category] ),{class: 'form-control', prompt: "Todos" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
+                <%# text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
               </div>
             <!-- BUSCAR POR CATEGORÍA -->
           <% end %>
