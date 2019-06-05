@@ -395,7 +395,6 @@ class Invoice < ApplicationRecord
 
     def self.paid_unpaid_invoices client
       client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
-        pp am
         am.receipt.receipt_details.each do |rd|
           if am.amount_available > 0
             invoice = rd.invoice
@@ -407,7 +406,7 @@ class Invoice < ApplicationRecord
 								pp pay.errors
 								am.update_column(:amount_available, am.amount_available - pay.total)
 							end
-              break if am.amount_available < 1
+              break if am.amount_available < 1  # no sería mejor si <= 0 ?
             end
           end
         end
