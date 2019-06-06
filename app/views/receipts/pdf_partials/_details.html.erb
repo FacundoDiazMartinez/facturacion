@@ -22,25 +22,31 @@
           <th class="text_left">
             Concepto:
           </th>
+          <th></th>
         </tr>
-        <% @receipt.invoices.only_invoices.each do |i| %>
+
+        <% @receipt.receipt_details.each do |rd| %>
           <tr class="bg-white">
             <td>
-              <% if i.real_total_left > 0 %>
-                Pago parcial <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
+              <% if rd.invoice.real_total_left > 0 %>
+                Pago parcial <%= rd.invoice.name_with_comp %>
               <% else %>
-                Cancelación <%= i.name_with_comp %>  -  Importe $ <%= i.total %>
+                Cancelación <%= rd.invoice.name_with_comp %>
               <% end %>
             </td>
+            <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice_payment.total)%></td>
           </tr>
-          <% i.notes.each do |n| %>
+          <% rd.invoice.notes.each do |n| %>
             <tr class="bg-white">
               <td>
-                Vinculación <%= n.name_with_comp %>  -  Importe $ <%= n.total %>
+                Vinculación <%= n.name_with_comp %>
               </td>
+              <td class="text_right">$ <%=  sprintf('%.2f',n.total)%></td>
             </tr>
           <% end -%>
         <% end %>
+
+
       </table>
     <% end %>
 
@@ -50,6 +56,7 @@
       <table class="width_100 TFtable">
         <tr>
           <th class="text_left">Forma de pago</th>
+          <th></th>
         </tr>
 
         <% (@receipt.account_movement_payments.empty? ? @receipt.invoices.map{|i| i.income_payments}.first : @receipt.account_movement_payments).each do |ip| %>
@@ -57,35 +64,34 @@
             <td>
               <% case ip.type_of_payment %>
                 <% when "4" %>
-                  <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> N° <%= ip.cheque_payment.number %> - Cobro: <%= ip.cheque_payment.expiration.to_formatted_s(:default) %> - Importe <b>$ <%= ip.total %> </b>
+                  <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> N° <%= ip.cheque_payment.number %> - Cobro: <%= ip.cheque_payment.expiration.to_formatted_s(:default) %>
                 <% when "1" %>
                   <% @installment_id = ip.card_payment.installments %>
                   <% if @installment_id != 0 %>
-                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas - Fecha del pago <%= ip.payment_date %>
                   <% else %>
-                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único - Fecha del pago <%= ip.payment_date %>
                   <% end %>
                 <% when "3" %>
-                  <%= ip.payment_name %> - Banco <%= ip.bank_payment.bank.name %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+                  <%= ip.payment_name %> - Banco <%= ip.bank_payment.bank.name %> - Fecha del pago <%= ip.payment_date %>
                 <% when "7" %>
-                  <%= ip.payment_name %> - Banco <%= ip.debit_payment.bank.name %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+                  <%= ip.payment_name %> - Banco <%= ip.debit_payment.bank.name %> - Fecha del pago <%= ip.payment_date %>
                 <% when "5" %>
-                  <%= ip.payment_name %> - N° <%= ip.retention_payment.number %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+                  <%= ip.payment_name %> - N° <%= ip.retention_payment.number %> - Fecha del pago <%= ip.payment_date %>
                 <% when "8" %>
-                  <%= ip.payment_name %> - Factura asociada: <%= ip.compensation_payment.asociatedClientInvoice %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+                  <%= ip.payment_name %> - Factura asociada: <%= ip.compensation_payment.asociatedClientInvoice %> - Fecha del pago <%= ip.payment_date %>  </b>
                 <% else %>
-                  <%= ip.payment_name %> - Fecha del pago <%= ip.payment_date %> - Importe <b>$ <%= ip.total %> </b>
+                  <%= ip.payment_name %> - Fecha del pago <%= ip.payment_date %>
               <% end %>
-              
+
             </td>
+            <td class="text_right"> <b> $ <%=  sprintf('%.2f', ip.total )%> </b> </td>
           </tr>
         <% end %>
       </table>
       <br>
       <br>
-      <td>
-        <b>Saldo en cuenta corriente : $<%= @receipt.account_movement.saldo %></b>
-      </td>
+      <b>Saldo en cuenta corriente:</b> $ <%= @receipt.account_movement.saldo %>
   </div>
 </div>
 <!-- FIN DEL DETALLE -->
@@ -102,4 +108,4 @@
     </table>
   </div>
 </div>
-<p><b>Recibi la suma de:  </b> <%= I18n.with_locale(:es) { @receipt.total.to_i.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total % 1 * 100).to_i.round(2).to_words } %> centavos.</p>
+<p><b>Recibi la suma de:  </b> <%= I18n.with_locale(:es) { @receipt.total.to_i.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total.to_s.split(".")[1]).to_i.to_words } %> centavos.</p>
