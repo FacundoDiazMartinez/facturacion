@@ -33,3 +33,11 @@ table.invoice-table > tbody > tr > td{
 .dropdown-menu-invoice.show{
   transform: translate3d(3px, 38px, 0px) !important;
 }
+
+.tooltip {
+  position: absolute;
+  will-change: transform;
+  top: 0px;
+  left: 0px;
+  transform: translate3d(107px, 750px, 0px) !important;
+}
