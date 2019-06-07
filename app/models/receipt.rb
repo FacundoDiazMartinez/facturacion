@@ -156,7 +156,13 @@ class Receipt < ApplicationRecord
     # def set_total
     #   self.total = total_without_invoices
     # end
-
+    def calculate_invoice_payment_nil
+      total = 0
+      receipt_details.invoice_payment.where_not(invoice_payment.nil?).each do |detail|
+        total += detail.total
+      end
+      return total.round(2)
+    end
 
   #PROCESOS
 

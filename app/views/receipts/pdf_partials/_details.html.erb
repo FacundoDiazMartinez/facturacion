@@ -34,7 +34,7 @@
                 Cancelación <%= rd.invoice.name_with_comp %>
               <% end %>
             </td>
-            <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice_payment.total)%></td>
+            <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice_payment.nil? ? 0.0 : rd.invoice_payment.total) %></td>
           </tr>
           <% rd.invoice.notes.each do |n| %>
             <tr class="bg-white">
