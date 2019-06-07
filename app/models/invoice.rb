@@ -842,7 +842,6 @@ class Invoice < ApplicationRecord
   #FILL_COMP_NUMBER
 
   def all_payments_string
-
     if !self.income_payments.blank?
       pagos = []
       self.income_payments.each do |p|
