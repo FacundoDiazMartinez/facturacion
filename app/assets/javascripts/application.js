@@ -11,8 +11,8 @@
 // about supported directives.
 //
 //= require jquery
-//= require jquery-ui
 //= require jquery_ujs
+//= require jquery-ui
 //= require jquery.validate
 //= require jquery.pjax
 //= require jquery.validate.localization/messages_es

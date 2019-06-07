@@ -50,6 +50,10 @@ function showProductNamePopover () {
 }
 
 function setConfirmParam() {
+	if ($("#invoice_client_name").closest('form').valid()) {
+		$("#confirm_invoice_button").attr('disabled', 'disabled');
+		$("#confirm_invoice_button").text("Cargando...");
+	};
 	$("#send_to_afip").prop('checked', true);
 	$("#send_to_afip").closest('form').submit();
 }

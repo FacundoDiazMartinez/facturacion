@@ -44,5 +44,5 @@
 
 <div class="modal-footer">
   	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-  	<%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, onclick: 'setConfirmParam()', class: 'btn btn-primary' %>
+  	<%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, id:'confirm_invoice_button', onclick: 'setConfirmParam()', class: 'btn btn-primary',type:'submit',  data: {disable_with: "#{icon('fas', 'sync')} Cargando..."} %>
 </div>

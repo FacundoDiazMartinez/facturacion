@@ -122,7 +122,7 @@
   <center>
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
     <% if @invoice.editable? %>
-      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: {disable_with: "#{icon('fas', 'sync')} Cargando...",:confirm => 'Revise los pagos antes de guardar'}  %>
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: {disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe,:confirm => 'Revise los pagos antes de guardar'}  %>
     <% end %>
   </center>
 <% end %>

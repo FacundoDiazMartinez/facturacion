@@ -9,6 +9,7 @@ class Receipt < ApplicationRecord
   has_many :account_movement_payments, through: :account_movement
   has_many :receipt_details, dependent: :destroy
   has_many :invoices, through: :receipt_details
+
   # has_many :invoice_details, through: :invoices
 
 

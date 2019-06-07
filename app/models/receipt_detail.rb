@@ -2,6 +2,7 @@ class ReceiptDetail < ApplicationRecord
   belongs_to :receipt
   belongs_to :invoice
   validate :invoices_clients_validation
+  has_one :invoice_payment, ->(rd){where(generated_by_system: true, account_movement_id: rd.receipt.account_movement.id)}, through: :invoice, class_name: "IncomePayment", source: :income_payments
 
 
 	def self.save_from_invoice receipt, invoice
