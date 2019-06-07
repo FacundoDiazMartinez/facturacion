@@ -121,8 +121,9 @@
   <% if @receipt.state == "Pendiente" %>
     <center>
       <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_receipt', name: 'button', value: "save" %>
-      <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'confirm_btn', name: 'button', value: "confirm" %>
-
+      <% if @receipt.persisted? %>
+        <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'confirm_btn', name: 'button', value: "confirm" %>
+      <% end %>
     </center>
   <% end %>
 

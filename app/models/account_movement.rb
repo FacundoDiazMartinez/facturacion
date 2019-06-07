@@ -10,7 +10,7 @@ class AccountMovement < ApplicationRecord
   has_many :income_payments, dependent: :destroy
 
   before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
-  before_save         :set_total_if_subpayments
+  after_save          :set_total_if_subpayments
   before_save         :check_amount_available
   before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
@@ -237,9 +237,11 @@ class AccountMovement < ApplicationRecord
 
     def set_total_if_subpayments
       if self.account_movement_payments.any?
-        self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
+        self.update_column(:total, self.account_movement_payments.where(generated_by_system: false).sum(:total))
         #self.active = true
-        self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
+        #COMENTAR LA LINEA DE ABAJO Y PROBAR
+        self.update_column(:amount_available, self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total))
+
       end
     end
 

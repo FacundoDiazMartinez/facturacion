@@ -25,13 +25,17 @@
           <th></th>
         </tr>
 
-        <% @receipt.receipt_details.each do |rd| %>
+        <% @receipt.receipt_details.only_invoices.each do |rd| %>
           <tr class="bg-white">
             <td>
               <% if rd.invoice.real_total_left > 0 %>
                 Pago parcial <%= rd.invoice.name_with_comp %>
               <% else %>
                 Cancelación <%= rd.invoice.name_with_comp %>
+              <% end %>
+              <% if @receipt.account_movement.amount_available > 0 %>
+              <br>
+                Saldo a favor futuras compras: $ <%= @receipt.saved_amount_available %>
               <% end %>
             </td>
             <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice_payment.total)%></td>
@@ -91,9 +95,6 @@
       </table>
       <br>
       <br>
-      <% if @receipt.account_movement.amount_available > 0 %>
-        <b>Saldo a favor futuras compras:</b> $ <%= @receipt.account_movement.amount_available %>
-      <% end %>
   </div>
 </div>
 <!-- FIN DEL DETALLE -->
