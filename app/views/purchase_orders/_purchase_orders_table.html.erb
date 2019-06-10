@@ -16,7 +16,7 @@
     <% @purchase_orders.each do |purchase_order| %>
       <tr>
         <td><strong><%= purchase_order.number %></strong></td>
-        <td><%= link_to purchase_order.supplier.name, supplier_path(purchase_order.supplier_id) %></td>
+        <td><%= link_to purchase_order.supplier.name, edit_supplier_path(purchase_order.supplier_id) %></td>
         <td><%= link_to purchase_order.user.name, user_path(purchase_order.user_id) %></td>
         <td><%= po_state_label_helper(purchase_order) %></td>
         <td><%= purchase_order.total %></td>

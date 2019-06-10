@@ -16,7 +16,7 @@ module ProductsHelper
 		if product.supplier_id.blank? 
 			product.supplier_name
 		else
-			link_to product.category_name, supplier_path(product.supplier_id)
+			link_to product.category_name, edit_supplier_path(product.supplier_id)
 		end
 	end
 

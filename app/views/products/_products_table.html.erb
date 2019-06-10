@@ -30,8 +30,8 @@
 					<tr>
 						<td><%= check_box_tag "product_ids[]", product.id, false, { class: 'checkbox-tag-multiple', onchange: 'abrir(this.value)' } %></td>
 						<td><%= product.code %></td>
-						<td><%= link_to product.name, product %></td>
-						<td class="only-desktop"><%= category_with_link(product) %></td>
+						<td><%= link_to product.name, product_path(product.id) %></td>
+						<td class="only-desktop"><%= product.product_category.name %></td>
 						<td>$ <%= product.price %></td>
 						<td class="only-desktop"><%= supplier_with_link(product) %></td>
 						<td><%= product.stock_html %></td>
