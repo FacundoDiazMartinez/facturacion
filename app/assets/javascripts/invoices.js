@@ -58,7 +58,7 @@ function setConfirmParam() {
 	$("#send_to_afip").closest('form').submit();
 }
 
-$(document).on('nested:fieldRemoved', function (event) {  //Remueve los REQUIRED de la fila eliminada 
+$(document).on('nested:fieldRemoved', function (event) {  //Remueve los REQUIRED de la fila eliminada
   $('[required]', event.field).removeAttr('required');
 });
 
@@ -98,6 +98,7 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		trigger: "hover"
 	});
 	$(this).closest("tr.fields").find("select.tipo").val(data.item.tipo);
+
 	$(this).closest("tr.fields").find("input.price").val(data.item.price);
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
@@ -129,11 +130,16 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		});
 	});
 
-	$(this).closest("tr.fields").find("select.depot_id > option").each(function(){
-		if ($(this).val() == data.item.best_depot_id) {
-			$(this).closest("tr.fields").find("select.depot_id").val(data.item.best_depot_id);
-		}
-	});
+	if (data.item.tipo == "Servicio") {
+		$(this).closest("tr.fields").find("select.depot_id").attr("disabled", true);
+	} else {
+		$(this).closest("tr.fields").find("select.depot_id > option").each(function(){
+			if ($(this).val() == data.item.best_depot_id) {
+				$(this).closest("tr.fields").find("select.depot_id").val(data.item.best_depot_id);
+			}
+		});
+	}
+
 
 	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot);
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
