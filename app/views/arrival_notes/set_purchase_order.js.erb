@@ -4,6 +4,6 @@ end %>
 
 $("#idetails").html("<%= j render template: '/arrival_notes/details/index.html.erb', locals:{form: @builder} %>");
 
-$(".arrival_note_purchase_order_id").html("<%= @purchase_order.id %>");
+$(".arrival_note_purchase_order_id").val("<%= @purchase_order.id %>");
 $("#an-id").html("<%= @purchase_order.number %>");
 $(".arrival_note_purchase_order_state").val("<%= @purchase_order.state %>");

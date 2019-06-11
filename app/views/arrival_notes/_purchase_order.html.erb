@@ -15,7 +15,8 @@
         <%= form.fields_for :purchase_order, (form.object.build_purchase_order unless !form.object.purchase_order_id.blank?) do |f| %>
           <div class="text-center">
             <%= f.hidden_field :id, class: 'arrival_note_purchase_order_id' %>
-            <%= f.hidden_field :state, class: 'arrival_note_purchase_order_state' %>
+            <%# f.hidden_field :state, class: 'arrival_note_purchase_order_state' %>
+            <%= hidden_field_tag :purchase_order_state, nil, { class: 'arrival_note_purchase_order_state'} %>
             <p>Se va a cargar un remito asociado a la orden de compra Nº: <b><span id="an-id"></span></b>. ¿Desea cerrarla?</p>
             <%= button_tag "#{icon('fas', 'lock')} Cerrar orden".html_safe, type: 'button', onclick: 'closePurchaseOrder()', class: 'btn btn-info' %>
             <%= button_tag "#{icon('fas', 'lock-open')} No cerrar orden".html_safe, type: 'submit', class: 'btn btn-info' %>
@@ -30,5 +31,5 @@
 </div>
 
 <script type="text/javascript">
-  
+
 </script>
