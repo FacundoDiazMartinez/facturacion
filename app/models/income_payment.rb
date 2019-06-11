@@ -31,10 +31,10 @@ class IncomePayment < Payment
  		end
 
  		def check_available_saldo
- 			pp "CHECK AVAILABLE SALDO"
+ 			pp "Inc Pay - 34 -CHECK AVAILABLE SALDO"
  			pp total
- 			pp invoice.client.account_movements.sum(:amount_available)
- 			errors.add(:total, "No posee el saldo suficiente en su cuenta corriente.") unless (total.to_f <= invoice.client.account_movements.sum(:amount_available).to_f || invoice.is_credit_note?)
+ 			pp invoice.client.account_movements.where('amount_available > 0').sum(:amount_available)	
+ 			errors.add(:total, "Inc Pay - 37 - No posee el saldo suficiente en su cuenta corriente.") unless (total.to_f <= invoice.client.account_movements.where('account_movements.amount_available > 0').sum(:amount_available).to_f || invoice.is_credit_note?)
  		end
 
  		def check_company_id
@@ -77,28 +77,26 @@ class IncomePayment < Payment
 		end
 	end
 
-		def set_amount_available_to_account_movement
-			unless self.account_movement.nil?
-				self.account_movement.update_column(:amount_available, self.account_movement.amount_available.to_f + self.total.to_f)
-			end
+	def set_amount_available_to_account_movement
+		unless self.account_movement.nil?
+			self.account_movement.update_column(:amount_available, self.account_movement.amount_available.to_f + self.total.to_f)
 		end
+	end
 
-		def touch_invoice
-			invoice.touch
-		end
+	def touch_invoice
+		invoice.touch
+	end
 
+	def destroy
+      	update_column(:active, false)
+      	set_total_pay_to_invoice
+      	run_callbacks :destroy
+      	freeze
+    end
 
-
-		def destroy
-	      	update_column(:active, false)
-	      	set_total_pay_to_invoice
-	      	run_callbacks :destroy
-	      	freeze
-	    end
-
-		def set_total_pay_to_invoice
-			sum = invoice.sum_payments
-  		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
+	def set_total_pay_to_invoice
+		sum = invoice.sum_payments
+		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
   	end
 
   	def set_notification
@@ -106,11 +104,11 @@ class IncomePayment < Payment
     end
 
   	def set_flow
-			self.flow = "income"
- 		end
+		self.flow = "income"
+	end
 
- 		def change_credit_card_balance
- 			CreditCard.find(credit_card_id).update_balance_from_payment(self)
- 		end
-	#PRECESOS
+	def change_credit_card_balance
+		CreditCard.find(credit_card_id).update_balance_from_payment(self)
+	end
+	#PROCESOS
 end

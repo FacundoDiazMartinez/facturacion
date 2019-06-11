@@ -9,10 +9,10 @@ class AccountMovement < ApplicationRecord
   has_many :invoice_details, through: :invoices
   has_many :income_payments, dependent: :destroy
 
+  before_validation   :set_attrs_to_receipt
   before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
   before_save         :set_total_if_subpayments
   before_save         :check_amount_available
-  before_validation   :set_attrs_to_receipt
   before_destroy      :fix_saldo
   after_save          :update_debt, unless: Proc.new{ |p| p.receipt.try(:state) == "Pendiente" }
   after_destroy       :update_debt
@@ -239,7 +239,9 @@ class AccountMovement < ApplicationRecord
       if self.account_movement_payments.any?
         self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
         #self.active = true
-        self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
+        pp "set_total if... ASDFASDFASDFASDFASDFASDFASDFAS"
+        pp self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
+        pp self.account_movement_payments
       end
     end
 
@@ -271,6 +273,7 @@ class AccountMovement < ApplicationRecord
         am.total       = receipt.total.to_f
         am.saldo       = receipt.client.saldo - receipt.total.to_f
         am.active      = receipt.state == "Finalizado"
+        pp am
         pp "AAAAAAAA"
         pp am.save
       end
