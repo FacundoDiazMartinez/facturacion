@@ -23,6 +23,7 @@
 	</thead>
 	<tbody>
 		<%= form.fields_for :arrival_note_details, wrapper: false do |f| %>
+      <%# if !f.object.marked_for_destruction? && @arrival_note.purchase_order_id %>
 			<% if true %>
       	<tr class="fields">
       		<td>#<%= f.hidden_field :product_id, class: 'product_id' %></td>
