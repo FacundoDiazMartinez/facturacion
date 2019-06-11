@@ -15,6 +15,14 @@ class StocksController < ApplicationController
 	  	end
   	end
 
+  	def destroy
+    	@stock.destroy
+    	respond_to do |format|
+      		format.html { redirect_to stocks_path, notice: 'Eliminado correctamente.' }
+      		format.json { head :no_content }
+    	end
+  	end
+
   	private
 	  	def set_product
 	  		@product = current_user.company.products.find(params[:product_id])

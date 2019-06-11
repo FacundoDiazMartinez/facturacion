@@ -11,7 +11,7 @@
     </thead>
 
     <tbody>
-      <%= form.fields_for :stocks, @product.stocks.order(:depot_id), wrapper: false do |f|%>
+      <%= form.fields_for :stocks, @product.stocks.where(active: true).order(:depot_id), wrapper: false do |f|%>
         <tr class="fields">
             <td><%= f.select :depot_id, options_for_select(current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, f.object.depot_id), {}, {class: 'form-control'} %></td>
             <td><%= f.select :state, Stock::STATES, {}, {class: 'form-control'} %></td>

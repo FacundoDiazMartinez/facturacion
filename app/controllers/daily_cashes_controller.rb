@@ -3,7 +3,7 @@ class DailyCashesController < ApplicationController
   # GET /daily_cashes
   # GET /daily_cashes.json
   def index
-    @daily_cash = current_user.company.daily_cashes.search_by_date(params[:date] || Date.today)
+    @daily_cash = current_user.company.daily_cashes.where(date: Date.today).search_by_flow(params[:flow]).search_by_user(params[:user]).first
     @daily_cash_movements = DailyCash.all_daily_cash_movements(@daily_cash, params[:user], params[:payment_type]).paginate(page: params[:page], per_page: 10)
   end
 

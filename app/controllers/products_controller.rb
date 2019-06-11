@@ -11,7 +11,7 @@ class ProductsController < ApplicationController
   # GET /products/1
   # GET /products/1.json
   def show
-    @stocks = @product.stocks.paginate(page: params[:page], per_page: 5)
+    #@stocks = @product.stocks.where(active: true).paginate(page: params[:page], per_page: 5)
   end
 
   # GET /products/new
@@ -122,7 +122,7 @@ class ProductsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def product_params
-      params.require(:product).permit(:product_id, :code, :name, :supplier_code, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit, :supplier_id, :minimum_stock, :recommended_stock, stocks_attributes: [:id, :state, :quantity, :depot_id, :_destroy])
+      params.require(:product).permit(:product_id, :code, :name, :supplier_code, :product_category_id, :cost_price, :gain_margin, :iva_aliquot, :price, :net_price, :photo, :measurement, :measurement_unit, :supplier_id, :minimum_stock, :recommended_stock, stocks_attributes: [:id, :state, :quantity, :depot_id, :_destroy, :active])
     end
 
     def update_multiple_product_params

@@ -30,11 +30,12 @@ class DailyCash < ApplicationRecord
   #ATRIBUTOS
 
   #FILTROS DE BUSQUEDA
-  	def self.search_by_date date
-  		if date.blank?
-  			date = Date.today
-  		end
-      find_by_date(date)
+  	def self.search_by_flow flow
+  		if !flow.blank?
+  			joins(:daily_cash_movements).where("daily_cash_movement.flow = ?", flow)
+  		else
+        all
+      end
   	end
 
   	def self.search_by_user user
@@ -74,13 +75,13 @@ class DailyCash < ApplicationRecord
     end
 
     def self.all_daily_cash_movements daily_cash, user, payment_type
-      daily_cash_movements = []
-      if not daily_cash.nil?
+      daily_cash_movements_array = []
+      if !daily_cash.nil?
         daily_cash.daily_cash_movements.search_by_user(user).search_by_payment_type(payment_type).order("created_at DESC").each do |dcm|
-          daily_cash_movements << dcm
+          daily_cash_movements_array << dcm
         end
       end
-      return daily_cash_movements
+      return daily_cash_movements_array
     end
 
     def open_flow

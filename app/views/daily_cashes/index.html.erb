@@ -44,11 +44,11 @@
           <!-- BUSCAR POR DISPONIBILIDAD-->
 
           <!-- BUSCAR POR FECHA -->
-          <div class="input-group col">
+          <div class="input-group col" style="display: none;">
             <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+              <div class="input-group-text"><%= icon('fas', 'exchange-alt') %></div>
             </div>
-            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha', onchange: 'remoteSubmit("#search_form")' %>
+            <%= select_tag :flow, options_for_select([["Ingreso", "income"],["Egreso", "expense"], ["Neutro", "neutral"]]), {prompt: 'Buscar por tipo de flujo...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
           <!-- BUSCAR POR FECHA -->
         <% end %>

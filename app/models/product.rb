@@ -96,7 +96,7 @@ class Product < ApplicationRecord
 
   def validate_unique_state
     validate_uniqueness_of_in_memory(
-      stocks, [:state, :depot_id], 'Esta intentando generar estados duplicados para un mismo depósito.')
+      stocks, [:active, :state, :depot_id], 'Esta intentando generar estados duplicados para un mismo depósito.')
   end
 
 	#FILTROS DE BUSQUEDA

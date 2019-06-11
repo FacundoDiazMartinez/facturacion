@@ -7,8 +7,10 @@ class Stock < ApplicationRecord
   after_save :set_stock_to_depot
   after_destroy :reduce_stock_in_depot
 
+  default_scope {where(active: true)}
   validate :check_company_of_depot
-  validates_uniqueness_of :state, scope: [:product_id, :depot_id], message: "No puede generar dos estados iguales para un mismo depósito."
+  
+  validates_uniqueness_of :state, scope: [:active, :product_id, :depot_id], message: "No puede generar dos estados iguales para un mismo depósito."
   #validates_uniqueness_of :state, scope: [:product_id, :depot_id], message: "Esta intentando generar estados duplicados para un mismo depósito."
 
 
@@ -59,7 +61,16 @@ class Stock < ApplicationRecord
     def reduce_stock_in_depot
       if state != "Entregado"
         self.depot.change_stock(-self.quantity)
+        if state == "Disponible"
+          #Si es Disponible, te actualiza el stock
+          self.product.set_available_stock
+        end
       end
+    end
+
+    def destroy
+      update_column(:active, false)
+      run_callbacks :destroy
     end
   #PROCESOS
 

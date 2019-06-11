@@ -60,6 +60,7 @@ class ReceiptsController < ApplicationController
     @receipt.user_id = current_user.id   #Se agregó el 22/5 para que los recibos tengan un usuario y no quede el campo en nil
     respond_to do |format|
       if @receipt.save
+        #Se comenta porque al agregar un pago en el recibo, ya se crea, entonces no hace falta en el create
         # if @receipt.state = "Finalizado"
         #   @receipt.touch_account_movement
         # end

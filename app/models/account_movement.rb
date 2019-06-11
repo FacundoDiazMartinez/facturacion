@@ -261,6 +261,7 @@ class AccountMovement < ApplicationRecord
 
     def self.create_from_receipt receipt
       if receipt.persisted?
+        pp "EEEEEEEEE"
         am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
         am.client_id   = receipt.client_id
         am.receipt_id  = receipt.id
@@ -270,7 +271,8 @@ class AccountMovement < ApplicationRecord
         am.total       = receipt.total.to_f
         am.saldo       = receipt.client.saldo - receipt.total.to_f
         am.active      = receipt.state == "Finalizado"
-        am.save
+        pp "AAAAAAAA"
+        pp am.save
       end
     end
 
