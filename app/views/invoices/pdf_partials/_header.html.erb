@@ -85,7 +85,11 @@
       <td>
         <b>Medios de pago: </b>&nbsp <%= @invoice.all_payments_string %>
       </td>
-      <td></td>
+      <td>
+        <% if !@invoice.associated_invoice.nil? || @invoice.is_credit_note? %>
+          <b> Factura asociada: </b>&nbsp <%= @invoice.full_number %>
+        <% end %>
+      </td>
     </tr>
 
   </table>

@@ -395,15 +395,15 @@ class Invoice < ApplicationRecord
 
     def self.paid_unpaid_invoices client
       client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
-        pp "AMM EESADFASDFASDFASDAFSDF"
+        pp "Invoice.rb - paid_unpaid -398 - acc_mov.each"
         pp am
         am.receipt.receipt_details.each do |rd|
-          pp "1111111"
+          pp "Invoice.rb - paid_unpaid -401 - recp.det.each"
           if am.amount_available > 0
-            pp "222222"
+            pp "Invoice.rb - paid_unpaid -401 - am > 0"
             invoice = rd.invoice
             unless invoice.is_credit_note?
-              pp "3333"
+              pp "Invoice.rb - paid_unpaid -406 - is_credit_note?"
 							if invoice.real_total_left.to_f > 0
                 pp "44444"
 								pp pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)

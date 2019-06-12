@@ -84,6 +84,7 @@ class ReceiptsController < ApplicationController
     respond_to do |format|
       if @receipt.update(receipt_params)
         if params[:button] == "confirm"
+          pp "Rec contr - 87"
           pp @receipt
           @receipt.reload.touch_account_movement
         end

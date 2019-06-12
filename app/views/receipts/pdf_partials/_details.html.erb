@@ -35,7 +35,7 @@
               <% end %>
               <% if @receipt.account_movement.amount_available > 0 %>
               <br>
-                Saldo a favor futuras compras: $ <%= @receipt.saved_amount_available %>
+                Saldo a favor futuras compras: $ <%= @receipt.saved_amount_available.round(2) %>
               <% end %>
             </td>
             <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice_payment.total)%></td>
