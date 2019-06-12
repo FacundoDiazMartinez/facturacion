@@ -27,13 +27,13 @@
 					</td>
 		    	<td><%= am.observation %></td>
 		    	<% if !am.invoice_id.nil? %>
-		    		<% if (am.invoice.real_total - am.invoice.total_pay) > 0 %>
-		    			<td class="text-danger text-bold"><%= "$ #{am.total}" unless !am.debe %></td>
+		    		<% if (am.invoice.real_total.round(2) - am.invoice.total_pay.round(2)) > 0 %>
+		    			<td class="text-danger text-bold"><%= "$ #{am.total.round(2)}" unless !am.debe %></td>
 		    		<% else %>
-		    			<td><%= "$ #{am.total}" unless !am.debe %></td>
+		    			<td><%= "$ #{am.total.round(2)}" unless !am.debe %></td>
 		    		<% end %>
 		    	<% else %>
-		    		<td class="text-bold"><%= "$ #{am.total}" unless !am.debe %></td>
+		    		<td class="text-bold"><%= "$ #{am.total.round(2)}" unless !am.debe %></td>
 		    	<% end %>
 		    	<td class="text-bold"><%= "$ #{am.total}" unless !am.haber %></td>
 		    	<% if am == @ultimo %>
