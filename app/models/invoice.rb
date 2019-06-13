@@ -320,6 +320,22 @@ class Invoice < ApplicationRecord
       end
     end
     handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| invoice.cbte_fch.to_date + 30.days }
+
+		def get_product_quantity_not_delivered product_id
+			product = Product.unscoped.find(product_id)
+			required_quantity = 0
+			self.invoice_details.where(product_id: product.id).each do |id|
+				required_quantity += id.quantity
+			end
+			delivered_quantity = 0
+			self.delivery_notes.where(state: "Finalizado").each do |dn|
+				dn.delivery_note_details.where(product_id: product.id).each do |dnd|
+					delivered_quantity += dnd.quantity
+				end
+			end
+			not_delivered = required_quantity.to_f - delivered_quantity.to_f
+			return not_delivered
+		end
 	#FUNCIONES
 
   #PROCESOS

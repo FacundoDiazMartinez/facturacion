@@ -85,7 +85,7 @@ class PurchaseOrder < ApplicationRecord
 
     def type_of_model
       "purchase_order"
-    end 
+    end
   #ATRIBUTOS
 
   #FILTROS DE BUSQUEDA

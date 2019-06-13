@@ -130,7 +130,7 @@ class InvoiceDetail < ApplicationRecord
     def impact_stock_cn
       if self.product.tipo == "Producto"
         # if quantity_change.nil? || new_record?
-        self.product.impact_stock_by_cred_note(quantity: self.quantity, depot_id: depot_id)
+        self.product.impact_stock_by_cred_note(quantity: self.quantity, depot_id: depot_id, associated_invoice: self.invoice.associated_invoice)
         # else
         #   dif = quantity_change.first.to_f - quantity_change.second.to_f
         #   self.product.rollback_stock_by_cred_note(quantity: dif, depot_id: depot_id)

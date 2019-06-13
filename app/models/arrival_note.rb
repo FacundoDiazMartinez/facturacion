@@ -26,7 +26,7 @@ class ArrivalNote < ApplicationRecord
   validates_presence_of :number, message: "No puede exitir un remito sin numeración."
   validates_presence_of :state, message: "El remito debe poseer un estado."
   validates_inclusion_of :state, in: STATES, message: "El estado es inválido."
-  validates_uniqueness_of :number, scope: :company_id, message: "Ya existe un remito con ese número."
+  validates_uniqueness_of :number, scope: [:company_id, :active], message: "Ya existe un remito con ese número."
 
   before_validation :check_purchase_order_state, if: Proc.new{|po| po.state_changed? && po.state == "Anulado"}
   before_save :set_required_quantities

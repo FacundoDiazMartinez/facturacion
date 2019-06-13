@@ -42,13 +42,20 @@ class ArrivalNotesController < ApplicationController
   def create
     @arrival_note = current_user.company.arrival_notes.new(arrival_note_params)
     @arrival_note.user_id = current_user.id
-
     respond_to do |format|
       if @arrival_note.save
-        format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: 'El Remito fue creado correctamente.' }
+        if params["purchase_order_state"] == "Finalizada"
+          if @arrival_note.purchase_order.update(state: "Finalizada")
+            message = 'Remito y su respectiva Orden de Compra fueron cerrados correctamente.'
+          else
+            message = 'El Remito fue cerrado correctamente, pero hubo un problema al cerrar la Orden de Compra'
+          end
+        end
+        format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: message }
         format.json { render :show, status: :created, location: @arrival_note }
       else
         @arrival_note.purchase_order_id = nil
+        pp @arrival_note.errors
         format.html { render :new }
         format.json { render json: @arrival_note.errors, status: :unprocessable_entity }
       end
@@ -60,14 +67,14 @@ class ArrivalNotesController < ApplicationController
     purchase_order_attributes = arrival_note_params_array
     respond_to do |format|
       if @arrival_note.update(arrival_note_params)
-        if purchase_order_attributes["state"] == "Finalizada"
+        if params["purchase_order_state"] == "Finalizada"
           if @arrival_note.purchase_order.update(state: "Finalizada")
             message = 'Remito y su respectiva Orden de Compra fueron cerrados correctamente.'
           else
             message = 'El Remito fue actualizado correctamente, pero hubo un problema al cerrar la Orden de Compra'
           end
         end
-        format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: 'El Remito fue actualizado correctamente.' }
+        format.html { redirect_to edit_arrival_note_path(@arrival_note.id), notice: message }
       else
         @arrival_note.state = @arrival_note.state_was
         format.html { render :edit }

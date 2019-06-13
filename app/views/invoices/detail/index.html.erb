@@ -14,7 +14,7 @@
 	  			<%= button_tag "Precio", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Precio")' %>
           <%= button_tag "Bonificado (%)", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Bonificado (%)")' %>
 	  			<%= button_tag "Comisionantes", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Comisionantes")' %>
-	  			<%= button_tag "I.V.A. (%)", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("I.V.A. (%)")' %>
+	  			<%= button_tag "I.V.A.", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("I.V.A.")' %>
 	  			<%= button_tag "Subtotal", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Subtotal")' %>
 	  		</div>
 	  	</div>
@@ -35,7 +35,7 @@
 	        <% if @invoice.editable? %>
           	<th scope="col" class="only-desktop">Comisionantes</th>
 	        <% end %>
-				<th scope="col">I.V.A. (%)</th>
+				<th scope="col">I.V.A.</th>
 				<th scope="col" style="width:9%;">Subtotal</th>
 				<th scope="col"></th>
 			</tr>
