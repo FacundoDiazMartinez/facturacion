@@ -212,8 +212,10 @@ class Receipt < ApplicationRecord
     end
 
     def save_amount_available
+      #Esto se hace para no perder el valor del amount_available y mantenerlo fijo cada vez q se consulte el acc_mov
       save_amount_available = self.account_movement.amount_available
       update_column(:saved_amount_available, save_amount_available)
+      #Fin
     end
   #ATRIBUTOS
 
