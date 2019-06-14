@@ -426,6 +426,7 @@ class Invoice < ApplicationRecord
 								pay.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
 								if pay.save
 								  am.update_column(:amount_available, am.amount_available - pay.total)
+                  rd.update_column(:total, pay.total)
 							  else
                   pp pay.errors
                 end

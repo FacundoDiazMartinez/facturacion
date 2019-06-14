@@ -33,10 +33,6 @@
               <% else %>
                 Cancelación <%= rd.invoice.name_with_comp %>
               <% end %>
-              <% if @receipt.account_movement.amount_available > 0 %>
-              <br>
-                Saldo a favor futuras compras: $ <%= @receipt.saved_amount_available.round(2) %>
-              <% end %>
             </td>
             <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice_payment.total)%></td>
           </tr>
@@ -45,11 +41,21 @@
               <td>
                 Vinculación <%= n.name_with_comp %>
               </td>
-              <td class="text_right">$ <%=  sprintf('%.2f',n.total)%></td>
+              <% if n.is_credit_note? %>
+                <td class="text_right">$ 0.0</td>
+              <% else %>
+                <td class="text_right">$ <%=  sprintf('%.2f',n.total)%></td>
+              <% end %>
             </tr>
           <% end -%>
         <% end %>
-
+        <tr>
+          <td>
+            <% if @receipt.account_movement.amount_available > 0 %>
+                Saldo a favor futuras compras: $ <%= @receipt.saved_amount_available.round(2) %>
+            <% end %>
+          </td>
+        </tr>
 
       </table>
     <% end %>

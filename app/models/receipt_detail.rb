@@ -21,6 +21,11 @@ class ReceiptDetail < ApplicationRecord
     end
   end
 
+  def save_amount_available
+    saved_total = self.invoice.total
+    self.invoice.update_column(:saved_total_for_receipt_pdf, saved_total)
+  end
+
   def associated_invoices_total
     if invoice.nil?
       return "$ 0"
