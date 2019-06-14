@@ -7,7 +7,7 @@
 $("#idetails").html("<%= j render template: '/invoices/detail/index.html.erb', locals:{form: @builder} %>");
 $("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb', locals:{form: @builder} %>");
 
-debit_note_selected();
+if_debit_note_selected();
 
 $.get("/invoices/" + $("#invoice_associated_invoice").val() + "/get_associated_invoice_details", null, null,"script")
   .done(function(data){
@@ -25,7 +25,7 @@ $.get("/invoices/" + $("#invoice_associated_invoice").val() + "/get_associated_i
         tr.find('input.company_id').val(detail.product_attributes.company_id);
 
         tr.find('input.quantity').val(detail.quantity);
-        tr.find('input.depot_id').val(detail.depot_id);
+        tr.find('select.depot_id').val(detail.depot_id);
         tr.find('select.measurement_unit').val(detail.measurement_unit);
         tr.find('input.price').val(detail.price_per_unit);
         tr.find('input.bonus_percentage').val(detail.bonus_percentage);

@@ -360,7 +360,7 @@ $(document).on('nested:fieldAdded:invoice_details', function(event){
 	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 
 	toogleConceptInTable();
-	debit_note_selected();
+	if_debit_note_selected();
 });
 
 $(document).on('nested:fieldAdded:tributes', function(event){
@@ -398,7 +398,7 @@ $(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes
 });
 
 
-function debit_note_selected(){
+function if_debit_note_selected(){
 	cbte_tipo = $("#invoice_cbte_tipo");
 	if (COD_ND.indexOf(cbte_tipo.val()) != -1) {
 	  concept_codes = $(".code");
@@ -407,6 +407,7 @@ function debit_note_selected(){
 	      $(this).val("-");
 	      $(this).attr("readonly",true);
 	      $(this).closest("tr.fields").find(".tipo").val("Servicio");
+				$(this).closest("tr.fields").find(".depot_id").attr("disabled", true);
 	    }
 	  })
 	}
