@@ -70,7 +70,7 @@
     	      	Facturas asociadas
     	    </div>
         </h3>
-        <div class="p-2 col-12 col-sm-6 col-md-3">
+        <div class="p-2 col-12 col-sm-6 col-md-5">
           <%= label_tag :comp_number, "Vincular comprobante" %>
           <%= autocomplete_field_tag :comp_number, nil, autocomplete_invoice_and_debit_note_receipts_path, :fields => {:client_id => '#receipt_client_id'}, class: 'receipt_associated-invoice-autocomplete_field form-control form-control-sm comp_number' , disabled: !@receipt.editable?, placeholder: "Ingrese nº de comprobante" %>
         </div>
