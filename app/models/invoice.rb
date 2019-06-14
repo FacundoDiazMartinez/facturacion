@@ -452,7 +452,7 @@ class Invoice < ApplicationRecord
 
 		def real_total_including_debit_notes
       if is_invoice?
-        self.total.round(2) - self.credit_notes.sum(:total).round(2) + self.credit_notes.sum(:total_pay).round(2) + self.debit_notes.sum(:total).round(2) - self.debit_notes.sum(:total_pay)
+        self.total.round(2) - self.credit_notes.sum(:total).round(2) + self.credit_notes.sum(:total_pay).round(2) + self.debit_notes.sum(:total).round(2) - self.debit_notes.sum(:total_pay).round(2)
       else
         self.total.round(2)
       end
