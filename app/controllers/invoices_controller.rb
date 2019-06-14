@@ -170,6 +170,11 @@ class InvoicesController < ApplicationController
     end
   end
 
+  def get_total_payed_and_left
+    invoices = Invoice.find(params[:invoices_ids])
+    render :json => invoices.map{ |invoice| {id: invoice.id, total_payed: invoice.total_pay, total_left: invoice.total_left} } #{total_payed: @invoice.total_pay, total_left: @invoice.total_left}
+  end
+
   def autocomplete_product_code
     term = params[:term]
     products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all

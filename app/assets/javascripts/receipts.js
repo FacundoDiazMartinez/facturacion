@@ -6,11 +6,12 @@ $(document).on('ready',function(){
     $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
     $("#editReceiptClient").tooltip();
   }
+  calculatePagadoAndFaltantePerInvoice();
 })
 
 $(document).on('pjax:complete', function() {
   calculateTotalPayed();
-
+  calculatePagadoAndFaltantePerInvoice();
 })
 
 $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', function(event, data){
@@ -45,7 +46,7 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
         calculateTotalPayed();
       });
     $(".receipt_associated-invoice-autocomplete_field").val("");
-
+    calculatePagadoAndFaltantePerInvoice();
   }
 });
 
@@ -72,13 +73,64 @@ function calculateTotalLeft(){
   return left;
 }
 
+function calculatePagadoAndFaltantePerInvoice(){
+  var total_payed = 0;
+  $('.pay').each(function(){
+    // suma los montos de todos los pagos
+    var monto_pagado = $(this).text().replace("$ ", "");
+    if (monto_pagado) {
+      // entra si es un número
+      total_payed += parseFloat(monto_pagado);
+    }
+  });
+  var invoices_array = []
+  $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
+    invoices_array.push($(current_field).find('.invoice_id').val())
+  });
+  console.log(`ID de facturas ${invoices_array}`)
+
+  $.get(`/invoices/get_total_payed_and_left`, { invoices_ids: invoices_array },null,"json")
+    .done(function(data){
+      console.table(data)
+      $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
+        console.log(`Suma de pagos en inicio: ${total_payed}`)
+        // asigna los valores reales de la factura a las variables
+        var current_invoice_total_payed = parseFloat(data[index]['total_payed']);
+        var current_invoice_total_left = parseFloat(data[index]['total_left']);
+        //
+        if (total_payed <= current_invoice_total_left) {
+            // si la suma de los pagos es menor o igual al faltante de la factura actual
+            // suma el monto pagado y resta el monto faltante
+            current_invoice_total_payed += total_payed;
+            current_invoice_total_left -= total_payed;
+            console.log(`Suma de pagos es menor o igual al monto faltante de la factura actual, ${current_invoice_total_payed}, ${current_invoice_total_left}`)
+            total_payed = 0;
+            console.log(`TOTAL PAYED ${total_payed}`)
+          } else {
+            // si la suma de los pagos es mayor al monto faltante de la factura actual
+            //
+            current_invoice_total_payed = parseFloat($(current_field).find(".invoice_total").val().replace("$", "")); // cambié el valor de text() por val()
+            total_payed -= current_invoice_total_payed;
+            console.log(`TOTAL PAYED ${total_payed}`)
+            current_invoice_total_left = 0;
+            console.log(`Suma de pagos es mayor al monto faltante de la factura actual, ${current_invoice_total_payed}, ${current_invoice_total_left}`)
+          }
+          console.log(`Suma de pagos: ${current_invoice_total_payed}, Faltante: ${current_invoice_total_left}`)
+          $(current_field).find(".invoice_total_pay").val("$ " + current_invoice_total_payed);
+          $(current_field).find(".invoice_total_left").val("$ " + current_invoice_total_left);
+          console.log(`Suma pagos: ${total_payed}`)
+      });
+    });
+
+}
+
 function calculateTotalPayed(){
   total_left = calculateTotalLeft();
   total_payed = 0;
   if ($(".pay").length > 0) {
     $('.pay').each(function(){
       var pag = $(this).text().replace("$ ", "");
-        total_payed += parseFloat(pag);
+      total_payed += parseFloat(pag);
       $('#total_pagado').text('Total pagado: $ ' + total_payed.toFixed(2));
     });
   }
