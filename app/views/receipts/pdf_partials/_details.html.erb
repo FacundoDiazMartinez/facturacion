@@ -25,29 +25,53 @@
           <th></th>
         </tr>
 
-        <% @receipt.receipt_details.only_invoices.each do |rd| %>
-          <tr class="bg-white">
-            <td>
-              <% if rd.invoice.real_total_left > 0 %>
-                Pago parcial <%= rd.invoice.name_with_comp %>
-              <% else %>
-                Cancelación <%= rd.invoice.name_with_comp %>
+        <% @receipt.receipt_details.each do |rd| %>
+          <% if !rd.total.nil? %>
+            <% if rd.invoice.is_invoice? %>
+              <tr class="bg-white">
+                <td>
+                  <% if rd.invoice.real_total_left > 0 %>
+                    Pago parcial <%= rd.invoice.name_with_comp %>
+                  <% else %>
+                    Cancelación <%= rd.invoice.name_with_comp %>
+                  <% end %>
+                </td>
+                <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+              </tr>
+            <% else %>
+            <% band = 0 %>
+              <% @receipt.receipt_details.each do |rd2| %>
+                <% if (rd.invoice.associated_invoice == rd2.invoice_id) %>
+                  <% band = 1 %>
+                  <% pp band %>
+                <% end %>
               <% end %>
-            </td>
-            <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice_payment.total)%></td>
-          </tr>
-          <% rd.invoice.notes.each do |n| %>
-            <tr class="bg-white">
-              <td>
-                Vinculación <%= n.name_with_comp %>
-              </td>
-              <% if n.is_credit_note? %>
-                <td class="text_right">$ 0.0</td>
-              <% else %>
-                <td class="text_right">$ <%=  sprintf('%.2f',n.total)%></td>
-              <% end %>
-            </tr>
-          <% end -%>
+                <% if band == 1 %>
+                  <tr class="bg-white">
+                    <td>
+                      <% if rd.invoice.real_total_left > 0 %>
+                        Pago parcial <%= rd.invoice.name_with_comp %> vinculada
+                      <% else %>
+                        Cancelación <%= rd.invoice.name_with_comp %> vinculada
+                      <% end %>
+                    </td>
+                    <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+                  </tr>
+                <% else %>
+                  <tr class="bg-white">
+                    <td>
+                      <% if rd.invoice.real_total_left > 0 %>
+                        Pago parcial <%= rd.invoice.name_with_comp %>
+                      <% else %>
+                        Cancelación <%= rd.invoice.name_with_comp %>
+                      <% end %>
+                    </td>
+                    <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+                  </tr>
+                <% end %>
+            <% end %>
+          <% end %>
+          
         <% end %>
         <tr>
           <td>

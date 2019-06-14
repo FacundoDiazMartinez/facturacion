@@ -113,21 +113,21 @@ class ReceiptsController < ApplicationController
   def autocomplete_invoice
     @client = Client.find(params[:client_id])
     term = params[:term]
-    invoices = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND total > total_pay", "%#{term}%").order(:comp_number).all
+    invoices = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND total > total_pay", "%#{term}%").order(:comp_number)
     render :json => invoices.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_debt, comp_number: invoice.comp_number, associated_invoices_total: invoice.confirmed_notes.sum(:total), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 
   def autocomplete_credit_note
     @client = Client.find(params[:client_id])
     term = params[:term]
-    credit_notes = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND total > total_pay AND cbte_tipo IN ('03', '08', '13')", "%#{term}%").order(:comp_number).all
+    credit_notes = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND total > total_pay AND cbte_tipo IN ('03', '08', '13')", "%#{term}%").order(:comp_number)
     render :json => credit_notes.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_debt, comp_number: invoice.comp_number, associated_invoices_total: invoice.confirmed_notes.sum(:total), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 
   def autocomplete_invoice_and_debit_note
     @client = Client.find(params[:client_id])
     term = params[:term]
-    invoices_and_dn = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND total > total_pay AND cbte_tipo IN ('01', '06', '11','02','07','12')", "%#{term}%").order(:comp_number).all
+    invoices_and_dn = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND cbte_tipo IN ('01', '06', '11','02','07','12')", "%#{term}%").order(:comp_number).map{|rtl| rtl if rtl.real_total_left > 0}.compact
     render :json => invoices_and_dn.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_debt, comp_number: invoice.comp_number, associated_invoices_total: invoice.confirmed_notes.sum(:total).round(2), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 
