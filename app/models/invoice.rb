@@ -450,6 +450,18 @@ class Invoice < ApplicationRecord
       (real_total - total_pay).round(2)
     end
 
+		def real_total_including_debit_notes
+      if is_invoice?
+        self.total.round(2) - self.credit_notes.sum(:total).round(2) + self.credit_notes.sum(:total_pay).round(2) + self.debit_notes.sum(:total).round(2) - self.debit_notes.sum(:total_pay)
+      else
+        self.total.round(2)
+      end
+    end
+
+		def real_total_left_including_debit_notes
+      (real_total_including_debit_notes - total_pay).round(2)
+    end
+
     def paid_invoice_from_client_debt
       result = false
       account_movements_records  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")

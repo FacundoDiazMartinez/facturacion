@@ -90,9 +90,10 @@ function calculatePagadoAndFaltantePerInvoice(){
   console.log(`ID de facturas ${invoices_array}`)
 
   $.get(`/invoices/get_total_payed_and_left`, { invoices_ids: invoices_array },null,"json")
-    .done(function(data){
-      console.table(data)
-      $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
+  .done(function(data){
+    console.table(data)
+    $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
+      if (total_payed > 0) { // >>> Para que no siga recorriendo filas de facturas si no hay mas pagos para distribuir
         console.log(`Suma de pagos en inicio: ${total_payed}`)
         // asigna los valores reales de la factura a las variables
         var current_invoice_total_payed = parseFloat(data[index]['total_payed']);
@@ -110,18 +111,20 @@ function calculatePagadoAndFaltantePerInvoice(){
             // si la suma de los pagos es mayor al monto faltante de la factura actual
             //
             current_invoice_total_payed = parseFloat($(current_field).find(".invoice_total").val().replace("$", "")); // cambié el valor de text() por val()
-            total_payed -= current_invoice_total_payed;
+            total_payed -= current_invoice_total_left; // <<<< Aqui estaba la vble current_invoice_total_payed *************************************************
             console.log(`TOTAL PAYED ${total_payed}`)
             current_invoice_total_left = 0;
             console.log(`Suma de pagos es mayor al monto faltante de la factura actual, ${current_invoice_total_payed}, ${current_invoice_total_left}`)
           }
           console.log(`Suma de pagos: ${current_invoice_total_payed}, Faltante: ${current_invoice_total_left}`)
-          $(current_field).find(".invoice_total_pay").val("$ " + current_invoice_total_payed);
-          $(current_field).find(".invoice_total_left").val("$ " + current_invoice_total_left);
+          $(current_field).find(".invoice_total_pay").val("$ " + current_invoice_total_payed.toFixed(2));
+          $(current_field).find(".invoice_total_left").val("$ " + current_invoice_total_left.toFixed(2));
           console.log(`Suma pagos: ${total_payed}`)
-      });
+      } else {
+        return false;
+      }
     });
-
+  });
 }
 
 function calculateTotalPayed(){
@@ -142,6 +145,11 @@ function calculateTotalPayed(){
     $('#total_faltante').hide();
   }
 }
+
+$(document).on('nested:fieldRemoved:receipt_details', function(event){
+  calculatePagadoAndFaltantePerInvoice();
+});
+
 
 $(document).on('nested:fieldRemoved', function(event){
   total = 0;

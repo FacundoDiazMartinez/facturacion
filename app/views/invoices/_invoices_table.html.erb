@@ -64,7 +64,7 @@
             <td class="only-desktop"><%= invoice_state(invoice.state) %></td>
             <td>
               $ <%= invoice.total_left%>
-              <% if invoice.total_left.to_f == 0 %>
+              <% if invoice.real_total_left_including_debit_notes.to_f <= 0 %>
                 <span class="text-success">
                   <%= icon("fas","check-circle") %>
                 </span>
