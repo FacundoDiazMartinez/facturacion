@@ -2,6 +2,7 @@ var total_venta = parseFloat(0);
 var rest = parseFloat(0);
 var index = {};
 var total_left = parseFloat(0);
+var COD_ND = ["02", "07", "12"];
 
 $( document ).ready(function() {
 	autocomplete_field();
@@ -399,7 +400,6 @@ $(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes
 
 function debit_note_selected(){
 	cbte_tipo = $("#invoice_cbte_tipo");
-	var COD_ND = ["02", "07", "12"];
 	if (COD_ND.indexOf(cbte_tipo.val()) != -1) {
 	  concept_codes = $(".code");
 	  concept_codes.each(function(){
@@ -451,8 +451,10 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 });
 
 $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){
-	form = $(this).parents('form:first');
-	$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");  // En el set_associated_invoice.js se cargan los detalles del associated invoice
+	if (COD_ND.indexOf($("#invoice_cbte_tipo").find('option:selected').val()) == -1) {
+		form = $(this).parents('form:first');
+		$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");  // En el set_associated_invoice.js se cargan los detalles del associated invoice
+	}
 });
 
 function changeView(tipo){
