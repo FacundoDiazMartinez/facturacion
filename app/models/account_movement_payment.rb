@@ -3,9 +3,10 @@ class AccountMovementPayment < Payment
 	belongs_to :invoice, optional: true
 	#belongs_to :receipt, optional: true
 
-	before_validation :set_flow, :set_total_to_receipt
+	before_validation :set_flow #, :set_total_to_receipt
 	after_destroy :set_total_pay_to_invoice
 	after_destroy :update_total_to_receipt
+	after_save :update_total_to_receipt
 	before_save :check_company_id
 	before_save :check_client_id
 	before_validation :check_total_from_account_movement
@@ -27,15 +28,16 @@ class AccountMovementPayment < Payment
 			#self.total = self.account_movement.total
 		end
 
-		def set_total_to_receipt
-			if active && !marked_for_destruction?
-				self.account_movement.receipt.total += total - total_was
-			end
-		end
+		# def set_total_to_receipt
+		# 	if active && !marked_for_destruction?
+		# 		self.account_movement.receipt.total += total - total_was
+		# 	end
+		# end
 
 		def update_total_to_receipt
+			pp "//////////////////"
 			receipt = self.account_movement.receipt
-			receipt.update_column(:total, receipt.total - total)
+			receipt.update_column(:total, receipt.account_movement.account_movement_payments.sum(:total))
 		end
 
 		def check_company_id
@@ -66,7 +68,7 @@ class AccountMovementPayment < Payment
 		      	super()
 		    else
 			    update_column(:active, false)
-			    run_callbacks :destroy
+			    update_total_to_receipt
 					set_total_pay_to_invoice
 			    freeze
 		    end
