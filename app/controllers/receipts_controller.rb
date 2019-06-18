@@ -17,7 +17,7 @@ class ReceiptsController < ApplicationController
         render pdf: "#{@receipt.id}",
         layout: 'pdf.html',
         template: 'receipts/show',
-        zoom: 3.4,
+        #zoom: 3.4,
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"
@@ -83,16 +83,13 @@ class ReceiptsController < ApplicationController
     end
     respond_to do |format|
       if @receipt.update(receipt_params)
-        if params[:button] == "confirm"
-          pp "Rec contr - 87"
-          pp @receipt
-          @receipt.reload.touch_account_movement
-        end
+        @receipt.reload.touch_account_movement if (@receipt.state == "Finalizado")
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
         pp @receipt.errors
         @client = @receipt.client
+        @receipt.reload
         build_account_movement
         format.html { render :edit }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
@@ -160,7 +157,7 @@ class ReceiptsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def receipt_params
-      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :state, :saved_amount_available,
+      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :saved_amount_available,
        receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
           account_movement_attributes: [:id, :total, :debe, :haber, :active,
           account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
