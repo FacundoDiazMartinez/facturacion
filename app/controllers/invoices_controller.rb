@@ -172,7 +172,8 @@ class InvoicesController < ApplicationController
 
   def get_total_payed_and_left
     invoices = Invoice.find(params[:invoices_ids])
-    render :json => invoices.map{ |invoice| {id: invoice.id, total_payed: invoice.total_pay, total_left: invoice.real_total_left } } #{total_payed: @invoice.total_pay, total_left: @invoice.total_left}
+    #render :json => invoices.map{ |invoice| {id: invoice.id, total_payed: invoice.total_pay, total_left: invoice.real_total_left } } #{total_payed: @invoice.total_pay, total_left: @invoice.total_left}
+    render :json => invoices.map{ |invoice| {id: invoice.id, total_payed: invoice.total_pay, total_left: (invoice.is_credit_note? ? 0 : invoice.real_total_left)} } #{total_payed: @invoice.total_pay, total_left: @invoice.total_left}
   end
 
   def autocomplete_product_code

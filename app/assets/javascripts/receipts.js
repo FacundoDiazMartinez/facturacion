@@ -44,9 +44,10 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
         $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
         $("#editReceiptClient").tooltip();
         calculateTotalPayed();
+        $(".receipt_associated-invoice-autocomplete_field").val("");
+        calculatePagadoAndFaltantePerInvoice();
       });
-    $(".receipt_associated-invoice-autocomplete_field").val("");
-    calculatePagadoAndFaltantePerInvoice();
+
   }
 });
 
@@ -96,7 +97,8 @@ function calculatePagadoAndFaltantePerInvoice(){
         var current_invoice_total_payed = parseFloat(data[index]['total_payed']);
         var current_invoice_total_left = parseFloat(data[index]['total_left']);
         //
-        if (total_payed <= current_invoice_total_left) {
+        if (current_invoice_total_left > 0) {
+          if (total_payed <= current_invoice_total_left) {
             // si la suma de los pagos es menor o igual al faltante de la factura actual
             // suma el monto pagado y resta el monto faltante
             current_invoice_total_payed += total_payed;
@@ -111,6 +113,7 @@ function calculatePagadoAndFaltantePerInvoice(){
           }
           $(current_field).find(".invoice_total_pay").val("$ " + current_invoice_total_payed.toFixed(2));
           $(current_field).find(".invoice_total_left").val("$ " + current_invoice_total_left.toFixed(2));
+        }
       } else {
         return false;
       }
@@ -122,7 +125,7 @@ function calculateTotalPayed(){
   total_left = calculateTotalLeft();
   total_payed = 0;
   if ($(".pay").length > 0) {
-    $('.pay').each(function(){
+    $('.pay').filter(":visible").each(function(){
       var pag = $(this).text().replace("$ ", "");
       total_payed += parseFloat(pag);
       $('#total_pagado').text('Total pagado: $ ' + total_payed.toFixed(2));
