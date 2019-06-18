@@ -91,6 +91,7 @@ function calculatePagadoAndFaltantePerInvoice(){
 
   $.get(`/invoices/get_total_payed_and_left`, { invoices_ids: invoices_array },null,"json")
   .done(function(data){
+    console.table(data)
     $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
       if (total_payed > 0) { // >>> Para que no siga recorriendo filas de facturas si no hay mas pagos para distribuir
         // asigna los valores reales de la factura a las variables

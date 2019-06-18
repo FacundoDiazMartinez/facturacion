@@ -69,6 +69,7 @@ class Receipt < ApplicationRecord
 
     def check_total
       if new_record?
+        pp total 
         errors.add(:total, "No se puede crear un recibo por un monto nulo.") unless total > 0.0
       else
         destroy unless total >= 0.0 || self.account_movement_payments.sum(:total) >= 0
