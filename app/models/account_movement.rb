@@ -245,6 +245,10 @@ class AccountMovement < ApplicationRecord
       end
     end
 
+    def set_amount_available
+      self.update_columns(amount_available: self.account_movement_payments.where(generated_by_system: true).sum(:total))
+    end
+
     def check_receipt_attributes
       self.receipt.client_id  = self.client_id
       self.receipt.user_id    = self.user_id

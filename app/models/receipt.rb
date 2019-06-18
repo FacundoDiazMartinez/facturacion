@@ -10,26 +10,24 @@ class Receipt < ApplicationRecord
   has_many :receipt_details, dependent: :destroy
   has_many :invoices, through: :receipt_details
 
-  # has_many :invoice_details, through: :invoices
-
-
-  before_validation :validate_receipt_detail
-  before_validation :set_number, on: :create
-  before_validation :check_total
-  after_save :save_amount_available
-  #after_update :touch_account_movement #if Proc.new{ |r| r.state == "Finalizado" }   Ahora se ejecuta desde el controlador (update)
-
-  validates_uniqueness_of :number, scope: [:company, :active], message: "No se puede repetir el numero de recibo."
-
-  default_scope {where(active: true)}
-  scope :no_devolution, -> {where.not(cbte_tipo: "99")}
-
   accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
-  validate :uniqueness_of_invoice_id
+  before_validation :validate_receipt_detail
+  before_validation :set_number, on: :create
+  before_validation :set_total ## establece el total del recibo a partir de los pagos
 
+  STATES = ["Pendiente", "Finalizado"]
 
+  validates_uniqueness_of :number, scope: [:company, :active], message: "No se puede repetir el número de recibo."
+  validates_inclusion_of  :state, in: STATES
+  validate                :uniqueness_of_invoice_id
+  validate                :at_least_one_active_payment # valida que exista al menos un pago para recibos confirmados
+
+  after_save :save_amount_available
+
+  default_scope {where(active: true)}
+  scope :no_devolution, -> {where.not(cbte_tipo: "99")}
 
   CBTE_TIPO = {
     "04"=>"Recibo A",
@@ -39,9 +37,6 @@ class Receipt < ApplicationRecord
     "00"=>"Recibo X",
     "99"=>"Devolución"
   }
-
-  STATES = ["Pendiente", "Finalizado"]
-
 
   #FILTROS DE BUSQUEDA
     def self.find_by_period from, to
@@ -63,18 +58,26 @@ class Receipt < ApplicationRecord
 
   #VALIDACIONES
     def uniqueness_of_invoice_id
-      invoice_ids = receipt_details.map{|detail| detail.invoice_id unless detail.marked_for_destruction?}
+      invoice_ids = receipt_details.map{ |detail| detail.invoice_id unless detail.marked_for_destruction? }
       errors.add(:base, "Esta intentando vincular dos o más veces los mismos comprobantes, por favor revise.") unless invoice_ids.uniq.length == invoice_ids.length
     end
 
-    def check_total
-      if new_record?
-        errors.add(:total, "No se puede crear un recibo por un monto nulo.") unless total > 0.0
-      else
-        destroy unless total >= 0.0 || self.account_movement_payments.sum(:total) >= 0
+    def payments_length_valid?
+      account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
+    end
+
+    def at_least_one_active_payment
+      if self.state == "Finalizado"
+        errors.add("Pagos", "Debe registrar al menos un pago.") unless payments_length_valid?
       end
     end
 
+    ## calcula la suma de los pagos del recibo después de guardar
+    def set_total
+      self.total  = self.account_movement.account_movement_payments.where(generated_by_system: false).sum(:total)
+    end
+
+    ## valida que la factura asociada pertenece al cliente
     def validate_receipt_detail
       receipt_details.each{|rd| rd.invoices_clients_validation}
     end
@@ -213,8 +216,13 @@ class Receipt < ApplicationRecord
 
     def save_amount_available
       #Esto se hace para no perder el valor del amount_available y mantenerlo fijo cada vez q se consulte el acc_mov
-      save_amount_available = self.account_movement.amount_available
-      update_column(:saved_amount_available, save_amount_available)
+      if self.account_movement
+        pp "ACAAAAAA"
+        save_amount_available = self.account_movement.amount_available
+        update_column(:saved_amount_available, save_amount_available)
+      else
+        update_column(:saved_amount_available, 0.0)
+      end
       #Fin
     end
   #ATRIBUTOS

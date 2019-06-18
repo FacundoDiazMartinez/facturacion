@@ -22,6 +22,7 @@ class Payment < ApplicationRecord
   after_update :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
 
   default_scope { where(active: true) }
+  
   accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
   accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
