@@ -63,12 +63,13 @@ class Receipt < ApplicationRecord
     end
 
     def payments_length_valid?
+      pp "ACAAAAA"
       account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
     end
 
     def at_least_one_active_payment
-      if self.state == "Finalizado"
-        errors.add("Pagos", "Debe registrar al menos un pago.") unless payments_length_valid?
+      if self.state == "Finalizado" && !payments_length_valid?
+        errors.add("Pagos", "Debe registrar al menos un pago.")
       end
     end
 
