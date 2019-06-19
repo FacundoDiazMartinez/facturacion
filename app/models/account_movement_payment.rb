@@ -4,6 +4,7 @@ class AccountMovementPayment < Payment
 	belongs_to :invoice, optional: true
 
 	before_validation :set_flow
+	before_validation :check_receipt_state
 
 	before_save 			:check_company_id
 	before_save 			:check_client_id
@@ -52,5 +53,11 @@ class AccountMovementPayment < Payment
 
 	def set_flow
 		self.flow = self.account_movement.cbte_tipo == "99" ? "expense" : "income"
+	end
+
+	def check_receipt_state
+	  unless account_movement.receipt.nil?
+			errors.add("Recibo confirmado", "Los pagos de un recibo confirmado no pueden ser modificados.") unless account_movement.receipt.editable?
+	  end
 	end
 end

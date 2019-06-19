@@ -153,8 +153,7 @@ class AccountMovement < ApplicationRecord
     end
 
   	def days
-      if self.invoice.blank?
-      else
+      unless self.invoice.blank?
         if self.invoice.cbte_fch.blank?
     		  (Date.today - self.invoice.created_at.to_date).to_i
         else
@@ -277,8 +276,7 @@ class AccountMovement < ApplicationRecord
         am.total       = receipt.total.to_f
         am.saldo       = receipt.client.saldo - receipt.total.to_f
         am.active      = receipt.state == "Finalizado"
-        pp am
-        pp "AAAAAAAA"
+        pp "Movimiento de cuenta generado por recibo: #{am}"
         pp am.save
       end
     end

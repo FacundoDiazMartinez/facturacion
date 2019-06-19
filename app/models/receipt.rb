@@ -13,8 +13,8 @@ class Receipt < ApplicationRecord
   accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
-  before_validation :validate_receipt_detail
   before_validation :set_number, on: :create
+  before_validation :validate_receipt_detail
   before_validation :set_total ## establece el total del recibo a partir de los pagos
 
   STATES = ["Pendiente", "Finalizado"]
@@ -59,7 +59,7 @@ class Receipt < ApplicationRecord
   #VALIDACIONES
     def uniqueness_of_invoice_id
       invoice_ids = receipt_details.map{ |detail| detail.invoice_id unless detail.marked_for_destruction? }
-      errors.add(:base, "Esta intentando vincular dos o más veces los mismos comprobantes, por favor revise.") unless invoice_ids.uniq.length == invoice_ids.length
+      errors.add(:base, "Está intentando vincular dos o más veces los mismos comprobantes.") unless invoice_ids.uniq.length == invoice_ids.length
     end
 
     def payments_length_valid?
@@ -77,7 +77,7 @@ class Receipt < ApplicationRecord
       self.total  = self.account_movement.account_movement_payments.where(generated_by_system: false).sum(:total)
     end
 
-    ## valida que la factura asociada pertenece al cliente
+    ## valida que las facturas asociadas pertenecen al cliente
     def validate_receipt_detail
       receipt_details.each{|rd| rd.invoices_clients_validation}
     end
@@ -157,9 +157,6 @@ class Receipt < ApplicationRecord
   		run_callbacks :destroy
   	end
 
-    # def set_total
-    #   self.total = total_without_invoices
-    # end
     def calculate_invoice_payment_nil
       total = 0
       receipt_details.invoice_payment.where_not(invoice_payment.nil?).each do |detail|
@@ -214,10 +211,9 @@ class Receipt < ApplicationRecord
       number
     end
 
+    #Esto se hace para no perder el valor del amount_available y mantenerlo fijo cada vez q se consulte el acc_mov
     def save_amount_available
-      #Esto se hace para no perder el valor del amount_available y mantenerlo fijo cada vez q se consulte el acc_mov
       if self.account_movement
-        pp "ACAAAAAA"
         save_amount_available = self.account_movement.amount_available
         update_column(:saved_amount_available, save_amount_available)
       else

@@ -55,9 +55,9 @@
 									<td></td>
 								<% end %>
 								<td>
-				                  <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, receipt_id: @receipt.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-				                  <%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %>
-			                	</td>
+                  <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, receipt_id: @receipt.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" if @receipt.editable? %>
+                  <%= link_to icon('fas', 'trash'), payments_payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary"  unless (payment.errors.any? || payment.id.blank? || !@receipt.editable?) %>
+              	</td>
 							</tr>
 						<% end -%>
 					<% end -%>
