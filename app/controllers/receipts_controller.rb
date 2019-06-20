@@ -10,6 +10,7 @@ class ReceiptsController < ApplicationController
   # GET /receipts/1
   # GET /receipts/1.json
   def show
+    @parent_receipt_details = @receipt.receipt_details.joins(:invoice).where(invoices: {associated_invoice: nil})
     # la siguiene variable la cree para el pdf:
     respond_to do |format|
       format.html
@@ -17,7 +18,7 @@ class ReceiptsController < ApplicationController
         render pdf: "#{@receipt.id}",
         layout: 'pdf.html',
         template: 'receipts/show',
-        zoom: 3.4,
+        #zoom: 3.4,
         viewport_size: '1280x1024',
         page_size: 'A4',
         encoding:"UTF-8"
@@ -124,7 +125,7 @@ class ReceiptsController < ApplicationController
   def autocomplete_invoice_and_debit_note
     @client = Client.find(params[:client_id])
     term = params[:term]
-    invoices_and_dn = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND cbte_tipo IN ('01', '06', '11','02','07','12')", "%#{term}%").order(:comp_number).map{|rtl| rtl if rtl.real_total_left > 0}.compact
+    invoices_and_dn = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND cbte_tipo IN ('01', '06', '11','02','07','12') AND associated_invoice IS NULL", "%#{term}%").order(:comp_number).map{|rtl| rtl if rtl.real_total_left > 0}.compact
     render :json => invoices_and_dn.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_nc_and_nd, comp_number: invoice.comp_number, associated_invoices_total: invoice.confirmed_notes.sum(:total).round(2), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 
