@@ -1,21 +1,21 @@
 class AccountMovementPayment < Payment
 	self.table_name = "payments"
-	belongs_to :account_movement
+	belongs_to :account_movement, touch: true ## en guarado o destrucción ejecuta un touch
 	belongs_to :invoice, optional: true
 
 	before_validation :set_flow
-	before_validation :check_receipt_state
+	before_validation :check_receipt_state ## evita borrar pagos de un recibo confirmado
 
 	before_save 			:check_company_id
 	before_save 			:check_client_id
-	after_save 				:update_total_to_receipt
+	#after_save 				:update_total_to_receipt comentada para probar touch de account movement
 	after_destroy 		:update_total_to_receipt
 	after_destroy 		:set_total_pay_to_invoice
 
 	## sólo para pagos que pertenecen a un recibo
 	## suma todos los pagos (activos) en el recibo y actualiza su TOTAL
 	def update_total_to_receipt
-		self.account_movement.receipt.save unless self.account_movement.receipt.nil?
+		self.account_movement.receipt.save unless self.account_movement.receipt.nil? # after_touch lo hará?
 		self.account_movement.set_amount_available unless self.account_movement.nil?
 		self.account_movement.receipt.save_amount_available unless self.account_movement.receipt.nil?
 	end

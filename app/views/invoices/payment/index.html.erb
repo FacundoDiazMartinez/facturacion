@@ -3,103 +3,83 @@
       	<%= @invoice.is_credit_note? ? "Devoluciones de dinero" : "Pagos" %>
     </div>
 </h3>
-<div id="saldo_disponible" class="text-muted ml-4"></div>
-<div class="table-responsive-sm">
-	<table class="table table-striped invoice-table" id="payments" style="width: 100%;">
-		<thead>
-			<tr>
-				<th scope="col">Tipo de pago</th>
-				<th scope="col">Monto ($)</th>
-				<th scope="col">Fecha de pago</th>
-				<th scope="col"></th>
-			</tr>
-		</thead>
-		<tbody>
-			<% @invoice.income_payments.each do |payment| %>
-				<% if payment.errors.empty? %>
-					<tr>
-						<td>
-              <% case payment.type_of_payment %>
-                <% when "4" %>
-                  <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
-                <% when "1" %>
-                  <% @installment_id = payment.card_payment.installments %>
-                  <% if @installment_id != 0 %>
-                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
-                  <% else %>
-                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
-                  <% end %>
-                <% when "3" %>
-                  <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
-                <% when "7" %>
-                  <%= payment.payment_name %> - Banco <%= payment.debit_payment.bank.name %>
-                <% when "5" %>
-                  <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
-                <% when "8" %>
-                  <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
-                <% when "6" %>
-                  <%= payment.payment_name %> - <%= payment.account_movement.receipt.nil? ? "NC: #{payment.account_movement.invoice.full_number}" : "RX: #{payment.account_movement.receipt.number}" %>
-                <% else %>
-                  <%= payment.payment_name %>
-              <% end %>
-            </td>
-						<td><%= payment.total.round(2) %></td>
-						<td><%= payment.payment_date %></td>
-						<td>
-            		<% if payment.persisted? && !@invoice.editable? && payment.account_movement_id.nil? %>
-              		<%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-              	<% end %>
-	              <% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
-                	<%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-                  <% if payment.type_of_payment != "1" %>
-                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
-                  <% else %>
-                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
-                  <% end %>
-		            <% end -%>
-						</td>
-					</tr>
-				<% end -%>
-			<% end -%>
-		</tbody>
-	</table>
-</div>
+<div class="card shadow">
   <div class="card-body">
+    <div id="saldo_disponible" class="text-muted ml-4"></div>
     <div class="row">
-      <div class="col-sm">
-      </div>
-      <div class="col-sm">
-        <div class="form-group">
-          <% if @invoice.editable? %>
-          	<center>
-          		<div class="m-2">
-              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-secondary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'block' : 'none'};" %>
-              	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-secondary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'block' : 'none'};" %>
-          		</div>
-          	</center>
-          <% end %>
-        </div>
-      </div>
-      <div class="col-sm">
-        <div class="form-group">
-          <div style="padding-left: 32% !important;">
-            <table style="text-align: right;">
-              <tr>
-                <th>
-                  <%= label_tag :total_invoice, "Total factura:    $ 0.00", id:'total_invoice', style: 'font-weight: boldest;' %>
-                </th>
-              </tr>
-              <tr>
-                <th>
-                  <%= label_tag :total_left_invoice, "Total faltante:    $ 0.00", id:'total_left_invoice' %>
-                </th>
-              </tr>
-            </table>
-          </div>
-        </div>
+      <div class="table-responsive">
+        <table class="table table-striped invoice-table" id="payments" style="width: 100%;">
+          <thead>
+            <tr>
+              <th scope="col">Tipo de pago</th>
+              <th scope="col">Monto ($)</th>
+              <th scope="col">Fecha de pago</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @invoice.income_payments.each do |payment| %>
+            <% if payment.errors.empty? %>
+            <tr>
+              <td>
+                <% case payment.type_of_payment %>
+                <% when "4" %>
+                <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
+                <% when "1" %>
+                <% @installment_id = payment.card_payment.installments %>
+                <% if @installment_id != 0 %>
+                <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                <% else %>
+                <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
+                <% end %>
+                <% when "3" %>
+                <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
+                <% when "7" %>
+                <%= payment.payment_name %> - Banco <%= payment.debit_payment.bank.name %>
+                <% when "5" %>
+                <%= payment.payment_name %> - N° <%= payment.retention_payment.number %>
+                <% when "8" %>
+                <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
+                <% when "6" %>
+                <%= payment.payment_name %> - <%= payment.account_movement.receipt.nil? ? "NC: #{payment.account_movement.invoice.full_number}" : "RX: #{payment.account_movement.receipt.number}" %>
+                <% else %>
+                <%= payment.payment_name %>
+                <% end %>
+              </td>
+              <td><%= payment.total.round(2) %></td>
+              <td><%= payment.payment_date %></td>
+              <td>
+                <% if payment.persisted? && !@invoice.editable? && payment.account_movement_id.nil? %>
+                <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+                <% end %>
+                <% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
+                <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+                <% if payment.type_of_payment != "1" %>
+                <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
+                <% else %>
+                <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
+                <% end %>
+                <% end -%>
+              </td>
+            </tr>
+            <% end -%>
+            <% end -%>
+          </tbody>
+        </table>
       </div>
     </div>
+    <div class="text-right">
+      <%= label_tag :total_invoice, "Total factura:    $ 0.00", id:'total_invoice', style: 'font-weight: boldest;' %>
+    </div>
+    <div class="text-right">
+      <%= label_tag :total_left_invoice, "Total faltante:    $ 0.00", id:'total_left_invoice' %>
+    </div>
+    <div class="text-center m-2">
+      <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-secondary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'inline' : 'none'};" if @invoice.editable? %>
+      <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-secondary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'inline' : 'none'};" if @invoice.editable? %>
+    </div>
   </div>
+</div>
 
 <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">

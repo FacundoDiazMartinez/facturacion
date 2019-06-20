@@ -2,7 +2,7 @@ class AccountMovement < ApplicationRecord
   include Deleteable
   belongs_to :client
   belongs_to :invoice, optional: true
-  belongs_to :receipt, optional: true
+  belongs_to :receipt, optional: true, touch: true
 
   has_many :account_movement_payments, dependent: :destroy
   has_many :invoices, through: :account_movement_payments
@@ -14,45 +14,25 @@ class AccountMovement < ApplicationRecord
   before_save         :set_total_if_subpayments
   before_save         :check_amount_available
   before_destroy      :fix_saldo
+  after_touch         :payments_updated
   after_save          :update_debt, unless: Proc.new{ |p| p.receipt.try(:state) == "Pendiente" }
   after_destroy       :update_debt
   after_destroy       :destroy_receipt
-  #before_validation :check_receipt_attributes
 
   validate :check_pertenence_of_receipt_to_client
 
-  default_scope { where(active: true ) }
+  default_scope { where(active: true) }
 
-  validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
-  validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."
-  validates_presence_of :total, message: "Debe definir un total."
+  validates_presence_of     :client_id, message: "El movimiento debe estar asociado a un cliente."
+  validates_presence_of     :cbte_tipo, message: "Debe definir el tipo de comprobante."
+  validates_presence_of     :total, message: "Debe definir un total."
   #validates_numericality_of :amount_available, greater_than_or_equal_to: 0.0, message: "El monto a asignar debe ser mayor o igual a 0."
   validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El monto pagado debe ser mayor o igual a 0."
-  validates_presence_of :saldo, message: "Falta definir el saldo actual del cliente."
-  validate :check_debe_haber
+  validates_presence_of     :saldo, message: "Falta definir el saldo actual del cliente."
+  validate                  :check_debe_haber
 
   accepts_nested_attributes_for :receipt, allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :account_movement_payments, allow_destroy: true, reject_if: Proc.new{|p| p["type_of_payment"].blank?}
-
-  #TABLA
-    # create_table "account_movements", force: :cascade do |t|
-    #   t.bigint "client_id"
-    #   t.bigint "invoice_id"
-    #   t.bigint "receipt_id"
-    #   t.integer "days"
-    #   t.string "cbte_tipo", null: false
-    #   t.boolean "debe"
-    #   t.boolean "haber"
-    #   t.boolean "active", default: true, null: false
-    #   t.float "total", default: 0.0, null: false
-    #   t.float "saldo", default: 0.0, null: false
-    #   t.datetime "created_at", null: false
-    #   t.datetime "updated_at", null: false
-    #   t.index ["client_id"], name: "index_account_movements_on_client_id"
-    #   t.index ["invoice_id"], name: "index_account_movements_on_invoice_id"
-    #   t.index ["receipt_id"], name: "index_account_movements_on_receipt_id"
-    # end
-  #TABLA
 
   COMP_TIPO = [
     "Factura A",
@@ -67,26 +47,7 @@ class AccountMovement < ApplicationRecord
     "Recibo X"
   ]
 
-  #FILTROS DE BUSQUEDA
-    def self.search_by_cbte_tipo cbte_tipo
-      if !cbte_tipo.blank?
-        where(cbte_tipo: cbte_tipo)
-      else
-        all
-      end
-    end
-
-    def self.search_by_date from, to
-      if !from.blank? && !to.blank?
-        where(created_at: from..to)
-      else
-        all
-      end
-    end
-  #FILTROS DE BUSQUEDA
-
   #ATRIBUTOS
-
   def saldo
     read_attribute("saldo").round(2)
   end
@@ -124,7 +85,6 @@ class AccountMovement < ApplicationRecord
   def company_id
     @company_id
   end
-
   #ATRIBUTOS
 
   #VALIDACIONES
@@ -142,6 +102,10 @@ class AccountMovement < ApplicationRecord
   #VALIDACIONES
 
   #FUNCIONES
+    #el touch lo provoca account movement payments
+    def payments_updated
+      self.save #para que corra callbacks
+    end
 
     def self.sum_available_amount_to_asign(client_id)
       client = Client.find(client_id)
@@ -179,13 +143,11 @@ class AccountMovement < ApplicationRecord
   		debe_dif 	= debe  ? (total - total_was) : 0.0
   		haber_dif	= haber ? (total - total_was) : 0.0
       total_dif = debe_dif + haber_dif
-
       if debe
         self.saldo = self.client.saldo + debe_dif
       else
         self.saldo = self.client.saldo - haber_dif # 12000
       end
-
       if total_dif != 0 && persisted?
     		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
     		next_movements.each do |am|
@@ -223,7 +185,6 @@ class AccountMovement < ApplicationRecord
   #FUNCIONES
 
   #PROCESOS
-
     def set_attrs_to_receipt
       if !receipt.nil? && !client.nil?
         self.receipt.company_id = self.client.company_id
@@ -237,8 +198,6 @@ class AccountMovement < ApplicationRecord
     def set_total_if_subpayments
       if self.account_movement_payments.any?
         self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
-        #self.active = true
-        pp "set_total if... ASDFASDFASDFASDFASDFASDFASDFAS"
         pp self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
         pp self.account_movement_payments
       end
@@ -266,7 +225,6 @@ class AccountMovement < ApplicationRecord
 
     def self.create_from_receipt receipt
       if receipt.persisted?
-        pp "EEEEEEEEE"
         am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
         am.client_id   = receipt.client_id
         am.receipt_id  = receipt.id
@@ -275,9 +233,9 @@ class AccountMovement < ApplicationRecord
         am.haber       = receipt.cbte_tipo != "99"
         am.total       = receipt.total.to_f
         am.saldo       = receipt.client.saldo - receipt.total.to_f
-        am.active      = receipt.state == "Finalizado"
-        pp "Movimiento de cuenta generado por recibo: #{am}"
-        pp am.save
+        #am.active      = receipt.state == "Finalizado"
+        am.save
+        return am
       end
     end
 
@@ -302,7 +260,7 @@ class AccountMovement < ApplicationRecord
             am.haber        = false
             am.total        = invoice.total.to_f
           end
-          am.save unless !am.changed?
+          am.save if am.changed?
           pp am.errors
           return am
         end
@@ -312,6 +270,24 @@ class AccountMovement < ApplicationRecord
       update_column(:active, false)
       run_callbacks :destroy
     end
-
   #PROCESOS
+
+  private
+  #FILTROS DE BUSQUEDA
+    def self.search_by_cbte_tipo cbte_tipo
+      if !cbte_tipo.blank?
+        where(cbte_tipo: cbte_tipo)
+      else
+        all
+      end
+    end
+
+    def self.search_by_date from, to
+      if !from.blank? && !to.blank?
+        where(created_at: from..to)
+      else
+        all
+      end
+    end
+  #FILTROS DE BUSQUEDA
 end

@@ -95,18 +95,33 @@ class DailyCashMovement < ApplicationRecord
       end
     end
 
+    ## generar movimientos de caja diaria para comprobantes confirmados
+    ## solo para recibos
+    def self.generate_from_receipt receipt
+      if receipt.confirmado?
+        receipt.account_movement_payments.each do |payment|
+          if payment.type_of_payment == "0"
+            if payment.payment_date == Date.today
+              DailyCashMovement.save_from_payment payment, receipt.company_id
+            end
+          end
+        end
+      end
+    end
+
+    ## guarda un movimiento de caja diaria para pagos de contado con comprobantes CONFIRMADOS
   	def self.save_from_payment payment, company_id
-      invoice = Invoice.where(id: payment.invoice_id).first
-      daily_cash = DailyCash.current_daily_cash(company_id)
-  		movement = where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
+      invoice     = Invoice.where(id: payment.invoice_id).first
+      daily_cash  = DailyCash.current_daily_cash(company_id)
+  		movement    = self.where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
   		movement.movement_type 			   =  "Pago"
   		movement.amount 				       =  payment.total
   		movement.associated_document 	 =  payment.associated_document
   		movement.payment_type			     =  payment.type_of_payment
       if invoice.nil?
-  		    movement.flow 					   =  payment.flow
+		    movement.flow 					   =  payment.flow
       else
-          movement.flow 					   =  invoice.is_credit_note? ? "expense" : payment.flow
+        movement.flow 					   =  invoice.is_credit_note? ? "expense" : payment.flow
       end
   		movement.payment_id 			     =  payment.id
       movement.user_id               =  payment.user_id
@@ -117,7 +132,7 @@ class DailyCashMovement < ApplicationRecord
           movement.current_balance       =  daily_cash.current_amount.to_f - payment.total
         end
       end
-  		movement.save unless !movement.changed?
+  		movement.save# if movement.changed?
   	end
 
     def touch_daily_cash_current_amount

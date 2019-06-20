@@ -88,43 +88,34 @@
     </div>
   <!-- HEADER -->
 
-  <hr>
   <!-- PRODUCTOS -->
-  <div class="card shadow" id="idetails">
+  <div id="idetails">
     <%= render template: '/invoices/detail/index.html.erb', locals:{form: form} %>
   </div>
   <!-- PRODUCTOS -->
 
-  <hr class="bonifications" style="display: none;">
   <!-- DESCUENTOS -->
-  <div class="card shadow bonifications" style="display: none;" id="div_ibonifications">
+  <div class="bonifications" style="display: none;" id="div_ibonifications">
     <%= render template: '/invoices/bonifications/index.html.erb', locals:{form: form} %>
   </div>
   <!-- DESCUENTOS -->
-
-  <hr class="tributes" style="display: none;">
   <!-- TRIBUTOS -->
   <% if current_user.company.iva_cond == "Responsable Inscripto" %>
-    <div class="card shadow tributes" style="display: none;" id="div_itributes">
+    <div class="tributes" style="display: none;" id="div_itributes">
       <%= render template: '/invoices/tributes/index.html.erb', locals:{form: form} %>
     </div>
   <% end %>
   <!-- TRIBUTOS -->
 
-  <hr>
   <!-- PAGOS -->
-  <div class="card shadow" id="ipayments">
+  <div id="ipayments">
     <%= render template: '/invoices/payment/index.html.erb', locals:{form: form} %>
   </div>
   <!-- PAGOS -->
-
-  <hr>
-  <center>
+  <div class="text-center">
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
-    <% if @invoice.editable? %>
-      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: {disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe,:confirm => 'Revise los pagos antes de guardar'}  %>
-    <% end %>
-  </center>
+    <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: {disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe,:confirm => 'Revise los pagos antes de guardar'} if @invoice.editable? %>
+  </div>
 <% end %>
 
 <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -15,7 +15,6 @@ class Receipt < ApplicationRecord
 
   before_validation :set_number, on: :create
   before_validation :validate_receipt_detail
-  before_validation :set_total ## establece el total del recibo a partir de los pagos
 
   STATES = ["Pendiente", "Finalizado"]
 
@@ -25,6 +24,9 @@ class Receipt < ApplicationRecord
   validate                :at_least_one_active_payment # valida que exista al menos un pago para recibos confirmados
 
   after_save :save_amount_available
+  after_save :update_daily_cash, if: :confirmado?
+
+  after_touch :set_total ## establece el total del recibo a partir de los pagos
 
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
@@ -38,24 +40,6 @@ class Receipt < ApplicationRecord
     "99"=>"Devolución"
   }
 
-  #FILTROS DE BUSQUEDA
-    def self.find_by_period from, to
-  		if !from.blank? && !to.blank?
-  			where(date: from..to)
-  		else
-  			all
-  		end
-  	end
-
-    def self.search_by_client name
-      if not name.blank?
-        joins(:client).where("clients.name ILIKE ?", "%#{name}%")
-      else
-        all
-      end
-    end
-  #FILTROS DE BUSQUEDA
-
   #VALIDACIONES
     def uniqueness_of_invoice_id
       invoice_ids = receipt_details.map{ |detail| detail.invoice_id unless detail.marked_for_destruction? }
@@ -63,29 +47,37 @@ class Receipt < ApplicationRecord
     end
 
     def payments_length_valid?
-      pp "ACAAAAA"
       account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
     end
 
     def at_least_one_active_payment
-      if self.state == "Finalizado" && !payments_length_valid?
-        errors.add("Pagos", "Debe registrar al menos un pago.")
+      if self.confirmado?
+        errors.add("Pagos", "Debe registrar al menos un pago.") unless self.payments_length_valid?
       end
     end
 
     ## calcula la suma de los pagos del recibo después de guardar
+    ## el touch lo provoca account movement
     def set_total
       self.total  = self.account_movement.account_movement_payments.where(generated_by_system: false).sum(:total)
+      self.save
     end
 
     ## valida que las facturas asociadas pertenecen al cliente
     def validate_receipt_detail
       receipt_details.each{|rd| rd.invoices_clients_validation}
     end
-
   #VALIDACIONES
 
   #ATRIBUTOS
+    def confirmado?
+      self.state == "Finalizado"
+    end
+
+    def editable?
+      state == "Pendiente"
+    end
+
     def account_movement_payments
       super.where.not(type_of_payment: "6")
     end
@@ -105,17 +97,12 @@ class Receipt < ApplicationRecord
     def type_of_model
       "receipt"
     end
-
   #ATRIBUTOS
 
   #PROCESOS
-
   	def touch_account_movement
-		  AccountMovement.create_from_receipt(self)
-      self.account_movement.reload
-      AccountMovement.unscoped do
-        self.update(total: self.account_movement.total)
-      end
+		  account_movement = AccountMovement.create_from_receipt(self)
+      self.update_columns(total: account_movement.total)
     end
 
     def set_number
@@ -123,21 +110,25 @@ class Receipt < ApplicationRecord
       self.number = last_r.nil? ? "00000001" : (last_r.number.to_i + 1).to_s.rjust(8,padstr= '0') unless (!self.number.blank? || self.total < 0)
     end
 
+    ## genera un recibo de pago cuando una factura confirmada tiene pagos
+    ## ejecutado en after_save de invoice
     def self.create_from_invoice invoice
       if invoice.state == "Confirmado"
         if invoice.receipts.empty? && invoice.total_pay > 0
-          r = Receipt.new
-          r.cbte_tipo   = invoice.is_credit_note? ? "99" : "00"
-          r.total       = invoice.total_pay
-          r.date        = invoice.created_at
-          r.company_id  = invoice.company_id
-          r.client_id   = invoice.client_id
+          r               = Receipt.new
+          r.cbte_tipo     = invoice.is_credit_note? ? "99" : "00"
+          r.total         = invoice.total_pay
+          r.date          = invoice.created_at
+          r.company_id    = invoice.company_id
+          r.client_id     = invoice.client_id
           r.sale_point_id = invoice.sale_point_id
-          r.user_id     = invoice.user_id
-          r.state       = "Finalizado"
+          r.user_id       = invoice.user_id
+          #r.state        = "Finalizado"
           if r.save
             ReceiptDetail.save_from_invoice(r, invoice)
             r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
+            r.reload
+            r.update(state: "Finalizado")
           else
             pp r.errors
           end
@@ -165,11 +156,9 @@ class Receipt < ApplicationRecord
       end
       return total.round(2)
     end
-
   #PROCESOS
 
   #ATRIBUTOS
-
     def full_name
       "R#{letra_tipo}: #{number}"
     end
@@ -200,10 +189,6 @@ class Receipt < ApplicationRecord
       invoices.each {|i| i.comp_number}.join(", ")
     end
 
-    def editable?
-      state == "Pendiente"
-    end
-
     def account_movement_attributes=(attributes)
       AccountMovement.unscoped { super }
     end
@@ -215,12 +200,15 @@ class Receipt < ApplicationRecord
     #Esto se hace para no perder el valor del amount_available y mantenerlo fijo cada vez q se consulte el acc_mov
     def save_amount_available
       if self.account_movement
-        save_amount_available = self.account_movement.amount_available
-        update_column(:saved_amount_available, save_amount_available)
+        saved_amount_available = self.account_movement.amount_available
+        update_column(:saved_amount_available, saved_amount_available)
       else
         update_column(:saved_amount_available, 0.0)
       end
-      #Fin
+    end
+
+    def update_daily_cash
+      DailyCashMovement.generate_from_receipt self
     end
   #ATRIBUTOS
 
@@ -245,4 +233,23 @@ class Receipt < ApplicationRecord
       end
     end
   #FUNCIONES
+
+  private
+  #FILTROS DE BUSQUEDA
+    def self.find_by_period from, to
+      if !from.blank? && !to.blank?
+        where(date: from..to)
+      else
+        all
+      end
+    end
+
+    def self.search_by_client name
+      if not name.blank?
+        joins(:client).where("clients.name ILIKE ?", "%#{name}%")
+      else
+        all
+      end
+    end
+  #FILTROS DE BUSQUEDA
 end

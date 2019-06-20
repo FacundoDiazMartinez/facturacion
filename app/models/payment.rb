@@ -18,8 +18,8 @@ class Payment < ApplicationRecord
   has_one :compensation_payment
 
   after_initialize  :set_payment_date
-  after_save        :save_daily_cash_movement ##este metodo tiene que ser solamente para pagos confirmados
-after_update        :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
+  ##after_save        :save_daily_cash_movement ##este metodo tiene que ser solamente para pagos confirmados
+  after_update      :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
 
   default_scope { where(active: true) }
 
@@ -49,133 +49,122 @@ after_update        :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:r
     return self["total"].to_f == 0
   end
 
-    def account_movement
-      AccountMovement.unscoped.find(account_movement_id) unless account_movement_id.blank?
-    end
+  def account_movement
+    AccountMovement.unscoped.find(account_movement_id) unless account_movement_id.blank?
+  end
 
-    def child
-      if not cash_payment.nil?
-        return cash_payment
-      elsif not debit_payment.nil?
-        return debit_payment
-      elsif not card_payment.nil?
-        return card_payment
-      elsif not bank_payment.nil?
-        return bank_payment
-      elsif not cheque_payment.nil?
-        return cheque_payment
-      elsif not retention_payment.nil?
-        return retention_payment
-      elsif not compensation_payment.nil?
-        return compensation_payment
-      end
+  def child
+    if not cash_payment.nil?
+      return cash_payment
+    elsif not debit_payment.nil?
+      return debit_payment
+    elsif not card_payment.nil?
+      return card_payment
+    elsif not bank_payment.nil?
+      return bank_payment
+    elsif not cheque_payment.nil?
+      return cheque_payment
+    elsif not retention_payment.nil?
+      return retention_payment
+    elsif not compensation_payment.nil?
+      return compensation_payment
     end
+  end
 
-    def cash_payment_attributes=(attribute)
-      self.child.destroy unless (self.child.nil? || self.child.class.name == "CashPayment")
-      self.total = attribute["total"].to_f
-      super
-    end
+  def cash_payment_attributes=(attribute)
+    self.child.destroy unless (self.child.nil? || self.child.class.name == "CashPayment")
+    self.total = attribute["total"].to_f
+    super
+  end
 
-    def debit_payment_attributes=(attribute)
-      self.child.destroy unless (self.child.nil? || self.child.class.name == "DebitPayment")
-      self.total = attribute["total"].to_f
-      super
-    end
+  def debit_payment_attributes=(attribute)
+    self.child.destroy unless (self.child.nil? || self.child.class.name == "DebitPayment")
+    self.total = attribute["total"].to_f
+    super
+  end
 
-    def card_payment_attributes=(attribute)
-      self.child.destroy unless (self.child.nil? || self.child.class.name == "CardPayment")
-      self.total = attribute["total"]
-      # self.credit_card_id = attribute["credit_card_id"]
-      super
-    end
+  def card_payment_attributes=(attribute)
+    self.child.destroy unless (self.child.nil? || self.child.class.name == "CardPayment")
+    self.total = attribute["total"]
+    # self.credit_card_id = attribute["credit_card_id"]
+    super
+  end
 
-    def bank_payment_attributes=(attribute)
-      self.child.destroy unless (self.child.nil? || self.child.class.name == "BankPayment")
-      self.total = attribute["total"]
-      super
-    end
+  def bank_payment_attributes=(attribute)
+    self.child.destroy unless (self.child.nil? || self.child.class.name == "BankPayment")
+    self.total = attribute["total"]
+    super
+  end
 
-    def cheque_payment_attributes=(attribute)
-      self.child.destroy unless (self.child.nil? || self.child.class.name == "ChequePayment")
-      self.total = attribute["total"]
-      super
-    end
+  def cheque_payment_attributes=(attribute)
+    self.child.destroy unless (self.child.nil? || self.child.class.name == "ChequePayment")
+    self.total = attribute["total"]
+    super
+  end
 
-    def retention_payment_attributes=(attribute)
-      self.child.destroy unless (self.child.nil? || self.child.class.name == "RetentionPayment")
-      self.total = attribute["total"]
-      super
-    end
+  def retention_payment_attributes=(attribute)
+    self.child.destroy unless (self.child.nil? || self.child.class.name == "RetentionPayment")
+    self.total = attribute["total"]
+    super
+  end
 
-    def compensation_payment_attributes=(attribute)
-      self.child.destroy unless (self.child.nil? || self.child.class.name == "CompensationPayment")
-      self.total = attribute["total"].to_f
-      super
-    end
+  def compensation_payment_attributes=(attribute)
+    self.child.destroy unless (self.child.nil? || self.child.class.name == "CompensationPayment")
+    self.total = attribute["total"].to_f
+    super
+  end
 
-    def payment_name
-      TYPES[type_of_payment]
-    end
+  def payment_name
+    TYPES[type_of_payment]
+  end
 
-    def associated_document
-      if !invoice_id.nil?
-        Invoice.find(invoice_id).name_with_comp
-      elsif !purchase_order_id.nil?
-        PurchaseOrder.find(purchase_order_id).name_with_comp
-      elsif !account_movement_id.nil?
-        am = AccountMovement.unscoped.find(account_movement_id)
-        if am.receipt_id.nil?
-          ""
-        else
-          am.receipt.full_name
-        end
-      else
+  def associated_document
+    if !invoice_id.nil?
+      Invoice.find(invoice_id).name_with_comp
+    elsif !purchase_order_id.nil?
+      PurchaseOrder.find(purchase_order_id).name_with_comp
+    elsif !account_movement_id.nil?
+      am = AccountMovement.unscoped.find(account_movement_id)
+      if am.receipt_id.nil?
         ""
-      end
-    end
-
-    def associated_document_active_record
-      if !invoice_id.nil?
-        Invoice.find(invoice_id)
-      elsif !purchase_order_id.nil?
-        PurchaseOrder.find(purchase_order_id)
-      elsif !account_movement_id.nil?
-        am = AccountMovement.unscoped.find(account_movement_id)
-        if am.receipt_id.nil?
-          nil
-        else
-          am.receipt
-        end
       else
+        am.receipt.full_name
+      end
+    else
+      ""
+    end
+  end
+
+  def associated_document_active_record
+    if !invoice_id.nil?
+      Invoice.find(invoice_id)
+    elsif !purchase_order_id.nil?
+      PurchaseOrder.find(purchase_order_id)
+    elsif !account_movement_id.nil?
+      am = AccountMovement.unscoped.find(account_movement_id)
+      if am.receipt_id.nil?
         nil
-      end
-    end
-
-    # def user_id
-    #   if !invoice_id.nil?
-    #     invoice.user_id
-    #   elsif !purchase_order_id.nil?
-    #     purchase_order.user_id
-    #   else
-    #     nil
-    #   end
-    # end
-
-    def company
-      if !invoice_id.nil?
-        invoice.company
-      elsif !purchase_order_id.nil?
-        purchase_order.company
       else
-        account_movement.receipt.company
+        am.receipt
       end
+    else
+      nil
     end
+  end
 
-    def client
-      Client.unscoped{ super }
+  def company
+    if !invoice_id.nil?
+      invoice.company
+    elsif !purchase_order_id.nil?
+      purchase_order.company
+    else
+      account_movement.receipt.company
     end
+  end
 
+  def client
+    Client.unscoped{ super }
+  end
   #ATRIBUTOS
 
   #PROCESOS
@@ -187,14 +176,14 @@ after_update        :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:r
       self.account_movement.receipt.touch_account_movement
     end
 
+    ## los pagos son reflejados como movimientos de caja diaria
+    ## solo para pagos de contado para comprobantes confirmados
     def save_daily_cash_movement
       if type_of_payment == "0"
         if payment_date == Date.today
           DailyCashMovement.save_from_payment(self, company_id)
-        else
-          if payment_date > Date.today
-            DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)
-          end
+        elsif payment_date > Date.today
+          DailyCashMovement.delay(run_at: payment_date).save_from_payment(self, company.id)
         end
       end
     end
