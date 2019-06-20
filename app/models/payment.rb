@@ -17,19 +17,19 @@ class Payment < ApplicationRecord
   has_one :retention_payment
   has_one :compensation_payment
 
-  after_initialize :set_payment_date
-  after_save :save_daily_cash_movement
-  after_update :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
+  after_initialize  :set_payment_date
+  after_save        :save_daily_cash_movement ##este metodo tiene que ser solamente para pagos confirmados
+after_update        :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
 
   default_scope { where(active: true) }
-  
-  accepts_nested_attributes_for :cash_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
-  accepts_nested_attributes_for :card_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
-  accepts_nested_attributes_for :bank_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
-  accepts_nested_attributes_for :debit_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
-  accepts_nested_attributes_for :cheque_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
-  accepts_nested_attributes_for :retention_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
-  accepts_nested_attributes_for :compensation_payment, reject_if: Proc.new{|p| p["total"].to_f == 0}
+
+  accepts_nested_attributes_for :cash_payment,          reject_if: :valid_nested_payment?
+  accepts_nested_attributes_for :card_payment,          reject_if: :valid_nested_payment?
+  accepts_nested_attributes_for :bank_payment,          reject_if: :valid_nested_payment?
+  accepts_nested_attributes_for :debit_payment,         reject_if: :valid_nested_payment?
+  accepts_nested_attributes_for :cheque_payment,        reject_if: :valid_nested_payment?
+  accepts_nested_attributes_for :retention_payment,     reject_if: :valid_nested_payment?
+  accepts_nested_attributes_for :compensation_payment,  reject_if: :valid_nested_payment?
 
   validates_numericality_of :total, greater_than: 0.0, message: "El monto pagado debe ser mayor 0."
 
@@ -44,11 +44,11 @@ class Payment < ApplicationRecord
     "8" => "Compensación"
   }
 
-  #VALIDACIONES
-
-  #VALIDACIONES
-
   #ATRIBUTOS
+  def valid_nested_payment?
+    return (p["total"].to_f == 0)
+  end
+
     def account_movement
       AccountMovement.unscoped.find(account_movement_id) unless account_movement_id.blank?
     end
