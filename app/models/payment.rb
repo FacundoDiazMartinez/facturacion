@@ -46,7 +46,7 @@ after_update        :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:r
 
   #ATRIBUTOS
   def valid_nested_payment?
-    return (p["total"].to_f == 0)
+    return self["total"].to_f == 0
   end
 
     def account_movement

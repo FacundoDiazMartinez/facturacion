@@ -81,7 +81,9 @@
             <% end %>
           </td>
           <td class="text_right bg-white">
-            $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
+            <% if @receipt.account_movement.amount_available > 0 %>
+              $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
+            <% end %>
           </td>
         </tr>
 
