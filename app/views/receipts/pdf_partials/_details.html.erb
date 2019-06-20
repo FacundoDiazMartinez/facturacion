@@ -25,51 +25,63 @@
           <th></th>
         </tr>
 
-        <% @receipt.receipt_details.each do |rd| %>
-          <% if !rd.total.nil? %>
-            <% if rd.invoice.is_invoice? %>
-              <tr class="bg-white">
+        <% @parent_receipt_details.each do |rd| %>
+          <% if rd.invoice.is_invoice? %>
+            <tr class="bg-white">
+              <td>
+                <% if rd.invoice.real_total_left > 0 %>
+                  Pago parcial <%= rd.invoice.name_with_comp %>
+                <% else %>
+                  Cancelación <%= rd.invoice.name_with_comp %>
+                <% end %>
+              </td>
+              <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+            </tr>
+            <% rd.invoice.notes.each do |note| %>
+              <tr class="bg-white child-note">
                 <td>
-                  <% id_invoice = rd.invoice_id %>
-                  <% if rd.invoice.real_total_left > 0 %>
-                    Pago parcial <%= rd.invoice.name_with_comp %>
+                  <% if note.is_debit_note? %>
+                    <% if note.real_total_left > 0 %>
+                      Pago parcial <%= note.name_with_comp %>
+                    <% else %>
+                      Cancelación <%= note.name_with_comp %>
+                    <% end %>
                   <% else %>
-                    Cancelación <%= rd.invoice.name_with_comp %>
+                    <%= note.name_with_comp %>
                   <% end %>
                 </td>
-                <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? note.total : 0.0)%></td>
               </tr>
-            <% else %>
-              <% if rd.invoice.associated_invoice == id_invoice %>
-                <tr class="bg-white">
-                  <td>
-                    <% if rd.total > 0 %>
-                      <%= rd.invoice.name_with_comp %> vinculada
-                    <% end %>
-                  </td>
-                  <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
-                </tr>
-              <% else %>
-                <tr class="bg-white">
-                  <td>
-                    <% if rd.invoice.real_total_left > 0 %>
-                      Pago parcial <%= rd.invoice.name_with_comp %>
-                    <% else %>
-                      Cancelación <%= rd.invoice.name_with_comp %>
-                    <% end %>
-                  </td>
-                  <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
-                </tr>
-              <% end %>
             <% end %>
+          <% elsif rd.invoice.is_debit_note? %>
+            <tr class="bg-white">
+              <td>
+              <% if rd.invoice.real_total_left > 0 %>
+                Pago parcial <%= rd.invoice.name_with_comp %>
+              <% else %>
+                Cancelación <%= rd.invoice.name_with_comp %>
+              <% end %>
+              </td>
+              <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice.total)%></td>
+            </tr>
+          <% elsif rd.invoice.is_credit_note? %>
+            <tr class="bg-white">
+              <td>
+                <%= rd.invoice.name_with_comp %>
+              </td>
+              <td class="text_right">$ 0.00</td>
+            </tr>
           <% end %>
         <% end %>
           
         <tr>
-          <td style="background-color: white; ">
+          <td class="bg-white">
             <% if @receipt.account_movement.amount_available > 0 %>
-                Saldo a favor futuras compras: $ <%= @receipt.saved_amount_available.round(2) %>
+              Saldo a favor futuras compras
             <% end %>
+          </td>
+          <td class="text_right bg-white">
+            $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
           </td>
         </tr>
 
@@ -134,3 +146,9 @@
   </div>
 </div>
 <p><b>Recibi la suma de:  </b> <%= I18n.with_locale(:es) { @receipt.total.to_i.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total.to_s.split(".")[1]).to_i.to_words } %> centavos.</p>
+
+<style type="text/css">
+  .child-note td {
+    padding-left:25px;
+  }
+</style>

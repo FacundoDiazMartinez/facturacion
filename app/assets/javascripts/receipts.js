@@ -96,21 +96,23 @@ function calculatePagadoAndFaltantePerInvoice(){
       if (total_payed > 0) { // >>> Para que no siga recorriendo filas de facturas si no hay mas pagos para distribuir
         // asigna los valores reales de la factura a las variables
         var current_invoice_total_payed = parseFloat(data[index]['total_payed']);
+        var current_invoice_real_total_left = parseFloat(data[index]['real_total_left']);
         var current_invoice_total_left = parseFloat(data[index]['total_left']);
+        var current_invoice_real_total = parseFloat(data[index]['real_total']);
         //
-        if (current_invoice_total_left > 0) {
-          if (total_payed <= current_invoice_total_left) {
+        if (current_invoice_real_total_left > 0) {
+          if (total_payed <= current_invoice_real_total_left) {
             // si la suma de los pagos es menor o igual al faltante de la factura actual
             // suma el monto pagado y resta el monto faltante
             current_invoice_total_payed += total_payed;
             current_invoice_total_left -= total_payed;
             total_payed = 0;
           } else {
-            // si la suma de los pagos es mayor al monto faltante de la factura actual
-            //
-            current_invoice_total_payed = parseFloat($(current_field).find(".invoice_total").val().replace("$", "")); // cambié el valor de text() por val()
-            total_payed -= current_invoice_total_left;
-            current_invoice_total_left = 0;
+            // si la suma de los pagos es mayor al monto real faltante de la factura actual
+            current_invoice_total = parseFloat($(current_field).find(".invoice_total").val().replace("$", "")); // cambié el valor de text() por val()
+            current_invoice_total_payed = current_invoice_real_total;
+            current_invoice_total_left = current_invoice_total - current_invoice_total_payed;
+            total_payed -= current_invoice_real_total_left;
           }
           $(current_field).find(".invoice_total_pay").val("$ " + current_invoice_total_payed.toFixed(2));
           $(current_field).find(".invoice_total_left").val("$ " + current_invoice_total_left.toFixed(2));
