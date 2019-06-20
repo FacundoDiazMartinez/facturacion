@@ -127,11 +127,7 @@ class Receipt < ApplicationRecord
           if r.save
             ReceiptDetail.save_from_invoice(r, invoice)
             r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
-            pp r
-            pp AccountMovement.find_by_receipt_id(r.id)
-            pp r.account_movement
-            pp r.reload
-            pp r.account_movement
+            r.reload
             r.update(state: "Finalizado")
           else
             pp r.errors
