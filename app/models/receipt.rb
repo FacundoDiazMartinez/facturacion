@@ -15,7 +15,6 @@ class Receipt < ApplicationRecord
 
   before_validation :set_number, on: :create
   before_validation :validate_receipt_detail
-  before_validation :set_total ## establece el total del recibo a partir de los pagos
 
   STATES = ["Pendiente", "Finalizado"]
 
@@ -25,6 +24,9 @@ class Receipt < ApplicationRecord
   validate                :at_least_one_active_payment # valida que exista al menos un pago para recibos confirmados
 
   after_save :save_amount_available
+  after_save :update_daily_cash, if: :confirmado?
+
+  after_touch :set_total ## establece el total del recibo a partir de los pagos
 
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
@@ -63,17 +65,17 @@ class Receipt < ApplicationRecord
     end
 
     def payments_length_valid?
-      pp "ACAAAAA"
       account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
     end
 
     def at_least_one_active_payment
-      if self.state == "Finalizado" && !payments_length_valid?
+      if self.confirmado? && !self.payments_length_valid?
         errors.add("Pagos", "Debe registrar al menos un pago.")
       end
     end
 
     ## calcula la suma de los pagos del recibo después de guardar
+    ## funciona solamente para atributos enviados en nested fields
     def set_total
       self.total  = self.account_movement.account_movement_payments.where(generated_by_system: false).sum(:total)
     end
@@ -82,10 +84,13 @@ class Receipt < ApplicationRecord
     def validate_receipt_detail
       receipt_details.each{|rd| rd.invoices_clients_validation}
     end
-
   #VALIDACIONES
 
   #ATRIBUTOS
+    def confirmado?
+      self.state == "Finalizado"
+    end
+
     def account_movement_payments
       super.where.not(type_of_payment: "6")
     end
@@ -105,11 +110,9 @@ class Receipt < ApplicationRecord
     def type_of_model
       "receipt"
     end
-
   #ATRIBUTOS
 
   #PROCESOS
-
   	def touch_account_movement
 		  AccountMovement.create_from_receipt(self)
       self.account_movement.reload
@@ -221,6 +224,11 @@ class Receipt < ApplicationRecord
         update_column(:saved_amount_available, 0.0)
       end
       #Fin
+    end
+
+    def update_daily_cash
+      pp self
+      DailyCashMovement.generate_from_receipt self
     end
   #ATRIBUTOS
 

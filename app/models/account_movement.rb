@@ -2,7 +2,7 @@ class AccountMovement < ApplicationRecord
   include Deleteable
   belongs_to :client
   belongs_to :invoice, optional: true
-  belongs_to :receipt, optional: true
+  belongs_to :receipt, optional: true, touch: true
 
   has_many :account_movement_payments, dependent: :destroy
   has_many :invoices, through: :account_movement_payments
@@ -21,7 +21,7 @@ class AccountMovement < ApplicationRecord
 
   validate :check_pertenence_of_receipt_to_client
 
-  default_scope { where(active: true ) }
+  default_scope { where(active: true) }
 
   validates_presence_of :client_id, message: "El movimiento debe estar asociado a un cliente."
   validates_presence_of :cbte_tipo, message: "Debe definir el tipo de comprobante."
@@ -266,7 +266,6 @@ class AccountMovement < ApplicationRecord
 
     def self.create_from_receipt receipt
       if receipt.persisted?
-        pp "EEEEEEEEE"
         am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
         am.client_id   = receipt.client_id
         am.receipt_id  = receipt.id
@@ -276,8 +275,7 @@ class AccountMovement < ApplicationRecord
         am.total       = receipt.total.to_f
         am.saldo       = receipt.client.saldo - receipt.total.to_f
         am.active      = receipt.state == "Finalizado"
-        pp "Movimiento de cuenta generado por recibo: #{am}"
-        pp am.save
+        am.save
       end
     end
 
@@ -302,7 +300,7 @@ class AccountMovement < ApplicationRecord
             am.haber        = false
             am.total        = invoice.total.to_f
           end
-          am.save unless !am.changed?
+          am.save if am.changed?
           pp am.errors
           return am
         end
@@ -312,6 +310,5 @@ class AccountMovement < ApplicationRecord
       update_column(:active, false)
       run_callbacks :destroy
     end
-
   #PROCESOS
 end

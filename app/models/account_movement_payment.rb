@@ -1,10 +1,10 @@
 class AccountMovementPayment < Payment
 	self.table_name = "payments"
-	belongs_to :account_movement
+	belongs_to :account_movement, touch: true
 	belongs_to :invoice, optional: true
 
 	before_validation :set_flow
-	before_validation :check_receipt_state
+	before_validation :check_receipt_state ## evita borrar pagos de un recibo confirmado
 
 	before_save 			:check_company_id
 	before_save 			:check_client_id

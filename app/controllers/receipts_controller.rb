@@ -89,8 +89,8 @@ class ReceiptsController < ApplicationController
       else
         pp @receipt.errors
         @client = @receipt.client
-        @receipt.reload
         build_account_movement
+        @receipt.reload
         format.html { render :edit }
         format.json { render json: @receipt.errors, status: :unprocessable_entity }
       end

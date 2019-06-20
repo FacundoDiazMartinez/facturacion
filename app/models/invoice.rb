@@ -7,7 +7,6 @@ class Invoice < ApplicationRecord
   belongs_to :budget, optional: true
   belongs_to :sales_file, optional: true
 
-
   default_scope { where(active: true) }
   scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
   scope :unassociated_invoices, -> { where(associated_invoice: nil) }
@@ -36,20 +35,21 @@ class Invoice < ApplicationRecord
   accepts_nested_attributes_for :client, reject_if: :all_blank
   accepts_nested_attributes_for :bonifications, allow_destroy: true, reject_if: :all_blank
 
-  after_save :set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
-  after_touch :update_total_pay #, :touch_account_movement, :check_receipt
+	before_validation :check_if_confirmed
+
 	before_save :old_real_total_left, if: Proc.new{|i| i.is_credit_note?}
 
-  after_save :create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
-  after_save :set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
-  after_save :update_expired, if: Proc.new{|i| i.state == "Confirmado"}
+	after_create 	:create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
+	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
+  after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
+  after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
+  after_save 		:update_expired, if: Proc.new{|i| i.state == "Confirmado"}
   #after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?} >>> Reeplazado por :impact_stock_if_cn
-  after_save :impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
-  after_save :check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
+  after_save 		:impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
+  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
+	after_touch 	:update_total_pay #, :touch_account_movement, :check_receipt
 
-  before_validation :check_if_confirmed
   before_destroy :check_if_editable
-  after_create :create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 
 	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado", "Anulado parcialmente"]
   COD_INVOICE = ["01", "06", "11"]
@@ -81,11 +81,9 @@ class Invoice < ApplicationRecord
    ["Percepciones por Impuestos Municipales", "8"],
    ["Otras Percepciones", "9"],
    ["Percepción de IVA a no Categorizado", "13"]
-   ]
+  ]
 
   #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
-
-
 
   # TABLA
   # create_table "invoices", force: :cascade do |t|
@@ -298,7 +296,7 @@ class Invoice < ApplicationRecord
 
     def check_if_confirmed
       if state_was == "Confirmado" && changed?
-        errors.add(:state, "No se puede actualizar una factura confirmada.")
+        errors.add("Factura confirmada", "No puede modificar una factura confirmada.")
       end
     end
 
@@ -351,12 +349,6 @@ class Invoice < ApplicationRecord
       end
       return tributes
     end
-
-    # def rollback_stock
-    #   invoice_details.each do |detail|
-    #     detail.remove_reserved_stock
-    #   end
-    # end
 
     def impact_stock_if_cn
       self.invoice_details.each do |id|
@@ -556,11 +548,11 @@ class Invoice < ApplicationRecord
     end
 
     def custom_save send_to_afip = false
-        response = save
-        if response && send_to_afip == "true"
-          get_cae
-        end
-        return response && !self.errors.any?
+      response = save
+      if response && send_to_afip == "true"
+        get_cae
+      end
+      return response && !self.errors.any?
     end
 
     def check_receipt

@@ -1,47 +1,46 @@
 <h3 class="d-flex mb-2">
-    <div class="col-7 p-2">
-      	Tributos
-    </div>
-    <div class="col-5 text-right">
+  <div class=" p-2">
+    	Tributos
+  </div>
+  <div class=" text-right">
 		<button class="btn btn-primary " type="button" href="#" onclick="toggleTributes2()" id="toggle_tributes2" style="margin-top: 5px;"><%= icon('fas' ,'eye-slash') %> Tributos</button>
 	</div>
 </h3>
-<div id="saldo_disponible" class="text-muted ml-4"></div>
-<div class="table-responsive-sm">
-	<table class="table table-striped invoice-table" id="tributes" style="width: 100%;">
-		<thead>
-			<tr>
-				<th scope="col">Descripción</th>
-				<th scope="col">Base imponible</th>
-				<th scope="col">Alícuota (%)</th>
-				<th scope="col">Importe ($)</th>
-				<th scope="col"></th>
-			</tr>
-		</thead>
-		<tbody>
-			<%= form.fields_for :tributes, (@invoice.get_default_tributes unless (!form.object.tributes.empty? || form.object.persisted?)) ,wrapper: false do |f| %>
-		      	<tr class="fields">
-		      		<td><%= f.hidden_field :desc, class: 'desc' %>
-		      			<%= f.select :afip_id, Invoice.get_tributos(current_user.company), {prompt: "Seleccione..."}, {class: 'form-control form-control-sm afip_id', style: 'min-width: 100px;', disabled: !@invoice.editable?} %>
-		      		</td>
-		      		<td><%= f.number_field :base_imp, class: 'form-control form-control-sm base_imp', readonly: true, min: 0.0 %></td>
-		      		<td><%= f.number_field :alic, class: 'form-control alic', disabled: !@invoice.editable?, min: 0.0 %></td>
-		      		<td><%= f.number_field :importe, class: 'form-control importe', readonly: true, min: 0.0 %></td>
-		      		<td>
-		      			<% if @invoice.editable? %>
-		      				<%= f.link_to_remove icon('fas', 'trash') %>
-		      			<% end %>
-		      		</td>
-		     	</tr>
-		    <% end %>
-		</tbody>
-	</table>
+<div class="card shadow">
+  <div class="card-body">
+    <div id="saldo_disponible" class="text-muted ml-4"></div>
+    <div class="table-responsive-sm">
+      <table class="table table-striped invoice-table" id="tributes" style="width: 100%;">
+        <thead>
+          <tr>
+            <th scope="col">Descripción</th>
+            <th scope="col">Base imponible</th>
+            <th scope="col">Alícuota (%)</th>
+            <th scope="col">Importe ($)</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= form.fields_for :tributes, (@invoice.get_default_tributes unless (!form.object.tributes.empty? || form.object.persisted?)) ,wrapper: false do |f| %>
+          <tr class="fields">
+            <td><%= f.hidden_field :desc, class: 'desc' %>
+              <%= f.select :afip_id, Invoice.get_tributos(current_user.company), {prompt: "Seleccione..."}, {class: 'form-control form-control-sm afip_id', style: 'min-width: 100px;', disabled: !@invoice.editable?} %>
+            </td>
+            <td><%= f.number_field :base_imp, class: 'form-control form-control-sm base_imp', readonly: true, min: 0.0 %></td>
+            <td><%= f.number_field :alic, class: 'form-control alic', disabled: !@invoice.editable?, min: 0.0 %></td>
+            <td><%= f.number_field :importe, class: 'form-control importe', readonly: true, min: 0.0 %></td>
+            <td>
+              <% if @invoice.editable? %>
+              <%= f.link_to_remove icon('fas', 'trash') %>
+              <% end %>
+            </td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="m-2 text-center">
+      <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-secondary', data: {target: '#tributes'} if @invoice.editable? %>
+    </div>
+  </div>
 </div>
-
-<% if @invoice.editable? %>
-	<center>
-		<div class="m-2">
-			<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-secondary', data: {target: '#tributes'}%>
-		</div>
-	</center>
-<% end %>
