@@ -10,8 +10,9 @@ class AccountMovement < ApplicationRecord
   has_many :income_payments, dependent: :destroy
 
   before_validation   :set_attrs_to_receipt
-  before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true } #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
+  #before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true } #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
   before_save         :check_amount_available
+  before_save         :set_saldo
   before_destroy      :fix_saldo
   after_touch         :payments_updated
   # after_save          :update_debt, unless: Proc.new{ |p| p.receipt.try(:state) == "Pendiente" } Comentado para probar touch al cliente
@@ -104,18 +105,40 @@ class AccountMovement < ApplicationRecord
     #el touch lo provoca account movement payments
     def payments_updated
       pp "PAYMENTS UPDATED"
-      self.set_total_if_subpayments
+      #set_total_if_subpayments se comenta para probar set_saldo
       self.save #para que corra callbacks
       pp "FIN"
     end
 
-    ## establece el total del movimiento de cuenta
-    ## saldo disponible = pagos registrados por el usuario - pagos utilizados por el sistema
-    def set_total_if_subpayments
-      if self.account_movement_payments.any?
-        self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
-        self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
+    def set_saldo
+      if self.active
+        if debe
+          if self.invoice
+            ##define el total nuevamente
+            self.total            = self.invoice.total
+            self.amount_available = 0
+          end
+          self.saldo = self.client.saldo + self.total
+        elsif haber
+          if self.account_movement_payments
+            self.total            = self.account_movement_payments.where(generated_by_system: false).sum(:total) #pagos registrados por el usuario
+            self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total) #pagos registrados por sistema
+          end
+          self.saldo = self.client.saldo - self.total
+        end
       end
+    end
+
+    ## establece el total del movimiento de cuenta
+    def set_total_if_subpayments
+      if self.haber #sólo actualiza los movimientos de cuenta correspondiente a pagos
+        if self.account_movement_payments
+          self.total            = self.account_movement_payments.where(generated_by_system: false).sum(:total) #pagos registrados por el usuario
+          self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total) #pagos registrados por sistema
+        end
+        self.saldo            = self.client.saldo - self.total
+      end
+      pp "SALDO #{self.saldo}"
     end
 
     def self.sum_available_amount_to_asign(client_id)
@@ -150,24 +173,24 @@ class AccountMovement < ApplicationRecord
     end
 
     ## no sé que hace este codigo, pura confianza
-  	def set_saldo_to_movements
-  		debe_dif 	= self.debe  ? (self.total - self.total_was) : 0.0
-  		haber_dif	= self.haber ? (self.total - self.total_was) : 0.0
-      total_dif = debe_dif + haber_dif
-      pp total_dif
-      if debe
-        self.saldo = self.client.saldo + debe_dif
-      else
-        self.saldo = self.client.saldo - haber_dif # 12000
-      end
-      if total_dif != 0 && persisted?
-    		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
-    		next_movements.each do |am|
-    			total_saldo = am.saldo - total_dif
-    			am.update_column(:saldo, total_saldo)
-    		end
-      end
-  	end
+  	# def set_saldo_to_movements
+  	# 	debe_dif 	= self.debe  ? (self.total - self.total_was) : 0.0
+  	# 	haber_dif	= self.haber ? (self.total - self.total_was) : 0.0
+    #   total_dif = debe_dif + haber_dif
+    #   pp "TOTAL DIF #{total_dif}"
+    #   if debe
+    #     self.saldo = self.client.saldo + debe_dif
+    #   else
+    #     self.saldo = self.client.saldo - haber_dif # 12000
+    #   end
+    #   if total_dif != 0 && persisted?
+    # 		next_movements = AccountMovement.where("created_at >= ? AND client_id = ?", created_at, client_id)
+    # 		next_movements.each do |am|
+    # 			total_saldo = am.saldo - total_dif
+    # 			am.update_column(:saldo, total_saldo)
+    # 		end
+    #   end
+  	# end
 
     def self.del
       ReceiptDetail.delete_all
@@ -228,8 +251,10 @@ class AccountMovement < ApplicationRecord
 
     ##confirma el movimiento de cuenta para que impacte en la cuenta corriente del cliente
     ##confirma los pagos pertenecientes a este movimiento de cuenta
+    ##actualiza el total del movimiento y el saldo correspondiente
     def confirmar!
       self.account_movement_payments.map{ |payment| payment.confirmar! }
+      #set_total_if_subpayments ## calcula total, saldo y monto disponible
       self.active = true
       self.save
     end
@@ -242,9 +267,9 @@ class AccountMovement < ApplicationRecord
         am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
         am.debe        = receipt.cbte_tipo == "99"
         am.haber       = receipt.cbte_tipo != "99"
-        am.total       = receipt.total.to_f
-        am.saldo       = receipt.client.saldo - receipt.total.to_f
-        am.active      = false ## el recibo debe ser el encargado de confirmar el movimiento de cuenta
+        am.total       = 0 #receipt.total.to_f
+        am.saldo       = 0 #receipt.client.saldo - receipt.total.to_f ##el saldo es igual al saldo del cliente menos el total del remito
+        am.active      = false ##el recibo debe ser el encargado de confirmar el movimiento de cuenta
         am.save
         return am
       end
@@ -255,6 +280,7 @@ class AccountMovement < ApplicationRecord
   	# end
     # comentado para probar touch al cliente
 
+    #genera movimientos de cuenta corriente desde una factura (o nota)
     def self.create_from_invoice invoice, old_real_total_left
       if invoice.state == "Confirmado"
           am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
@@ -262,16 +288,16 @@ class AccountMovement < ApplicationRecord
           am.invoice_id   = invoice.id
           am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
           am.observation  = invoice.observation
+          am.total        = invoice.total.to_f
           if invoice.is_credit_note?
             am.amount_available = invoice.total - old_real_total_left
             am.debe         = false
             am.haber        = true
-            am.total        = invoice.total.to_f
           else
             am.debe         = true
             am.haber        = false
-            am.total        = invoice.total.to_f
           end
+          ## no calcula saldo
           am.save if am.changed?
           pp am.errors
           return am

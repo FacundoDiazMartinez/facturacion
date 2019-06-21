@@ -2,7 +2,7 @@ class ReceiptDetail < ApplicationRecord
   belongs_to :receipt
   belongs_to :invoice
 
-  has_one    :invoice_payment, ->(rd){joins(:invoice).where(generated_by_system: true, account_movement_id: rd.receipt.account_movement.id, invoices: {cbte_tipo: Invoice::COD_INVOICE})}, through: :invoice, class_name: "IncomePayment", source: :income_payments
+  has_one    :invoice_payment, ->(rd){ joins(:invoice).where(generated_by_system: true, account_movement_id: rd.receipt.account_movement.id, invoices: {cbte_tipo: Invoice::COD_INVOICE})}, through: :invoice, class_name: "IncomePayment", source: :income_payments
 
   validate   :invoices_clients_validation
 
@@ -20,7 +20,7 @@ class ReceiptDetail < ApplicationRecord
 
   def invoices_clients_validation
     if self.receipt.client_id != self.invoice.client_id
-      self.receipt.errors.add(:client_id, "El cliente del recibo debe coincidir con el cliente de cada factura.")
+      self.receipt.errors.add(:client_id, "El cliente del recibo debe coincidir con el cliente de cada comprobante.")
     end
   end
 

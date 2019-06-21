@@ -1,7 +1,6 @@
 class Receipt < ApplicationRecord
   include Deleteable
   #RECIBO DE PAGO
-
   belongs_to :client
   belongs_to :sale_point
   belongs_to :company
@@ -15,7 +14,7 @@ class Receipt < ApplicationRecord
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
   before_validation :set_number, on: :create #establece un número consecutivo al último recibo perteneciente a la empresa
-  # before_validation :validate_receipt_detail #valida que los detalles del recibo pertenezcan a la empresa
+  before_validation :validate_receipt_detail #valida que los detalles del recibo pertenezcan a la empresa
 
   STATES = ["Pendiente", "Finalizado"]
 
