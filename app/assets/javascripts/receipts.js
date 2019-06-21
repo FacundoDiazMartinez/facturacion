@@ -96,6 +96,7 @@ function calculatePagadoAndFaltantePerInvoice(){
       if (total_payed > 0) { // >>> Para que no siga recorriendo filas de facturas si no hay mas pagos para distribuir
         // asigna los valores reales de la factura a las variables
         var current_invoice_total_payed = parseFloat(data[index]['total_payed']);
+        console.log(current_invoice_total_payed);
         var current_invoice_real_total_left = parseFloat(data[index]['real_total_left']);
         var current_invoice_total_left = parseFloat(data[index]['total_left']);
         var current_invoice_real_total = parseFloat(data[index]['real_total']);

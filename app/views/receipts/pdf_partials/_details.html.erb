@@ -29,7 +29,7 @@
           <% if rd.invoice.is_invoice? %>
             <tr class="bg-white">
               <td>
-                <% if rd.invoice.real_total_left > 0 %>
+                <% if rd.rtl_invoice > 0 %>
                   Pago parcial <%= rd.invoice.name_with_comp %>
                 <% else %>
                   Cancelación <%= rd.invoice.name_with_comp %>
@@ -56,7 +56,7 @@
           <% elsif rd.invoice.is_debit_note? %>
             <tr class="bg-white">
               <td>
-              <% if rd.invoice.real_total_left > 0 %>
+              <% if rd.rtl_invoice > 0 %>
                 Pago parcial <%= rd.invoice.name_with_comp %>
               <% else %>
                 Cancelación <%= rd.invoice.name_with_comp %>
