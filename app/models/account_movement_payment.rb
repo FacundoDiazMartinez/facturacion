@@ -16,7 +16,7 @@ class AccountMovementPayment < Payment
 
 	def confirmar!
 		if account_movement.receipt
-			DailyCashMovement.save_from_payment self, account_movement.receipt.company_id
+			self.save_daily_cash_movement ## perteneciente al modelo de Payment
 		end
 	end
 

@@ -1,12 +1,15 @@
 class ReceiptDetail < ApplicationRecord
   belongs_to :receipt
   belongs_to :invoice
-  validate   :invoices_clients_validation
+
   has_one    :invoice_payment, ->(rd){joins(:invoice).where(generated_by_system: true, account_movement_id: rd.receipt.account_movement.id, invoices: {cbte_tipo: Invoice::COD_INVOICE})}, through: :invoice, class_name: "IncomePayment", source: :income_payments
+
+  validate   :invoices_clients_validation
+
   scope      :only_invoices, -> {joins(:invoice).where(invoices: {cbte_tipo: Invoice::COD_INVOICE})}
 
 	def self.save_from_invoice receipt, invoice
-  	rd = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize
+  	rd       = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize
   	rd.total = receipt.total
   	rd.save
  	end
@@ -27,10 +30,6 @@ class ReceiptDetail < ApplicationRecord
   end
 
   def associated_invoices_total
-    if invoice.nil?
-      return "$ 0"
-    else
-      return "$ #{invoice.confirmed_notes.sum(:total)}"
-    end
+    invoice.nil? ? "$ 0" : "$ #{invoice.confirmed_notes.sum(:total)}"
   end
 end

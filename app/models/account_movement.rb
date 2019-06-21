@@ -1,6 +1,6 @@
 class AccountMovement < ApplicationRecord
   include Deleteable
-  belongs_to :client
+  belongs_to :client,  touch: true
   belongs_to :invoice, optional: true
   belongs_to :receipt, optional: true, touch: true
 
@@ -10,12 +10,12 @@ class AccountMovement < ApplicationRecord
   has_many :income_payments, dependent: :destroy
 
   before_validation   :set_attrs_to_receipt
-  before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
+  before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true } #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
   before_save         :check_amount_available
   before_destroy      :fix_saldo
   after_touch         :payments_updated
-  after_save          :update_debt, unless: Proc.new{ |p| p.receipt.try(:state) == "Pendiente" }
-  after_destroy       :update_debt
+  # after_save          :update_debt, unless: Proc.new{ |p| p.receipt.try(:state) == "Pendiente" } Comentado para probar touch al cliente
+  # after_destroy       :update_debt
   after_destroy       :destroy_receipt
 
   validate :check_pertenence_of_receipt_to_client
@@ -119,11 +119,10 @@ class AccountMovement < ApplicationRecord
     end
 
     def self.sum_available_amount_to_asign(client_id)
-      client = Client.find(client_id)
-      var  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
-      var += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
-      sum = var.map{|am| am.amount_available}.reduce(:+)
-
+      client  = Client.find(client_id)
+      var     = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
+      var    += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
+      sum     = var.map{|am| am.amount_available}.reduce(:+)
       return sum.nil? ? 0 : sum
     end
 
@@ -152,9 +151,10 @@ class AccountMovement < ApplicationRecord
 
     ## no sé que hace este codigo, pura confianza
   	def set_saldo_to_movements
-  		debe_dif 	= debe  ? (total - total_was) : 0.0
-  		haber_dif	= haber ? (total - total_was) : 0.0
+  		debe_dif 	= self.debe  ? (self.total - self.total_was) : 0.0
+  		haber_dif	= self.haber ? (self.total - self.total_was) : 0.0
       total_dif = debe_dif + haber_dif
+      pp total_dif
       if debe
         self.saldo = self.client.saldo + debe_dif
       else
@@ -175,7 +175,6 @@ class AccountMovement < ApplicationRecord
       InvoiceDetail.delete_all
       DailyCashMovement.delete_all
       Payment.delete_all
-
       AccountMovement.unscoped.delete_all
       Invoice.delete_all
       Receipt.delete_all
@@ -251,9 +250,10 @@ class AccountMovement < ApplicationRecord
       end
     end
 
-    def update_debt
-  		self.client.update_debt
-  	end
+    # def update_debt
+  	# 	self.client.update_debt
+  	# end
+    # comentado para probar touch al cliente
 
     def self.create_from_invoice invoice, old_real_total_left
       if invoice.state == "Confirmado"

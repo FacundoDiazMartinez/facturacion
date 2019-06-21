@@ -3,11 +3,11 @@ class DailyCashMovement < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :payment, optional: true
 
-  after_initialize :set_daily_cash
-  after_save :touch_daily_cash_current_amount
-  before_save :fix_balance_on_update, if: Proc.new{|dcm|  !dcm.new_record?}
-  before_destroy :fix_balance_on_destroy
-  after_destroy { |movement| movement.touch_daily_cash_current_amount }
+  after_initialize  :set_daily_cash
+  before_save       :fix_balance_on_update, if: Proc.new{|dcm|  !dcm.new_record?}
+  after_save        :touch_daily_cash_current_amount
+  before_destroy    :fix_balance_on_destroy
+  after_destroy     { |movement| movement.touch_daily_cash_current_amount }
   before_validation :set_payment_type
 
   default_scope { where(active: true ) }
@@ -109,28 +109,30 @@ class DailyCashMovement < ApplicationRecord
 
     ## guarda un movimiento de caja diaria para pagos de contado con comprobantes CONFIRMADOS
   	def self.save_from_payment payment, company_id
-      invoice     = Invoice.where(id: payment.invoice_id).first
-      daily_cash  = DailyCash.current_daily_cash(company_id) #caja del día
-  		movement    = self.where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
-  		movement.movement_type 			   =  "Pago"
-  		movement.amount 				       =  payment.total
-  		movement.associated_document 	 =  payment.associated_document
-  		movement.payment_type			     =  payment.type_of_payment
-      if invoice.nil?
-		    movement.flow 					   =  payment.flow
-      else
-        movement.flow 					   =  invoice.is_credit_note? ? "expense" : payment.flow
-      end
-  		movement.payment_id 			     =  payment.id
-      movement.user_id               =  payment.user_id
-      if movement.new_record?
-        if payment.flow == "income"
-          movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
+      if payment
+        invoice     = Invoice.where(id: payment.invoice_id).first
+        daily_cash  = DailyCash.current_daily_cash(company_id) #caja del día
+        movement    = self.where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
+        movement.movement_type 			   =  "Pago"
+        movement.amount 				       =  payment.total
+        movement.associated_document 	 =  payment.associated_document
+        movement.payment_type			     =  payment.type_of_payment
+        if invoice.nil?
+          movement.flow 					   =  payment.flow
         else
-          movement.current_balance       =  daily_cash.current_amount.to_f - payment.total
+          movement.flow 					   =  invoice.is_credit_note? ? "expense" : payment.flow
         end
+        movement.payment_id 			     =  payment.id
+        movement.user_id               =  payment.user_id
+        if movement.new_record?
+          if payment.flow == "income"
+            movement.current_balance       =  daily_cash.current_amount.to_f + payment.total
+          else
+            movement.current_balance       =  daily_cash.current_amount.to_f - payment.total
+          end
+        end
+        movement.save# if movement.changed?
       end
-  		movement.save# if movement.changed?
   	end
 
     def touch_daily_cash_current_amount
