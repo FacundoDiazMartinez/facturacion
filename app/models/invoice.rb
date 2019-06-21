@@ -418,10 +418,16 @@ class Invoice < ApplicationRecord
 								generated_by_system: true,
 								account_movement_id: am.id
 							)
-							income_payment.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
+							pp "Inc_payment.total "
+              pp income_payment.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
 							if income_payment.save
-							  am.update_column(:amount_available, am.amount_available - income_payment.total)
-                rd.update_column(:total, income_payment.total)
+                pp "Am.amount_available"
+                pp am.amount_available
+                pp"income_payment.total"
+                pp income_payment.total
+                pp "ABAJO SE VIENE EL UPDATE"
+							  pp am.update_column(:amount_available, am.amount_available - income_payment.total)
+                pp rd.update_column(:total, income_payment.total)
 						  else
                 pp income_payment.errors
               end
