@@ -1,4 +1,4 @@
-<%= form.fields_for :receipt_details, wrapper: false do |f| %>
+<%= form.fields_for :receipt_details, form.object.receipt_details.order(:id) , wrapper: false do |f| %>
   <tr class="fields" id="<%= f.index %>">
     <td>
       <%= text_field_tag :invoice_tipo, f.object.invoice.nil? ? nil : f.object.invoice.nombre_comprobante, style: "text-align: right;" , class: 'form-control form-control-sm tipo', data: {toggle:"tooltip"}, disabled: true %>

@@ -1,6 +1,13 @@
 class Receipt < ApplicationRecord
   include Deleteable
   #RECIBO DE PAGO
+  ## proceso para un recibo:
+  # el recibo es un comprobante de pago, y certifica que un pago fue realizado
+  # este recibo tiene 3 partes: encabezado, detalle (comprobantes asociados) y pagos
+  ## el recibo puede tener 2 estados: Pendiente o Finalizado (confirmado)
+
+  ## para recibos pendientes las validaciones son mínimas y se puede registrar todo
+  ## para recibos confirmados es necesario validar los pagos
   belongs_to :client
   belongs_to :sale_point
   belongs_to :company
@@ -13,20 +20,20 @@ class Receipt < ApplicationRecord
   accepts_nested_attributes_for :receipt_details, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
-  before_validation :set_number, on: :create
-  before_validation :validate_receipt_detail
+  before_validation :set_number, on: :create #establece un número consecutivo al último recibo perteneciente a la empresa
+  before_validation :validate_receipt_detail #valida que los detalles del recibo pertenezcan a la empresa
 
   STATES = ["Pendiente", "Finalizado"]
 
-  validates_uniqueness_of :number, scope: [:company, :active], message: "No se puede repetir el número de recibo."
+  validates_uniqueness_of :number, scope: [:company, :active], message: "Número de recibo repetido."
   validates_inclusion_of  :state, in: STATES
-  validate                :uniqueness_of_invoice_id
-  validate                :at_least_one_active_payment # valida que exista al menos un pago para recibos confirmados
+  validate                :uniqueness_of_invoice_id #valida los detalles para que no se repitan los comprobantes a pagar
+  validate                :at_least_one_active_payment #valida que exista al menos un pago para recibos CONFIRMADOS
 
-  after_save :save_amount_available
-  after_save :update_daily_cash, if: :confirmado?
+  #after_save :save_amount_available
+  after_save :update_daily_cash
 
-  after_touch :set_total ## establece el total del recibo a partir de los pagos
+  after_touch :account_movement_updated ## establece el total del recibo a partir de los pagos
 
   default_scope {where(active: true)}
   scope :no_devolution, -> {where.not(cbte_tipo: "99")}
@@ -46,20 +53,22 @@ class Receipt < ApplicationRecord
       errors.add(:base, "Está intentando vincular dos o más veces los mismos comprobantes.") unless invoice_ids.uniq.length == invoice_ids.length
     end
 
-    def payments_length_valid?
-      account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
-    end
-
+    ## al menos un pago para recibos confirmados
     def at_least_one_active_payment
       if self.confirmado?
         errors.add("Pagos", "Debe registrar al menos un pago.") unless self.payments_length_valid?
       end
     end
 
+    def payments_length_valid?
+      account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
+    end
+
     ## calcula la suma de los pagos del recibo después de guardar
     ## el touch lo provoca account movement
-    def set_total
-      self.total  = self.account_movement.account_movement_payments.where(generated_by_system: false).sum(:total)
+    def account_movement_updated
+      self.saved_amount_available = self.account_movement.amount_available
+      self.total                  = self.account_movement.total
       self.save
     end
 
@@ -100,14 +109,14 @@ class Receipt < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
-  	def touch_account_movement
-		  account_movement = AccountMovement.create_from_receipt(self)
-      self.update_columns(total: account_movement.total)
-    end
-
     def set_number
       last_r = Receipt.where(company_id: company_id).last
       self.number = last_r.nil? ? "00000001" : (last_r.number.to_i + 1).to_s.rjust(8,padstr= '0') unless (!self.number.blank? || self.total < 0)
+    end
+
+  	def touch_account_movement
+		  account_movement = AccountMovement.create_from_receipt(self)
+      self.update_columns(total: account_movement.total)
     end
 
     ## genera un recibo de pago cuando una factura confirmada tiene pagos
@@ -128,7 +137,7 @@ class Receipt < ApplicationRecord
             ReceiptDetail.save_from_invoice(r, invoice)
             r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
             r.reload
-            r.update(state: "Finalizado")
+            r.confirmar!
           else
             pp r.errors
           end
@@ -197,18 +206,21 @@ class Receipt < ApplicationRecord
       number
     end
 
-    #Esto se hace para no perder el valor del amount_available y mantenerlo fijo cada vez q se consulte el acc_mov
-    def save_amount_available
-      if self.account_movement
-        saved_amount_available = self.account_movement.amount_available
-        update_column(:saved_amount_available, saved_amount_available)
-      else
-        update_column(:saved_amount_available, 0.0)
+    ## confirma el recibo
+    ## al confirmar el recibo se supone que ya están registrados los detalles (comprobantes asociados) del mismo
+    ## al confirmar el pago hay que activar el movimiento de cuenta generado, los movimientos de cuenta generados (y activos) deben estar en la cuenta corriente del cliente
+    def confirmar!
+      unless self.confirmado?
+        AccountMovement.unscoped do
+          self.account_movement.confirmar!
+        end
+        self.state = "Finalizado"
+        self.save
       end
     end
 
     def update_daily_cash
-      DailyCashMovement.generate_from_receipt self
+      DailyCashMovement.generate_from_receipt self if self.confirmado?
     end
   #ATRIBUTOS
 

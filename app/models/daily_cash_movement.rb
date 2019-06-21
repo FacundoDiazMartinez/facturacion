@@ -24,7 +24,6 @@ class DailyCashMovement < ApplicationRecord
      left_joins(payment: :purchase_order).where("purchase_orders.state = 'Finalizada' OR payments.purchase_order_id IS NULL")
    end
 
-
   #FILTROS DE BUSQUEDA
     def self.search_by_user user
       if !user.blank?
@@ -95,14 +94,13 @@ class DailyCashMovement < ApplicationRecord
       end
     end
 
-    ## generar movimientos de caja diaria para comprobantes confirmados
-    ## solo para recibos
+    ## genera movimientos de caja diaria para recibos confirmados
     def self.generate_from_receipt receipt
       if receipt.confirmado?
         receipt.account_movement_payments.each do |payment|
           if payment.type_of_payment == "0"
             if payment.payment_date == Date.today
-              DailyCashMovement.save_from_payment payment, receipt.company_id
+              save_from_payment payment, receipt.company_id
             end
           end
         end
@@ -112,7 +110,7 @@ class DailyCashMovement < ApplicationRecord
     ## guarda un movimiento de caja diaria para pagos de contado con comprobantes CONFIRMADOS
   	def self.save_from_payment payment, company_id
       invoice     = Invoice.where(id: payment.invoice_id).first
-      daily_cash  = DailyCash.current_daily_cash(company_id)
+      daily_cash  = DailyCash.current_daily_cash(company_id) #caja del día
   		movement    = self.where(daily_cash_id: daily_cash.id, payment_id: payment.id).first_or_initialize
   		movement.movement_type 			   =  "Pago"
   		movement.amount 				       =  payment.total

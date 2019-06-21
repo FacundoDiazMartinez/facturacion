@@ -78,13 +78,11 @@ class ReceiptsController < ApplicationController
   # PATCH/PUT /receipts/1
   # PATCH/PUT /receipts/1.json
   def update
+    bandera_confirmado = params[:button] == "confirm"
     @receipt.user_id = current_user.id   #Se agregó el 22/5 para que los recibos tengan un usuario y no quede el campo en nil
-    if params[:button] == "confirm"
-      @receipt.state = "Finalizado"
-    end
     respond_to do |format|
       if @receipt.update(receipt_params)
-        @receipt.reload.touch_account_movement if (@receipt.state == "Finalizado")
+        @receipt.reload.confirmar! if bandera_confirmado
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else
@@ -125,7 +123,7 @@ class ReceiptsController < ApplicationController
   def autocomplete_invoice_and_debit_note
     @client = Client.find(params[:client_id])
     term = params[:term]
-    invoices_and_dn = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND cbte_tipo IN ('01', '06', '11','02','07','12') AND associated_invoice IS NULL", "%#{term}%").order(:comp_number).map{|rtl| rtl if rtl.real_total_left > 0}.compact
+    invoices_and_dn = @client.invoices.where("comp_number ILIKE ? AND (state = 'Confirmado' OR state = 'Anulado parcialmente') AND cbte_tipo IN ('01', '06', '11','02','07','12') AND associated_invoice IS NULL", "%#{term}%").order(:comp_number).map{|rtl| rtl if rtl.real_total_left_including_debit_notes > 0}.compact
     render :json => invoices_and_dn.map { |invoice| {:id => invoice.id,:label => invoice.full_number_with_nc_and_nd, comp_number: invoice.comp_number, associated_invoices_total: invoice.confirmed_notes.sum(:total).round(2), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
   end
 

@@ -1,23 +1,23 @@
 class AccountMovementPayment < Payment
 	self.table_name = "payments"
-	belongs_to :account_movement, touch: true ## en guarado o destrucción ejecuta un touch
+	## 2 tipos de pagos:
+	## registrados por el usuario: pagos que hizo el Cliente
+	## registrados por el sistema: pagos utilizados para pagar comprobantes
+	belongs_to :account_movement, touch: true ##al guardar o eliminar ejecuta un touch
 	belongs_to :invoice, optional: true
+	belongs_to :receipt, optional: true
 
 	before_validation :set_flow
 	before_validation :check_receipt_state ## evita borrar pagos de un recibo confirmado
 
 	before_save 			:check_company_id
 	before_save 			:check_client_id
-	#after_save 				:update_total_to_receipt comentada para probar touch de account movement
-	after_destroy 		:update_total_to_receipt
 	after_destroy 		:set_total_pay_to_invoice
 
-	## sólo para pagos que pertenecen a un recibo
-	## suma todos los pagos (activos) en el recibo y actualiza su TOTAL
-	def update_total_to_receipt
-		self.account_movement.receipt.save unless self.account_movement.receipt.nil? # after_touch lo hará?
-		self.account_movement.set_amount_available unless self.account_movement.nil?
-		self.account_movement.receipt.save_amount_available unless self.account_movement.receipt.nil?
+	def confirmar!
+		if account_movement.receipt
+			DailyCashMovement.save_from_payment self, account_movement.receipt.company_id
+		end
 	end
 
 	def set_total_pay_to_invoice
@@ -36,7 +36,7 @@ class AccountMovementPayment < Payment
     	super()
     else
 	    update_column(:active, false)
-	    update_total_to_receipt
+	    account_movement.touch
 			set_total_pay_to_invoice
 	    freeze
     end
