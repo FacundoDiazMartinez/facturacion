@@ -78,13 +78,11 @@ class ReceiptsController < ApplicationController
   # PATCH/PUT /receipts/1
   # PATCH/PUT /receipts/1.json
   def update
+    bandera_confirmado = params[:button] == "confirm"
     @receipt.user_id = current_user.id   #Se agregó el 22/5 para que los recibos tengan un usuario y no quede el campo en nil
-    if params[:button] == "confirm"
-      @receipt.state = "Finalizado"
-    end
     respond_to do |format|
       if @receipt.update(receipt_params)
-        @receipt.reload.touch_account_movement if (@receipt.state == "Finalizado")
+        @receipt.reload.confirmar! if bandera_confirmado
         format.html { redirect_to edit_receipt_path(@receipt.id), notice: 'El recibo fue actualizado correctamente.' }
         format.json { render :show, status: :ok, location: @receipt }
       else

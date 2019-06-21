@@ -11,7 +11,6 @@ class AccountMovement < ApplicationRecord
 
   before_validation   :set_attrs_to_receipt
   before_save         :set_saldo_to_movements, if: Proc.new{ |am| am.active == true && am.active_was == true} #Porque cuando se crea (en segunda instancia) se setea el saldo. Cuando se crea el AM primero se crea con active=false y al confirmar recibo pasa a active=true
-  before_save         :set_total_if_subpayments
   before_save         :check_amount_available
   before_destroy      :fix_saldo
   after_touch         :payments_updated
@@ -104,7 +103,19 @@ class AccountMovement < ApplicationRecord
   #FUNCIONES
     #el touch lo provoca account movement payments
     def payments_updated
+      pp "PAYMENTS UPDATED"
+      self.set_total_if_subpayments
       self.save #para que corra callbacks
+      pp "FIN"
+    end
+
+    ## establece el total del movimiento de cuenta
+    ## saldo disponible = pagos registrados por el usuario - pagos utilizados por el sistema
+    def set_total_if_subpayments
+      if self.account_movement_payments.any?
+        self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
+        self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
+      end
     end
 
     def self.sum_available_amount_to_asign(client_id)
@@ -139,6 +150,7 @@ class AccountMovement < ApplicationRecord
       set_saldo_to_movements
     end
 
+    ## no sé que hace este codigo, pura confianza
   	def set_saldo_to_movements
   		debe_dif 	= debe  ? (total - total_was) : 0.0
   		haber_dif	= haber ? (total - total_was) : 0.0
@@ -188,18 +200,10 @@ class AccountMovement < ApplicationRecord
     def set_attrs_to_receipt
       if !receipt.nil? && !client.nil?
         self.receipt.company_id = self.client.company_id
-        self.receipt.date = Date.today
+        self.receipt.date       = Date.today
       elsif client.nil?
-        self.client_id = self.receipt.client_id
-        self.cbte_tipo = self.receipt.cbte_tipo
-      end
-    end
-
-    def set_total_if_subpayments
-      if self.account_movement_payments.any?
-        self.total = self.account_movement_payments.where(generated_by_system: false).sum(:total)
-        pp self.amount_available = self.total - self.account_movement_payments.where(generated_by_system: true).sum(:total)
-        pp self.account_movement_payments
+        self.client_id          = self.receipt.client_id
+        self.cbte_tipo          = self.receipt.cbte_tipo
       end
     end
 
@@ -223,6 +227,14 @@ class AccountMovement < ApplicationRecord
       errors.add(:debe, "No se define si el movimiento pertenece al Debe o al Haber.") unless debe != haber
     end
 
+    ##confirma el movimiento de cuenta para que impacte en la cuenta corriente del cliente
+    ##confirma los pagos pertenecientes a este movimiento de cuenta
+    def confirmar!
+      self.account_movement_payments.map{ |payment| payment.confirmar! }
+      self.active = true
+      self.save
+    end
+
     def self.create_from_receipt receipt
       if receipt.persisted?
         am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
@@ -233,7 +245,7 @@ class AccountMovement < ApplicationRecord
         am.haber       = receipt.cbte_tipo != "99"
         am.total       = receipt.total.to_f
         am.saldo       = receipt.client.saldo - receipt.total.to_f
-        #am.active      = receipt.state == "Finalizado"
+        am.active      = false ## el recibo debe ser el encargado de confirmar el movimiento de cuenta
         am.save
         return am
       end
