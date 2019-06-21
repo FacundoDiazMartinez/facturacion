@@ -2,7 +2,7 @@ class IncomePayment < Payment
 	self.table_name = "payments"
 
 	belongs_to :invoice
-	belongs_to :account_movement, optional: true
+	belongs_to :account_movement, optional: true, touch: true
 
 	after_save :set_total_pay_to_invoice
 	after_save :set_notification
@@ -33,7 +33,7 @@ class IncomePayment < Payment
  		def check_available_saldo
  			pp "Inc Pay - 34 -CHECK AVAILABLE SALDO"
  			pp total
- 			pp invoice.client.account_movements.where('amount_available > 0').sum(:amount_available)	
+ 			pp invoice.client.account_movements.where('amount_available > 0').sum(:amount_available)
  			errors.add(:total, "Inc Pay - 37 - No posee el saldo suficiente en su cuenta corriente.") unless (total.to_f <= invoice.client.account_movements.where('account_movements.amount_available > 0').sum(:amount_available).to_f || invoice.is_credit_note?)
  		end
 
@@ -88,11 +88,11 @@ class IncomePayment < Payment
 	end
 
 	def destroy
-      	update_column(:active, false)
-      	set_total_pay_to_invoice
-      	run_callbacks :destroy
-      	freeze
-    end
+  	update_column(:active, false)
+  	set_total_pay_to_invoice
+  	run_callbacks :destroy
+  	freeze
+  end
 
 	def set_total_pay_to_invoice
 		sum = invoice.sum_payments

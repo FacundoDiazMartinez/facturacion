@@ -174,7 +174,7 @@ class InvoicesController < ApplicationController
     if params[:invoices_ids]
       invoices = Invoice.find(params[:invoices_ids])
       render :json => invoices.map{ |invoice| {
-        id: invoice.id, total_payed: invoice.total_pay, 
+        id: invoice.id, total_payed: invoice.total_pay,
         real_total_left: (invoice.is_credit_note? ? 0 : invoice.real_total_left),
         real_total: invoice.real_total,
         total_left: invoice.total_left}

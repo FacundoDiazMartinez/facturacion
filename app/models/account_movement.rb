@@ -111,7 +111,7 @@ class AccountMovement < ApplicationRecord
     end
 
     def set_saldo
-      if self.active
+      if self.active && (self.active_was == false) ## sólo funciona al confirmar el movimiento de cuenta
         if debe
           if self.invoice
             ##define el total nuevamente
@@ -169,7 +169,7 @@ class AccountMovement < ApplicationRecord
 
     def fix_saldo
       self.total = 0
-      set_saldo_to_movements
+      #set_saldo_to_movements
     end
 
     ## no sé que hace este codigo, pura confianza
