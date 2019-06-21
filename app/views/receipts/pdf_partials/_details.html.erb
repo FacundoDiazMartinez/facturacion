@@ -50,7 +50,7 @@
                     <%= note.name_with_comp %>
                   <% end %>
                 </td>
-                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? note.total : 0.0)%></td>
+                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? @receipt.receipt_details.find_by_invoice_id(note.id).total : 0.0)%></td>
               </tr>
             <% end %>
           <% elsif rd.invoice.is_debit_note? %>
@@ -62,7 +62,7 @@
                 Cancelación <%= rd.invoice.name_with_comp %>
               <% end %>
               </td>
-              <td class="text_right">$ <%=  sprintf('%.2f', rd.invoice.total)%></td>
+              <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
             </tr>
           <% elsif rd.invoice.is_credit_note? %>
             <tr class="bg-white">
