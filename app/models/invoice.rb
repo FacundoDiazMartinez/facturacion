@@ -669,7 +669,7 @@ class Invoice < ApplicationRecord
 
     def full_number_with_nc_and_nd
       if state == "Confirmado" || state == "Anulado" || state == "Anulado parcialmente"
-        "#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_including_debit_notes} "
+        "#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_left_including_debit_notes} "
       else
         "Falta confirmar"
       end
