@@ -1,13 +1,7 @@
 class Receipt < ApplicationRecord
   include Deleteable
   #RECIBO DE PAGO
-  ## proceso para un recibo:
-  # el recibo es un comprobante de pago, y certifica que un pago fue realizado
-  # este recibo tiene 3 partes: encabezado, detalle (comprobantes asociados) y pagos
-  ## el recibo puede tener 2 estados: Pendiente o Finalizado (confirmado)
 
-  ## para recibos pendientes las validaciones son mínimas y se puede registrar todo
-  ## para recibos confirmados es necesario validar los pagos
   belongs_to :client
   belongs_to :sale_point
   belongs_to :company
@@ -21,7 +15,7 @@ class Receipt < ApplicationRecord
   accepts_nested_attributes_for :account_movement, reject_if: :all_blank, allow_destroy: true
 
   before_validation :set_number, on: :create #establece un número consecutivo al último recibo perteneciente a la empresa
-  before_validation :validate_receipt_detail #valida que los detalles del recibo pertenezcan a la empresa
+  # before_validation :validate_receipt_detail #valida que los detalles del recibo pertenezcan a la empresa
 
   STATES = ["Pendiente", "Finalizado"]
 
@@ -74,7 +68,7 @@ class Receipt < ApplicationRecord
 
     ## valida que las facturas asociadas pertenecen al cliente
     def validate_receipt_detail
-      receipt_details.each{|rd| rd.invoices_clients_validation}
+      receipt_details.each{ |rd| rd.invoices_clients_validation }
     end
   #VALIDACIONES
 
