@@ -122,11 +122,12 @@ class InvoicesController < ApplicationController
     @client = @invoice.client
     @invoice.user_id = current_user.id
     respond_to do |format|
-      if @invoice.update(invoice_params, params[:send_to_afip])
+      if @invoice.update(invoice_params, params[:send_to_afip])##invoice 518
         # session.delete(:return_to)
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.' }
       else
         pp @invoice.errors
+        @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
         format.html { render :edit }
       end
     end

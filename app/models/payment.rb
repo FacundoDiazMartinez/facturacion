@@ -18,7 +18,6 @@ class Payment < ApplicationRecord
   has_one :compensation_payment
 
   after_initialize  :set_payment_date
-  ##after_save        :save_daily_cash_movement ##este metodo tiene que ser solamente para pagos confirmados
   after_update      :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
 
   default_scope { where(active: true) }

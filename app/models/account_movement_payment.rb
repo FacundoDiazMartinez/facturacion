@@ -1,20 +1,22 @@
 class AccountMovementPayment < Payment
 	self.table_name = "payments"
-	## 2 tipos de pagos:
-	## registrados por el usuario: pagos que hizo el Cliente
-	## registrados por el sistema: pagos utilizados para pagar comprobantes
-	belongs_to :account_movement, touch: true ##al guardar o eliminar ejecuta un touch
+
+	belongs_to :account_movement, touch: true
 	belongs_to :invoice, optional: true
-	belongs_to :receipt, optional: true
 
-	before_validation :set_flow
-	before_validation :check_receipt_state ## evita borrar pagos de un recibo confirmado
+	before_validation :check_receipt_state ##evita borrar pagos de un recibo confirmado
 
+	validates_presence_of :account_movement, message: "Movimiento de cuenta faltante."
+
+	before_save				:set_flow
 	before_save 			:check_company_id
 	before_save 			:check_client_id
 	after_destroy 		:set_total_pay_to_invoice
 
-	def confirmar!
+	scope :user_payments, -> { where(generated_by_system: false) }
+	scope :system_payments, -> { where(generated_by_system: true) }
+
+	def confirmar
 		if account_movement.receipt
 			self.save_daily_cash_movement ## perteneciente al modelo de Payment
 		end
@@ -43,6 +45,8 @@ class AccountMovementPayment < Payment
 	end
 	#PRECESOS
 	private
+	default_scope { where.not(account_movement_id: nil) }
+
 	def check_company_id
 		self.company_id = self.account_movement.receipt.company_id unless self.account_movement.receipt.nil?
 	end
@@ -52,12 +56,13 @@ class AccountMovementPayment < Payment
 	end
 
 	def set_flow
-		self.flow = self.account_movement.cbte_tipo == "99" ? "expense" : "income"
+		self.flow = self.account_movement.debe ? "expense" : "income"
 	end
 
+	##TODO DEBE VERIFICAR EL ESTADO DE ACCMOV, no de receipt
 	def check_receipt_state
-	  unless account_movement.receipt.nil?
+		unless account_movement.nil? || account_movement.receipt.nil?
 			errors.add("Recibo confirmado", "Los pagos de un recibo confirmado no pueden ser modificados.") unless account_movement.receipt.editable?
-	  end
+		end
 	end
 end

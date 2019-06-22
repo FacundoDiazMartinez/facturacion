@@ -69,9 +69,9 @@
                 </div>
               </td>
               <% end %>
-              <td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"popover"}, min: 1, step: :any, disabled: !@invoice.editable? %></td>
+              <td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"popover"}, min: 1, step: :any, required: true, disabled: !@invoice.editable? %></td>
               <td>
-                <%= f.select :depot_id, current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, {prompt: "Seleccione..."}, {class: 'form-control form-control-sm depot_id', disabled: !@invoice.editable?, style: 'max-width: 100px;'} %>
+                <%= f.select :depot_id, current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, {prompt: "Seleccione..."}, {class: 'form-control form-control-sm depot_id',  required: true, disabled: !@invoice.editable?, style: 'max-width: 100px;'} %>
               </td>
               <td class="only-desktop">
                 <%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, 7),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?, style: 'width: 100px;'} %>
@@ -108,3 +108,10 @@
     </div>
   </div>
 </div>
+
+<script>
+  $(document).on('nested:fieldRemoved', (event) => {
+    $('[required]', event.field).removeAttr('required');
+    $('[min]', event.field).removeAttr('min');
+  })
+</script>

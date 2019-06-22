@@ -107,15 +107,15 @@ class Receipt < ApplicationRecord
       self.number = last_r.nil? ? "00000001" : (last_r.number.to_i + 1).to_s.rjust(8,padstr= '0') unless (!self.number.blank? || self.total < 0)
     end
 
-  	def touch_account_movement
-		  account_movement = AccountMovement.create_from_receipt(self)
-      self.update_columns(total: account_movement.total)
-    end
+  	# def touch_account_movement
+		#   account_movement = AccountMovement.create_from_receipt(self)
+    #   self.update_columns(total: account_movement.total)
+    # end
 
     ## genera un recibo de pago cuando una factura confirmada tiene pagos
     ## ejecutado en after_save de invoice
     def self.create_from_invoice invoice
-      if invoice.state == "Confirmado"
+      if invoice.confirmado?
         if invoice.receipts.empty? && invoice.total_pay > 0
           r               = Receipt.new
           r.cbte_tipo     = invoice.is_credit_note? ? "99" : "00"
@@ -125,12 +125,16 @@ class Receipt < ApplicationRecord
           r.client_id     = invoice.client_id
           r.sale_point_id = invoice.sale_point_id
           r.user_id       = invoice.user_id
-          #r.state        = "Finalizado"
           if r.save
             ReceiptDetail.save_from_invoice(r, invoice)
-            r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
+            AccountMovement.generate_from_receipt_from_invoice(r, invoice)
+            #r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
             r.reload
+            pp "RELOADED"
+            #r.copy_income_payments invoice
             r.confirmar!
+            r.reload
+            pp "RELOADED"
           else
             pp r.errors
           end
@@ -145,6 +149,15 @@ class Receipt < ApplicationRecord
         end
       end
     end
+    #
+    # #para cada income_payment copia un movimiento de cuenta del recibo
+    # def copy_income_payments invoice
+    #   AccountMovement.unscoped  do
+    #     invoice.income_payments.each do |income_payment|
+    #       self.account_movement.generate_account_movement_payment income_payment
+    #     end
+    #   end
+    # end
 
     def destroy
   		update_column(:active, false)
@@ -208,9 +221,10 @@ class Receipt < ApplicationRecord
           self.account_movement.confirmar!
         end
         self.reload
+        pp self
         self.saved_amount_available = self.account_movement.amount_available ## el saldo para futuras compras se calcula con los movimientos de cuenta confirmados
-        self.state = "Finalizado"
-        self.save
+        self.state                  = "Finalizado"
+        self.save!
       end
     end
 
