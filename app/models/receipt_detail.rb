@@ -3,7 +3,6 @@ class ReceiptDetail < ApplicationRecord
   belongs_to :invoice
 
   has_one    :invoice_payment, ->(rd){ joins(:invoice).where(generated_by_system: true, account_movement_id: rd.receipt.account_movement.id, invoices: {cbte_tipo: Invoice::COD_INVOICE})}, through: :invoice, class_name: "IncomePayment", source: :income_payments
-
   validate   :invoices_clients_validation
 
   scope      :only_invoices, -> {joins(:invoice).where(invoices: {cbte_tipo: Invoice::COD_INVOICE})}
@@ -11,6 +10,8 @@ class ReceiptDetail < ApplicationRecord
 	def self.save_from_invoice receipt, invoice
   	rd       = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize
   	rd.total = receipt.total
+    pp "SAVE FROM INVOICE RECEIPT DETAIL MODELO"
+    pp rd.rtl_invoice = invoice.real_total_left
   	rd.save
  	end
 

@@ -396,6 +396,7 @@ class Invoice < ApplicationRecord
                 pp income_payment.total
                 pp "ABAJO SE VIENE EL UPDATE"
                 pp rd.update_column(:total, income_payment.total)
+                rd.update_column(:rtl_invoice, invoice.real_total_left.to_f - income_payment.total)
 						  else
                 pp income_payment.errors
               end

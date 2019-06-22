@@ -757,6 +757,7 @@ ActiveRecord::Schema.define(version: 2019_06_22_065504) do
     t.float "total", default: 0.0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "rtl_invoice"
     t.index ["invoice_id"], name: "index_receipt_details_on_invoice_id"
     t.index ["receipt_id"], name: "index_receipt_details_on_receipt_id"
   end
