@@ -78,7 +78,7 @@ class Invoice < ApplicationRecord
   #after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?} >>> Reeplazado por :impact_stock_if_cn
   after_save 		:impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
   after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
-	after_touch 	:update_total_pay #, :touch_account_movement, :check_receipt
+	after_touch 	:update_total_pay
   before_destroy :check_if_editable
 
   #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
@@ -180,7 +180,7 @@ class Invoice < ApplicationRecord
 
 
 	#FUNCIONES
-		##before_save calcula el monto total en base a los conceptos, tributos y descuentos
+		##before_save calcula el monto total en base a los conceptos, tributos, descuentos y pagos
     def set_total_and_total_pay
       suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
       suma_tributos	 	= self.tributes.reject(&:marked_for_destruction?).pluck(:importe).reduce(:+)
@@ -283,6 +283,10 @@ class Invoice < ApplicationRecord
         errors.add("Factura confirmada", "No puede modificar una factura confirmada.")
       end
     end
+
+		def confirmado?
+		  self.state == "Confirmado"
+		end
 
     def is_invoice?
       COD_INVOICE.include?(cbte_tipo) || cbte_tipo.nil?
@@ -532,7 +536,7 @@ class Invoice < ApplicationRecord
     end
 
     def check_receipt
-      Receipt.create_from_invoice(self)
+      Receipt.create_from_invoice(self) if self.confirmado?
     end
 
     def update_total_pay

@@ -114,7 +114,7 @@ class Receipt < ApplicationRecord
     ## genera un recibo de pago cuando una factura confirmada tiene pagos
     ## ejecutado en after_save de invoice
     def self.create_from_invoice invoice
-      if invoice.state == "Confirmado"
+      if invoice.confirmado?
         if invoice.receipts.empty? && invoice.total_pay > 0
           r               = Receipt.new
           r.cbte_tipo     = invoice.is_credit_note? ? "99" : "00"
@@ -126,7 +126,7 @@ class Receipt < ApplicationRecord
           r.user_id       = invoice.user_id
           if r.save
             ReceiptDetail.save_from_invoice(r, invoice)
-            AccountMovement.generate_from_receipt_from_invoice r, invoice
+            AccountMovement.generate_from_receipt_from_invoice(r, invoice)
             #r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
             r.reload
             pp "RELOADED"
