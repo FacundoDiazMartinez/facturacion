@@ -2,24 +2,18 @@ class IncomePayment < Payment
 	self.table_name = "payments"
 
 	belongs_to :invoice
-	belongs_to :account_movement, optional: true, touch: true
+	belongs_to :account_movement, optional: true, touch: true ##IMPORTANTE debe actualizar los montos del movimiento de cuenta
 
-	after_save :set_total_pay_to_invoice
-	after_save :set_notification
-	#after_save :touch_invoice, unless: :generated_by_system  (ES LO MISMO QUE after_save set_total_pay_to_invoice de arriba)
+	after_save 		:set_total_pay_to_invoice
+	after_save 		:set_notification
+	before_save 	:change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
+	before_save 	:check_company_id
+	before_save 	:check_client_id
+	after_create 	:set_new_detail_if_credit_card
 	after_destroy :set_amount_available_to_account_movement
-	before_save :change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
-	before_save :check_company_id
-	before_save :check_client_id
-	before_validation :set_flow
-	after_create :set_new_detail_if_credit_card
 
-	validate :check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
-	validate :check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
-
-	def self.default_scope
-    	where(flow: "income", active: true)
- 	end
+	validate 					:check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
+	validate 					:check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
 
  	#VALIDACIONES
  		def check_max_total
@@ -97,18 +91,18 @@ class IncomePayment < Payment
 	def set_total_pay_to_invoice
 		sum = invoice.sum_payments
 		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
-  	end
-
-  	def set_notification
-     	Notification.create_from_payment(self)
-    end
-
-  	def set_flow
-		self.flow = "income"
 	end
+
+	def set_notification
+   	Notification.create_from_payment(self)
+  end
 
 	def change_credit_card_balance
 		CreditCard.find(credit_card_id).update_balance_from_payment(self)
 	end
 	#PROCESOS
+
+	private
+	default_scope { where(flow: "income") }
+	# default_scope { where(flow: "income", active: true, account_movement: nil) }
 end

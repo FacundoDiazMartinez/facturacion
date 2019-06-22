@@ -1,19 +1,9 @@
 class ExpensePayment < Payment
+	self.table_name = "payments"
 	belongs_to :purchase_order, touch: true
 
-	self.table_name = "payments"
-
-	before_validation :set_flow
 	before_save :check_company_id
 	before_destroy :touch_purchase_order
-
-	def self.default_scope
-    	where(flow: "expense", active: true)
- 	end
-
- 	def set_flow
- 		self.flow = "expense"
- 	end
 
 	def check_company_id
 		self.company_id = purchase_order.company_id
@@ -28,4 +18,6 @@ class ExpensePayment < Payment
 		run_callbacks :destroy
 	end
 
+	private
+	default_scope { where(flow: "expense") }
 end

@@ -26,48 +26,20 @@ class Invoice < ApplicationRecord
   has_many :receipt_details
   has_many :receipts, through: :receipt_details
   has_many :bonifications, dependent: :destroy
-
   has_one  :account_movement, dependent: :destroy
 
   accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: Proc.new{|ip| ip["type_of_payment"].blank?}
   accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :tributes, allow_destroy: true, reject_if: Proc.new{|t| t["afip_id"].blank?}
-  accepts_nested_attributes_for :client, reject_if: :all_blank
-  accepts_nested_attributes_for :bonifications, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :tributes, 				allow_destroy: true, reject_if: Proc.new{|t| t["afip_id"].blank?}
+	accepts_nested_attributes_for :bonifications, 	allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :client, 															 reject_if: :all_blank
 
 	before_validation :check_if_confirmed
-
-	before_save :old_real_total_left, if: Proc.new{|i| i.is_credit_note?}
-
-	after_create 	:create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
-	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
-  after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
-  after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
-  after_save 		:update_expired, if: Proc.new{|i| i.state == "Confirmado"}
-  #after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?} >>> Reeplazado por :impact_stock_if_cn
-  after_save 		:impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
-  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
-	after_touch 	:update_total_pay #, :touch_account_movement, :check_receipt
-
-  before_destroy :check_if_editable
 
 	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado", "Anulado parcialmente"]
   COD_INVOICE = ["01", "06", "11"]
   COD_ND = ["02", "07", "12"]
   COD_NC = ["03", "08", "13"]
-
-  validates_presence_of :client_id, message: "El comprobante debe estar asociado a un cliente."
-  #validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice?}
-  validates_presence_of :total, message: "El total no debe estar en blanco."
-  validates_numericality_of :total, greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0."
-  validates_presence_of :total_pay, message: "El total pagado no debe estar en blanco."
-  validates_presence_of :sale_point_id, message: "El punto de venta no debe estar en blanco."
-  validates_inclusion_of :state, in: STATES, message: "Estado inválido."
-  validate :cbte_tipo_inclusion
-  validate :at_least_one_detail, if: Proc.new{ |i| i.state_was == "Pendiente" && (i.state == "Pagado" || i.state == "Confirmado" )}
-  validate :fch_ser_if_service
-  validates_uniqueness_of :associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
-  validates_numericality_of :bonification, :greater_than => -100, :less_than => 100
 
   TRIBUTOS = [
    ["Impuestos nacionales", "1"],
@@ -82,6 +54,32 @@ class Invoice < ApplicationRecord
    ["Otras Percepciones", "9"],
    ["Percepción de IVA a no Categorizado", "13"]
   ]
+
+	validates_presence_of 		:client_id, message: "El comprobante debe estar asociado a un cliente."
+	#validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice? }
+	validates	 								:total, presence: { message: "El total no debe estar en blanco." },
+																		numericality: { greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0." }
+	validates_presence_of 		:total_pay, message: "El total pagado no debe estar en blanco."
+	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
+	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
+	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
+	validates_numericality_of :bonification, :greater_than => -100, :less_than => 100
+	validate 									:cbte_tipo_inclusion
+	validate 									:at_least_one_detail
+	validate 									:fch_ser_if_service
+
+	before_save 	:old_real_total_left, if: Proc.new{|i| i.is_credit_note?}
+	before_save 	:set_total_and_total_pay
+	after_create 	:create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
+	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
+  after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
+  after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
+  after_save 		:update_expired, if: Proc.new{|i| i.state == "Confirmado"}
+  #after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?} >>> Reeplazado por :impact_stock_if_cn
+  after_save 		:impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
+  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
+	after_touch 	:update_total_pay #, :touch_account_movement, :check_receipt
+  before_destroy :check_if_editable
 
   #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
@@ -160,20 +158,17 @@ class Invoice < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   #VALIDACIONES
-
     def check_if_editable
-      errors.add(:base, "No puede eliminar una factura confirmada") unless editable?
+      errors.add(:base, "No puede modificar una factura confirmada") unless editable?
       errors.blank?
     end
 
+		##debe validar que para la factura exista al menos 1 detalle (conceptos)
     def at_least_one_detail
-      # when creating a new invoice: making sure at least one detail exists
-      return errors.add :base, "Debe tener al menos un concepto" unless invoice_details.length > 0
-
-      # when updating an existing invoice: Making sure that at least one detail would exist
-      return errors.add :base, "Debe tener al menos un concepto" if invoice_details.reject{|invoice_detail| invoice_detail._destroy == true}.empty?
+			errors.add(:base, "El comprobante debe tener al menos 1 (un) concepto") unless self.invoice_details.reject(&:marked_for_destruction?).count > 0
     end
 
+		##validación para comprobantes de servicio
     def fch_ser_if_service
       unless concepto == "Productos"
         errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") unless !self.fch_serv_desde.blank?
@@ -185,25 +180,14 @@ class Invoice < ApplicationRecord
 
 
 	#FUNCIONES
-
-    # def income_payments_attributes=(attributes)
-    #   attributes.each do |num, c|
-    #     if c["_destroy"] == "false"
-    #       pay = self.income_payments.where(id: c[:id]).first_or_initialize
-    #       pay.credit_card_id = c.delete("credit_card_id")
-    #       pay.type_of_payment = c.delete("type_of_payment")
-    #       pay.total = c.delete("total")
-    #       pay.payment_date = c.delete("payment_date")
-    #       self.payment = pay
-    #       super
-    #     else
-    #       payment = self.income_payments.where(id: c[:id]).first
-    #       if !payment.nil?
-    #         payment.destroy
-    #       end
-    #     end
-    #   end
-    # end
+		##before_save calcula el monto total en base a los conceptos, tributos y descuentos
+    def set_total_and_total_pay
+      suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
+      suma_tributos	 	= self.tributes.reject(&:marked_for_destruction?).pluck(:importe).reduce(:+)
+      suma_descuentos	= self.bonifications.reject(&:marked_for_destruction?).pluck(:amount).reduce(:+)
+			self.total 			= suma_conceptos + suma_tributos - suma_descuentos
+			self.total_pay	= self.income_payments.reject(&:marked_for_destruction?).pluck(:total).reduce(:+)
+    end
 
 		def total_left
 			left = total.to_f - total_pay.to_f
@@ -281,7 +265,7 @@ class Invoice < ApplicationRecord
     end
 
     def destroy(mode = :soft)
-      if self.state == "Pendiente" || self.state == "Pagado"
+      if self.state == "Pendiente" || self.state == "Pagado" ##editable?
         update_column(:active, false)
         run_callbacks :destroy
         freeze
@@ -384,32 +368,13 @@ class Invoice < ApplicationRecord
       end
     end
 
-    # def self.paid_unpaid_invoices_viejo client
-    #   client.account_movements.where("account_movements.amount_available > 0.0").each do |am|
-    #     if am.amount_available > 0
-    #       unpaid_invoices = self.where("total > total_pay AND state = 'Confirmado' AND client_id = ?", client.id).order("cbte_fch DESC")
-    #       unpaid_invoices.each_with_index do |invoice, index|
-    #         if am.receipt.receipt_details.map(&:invoice_id).include? (invoice.id)
-    #           pay = IncomePayment.new(type_of_payment: "6", payment_date: Date.today, invoice_id: invoice.id, generated_by_system: true, account_movement_id: am.id)
-    #           pay.total = (am.amount_available.to_f >= invoice.total_left.to_f) ? invoice.total_left.to_f : am.amount_available.to_f
-    #           pay.save
-    #           am.update_column(:amount_available, am.amount_available - pay.total)
-    #           break if am.amount_available < 1
-    #         end
-    #       end
-    #     end
-    #   end
-    # end
-
+		##itera a traves de los movimientos de cuenta y sus recibos asociados para pagar los comprobantes
+		##cada recibo puede tener detalles (receipt_details) que contienen los comprobantes asociados que el cliente quiere pagar
     def self.paid_unpaid_invoices client
-      client.account_movements.where("account_movements.amount_available > 0.0 AND account_movements.receipt_id IS NOT NULL").each do |am|
-        pp "Invoice.rb - paid_unpaid -398 - acc_mov.each"
-        pp am
+      client.account_movements.saldo_disponible_para_pagar.each do |am|
         am.receipt.receipt_details.order(:id).each do |rd| #itera para cada detalle del recibo, que contienen los comprobantes asociados
-          pp "Invoice.rb - paid_unpaid -401 - am > 0"
           invoice = rd.invoice
-          unless invoice.is_credit_note?
-            pp "Invoice.rb - paid_unpaid -406 - is_credit_note?"
+          unless invoice.is_credit_note? ##las notas de crédito no se pagan
 						if invoice.real_total_left.to_f > 0
 							income_payment = IncomePayment.new(
 								type_of_payment: "6", #pago con cuenta corriente
@@ -418,15 +383,14 @@ class Invoice < ApplicationRecord
 								generated_by_system: true,
 								account_movement_id: am.id
 							)
+							pp "Am.amount_available"
+							pp am.amount_available
 							pp "Inc_payment.total "
               pp income_payment.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
-							if income_payment.save
-                pp "Am.amount_available"
-                pp am.amount_available
+							if income_payment.save ##produce un touch en el movimiento de cuenta
                 pp"income_payment.total"
                 pp income_payment.total
                 pp "ABAJO SE VIENE EL UPDATE"
-							  pp am.update_column(:amount_available, am.amount_available - income_payment.total)
                 pp rd.update_column(:total, income_payment.total)
 						  else
                 pp income_payment.errors
@@ -462,27 +426,35 @@ class Invoice < ApplicationRecord
       (real_total_including_debit_notes - total_pay).round(2)
     end
 
-    def paid_invoice_from_client_debt
+		##genera pagos de una factura usando el monto disponible en la cuenta corriente
+		def paid_invoice_from_client_debt
       result = false
-      account_movements_records  = client.account_movements.joins(:invoice).where("(invoices.cbte_tipo::integer IN (#{Invoice::COD_NC.join(', ')})) AND (account_movements.amount_available > 0)")
-      account_movements_records += client.account_movements.joins(:receipt).where("account_movements.amount_available > 0")
+			@band = false
+      account_movements_records  = client.account_movements.saldo_por_notas_de_credito
+      account_movements_records += client.account_movements.saldo_disponible_para_pagar
       account_movements_records.each do |am|
         @band = true
-        pay = self.income_payments.new(type_of_payment: "6", payment_date: Date.today, generated_by_system: true, account_movement_id: am.id)
-        pay.total = (am.amount_available.to_f >= self.real_total_left.to_f) ? self.real_total_left.to_f : am.amount_available.to_f
+        pay = self.income_payments.new(
+					type_of_payment: "6",
+					payment_date: Date.today,
+					generated_by_system: true,
+					account_movement_id: am.id
+				)
+				if am.amount_available.to_f >= self.real_total_left.to_f ##si el saldo disponible puede cubrir el faltante de la factura
+					pay.total = self.real_total_left.to_f ##el total del pago
+				else
+					pay.total = am.amount_available.to_f
+				end
         result = pay.save
         @last_pay = pay
-        if result
-          am.update_column(:amount_available, am.amount_available - pay.total)
-        else
-          pay.errors
-        end
         break if self.real_total_left == 0 || !result
       end
       if @band
         if result
-          return {response:  true, messages: ["Se genero el pago correctamente."]}
+          return {response:  true, messages: ["Pago generado correctamente."]}
         else
+					pp "ERRORES AL REGISTRAR EL PAGO"
+          pp pay.errors
           return {response:  false, messages: ["No tiene saldo disponible para cancelar la factura."]}
         end
       else
@@ -519,15 +491,11 @@ class Invoice < ApplicationRecord
     handle_asynchronously :delete_barcode, :run_at => Proc.new { 5.seconds.from_now }
     # correr en consola: rake jobs:work
 
-
     def set_state
-      if editable? && (total.to_f != 0.0)
-        case (total.to_f <= total_pay.to_f)
-        when true
-          update_column(:state, "Pagado")
-        when false
-          update_column(:state, "Pendiente")
-        end
+      if editable? && (total.to_f > 0.0)
+				if total.to_f <= total_pay.to_f
+					update_column(:state, "Pagado")
+				end
       end
     end
 
@@ -764,7 +732,6 @@ class Invoice < ApplicationRecord
         no_gravado:     self.no_gravado,
         exento:         self.exento,
         otros_imp:      self.otros_imp
-
       )
       bill.doc_num = self.client.document_number
       return bill
@@ -928,6 +895,4 @@ class Invoice < ApplicationRecord
     #   return showed_payment
     # end
   end
-
-
 end

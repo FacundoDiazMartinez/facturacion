@@ -37,8 +37,6 @@
                 </div>
               </div>
             </div>
-
-
           <!-- SEGUNDA COLUMNA -->
 
           <!-- TERCERA COLUMNA -->
@@ -75,10 +73,8 @@
 
       <!-- BOTONES DE ACCION -->
         <div class="text-center">
-          <% if @invoice.state != "Confirmado" && @invoice.state != "Anulado" && @invoice.state != "Anulado parcialmente" %>
-            <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button',  data:{toggle: 'modal', target:'#confirm_invoice_modal'}, class: 'btn btn-primary' %>
+          <% if @invoice.editable? %>
             <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger' %>
-            <%# button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, onclick: 'openConfirmationModal()', class: 'btn btn-primary' %>
           <% else %>
             <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
           <% end %>
@@ -90,31 +86,31 @@
 
   <!-- PRODUCTOS -->
   <div id="idetails">
-    <%= render template: '/invoices/detail/index.html.erb', locals:{form: form} %>
+    <%= render template: '/invoices/detail/index.html.erb', locals: { form: form } %>
   </div>
   <!-- PRODUCTOS -->
 
   <!-- DESCUENTOS -->
   <div class="bonifications" style="display: none;" id="div_ibonifications">
-    <%= render template: '/invoices/bonifications/index.html.erb', locals:{form: form} %>
+    <%= render template: '/invoices/bonifications/index.html.erb', locals: { form: form } %>
   </div>
   <!-- DESCUENTOS -->
   <!-- TRIBUTOS -->
   <% if current_user.company.iva_cond == "Responsable Inscripto" %>
     <div class="tributes" style="display: none;" id="div_itributes">
-      <%= render template: '/invoices/tributes/index.html.erb', locals:{form: form} %>
+      <%= render template: '/invoices/tributes/index.html.erb', locals: { form: form } %>
     </div>
   <% end %>
   <!-- TRIBUTOS -->
 
   <!-- PAGOS -->
   <div id="ipayments">
-    <%= render template: '/invoices/payment/index.html.erb', locals:{form: form} %>
+    <%= render template: '/invoices/payment/index.html.erb', locals: { form: form } %>
   </div>
   <!-- PAGOS -->
   <div class="text-center">
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
-    <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: {disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe,:confirm => 'Revise los pagos antes de guardar'} if @invoice.editable? %>
+    <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: { disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe } if @invoice.editable? %>
   </div>
 <% end %>
 
@@ -195,7 +191,7 @@
 
 <script>
   $(document).ready(function(){
-      $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip();
   });
 
   $(document).on("change", "select", function(){
@@ -209,10 +205,4 @@
   $(document).on('nested:fieldRemoved', function(){
     $("#save_btn_invoice").attr("class","btn btn-danger");
   })
-
-  // $(document).on('keypress', function(e){
-  // 	if (e.keyCode == 13) { 										// Se deshabilita tecla ENTER
-  //     return false;
-  //   }
-  // })
 </script>
