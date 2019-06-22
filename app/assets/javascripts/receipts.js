@@ -27,19 +27,21 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
   if (band == false){
     $.get("/receipts/associate_invoice", {invoice_id: data.item.id}, "", "json")
       .done(function(details){
-        $.each(details, function(i, detail){
+          console.log(data.item);
+          $.each(details, function(i, detail){
           $(".add_nested_fields").click();
           tr = $("tr.fields").last();
           tr.find('input.tipo').val(detail.tipo);
           tr.find('input.invoice_comp_number').val(detail.label);
           tr.find('input.invoice_id').val(detail.id);
-        	tr.find('input.invoice_total').val("$ " + detail.total.toFixed(2));
+          tr.find('input.invoice_total').val("$ " + detail.total.toFixed(2));
           tr.find('input.associated_invoices_total').val("$ " + detail.associated_invoices_total.toFixed(2));
           faltante = detail.total_left.toFixed(2) //- detail.associated_invoices_total.toFixed(2)
           tr.find('input.invoice_total_left').val("$ " + faltante);
           tr.find('input.invoice_total_pay').val("$ " + detail.total_pay.toFixed(2));
           tr.find('input.invoice_created_at').val(detail.created_at);
         })
+        
         $("#editReceiptClient").attr('data-toggle', 'tooltip');
         $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
         $("#editReceiptClient").tooltip();
