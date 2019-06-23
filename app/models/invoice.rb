@@ -182,11 +182,13 @@ class Invoice < ApplicationRecord
 	#FUNCIONES
 		##before_save calcula el monto total en base a los conceptos, tributos, descuentos y pagos
     def set_total_and_total_pay
-      suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
-      suma_tributos	 	= self.tributes.reject(&:marked_for_destruction?).pluck(:importe).reduce(:+)
-      suma_descuentos	= self.bonifications.reject(&:marked_for_destruction?).pluck(:amount).reduce(:+)
-			self.total 			= suma_conceptos + suma_tributos - suma_descuentos
-			self.total_pay	= self.income_payments.reject(&:marked_for_destruction?).pluck(:total).reduce(:+)
+      pp "SUMAAA"
+      pp suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
+      pp "TRIBUTOS"
+      pp suma_tributos	 	= self.tributes.reject(&:marked_for_destruction?).pluck(:importe).reduce(:+)
+      pp suma_descuentos	= self.bonifications.reject(&:marked_for_destruction?).pluck(:amount).reduce(:+)
+			pp self.total 			= suma_conceptos + suma_tributos - suma_descuentos
+			pp self.total_pay	= self.income_payments.reject(&:marked_for_destruction?).pluck(:total).reduce(:+)
     end
 
 		def total_left
