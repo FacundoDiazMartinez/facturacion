@@ -4,7 +4,7 @@ class IvaBook < ApplicationRecord
   belongs_to :purchase_invoice, optional: true
   belongs_to :company
 
-  # default_scope { where(active: true) }
+  default_scope { where(active: true) }
 
   CBTE_TIPO = {
     "01"=>"FA",
@@ -57,7 +57,7 @@ class IvaBook < ApplicationRecord
     end
 
     def iva
-      if is_debit?
+      if is_debit? 
         self.invoice.imp_iva
       else
         self.purchase_invoice.iva_amount

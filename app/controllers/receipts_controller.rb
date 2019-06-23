@@ -137,7 +137,7 @@ class ReceiptsController < ApplicationController
 
   def associate_invoice
     invoices = [current_user.company.invoices.find(params[:invoice_id])]
-    invoices.first.notes.each{|n| invoices << n}
+    invoices.first.notes.where(state: 'Confirmado').each{|n| invoices << n}
     render :json => invoices.map { |invoice| {:id => invoice.id,:label => invoice.comp_number, tipo: invoice.nombre_comprobante, associated_invoices_total: invoice.confirmed_notes.sum(:total).round(2), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
     # el atributo label fue cambiado, original  > :label => invoice.full_number_with_debt
   end
