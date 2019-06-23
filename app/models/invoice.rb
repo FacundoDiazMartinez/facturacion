@@ -402,7 +402,7 @@ class Invoice < ApplicationRecord
       account_movements_records.each do |am|
         @band = true
         pay = self.income_payments.new(
-					type_of_payment: "6",
+					type_of_payment: "6", ##pago con cuenta corriente
 					payment_date: Date.today,
 					generated_by_system: true,
 					account_movement_id: am.id

@@ -11,9 +11,7 @@ class Client < ApplicationRecord
 	default_scope { where(active:true) }
 
 	after_create :set_create_activity, if: :belongs_to_user?
-
 	after_update :set_update_activity
-
 	after_touch	:update_debt
 
 	IVA_COND = ["Responsable Inscripto", "Responsable Monotributo", "Consumidor Final", "Exento"]
@@ -32,29 +30,6 @@ class Client < ApplicationRecord
 	accepts_nested_attributes_for :client_contacts, reject_if: :all_blank, allow_destroy: true
 	accepts_nested_attributes_for :invoices, reject_if: :all_blank, allow_destroy: true
 	accepts_nested_attributes_for :authorized_personals, reject_if: :all_blank, allow_destroy: true
-
-
-	# TABLA
-	# create_table "clients", force: :cascade do |t|
-	#     t.string "name", null: false
-	#     t.string "phone"
-	#     t.string "mobile_phone"
-	#     t.string "email"
-	#     t.string "address"
-	#     t.string "document_type", default: "D.N.I.", null: false
-	#     t.string "document_number", null: false
-	#     t.string "birthday"
-	#     t.boolean "active", default: true, null: false
-	#     t.string "iva_cond", default: "Responsable Monotributo", null: false
-	#     t.bigint "company_id"
-	#     t.bigint "user_id"
-	#     t.datetime "created_at", null: false
-	#     t.datetime "updated_at", null: false
-	#     t.float "saldo", default: 0.0, null: false
-	#     t.index ["company_id"], name: "index_clients_on_company_id"
-	#     t.index ["user_id"], name: "index_clients_on_user_id"
-	#   end
-	# TABLA
 
 	#FILTROS DE BUSQUEDA
 		def self.find_by_full_document params={}

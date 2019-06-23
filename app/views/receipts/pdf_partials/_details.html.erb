@@ -140,7 +140,7 @@
       <col width="100">
       <tr>
         <td class="text_right"><b>Importe Total:</b></td>
-        <td class="text_right"><b>$ <%= @receipt.total %></b></td>
+        <td class="text_right"><b>$ <%= sprintf('%.2f', @receipt.total ) %></b></td>
       </tr>
     </table>
   </div>
