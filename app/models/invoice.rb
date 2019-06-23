@@ -28,9 +28,9 @@ class Invoice < ApplicationRecord
   has_many :bonifications, dependent: :destroy
   has_one  :account_movement, dependent: :destroy
 
-  accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: Proc.new{|ip| ip["type_of_payment"].blank?}
+  accepts_nested_attributes_for :income_payments, allow_destroy: true, reject_if: Proc.new { |ip| ip["type_of_payment"].blank? }
   accepts_nested_attributes_for :invoice_details, allow_destroy: true, reject_if: :all_blank
-  accepts_nested_attributes_for :tributes, 				allow_destroy: true, reject_if: Proc.new{|t| t["afip_id"].blank?}
+  accepts_nested_attributes_for :tributes, 				allow_destroy: true, reject_if: Proc.new { |t| t["afip_id"].blank? }
 	accepts_nested_attributes_for :bonifications, 	allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :client, 															 reject_if: :all_blank
 
@@ -68,60 +68,18 @@ class Invoice < ApplicationRecord
 	validate 									:at_least_one_detail
 	validate 									:fch_ser_if_service
 
-	before_save 	:old_real_total_left, if: Proc.new{|i| i.is_credit_note?}
+	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
 	before_save 	:set_total_and_total_pay
 	after_create 	:create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
-	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :check_receipt,  :update_payment_belongs
+	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
   after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
   after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
-  after_save 		:update_expired, if: Proc.new{|i| i.state == "Confirmado"}
-  #after_save :rollback_stock, if: Proc.new{|i| i.state == "Confirmado" && i.saved_change_to_state? && i.is_credit_note? && i.invoice.delivery_notes.empty?} >>> Reeplazado por :impact_stock_if_cn
+  after_save 		:update_expired, :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
   after_save 		:impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
   after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
 	after_touch 	:update_total_pay
   before_destroy :check_if_editable
-
   #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
-
-  # TABLA
-  # create_table "invoices", force: :cascade do |t|
-  #   t.boolean "active"
-  #   t.bigint "client_id"
-  #   t.string "state", default: "Pendiente", null: false
-  #   t.float "total", default: 0.0, null: false
-  #   t.float "total_pay", default: 0.0, null: false
-  #   t.string "header_result"
-  #   t.string "authorized_on"
-  #   t.string "cae_due_date"
-  #   t.string "cae"
-  #   t.string "cbte_tipo"
-  #   t.bigint "sale_point_id"
-  #   t.string "concepto"
-  #   t.string "cbte_fch"
-  #   t.float "imp_tot_conc", default: 0.0, null: false
-  #   t.float "imp_op_ex", default: 0.0, null: false
-  #   t.float "imp_trib", default: 0.0, null: false
-  #   t.float "imp_neto", default: 0.0, null: false
-  #   t.float "imp_iva", default: 0.0, null: false
-  #   t.float "imp_total", default: 0.0, null: false
-  #   t.integer "cbte_hasta"
-  #   t.integer "cbte_desde"
-  #   t.string "iva_cond"
-  #   t.string "comp_number"
-  #   t.bigint "company_id"
-  #   t.bigint "user_id"
-  #   t.datetime "created_at", null: false
-  #   t.datetime "updated_at", null: false
-  #   t.bigint "associated_invoice"
-  #   t.date "fch_serv_desde"
-  #   t.date "fch_serv_hasta"
-  #   t.index ["client_id"], name: "index_invoices_on_client_id"
-  #   t.index ["company_id"], name: "index_invoices_on_company_id"
-  #   t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
-  #   t.index ["user_id"], name: "index_invoices_on_user_id"
-  # end
-  # TABLA
-
 
 	#FILTROS DE BUSQUEDA
   	def self.search_by_client name
@@ -183,10 +141,13 @@ class Invoice < ApplicationRecord
 		##before_save calcula el monto total en base a los conceptos, tributos, descuentos y pagos
     def set_total_and_total_pay
       suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
-      suma_tributos	 	= self.tributes.reject(&:marked_for_destruction?).pluck(:importe).reduce(:+)
-      suma_descuentos	= self.bonifications.reject(&:marked_for_destruction?).pluck(:amount).reduce(:+)
+			tributos 				= self.tributes.reject(&:marked_for_destruction?)
+			suma_tributos		= tributos.any? ? tributos.pluck(:importe).reduce(:+) : 0 ##controla que existan objetos
+			descuentos			= self.bonifications.reject(&:marked_for_destruction?)
+      suma_descuentos	= descuentos.any? ? descuentos.pluck(:amount).reduce(:+) : 0 ##controla que existan objetos
 			self.total 			= suma_conceptos + suma_tributos - suma_descuentos
-			self.total_pay	= self.income_payments.reject(&:marked_for_destruction?).pluck(:total).reduce(:+)
+			pagos						= self.income_payments.reject(&:marked_for_destruction?)
+			self.total_pay	= pagos.any? ? pagos.pluck(:total).reduce(:+) : 0 ##controla que existan objetos
     end
 
 		def total_left
@@ -325,7 +286,6 @@ class Invoice < ApplicationRecord
 	#FUNCIONES
 
   #PROCESOS
-
     def get_default_tributes
       company.default_tributes.each do |trib|
         tributes.build(afip_id: trib.tribute_id,
@@ -391,17 +351,19 @@ class Invoice < ApplicationRecord
 							pp am.amount_available
 							pp "Inc_payment.total "
               pp income_payment.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
-							if income_payment.save ##produce un touch en el movimiento de cuenta
+							if income_payment.save ##produce un touch en el movimiento de cuenta que disminuye el saldo disponible
                 pp"income_payment.total"
                 pp income_payment.total
                 pp "ABAJO SE VIENE EL UPDATE"
-                pp rd.update_column(:total, income_payment.total)
-                rd.update_column(:rtl_invoice, invoice.real_total_left.to_f - income_payment.total)
+                rd.update_columns(
+									total: income_payment.total,
+									rtl_invoice: invoice.real_total_left.to_f - income_payment.total
+								)
 						  else
                 pp income_payment.errors
               end
             end
-            break if am.amount_available < 1  # no sería mejor si <= 0 ?
+            break if am.amount_available <= 0
           end
         end
       end
@@ -536,8 +498,9 @@ class Invoice < ApplicationRecord
       return response && !self.errors.any?
     end
 
+		##after_save genera un recibo para una factura confirmada y con pagos
     def check_receipt
-      Receipt.create_from_invoice(self) if self.confirmado?
+      Receipt.create_from_invoice(self) if self.confirmado? && self.income_payments.any?
     end
 
     def update_total_pay
@@ -546,7 +509,9 @@ class Invoice < ApplicationRecord
     end
 
 		def old_real_total_left
-		  @old_real_total_left = self.invoice.real_total_left
+			if self.invoice
+				@old_real_total_left = self.invoice.real_total_left
+			end
 		end
 
     def touch_account_movement

@@ -53,6 +53,7 @@ class Receipt < ApplicationRecord
       end
     end
 
+    ##MAL PORQUE ESTO VALIDARÍA SOLAMENTE QUE TENGA PAGOS POR CUENTA CORRIENTE
     def payments_length_valid?
       account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
     end
@@ -115,8 +116,9 @@ class Receipt < ApplicationRecord
     ## genera un recibo de pago cuando una factura confirmada tiene pagos
     ## ejecutado en after_save de invoice
     def self.create_from_invoice invoice
-      if invoice.confirmado?
-        if invoice.receipts.empty? && invoice.total_pay > 0
+      if invoice.confirmado? && invoice.total_pay > 0
+        if invoice.receipts.empty?
+          ##genera un recibo nuevo asociado a la factura (a traves de receipt_details)
           r               = Receipt.new
           r.cbte_tipo     = invoice.is_credit_note? ? "99" : "00"
           r.total         = invoice.total_pay
@@ -126,10 +128,10 @@ class Receipt < ApplicationRecord
           r.sale_point_id = invoice.sale_point_id
           r.user_id       = invoice.user_id
           if r.save
-            ReceiptDetail.save_from_invoice(r, invoice)
+            ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura PROBLEMA no necesito que pague la factura
             AccountMovement.generate_from_receipt_from_invoice(r, invoice)
             #r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
-            r.reload
+            r.reload ##recarga asociaciones
             pp "RELOADED"
             #r.copy_income_payments invoice
             r.confirmar!
@@ -139,6 +141,7 @@ class Receipt < ApplicationRecord
             pp r.errors
           end
         else
+          ## que tengo que hacer acá??
           invoice.receipts.each do |r|
             if invoice.saved_change_to_total_pay?
               r.total      += invoice.saved_change_to_total_pay.last - invoice.saved_change_to_total_pay.first
