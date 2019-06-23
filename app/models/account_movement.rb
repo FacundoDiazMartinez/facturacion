@@ -85,7 +85,6 @@ class AccountMovement < ApplicationRecord
 
   #VALIDACIONES
   ##validación debe y haber (deben tener valores distintos)
-  ##no se logra usando 1 sólo atrib?
   def check_debe_haber
     errors.add(:debe, "No se define si el movimiento pertenece al Debe o al Haber.") unless debe != haber
   end
@@ -118,23 +117,26 @@ class AccountMovement < ApplicationRecord
     ##calcula el total a partir de los pagos registrados (por el usuario)
     ##calcula el saldo disponible a partir de la diferencia entre el total y los pagos registrados por el sistema (pagos de comprobantes)
     def set_total_and_amount_available
-      unless confirmado?
-        self.total = self.account_movement_payments.user_payments.sum(:total) ##el total del movimiento no debe cambiar para un mov confirmado
+      if self.account_movement_payments.any? ##no todos los movimientos tienen pagos
+        unless confirmado?
+          self.total = self.account_movement_payments.user_payments.sum(:total) ##el total del movimiento no debe cambiar para un mov confirmado
+        end
+        self.amount_available = self.total - self.account_movement_payments.system_payments.sum(:total)
       end
-      self.amount_available = self.total - self.account_movement_payments.system_payments.sum(:total)
     end
 
     ##confirma el movimiento de cuenta para que impacte en la cuenta corriente del cliente
     ##actualiza el total del movimiento, el saldo disponible y el saldo correspondiente
     def confirmar!
+      pp self.confirmado?
       unless confirmado?
         account_movement_payments.map{ |payment| payment.confirmar }
         set_total_and_amount_available ##redundante?
         set_saldo
-        active      = true
-        confirmado  = true ##bloquea el movimiento para que el saldo y el total no vuelvan a ser calculado
-        save
-        client.touch ##para que actualice su saldo con este movimiento de cuenta corriente
+        self.active      = true
+        self.confirmado  = true ##bloquea el movimiento para que el saldo y el total no vuelvan a ser calculado
+        self.save
+        self.client.touch ##para que actualice su saldo con este movimiento de cuenta corriente
       end
     end
 
@@ -248,7 +250,7 @@ class AccountMovement < ApplicationRecord
 
     ##crea movimientos de cuenta corriente desde una factura (o nota)
     def self.create_from_invoice invoice, old_real_total_left
-      if invoice.state == "Confirmado"
+      if invoice.confirmado?
           am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
           am.client_id    = invoice.client_id
           am.invoice_id   = invoice.id
@@ -263,8 +265,11 @@ class AccountMovement < ApplicationRecord
             am.debe         = true
             am.haber        = false
           end
-          am.save if am.changed?
-          pp am.errors
+          if am.save
+            am.confirmar!
+          else
+            pp am.errors
+          end
           return am
         end
     end
