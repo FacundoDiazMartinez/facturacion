@@ -140,15 +140,6 @@ class Invoice < ApplicationRecord
 	#FUNCIONES
 		##before_save calcula el monto total en base a los conceptos, tributos, descuentos y pagos
     def set_total_and_total_pay
-<<<<<<< HEAD
-      pp "SUMAAA"
-      pp suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
-      pp "TRIBUTOS"
-      pp suma_tributos	 	= self.tributes.reject(&:marked_for_destruction?).pluck(:importe).reduce(:+)
-      pp suma_descuentos	= self.bonifications.reject(&:marked_for_destruction?).pluck(:amount).reduce(:+)
-			pp self.total 			= suma_conceptos + suma_tributos - suma_descuentos
-			pp self.total_pay	= self.income_payments.reject(&:marked_for_destruction?).pluck(:total).reduce(:+)
-=======
       suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
 			tributos 				= self.tributes.reject(&:marked_for_destruction?)
 			suma_tributos		= tributos.any? ? tributos.pluck(:importe).reduce(:+) : 0 ##controla que existan objetos
@@ -157,7 +148,6 @@ class Invoice < ApplicationRecord
 			self.total 			= suma_conceptos + suma_tributos - suma_descuentos
 			pagos						= self.income_payments.reject(&:marked_for_destruction?)
 			self.total_pay	= pagos.any? ? pagos.pluck(:total).reduce(:+) : 0 ##controla que existan objetos
->>>>>>> c5d90728afff8738eeb9c8b7e64a24b2074d8459
     end
 
 		def total_left
@@ -412,7 +402,7 @@ class Invoice < ApplicationRecord
       account_movements_records.each do |am|
         @band = true
         pay = self.income_payments.new(
-					type_of_payment: "6",
+					type_of_payment: "6", ##pago con cuenta corriente
 					payment_date: Date.today,
 					generated_by_system: true,
 					account_movement_id: am.id

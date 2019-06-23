@@ -128,7 +128,6 @@ class AccountMovement < ApplicationRecord
     ##confirma el movimiento de cuenta para que impacte en la cuenta corriente del cliente
     ##actualiza el total del movimiento, el saldo disponible y el saldo correspondiente
     def confirmar!
-      pp self.confirmado?
       unless confirmado?
         account_movement_payments.map{ |payment| payment.confirmar }
         set_total_and_amount_available ##redundante?
@@ -209,13 +208,6 @@ class AccountMovement < ApplicationRecord
   #FUNCIONES
 
   #PROCESOS
-    ##calcula monto disponible para asignar
-    ##suma los movimientos generados por sistema (pienso que debería restarse el total del movimiento de cuenta)
-    ##no es utilizado
-    def set_amount_available
-      self.update_columns(amount_available: self.account_movement_payments.where(generated_by_system: true).sum(:total))
-    end
-
     ##no es utilizado
     def check_receipt_attributes
       self.receipt.client_id  = self.client_id

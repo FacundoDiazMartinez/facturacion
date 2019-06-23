@@ -28,7 +28,7 @@ class InvoicesController < ApplicationController
         render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
           layout: 'pdf.html',
           template: 'invoices/show',
-          #zoom: 3.4,
+          zoom: 3.4,
           #si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
@@ -175,8 +175,8 @@ class InvoicesController < ApplicationController
     if params[:invoices_ids]
       invoices = Invoice.find(params[:invoices_ids])
       render :json => invoices.map{ |invoice| {
-        id: invoice.id, 
-        total_payed: invoice.total_pay, 
+        id: invoice.id,
+        total_payed: invoice.total_pay,
         real_total_left: (invoice.is_credit_note? ? 0 : invoice.real_total_left),
         real_total: invoice.real_total,
         total_left: invoice.total_left}
