@@ -41,22 +41,22 @@
               <tr class="bg-white child-note">
                 <td>
                   <% if note.is_debit_note? %>
-                    <% if note.real_total_left > 0 %>
+                    <% if note.real_total_left > 0 %> <!-- esta pregunta está mal, real_total_left varía -->
                       Pago parcial <%= note.name_with_comp %>
                     <% else %>
                       Cancelación <%= note.name_with_comp %>
                     <% end %>
                   <% else %>
-                    <%= note.name_with_comp %>
+                    <%= note.name_with_comp %> <!-- leyenda de la nota de crédito, sólo el nombre -->
                   <% end %>
                 </td>
-                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? @receipt.receipt_details.find_by_invoice_id(note.id).total : 0.0)%></td>
+                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? @receipt.receipt_details.find_by_invoice_id(note.id).total : 0)%></td>
               </tr>
             <% end %>
           <% elsif rd.invoice.is_debit_note? %>
             <tr class="bg-white">
               <td>
-              <% if rd.rtl_invoice > 0 %>
+              <% if rd.rtl_invoice > 0 %> <!-- el rtl de la factura no es siempre mayor a 0? -->
                 Pago parcial <%= rd.invoice.name_with_comp %>
               <% else %>
                 Cancelación <%= rd.invoice.name_with_comp %>
@@ -73,19 +73,17 @@
             </tr>
           <% end %>
         <% end %>
-          
+
+        <% if @receipt.account_movement.amount_available > 0 %>
         <tr>
           <td class="bg-white">
-            <% if @receipt.account_movement.amount_available > 0 %>
-              Saldo a favor futuras compras
-            <% end %>
+            Saldo a favor futuras compras
           </td>
           <td class="text_right bg-white">
-            <% if @receipt.account_movement.amount_available > 0 %>
-              $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
-            <% end %>
+            $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
           </td>
         </tr>
+        <% end %>
 
       </table>
     <% end %>
