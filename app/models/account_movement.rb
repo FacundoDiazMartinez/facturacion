@@ -223,24 +223,7 @@ class AccountMovement < ApplicationRecord
       self.receipt.destroy unless receipt.nil?
     end
 
-    ##crea movimiento de cuenta para un recibo
-    def self.create_from_receipt receipt
-      if receipt.persisted?
-        am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
-        am.client_id   = receipt.client_id
-        am.receipt_id  = receipt.id
-        am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
-        am.debe        = receipt.cbte_tipo == "99"
-        am.haber       = receipt.cbte_tipo != "99"
-        am.total       = receipt.total.to_f
-        am.saldo       = 0 #receipt.client.saldo - receipt.total.to_f ##el saldo es igual al saldo del cliente menos el total del remito
-        am.active      = false ##el recibo debe ser el encargado de confirmar el movimiento de cuenta
-        am.save
-        return am
-      end
-    end
-
-    ##crea movimientos de cuenta corriente desde una factura (o nota)
+    ##genera movimiento de cuenta corriente ROJO desde una factura (o nota) o VERDE desde una nota
     def self.create_from_invoice invoice, old_real_total_left
       if invoice.confirmado?
           am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
@@ -273,19 +256,38 @@ class AccountMovement < ApplicationRecord
       end
     end
 
+    ##crea movimiento de cuenta para un recibo
+    def self.create_from_receipt receipt
+      if receipt.persisted?
+        am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
+        am.client_id   = receipt.client_id
+        am.receipt_id  = receipt.id
+        am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
+        am.debe        = receipt.cbte_tipo == "99"
+        am.haber       = receipt.cbte_tipo != "99"
+        am.total       = receipt.total.to_f
+        am.saldo       = 0 #receipt.client.saldo - receipt.total.to_f ##el saldo es igual al saldo del cliente menos el total del remito
+        am.active      = false ##el recibo debe ser el encargado de confirmar el movimiento de cuenta
+        am.save
+        return am
+      end
+    end
+
     ##utilizado para registrar pagos en un recibo generado a partir de una factura
     def self.generate_account_movement_payment invoice, account_movement_id
-      invoice.income_payments.where(generated_by_system: false).each do |income_payment|
-        AccountMovementPayment.create(
-          type_of_payment: income_payment.type_of_payment,
-          total: income_payment.total,
-          active: true,
-          account_movement_id: account_movement_id,
-          generated_by_system: false,
-          company_id: income_payment.company_id,
-          user_id: income_payment.user_id,
-          client_id: income_payment.client_id
-        )
+      invoice.income_payments.where(generated_by_system: false).each do |income_payment| ##itera sobre los pagos de la factura
+        income_payment.account_movement_id = account_movement_id
+        income_payment.save
+        # IncomePayment.where(
+        #   type_of_payment: income_payment.type_of_payment,
+        #   total: income_payment.total,
+        #   active: true,
+        #   account_movement_id: account_movement_id,
+        #   generated_by_system: false,
+        #   company_id: income_payment.company_id,
+        #   user_id: income_payment.user_id,
+        #   client_id: income_payment.client_id
+        # )
       end
     end
 
