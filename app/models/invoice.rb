@@ -390,7 +390,7 @@ class Invoice < ApplicationRecord
 
 		##genera pagos de una factura usando el monto disponible en la cuenta corriente
 		def paid_invoice_from_client_debt
-      if self.real_total_left > 0
+      if self.real_total_left.round(2) > 0
         result = false
         @band = false
         account_movements_records  = client.account_movements.saldo_por_notas_de_credito
@@ -423,6 +423,8 @@ class Invoice < ApplicationRecord
         else
           return {response:  false, messages: ["No tiene saldo disponible."]}
         end
+      else
+        return {response:  true, messages: ["Comprobante pagado."]}
       end
     end
 
