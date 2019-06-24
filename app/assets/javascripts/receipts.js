@@ -1,6 +1,4 @@
 $(document).on('ready',function(){
-  calculateTotalPayed();
-
   if ($('#details > tbody > tr.fields').filter(":visible").length > 0) {
     $("#editReceiptClient").attr('data-toggle', 'tooltip');
     $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
@@ -10,7 +8,6 @@ $(document).on('ready',function(){
 })
 
 $(document).on('pjax:complete', function() {
-  calculateTotalPayed();
   calculatePagadoAndFaltantePerInvoice();
 })
 
@@ -45,7 +42,6 @@ $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomp
         $("#editReceiptClient").attr('data-toggle', 'tooltip');
         $("#editReceiptClient").attr('title', 'No es posible editar el cliente si existen facturas asociadas.');
         $("#editReceiptClient").tooltip();
-        calculateTotalPayed();
         $(".receipt_associated-invoice-autocomplete_field").val("");
         calculatePagadoAndFaltantePerInvoice();
       });
@@ -61,23 +57,9 @@ $(document).on("change","#receipt_cbte_tipo",function(){
   }
 });
 
-function calculateTotalLeft(){
-  left = 0;
-  $('.invoice_total_left:visible').each(function(){
-    var res = $(this).val().replace("$ ", "");
-    tipo = $(this).closest("tr.fields").find('input.tipo').val()
-    if (tipo == "Nota de Crédito"){
-      left -= parseFloat(res);
-    }else{
-      left += parseFloat(res);
-    }
-    // $('#total_faltante').text('Total faltante: $ ' + left.toFixed(2));
-  });
-  return left;
-}
-
 function calculatePagadoAndFaltantePerInvoice(){
-  var total_payed = 0;
+  var total_payed = 0 // TOTAL PAGADO
+  var saldo = 0
   $('.pay').each(function(){
     // suma los montos de todos los pagos
     var monto_pagado = $(this).text().replace("$ ", "");
@@ -86,20 +68,24 @@ function calculatePagadoAndFaltantePerInvoice(){
       total_payed += parseFloat(monto_pagado);
     }
   });
+  $('#total_pagado').text(`Total pagado: $ ${total_payed.toFixed(2)}`);
+  $('#receipt_total').val(total_payed.toFixed(2))
   var invoices_array = []
+  //junta los id de las facturas en un array
   $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
     invoices_array.push($(current_field).find('.invoice_id').val())
   });
-  if (invoices_array.length == 0) {
+  saldo += total_payed * (-1)
+  console.log(`SALDO ${saldo}`)
+  if (invoices_array.length > 0) {
     $.get(`/invoices/get_total_payed_and_left`, { invoices_ids: invoices_array },null,"json")
     .done(function(data){
       console.table(data)
       $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
-        if (total_payed > 0) { // >>> Para que no siga recorriendo filas de facturas si no hay mas pagos para distribuir
           // asigna los valores reales de la factura a las variables
           var current_invoice_total_payed = parseFloat(data[index]['total_payed']);
-          console.log(current_invoice_total_payed);
           var current_invoice_real_total_left = parseFloat(data[index]['real_total_left']);
+          saldo += current_invoice_real_total_left;
           var current_invoice_total_left = parseFloat(data[index]['total_left']);
           var current_invoice_real_total = parseFloat(data[index]['real_total']);
           //
@@ -117,33 +103,20 @@ function calculatePagadoAndFaltantePerInvoice(){
               current_invoice_total_left = current_invoice_total - current_invoice_total_payed;
               total_payed -= current_invoice_real_total_left;
             }
+            console.log(`SALDO ${saldo} ${index}`)
             $(current_field).find(".invoice_total_pay").val("$ " + current_invoice_total_payed.toFixed(2));
             $(current_field).find(".invoice_total_left").val("$ " + current_invoice_total_left.toFixed(2));
           }
-        } else {
-          return false;
-        }
       });
+      console.log(`SALDO ${saldo}`)
+      if (saldo > 0) {
+        $('#total_faltante').text('Total faltante: $ ' + saldo.toFixed(2));
+      } else {
+        $('#total_faltante').text('Saldo a favor futuras compras: $ ' + (saldo * (-1)).toFixed(2));
+      }
     });
-  }
-}
-
-function calculateTotalPayed(){
-  total_left = calculateTotalLeft();
-  total_payed = 0;
-  if ($(".pay").length > 0) {
-    $('.pay').filter(":visible").each(function(){
-      var pag = $(this).text().replace("$ ", "");
-      total_payed += parseFloat(pag);
-      $('#total_pagado').text('Total pagado: $ ' + total_payed.toFixed(2));
-    });
-  }
-  saldo = total_left - total_payed;
-  $('#totales').text('Total facturas: $ ' + total_left.toFixed(2) + '   - Pagos acumulados: $ ' + total_payed.toFixed(2) + '   - A pagar: $ ' + (saldo).toFixed(2));
-  if ($("#receipt_state").val() != "Finalizado") {
-    $('#total_faltante').text('Total faltante: $ ' + saldo.toFixed(2));
   } else {
-    $('#total_faltante').hide();
+
   }
 }
 
@@ -151,21 +124,8 @@ $(document).on('nested:fieldRemoved:receipt_details', function(event){
   calculatePagadoAndFaltantePerInvoice();
 });
 
-
 $(document).on('nested:fieldRemoved', function(event){
-  total = 0;
-  $('.invoice_total_left').filter(':visible').each(function(){
-    var res = $(this).val().replace("$ ", "");
-    total= total + parseFloat(res);
-  })
-
-  $('#total_faltante').text('Total faltante: $ ' + total.toFixed(2));
-
-  calculateTotalPayed();
-});
-
-$(document).on('nested:fieldAdded:account_movement', function(event){
-  calculateTotalPayed();
+  calculatePagadoAndFaltantePerInvoice();
 });
 
 $(document).on('keyup','.receipt_associated-invoice-autocomplete_field', function(){
@@ -174,7 +134,6 @@ $(document).on('keyup','.receipt_associated-invoice-autocomplete_field', functio
 		$('#editReceiptClient').tooltip('dispose');
 	}
 })
-
 
 $(document).on('click','#add_payment', function(){
   $("#total_left").empty();

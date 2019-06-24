@@ -125,7 +125,7 @@ class Receipt < ApplicationRecord
           if r.save
             ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura
             AccountMovement.generate_from_receipt_from_invoice(r, invoice) ##genera un movimiento de cuenta con todos los pagos de la factura
-            r.reload ##recarga asociaciones
+            r.reload ##IMPORTANTE recarga asociaciones
             r.confirmar!
             r.reload
           else

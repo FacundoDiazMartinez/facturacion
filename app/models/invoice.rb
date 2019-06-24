@@ -262,7 +262,7 @@ class Invoice < ApplicationRecord
     end
 
     def update_expired
-      if ((Date.today - self.cbte_fch.to_date).to_i >= 30 && (self.total - self.total_pay > 0))
+      if (Date.today - self.cbte_fch.to_date).to_i >= 30 && (self.total - self.total_pay > 0)
         self.expired = true
       end
     end
