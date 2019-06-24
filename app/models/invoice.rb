@@ -390,37 +390,39 @@ class Invoice < ApplicationRecord
 
 		##genera pagos de una factura usando el monto disponible en la cuenta corriente
 		def paid_invoice_from_client_debt
-      result = false
-			@band = false
-      account_movements_records  = client.account_movements.saldo_por_notas_de_credito
-      account_movements_records += client.account_movements.saldo_disponible_para_pagar
-      account_movements_records.each do |am|
-        @band = true
-        pay = self.income_payments.new(
-					type_of_payment: "6", ##pago con cuenta corriente
-					payment_date: Date.today,
-					generated_by_system: true,
-					account_movement_id: am.id
-				)
-				if am.amount_available.to_f >= self.real_total_left.to_f ##si el saldo disponible puede cubrir el faltante de la factura
-					pay.total = self.real_total_left.to_f ##el total del pago
-				else
-					pay.total = am.amount_available.to_f
-				end
-        result = pay.save
-        @last_pay = pay
-        break if self.real_total_left == 0 || !result
-      end
-      if @band
-        if result
-          return {response:  true, messages: ["Pago generado correctamente."]}
-        else
-					pp "ERRORES AL REGISTRAR EL PAGO"
-          pp @last_pay.errors unless @last_pay.nil?
-          return {response:  false, messages: ["No tiene saldo disponible para cancelar la factura."]}
+      if self.real_total_left > 0
+        result = false
+        @band = false
+        account_movements_records  = client.account_movements.saldo_por_notas_de_credito
+        account_movements_records += client.account_movements.saldo_disponible_para_pagar
+        account_movements_records.each do |am|
+          @band = true
+          pay = self.income_payments.new(
+            type_of_payment: "6", ##pago con cuenta corriente
+            payment_date: Date.today,
+            generated_by_system: true,
+            account_movement_id: am.id
+          )
+          if am.amount_available.to_f >= self.real_total_left.to_f ##si el saldo disponible puede cubrir el faltante de la factura
+            pay.total = self.real_total_left.to_f ##el total del pago
+          else
+            pay.total = am.amount_available.to_f ##el saldo disponible del movimiento
+          end
+          result = pay.save
+          @last_pay = pay
+          break if self.real_total_left == 0 || !result
         end
-      else
-        return {response:  false, messages: ["No tiene saldo disponible."]}
+        if @band ##entró al menos una vez al ciclo anterior
+          if result
+            return {response:  true, messages: ["Pago generado correctamente."]}
+          else
+            pp "ERRORES AL REGISTRAR EL PAGO"
+            pp @last_pay.errors unless @last_pay.nil?
+            return {response:  false, messages: ["No tiene saldo disponible para cancelar la factura."]}
+          end
+        else
+          return {response:  false, messages: ["No tiene saldo disponible."]}
+        end
       end
     end
 
