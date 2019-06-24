@@ -416,7 +416,7 @@ class Invoice < ApplicationRecord
           return {response:  true, messages: ["Pago generado correctamente."]}
         else
 					pp "ERRORES AL REGISTRAR EL PAGO"
-          pp pay.errors
+          pp @last_pay.errors unless @last_pay.nil?
           return {response:  false, messages: ["No tiene saldo disponible para cancelar la factura."]}
         end
       else
