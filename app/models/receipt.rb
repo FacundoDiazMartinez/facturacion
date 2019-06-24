@@ -108,11 +108,6 @@ class Receipt < ApplicationRecord
       self.number = last_r.nil? ? "00000001" : (last_r.number.to_i + 1).to_s.rjust(8,padstr= '0') unless (!self.number.blank? || self.total < 0)
     end
 
-  	# def touch_account_movement
-		#   account_movement = AccountMovement.create_from_receipt(self)
-    #   self.update_columns(total: account_movement.total)
-    # end
-
     ## genera un recibo de pago cuando una factura confirmada tiene pagos
     ## ejecutado en after_save de invoice
     def self.create_from_invoice invoice
@@ -128,31 +123,23 @@ class Receipt < ApplicationRecord
           r.sale_point_id = invoice.sale_point_id
           r.user_id       = invoice.user_id
           if r.save
-            #ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura PROBLEMA no necesito que pague la factura
-            AccountMovement.generate_from_receipt_from_invoice(r, invoice)
-            #r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
+            ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura
+            AccountMovement.generate_from_receipt_from_invoice(r, invoice) ##genera un movimiento de cuenta con todos los pagos de la factura
             r.reload ##recarga asociaciones
             r.confirmar!
             r.reload
           else
             pp r.errors
           end
-        else
-          ## que tengo que hacer acá??
-          invoice.receipts.each do |r|
-            if invoice.saved_change_to_total_pay?
-              r.total      += invoice.saved_change_to_total_pay.last - invoice.saved_change_to_total_pay.first
-              r.user_id     = invoice.user_id
-            end
-            ReceiptDetail.save_from_invoice(r, invoice) unless !r.save
-          end
         end
       end
     end
 
     def destroy
-  		update_column(:active, false)
-  		run_callbacks :destroy
+      #unless confirmado?
+        update_column(:active, false)
+        run_callbacks :destroy
+      #end
   	end
 
     def calculate_invoice_payment_nil
@@ -211,8 +198,7 @@ class Receipt < ApplicationRecord
         AccountMovement.unscoped do
           self.account_movement.confirmar!
         end
-        self.reload
-        self.saved_amount_available = self.account_movement.amount_available ## el saldo para futuras compras se calcula con los movimientos de cuenta confirmados
+        self.saved_amount_available = self.account_movement.amount_available ## el saldo para futuras compras se calcula con el movimiento de cuenta confirmado
         self.state                  = "Finalizado"
         self.save!
       end

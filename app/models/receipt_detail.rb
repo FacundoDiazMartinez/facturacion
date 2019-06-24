@@ -7,8 +7,7 @@ class ReceiptDetail < ApplicationRecord
 
   scope      :only_invoices, -> {joins(:invoice).where(invoices: {cbte_tipo: Invoice::COD_INVOICE})}
 
-  ##vincula el recibo con la factura
-  ##las facturas vinculadas serán pagadas por el monto establecido el total de receipt_detail
+  ##vincula el recibo con la factura para ejecutar pagos
 	def self.save_from_invoice receipt, invoice
   	rd             = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize
   	rd.total       = receipt.total

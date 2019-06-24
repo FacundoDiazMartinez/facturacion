@@ -18,7 +18,6 @@ class Payment < ApplicationRecord
   has_one :compensation_payment
 
   after_initialize  :set_payment_date
-  after_update      :touch_receipt, if: Proc.new{ |p| !p.account_movement.try(:receipt_id).nil? }
 
   default_scope { where(active: true) }
 
@@ -169,10 +168,6 @@ class Payment < ApplicationRecord
   #PROCESOS
     def set_payment_date
       self.payment_date ||= Date.today
-    end
-
-    def touch_receipt
-      #self.account_movement.receipt.touch_account_movement
     end
 
     ## los pagos son reflejados como movimientos de caja diaria

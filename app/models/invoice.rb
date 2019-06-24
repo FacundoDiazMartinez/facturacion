@@ -347,14 +347,9 @@ class Invoice < ApplicationRecord
 								generated_by_system: true,
 								account_movement_id: am.id
 							)
-							pp "Am.amount_available"
-							pp am.amount_available
-							pp "Inc_payment.total "
-              pp income_payment.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
+              income_payment.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
 							if income_payment.save ##produce un touch en el movimiento de cuenta que disminuye el saldo disponible
-                pp"income_payment.total"
-                pp income_payment.total
-                pp "ABAJO SE VIENE EL UPDATE"
+								am.update_column(:amount_available, am.amount_available - income_payment.total)
                 rd.update_columns(
 									total: income_payment.total,
 									rtl_invoice: invoice.real_total_left.to_f - income_payment.total
@@ -500,7 +495,7 @@ class Invoice < ApplicationRecord
 
 		##after_save genera un recibo para una factura confirmada y con pagos
     def check_receipt
-      Receipt.create_from_invoice(self) if self.confirmado? && self.income_payments.any?
+      Receipt.create_from_invoice(self) if self.confirmado? && self.income_payments.any? && self.receipts.empty?
     end
 
     def update_total_pay
