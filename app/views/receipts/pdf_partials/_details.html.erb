@@ -41,7 +41,7 @@
               <tr class="bg-white child-note">
                 <td>
                   <% if note.is_debit_note? %>
-                    <% if note.real_total_left > 0 %> <!-- esta pregunta está mal, real_total_left varía -->
+                    <% if note.rtl_invoice > 0 %> <!-- esta pregunta está mal, real_total_left varía Rta: ahi le puse rtl_invoice, creo que quedo bien -->
                       Pago parcial <%= note.name_with_comp %>
                     <% else %>
                       Cancelación <%= note.name_with_comp %>
@@ -56,7 +56,7 @@
           <% elsif rd.invoice.is_debit_note? %>
             <tr class="bg-white">
               <td>
-              <% if rd.rtl_invoice > 0 %> <!-- el rtl de la factura no es siempre mayor a 0? -->
+              <% if rd.rtl_invoice > 0 %> <!-- el rtl de la factura no es siempre mayor a 0? Rta: no, puede ser 0.0 o mayor-->
                 Pago parcial <%= rd.invoice.name_with_comp %>
               <% else %>
                 Cancelación <%= rd.invoice.name_with_comp %>

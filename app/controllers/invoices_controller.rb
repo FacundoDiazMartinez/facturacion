@@ -103,7 +103,6 @@ class InvoicesController < ApplicationController
         end
       end
     end
-
     respond_to do |format|
       if @invoice.save
         format.html { redirect_to edit_invoice_path(@invoice) }

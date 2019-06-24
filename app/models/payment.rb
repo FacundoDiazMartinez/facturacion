@@ -172,7 +172,7 @@ class Payment < ApplicationRecord
     end
 
     def touch_receipt
-      self.account_movement.receipt.touch_account_movement
+      #self.account_movement.receipt.touch_account_movement
     end
 
     ## los pagos son reflejados como movimientos de caja diaria

@@ -128,15 +128,12 @@ class Receipt < ApplicationRecord
           r.sale_point_id = invoice.sale_point_id
           r.user_id       = invoice.user_id
           if r.save
-            ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura PROBLEMA no necesito que pague la factura
+            #ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura PROBLEMA no necesito que pague la factura
             AccountMovement.generate_from_receipt_from_invoice(r, invoice)
             #r.touch_account_movement  #con esto crea el movimiento de cta corriente correspondiente al recibo generado por la factura
             r.reload ##recarga asociaciones
-            pp "RELOADED"
-            #r.copy_income_payments invoice
             r.confirmar!
             r.reload
-            pp "RELOADED"
           else
             pp r.errors
           end
@@ -152,15 +149,6 @@ class Receipt < ApplicationRecord
         end
       end
     end
-    #
-    # #para cada income_payment copia un movimiento de cuenta del recibo
-    # def copy_income_payments invoice
-    #   AccountMovement.unscoped  do
-    #     invoice.income_payments.each do |income_payment|
-    #       self.account_movement.generate_account_movement_payment income_payment
-    #     end
-    #   end
-    # end
 
     def destroy
   		update_column(:active, false)
@@ -224,7 +212,6 @@ class Receipt < ApplicationRecord
           self.account_movement.confirmar!
         end
         self.reload
-        pp self
         self.saved_amount_available = self.account_movement.amount_available ## el saldo para futuras compras se calcula con los movimientos de cuenta confirmados
         self.state                  = "Finalizado"
         self.save!
