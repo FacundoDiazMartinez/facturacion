@@ -15,6 +15,7 @@
     </td>
     <td>
       <%= text_field_tag :invoice_total_pay, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_pay.round(2).to_s, style: "text-align: right;" , class: 'form-control form-control-sm invoice_total_pay', data: {toggle:"tooltip"}, disabled: true %>
+      <%= hidden_field_tag :total_payed_invoice, f.object.total, style: "text-align: right;" , class: 'total_payed_invoice' %>
     </td>
     <td>
       <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + f.object.invoice.total_left.round(2).to_s, style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
