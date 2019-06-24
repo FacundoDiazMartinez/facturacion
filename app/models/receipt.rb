@@ -125,7 +125,7 @@ class Receipt < ApplicationRecord
           if r.save
             ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura
             AccountMovement.generate_from_receipt_from_invoice(r, invoice) ##genera un movimiento de cuenta con todos los pagos de la factura
-            r.reload ##recarga asociaciones
+            r.reload ##IMPORTANTE recarga asociaciones
             r.confirmar!
             r.reload
           else
@@ -198,6 +198,7 @@ class Receipt < ApplicationRecord
         AccountMovement.unscoped do
           self.account_movement.confirmar!
         end
+        self.reload
         self.saved_amount_available = self.account_movement.amount_available ## el saldo para futuras compras se calcula con el movimiento de cuenta confirmado
         self.state                  = "Finalizado"
         self.save!
