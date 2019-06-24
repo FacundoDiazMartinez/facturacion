@@ -29,10 +29,10 @@
           <% if rd.invoice.is_invoice? %>
             <tr class="bg-white">
               <td>
-                <% if rd.rtl_invoice > 0 %>
-                  Pago parcial <%= rd.invoice.name_with_comp %>
-                <% else %>
+                <% if rd.total_payed_boolean? %>
                   Cancelación <%= rd.invoice.name_with_comp %>
+                <% else %>
+                  Pago parcial <%= rd.invoice.name_with_comp %>
                 <% end %>
               </td>
               <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
@@ -41,25 +41,26 @@
               <tr class="bg-white child-note">
                 <td>
                   <% if note.is_debit_note? %>
-                    <% if note.rtl_invoice > 0 %> <!-- esta pregunta está mal, real_total_left varía Rta: ahi le puse rtl_invoice, creo que quedo bien -->
-                      Pago parcial <%= note.name_with_comp %>
-                    <% else %>
+                    <% rd_note = @receipt.receipt_details.find_by_invoice_id(note.id) %>
+                    <% if rd_note.total_payed_boolean? %> <!-- esta pregunta está mal, real_total_left varía Rta: ahi le puse rtl_invoice, creo que quedo bien -->
                       Cancelación <%= note.name_with_comp %>
+                    <% else %>
+                      Pago parcial <%= note.name_with_comp %>
                     <% end %>
                   <% else %>
                     <%= note.name_with_comp %> <!-- leyenda de la nota de crédito, sólo el nombre -->
                   <% end %>
                 </td>
-                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? @receipt.receipt_details.find_by_invoice_id(note.id).total : 0)%></td>
+                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? rd_note.total : 0)%></td>
               </tr>
             <% end %>
           <% elsif rd.invoice.is_debit_note? %>
             <tr class="bg-white">
               <td>
-              <% if rd.rtl_invoice > 0 %> <!-- el rtl de la factura no es siempre mayor a 0? Rta: no, puede ser 0.0 o mayor-->
-                Pago parcial <%= rd.invoice.name_with_comp %>
-              <% else %>
+              <% if rd.total_payed_boolean? %> <!-- el rtl de la factura no es siempre mayor a 0? Rta: no, puede ser 0.0 o mayor-->
                 Cancelación <%= rd.invoice.name_with_comp %>
+              <% else %>
+                Pago parcial <%= rd.invoice.name_with_comp %>
               <% end %>
               </td>
               <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
@@ -74,7 +75,7 @@
           <% end %>
         <% end %>
 
-        <% if @receipt.account_movement.amount_available > 0 %>
+        <% if @receipt.saved_amount_available > 0 %>
         <tr>
           <td class="bg-white">
             Saldo a favor futuras compras
@@ -86,6 +87,10 @@
         <% end %>
 
       </table>
+    <% else %>
+      <p class="mb-0">
+         Saldo a favor futuras compras $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
+      </p>
     <% end %>
 
     <br>

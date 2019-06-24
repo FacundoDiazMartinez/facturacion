@@ -5,16 +5,20 @@ class ReceiptDetail < ApplicationRecord
   has_one    :invoice_payment, ->(rd){ joins(:invoice).where(generated_by_system: true, account_movement_id: rd.receipt.account_movement.id, invoices: {cbte_tipo: Invoice::COD_INVOICE})}, through: :invoice, class_name: "IncomePayment", source: :income_payments
   validate   :invoices_clients_validation
 
+  before_save :total_payed_boolean
   scope      :only_invoices, -> {joins(:invoice).where(invoices: {cbte_tipo: Invoice::COD_INVOICE})}
 
-  ##vincula el recibo con la factura
-  ##las facturas vinculadas serán pagadas por el monto establecido el total de receipt_detail
+  ##vincula el recibo con la factura para ejecutar pagos
 	def self.save_from_invoice receipt, invoice
   	rd             = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize
   	rd.total       = receipt.total
-    rd.rtl_invoice = invoice.real_total_left
+    #rd.rtl_invoice = invoice.real_total_left
   	rd.save
  	end
+
+  def total_payed_boolean
+    self.total_payed_boolean = (self.invoice.real_total_left - self.total) == 0
+  end
 
  	def invoice_comp_number
  		invoice.nil? ? "" : invoice.full_number

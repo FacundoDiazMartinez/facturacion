@@ -129,9 +129,11 @@ class AccountMovement < ApplicationRecord
     ##actualiza el total del movimiento, el saldo disponible y el saldo correspondiente
     def confirmar!
       unless confirmado?
-        account_movement_payments.map{ |payment| payment.confirmar }
+        self.account_movement_payments.map{ |payment| payment.confirmar }
         set_total_and_amount_available ##redundante?
         set_saldo
+        pp "DESPUES DE ESTABLECER TOTAL, MONTO DISPONIBLE Y SALDO"
+        pp self
         self.active      = true
         self.confirmado  = true ##bloquea el movimiento para que el saldo y el total no vuelvan a ser calculado
         self.save
@@ -233,7 +235,7 @@ class AccountMovement < ApplicationRecord
           am.observation  = invoice.observation
           am.total        = invoice.total.to_f
           if invoice.is_credit_note?
-            am.amount_available = invoice.total - old_real_total_left
+            #am.amount_available = invoice.total - old_real_total_left
             am.debe         = false
             am.haber        = true
           else
@@ -256,7 +258,7 @@ class AccountMovement < ApplicationRecord
       end
     end
 
-    ##crea movimiento de cuenta para un recibo
+    ##guarda y devuelte un movimiento de cuenta inactivo para un recibo
     def self.create_from_receipt receipt
       if receipt.persisted?
         am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
@@ -268,6 +270,7 @@ class AccountMovement < ApplicationRecord
         am.total       = receipt.total.to_f
         am.saldo       = 0 #receipt.client.saldo - receipt.total.to_f ##el saldo es igual al saldo del cliente menos el total del remito
         am.active      = false ##el recibo debe ser el encargado de confirmar el movimiento de cuenta
+        am.confirmado  = false
         am.save
         return am
       end
@@ -275,19 +278,10 @@ class AccountMovement < ApplicationRecord
 
     ##utilizado para registrar pagos en un recibo generado a partir de una factura
     def self.generate_account_movement_payment invoice, account_movement_id
-      invoice.income_payments.where(generated_by_system: false).each do |income_payment| ##itera sobre los pagos de la factura
-        income_payment.account_movement_id = account_movement_id
+      invoice.income_payments.where(generated_by_system: false, account_movement_id: nil).each do |income_payment| ##itera sobre los pagos de la factura
+        income_payment.account_movement_id = account_movement_id ##asocia los pagos de la factura con el movimiento de cuenta del recibo para evitar duplicación
+        income_payment.invoice_id          = nil ##desvincula el pago de la factura
         income_payment.save
-        # IncomePayment.where(
-        #   type_of_payment: income_payment.type_of_payment,
-        #   total: income_payment.total,
-        #   active: true,
-        #   account_movement_id: account_movement_id,
-        #   generated_by_system: false,
-        #   company_id: income_payment.company_id,
-        #   user_id: income_payment.user_id,
-        #   client_id: income_payment.client_id
-        # )
       end
     end
 
