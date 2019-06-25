@@ -81,6 +81,11 @@ class AccountMovement < ApplicationRecord
   def company_id
     @company_id
   end
+
+  ##los movimientos confirmados no calculan nuevamente
+  def confirmado?
+    self.tiempo_de_confirmacion.nil? ? false : true
+  end
   #ATRIBUTOS
 
   #VALIDACIONES
@@ -134,8 +139,8 @@ class AccountMovement < ApplicationRecord
         set_saldo
         pp "DESPUES DE ESTABLECER TOTAL, MONTO DISPONIBLE Y SALDO"
         pp self
-        self.active      = true
-        self.confirmado  = true ##bloquea el movimiento para que el saldo y el total no vuelvan a ser calculado
+        self.active                  = true
+        self.tiempo_de_confirmacion  = DateTime.now ##bloquea el movimiento para que el saldo y el total no vuelvan a ser calculado
         self.save
         self.client.touch ##para que actualice su saldo con este movimiento de cuenta corriente
       end
@@ -270,7 +275,6 @@ class AccountMovement < ApplicationRecord
         am.total       = receipt.total.to_f
         am.saldo       = 0 #receipt.client.saldo - receipt.total.to_f ##el saldo es igual al saldo del cliente menos el total del remito
         am.active      = false ##el recibo debe ser el encargado de confirmar el movimiento de cuenta
-        am.confirmado  = false
         am.save
         return am
       end
