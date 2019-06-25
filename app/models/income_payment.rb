@@ -66,32 +66,9 @@ class IncomePayment < Payment
 	end
 
 	def payment_name_with_receipt
-		# if type_of_payment == "06"
-		# 	"Cuenta Corriente - RX:  #{self.account_movement.receipt.number}"
-		# end
-		if payment.type_of_payment 
-                when "4" 
-                 payment.payment_name  -  payment.cheque_payment.entity  - N°:  payment.cheque_payment.number 
-                when "1" 
-                @installment_id = payment.card_payment.installments 
-                if @installment_id != 0 
-                 payment.payment_name  -  payment.card_payment.credit_card.name   payment.card_payment.credit_card.fees.find(@installment_id).quantity  cuotas
-                else 
-                 payment.payment_name  -  payment.card_payment.credit_card.name  pago único
-                end 
-                when "3" 
-                 payment.payment_name  - Banco  payment.bank_payment.bank.name 
-                when "7" 
-                 payment.payment_name  - Banco  payment.debit_payment.bank.name 
-                when "5" 
-                 payment.payment_name  - N°  payment.retention_payment.number 
-                when "8" 
-                 payment.payment_name  - Factura asociada:  payment.compensation_payment.asociatedClientInvoice 
-                when "6" 
-                 payment.account_movement.receipt.nil? ? "NC: #{payment.account_movement.invoice.full_number}" : "RX: "  link_to payment.account_movement.receipt.number, receipt_path(payment.account_movement.receipt.id, format: :pdf) 
-                else 
-                 payment.payment_name 
-        end 
+		if type_of_payment == "06"
+			"Cuenta Corriente - RX:  #{self.account_movement.receipt.number}"
+		end
 	end
 
 	def set_amount_available_to_account_movement

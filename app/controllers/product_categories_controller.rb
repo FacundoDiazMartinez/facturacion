@@ -30,7 +30,7 @@ class ProductCategoriesController < ApplicationController
       if @product_category.save
         index
 
-        format.html { redirect_to product_categories_path, notice: 'Product category was successfully created.' }
+        format.html { redirect_to product_categories_path, notice: 'La categoría de productos fue creada correctamente.' }
         format.json { render :show, status: :created, location: @product_category }
       else
         format.html { render :new }
@@ -46,7 +46,7 @@ class ProductCategoriesController < ApplicationController
     respond_to do |format|
       if @product_category.update(product_category_params)
         index
-        format.html { redirect_to product_categories_path, notice: 'Product category was successfully updated.' }
+        format.html { redirect_to product_categories_path, notice: 'La categoría de productos fue actualizada correctamente.' }
         format.json { render :show, status: :ok, location: @product_category }
       else
         format.html { render :edit }
@@ -61,7 +61,7 @@ class ProductCategoriesController < ApplicationController
   def destroy
     @product_category.destroy
     respond_to do |format|
-      format.html { redirect_to product_categories_url, notice: 'Product category was successfully destroyed.' }
+      format.html { redirect_to product_categories_url, notice: 'La categoría de productos fue eliminada correctamente.' }
       format.json { head :no_content }
     end
   end
