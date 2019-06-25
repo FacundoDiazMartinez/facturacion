@@ -59,10 +59,17 @@ class ProductCategoriesController < ApplicationController
   # DELETE /product_categories/1
   # DELETE /product_categories/1.json
   def destroy
-    @product_category.destroy
-    respond_to do |format|
-      format.html { redirect_to product_categories_url, notice: 'La categoría de productos fue eliminada correctamente.' }
-      format.json { head :no_content }
+    if @product_category.products.empty?
+      @product_category.destroy
+      respond_to do |format|
+        format.html { redirect_to product_categories_url, notice: 'La categoría de productos fue eliminada correctamente.' }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to product_categories_url, notice: 'No puede eliminar una categoría con productos asociados.' }
+        format.json { head :no_content }
+      end
     end
   end
 

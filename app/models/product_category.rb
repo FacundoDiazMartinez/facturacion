@@ -39,9 +39,11 @@ class ProductCategory < ApplicationRecord
 
   #PROCESOS
   def destroy
-    update_column(:active, false)
-    run_callbacks :destroy
-    freeze
+    if self.products.empty?
+      update_column(:active, false)
+      run_callbacks :destroy
+      freeze
+    end
   end
 
   def change_products_count(quantity)
