@@ -823,45 +823,16 @@ class Invoice < ApplicationRecord
   #FILL_COMP_NUMBER
 
   def all_payments_string
-    if !self.income_payments.blank?
-      pagos = []
-      self.income_payments.each do |p|
-        if p.type_of_payment = "06"
-          pagos << {type: p.type_of_payment, name: p.payment_name_with_receipt, total: p.total}
-        else
-          pagos << {type: p.type_of_payment, name: p.payment_name, total: p.total}
+		array = []
+    if self.receipts.any?
+      self.receipts.each do |receipt|
+        receipt.account_movement.account_movement_payments.user_payments.each do |payment|
+          array << payment.payment_name
         end
       end
-      pagos =  pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
-      showed_payment = ""
-      pagos.each_with_index do |arr,i|
-        showed_payment = showed_payment + arr[0]
-        #showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
-        if ((i+1) < pagos.count)
-          showed_payment = showed_payment + " / "
-        end
-      end
+      return array.uniq.compact.join(', ')
     else
-      showed_payment = "Cta. Cte."
+      return "Cta. Cte."
     end
-
-    return showed_payment
-
-    # if !self.income_payments.nil?
-    #   array_pagos = self.income_payments.map{|p| {type: p.type_of_payment, name: p.payment_name, total: p.total}}
-    #   pagos_reduced = []
-    #
-    #   # agrupamos pagos segun tipo de pago y a continuación se suman los "totales" de cada grupo
-    #   pagos_reduced << array_pagos.group_by{|a| a[:name]}.map{|nom,arr| [nom,arr.map{|f| f[:total].to_f}.sum()]}
-    #
-    #   showed_payment = ""
-    #   pagos_reduced.first.each_with_index do |arr,i|
-    #     showed_payment = showed_payment + arr[0] + ": $ " + arr[1].to_s
-    #     if ((i+1) < pagos_reduced.first.count)
-    #       showed_payment = showed_payment + " - "
-    #     end
-    #   end
-    #   return showed_payment
-    # end
   end
 end

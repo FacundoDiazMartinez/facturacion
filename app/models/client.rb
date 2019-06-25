@@ -10,9 +10,9 @@ class Client < ApplicationRecord
 
 	default_scope { where(active:true) }
 
-	after_create :set_create_activity, if: :belongs_to_user?
-	after_update :set_update_activity
-	after_touch	:update_debt
+	after_create 	:set_create_activity, if: :belongs_to_user?
+	after_update 	:set_update_activity
+	after_touch		:update_debt
 
 	IVA_COND = ["Responsable Inscripto", "Responsable Monotributo", "Consumidor Final", "Exento"]
 
@@ -112,9 +112,9 @@ class Client < ApplicationRecord
 		end
 
 		def update_debt
-			last_acc_mov 	= account_movements.order(tiempo_de_confirmacion: :desc).first
+			last_acc_mov 	= self.account_movements.order(tiempo_de_confirmacion: :desc).first
 			last_saldo 		= last_acc_mov.nil? ? 0.0 : last_acc_mov.saldo #En caso de que no exista ningun movimiento, creo el saldo en 0.0
-			update_column(:saldo, last_saldo)
+			self.update_column(:saldo, last_saldo)
 			Invoice.paid_unpaid_invoices self
 		end
 	#PROCESOS

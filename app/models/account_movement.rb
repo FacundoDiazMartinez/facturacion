@@ -137,12 +137,10 @@ class AccountMovement < ApplicationRecord
         self.account_movement_payments.map{ |payment| payment.confirmar }
         set_total_and_amount_available ##redundante?
         set_saldo
-        pp "DESPUES DE ESTABLECER TOTAL, MONTO DISPONIBLE Y SALDO"
-        pp self
         self.active                  = true
         self.tiempo_de_confirmacion  = DateTime.now ##bloquea el movimiento para que el saldo y el total no vuelvan a ser calculado
         self.save
-        self.client.touch ##para que actualice su saldo con este movimiento de cuenta corriente
+        self.client.update_debt ##para que actualice su saldo con este movimiento de cuenta corriente
       end
     end
 
