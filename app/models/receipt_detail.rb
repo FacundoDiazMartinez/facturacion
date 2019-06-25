@@ -12,7 +12,6 @@ class ReceiptDetail < ApplicationRecord
 	def self.save_from_invoice receipt, invoice
   	rd             = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize
   	rd.total       = receipt.total
-    #rd.rtl_invoice = invoice.real_total_left
   	rd.save
  	end
 

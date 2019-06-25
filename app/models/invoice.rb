@@ -823,7 +823,7 @@ class Invoice < ApplicationRecord
   #FILL_COMP_NUMBER
 
   def all_payments_string
-        array = []
+		array = []
     if self.receipts.any?
       self.receipts.each do |receipt|
         receipt.account_movement.account_movement_payments.user_payments.each do |payment|

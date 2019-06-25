@@ -6,7 +6,6 @@ class AccountMovementsController < ApplicationController
   # GET /account_movements.json
   def index
     @ultimo = @client.account_movements.order(tiempo_de_confirmacion: :asc).last
-    pp @ultimo
     @account_movements = @client.account_movements.search_by_cbte_tipo(params[:cbte_tipo]).search_by_date(params[:from], params[:to]).order(tiempo_de_confirmacion: :asc).order(created_at: :asc).paginate(page: params[:page], per_page: 25)
   end
 
