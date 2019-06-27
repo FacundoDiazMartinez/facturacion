@@ -46,7 +46,7 @@
 		    		<td>$ <%= am.saldo %></td>
 		    	<% end %>
 					<td>
-						<%= link_to icon('fas', 'dollar-sign'), paid_invoice_with_debt_invoice_path(am.invoice_id), class: 'btn btn-sm btn-icon btn-outline-success' unless (am.invoice_id.blank? || !(["Factura A", "Factura B", "Factura C", "Nota de Débito A", "Nota de Débito B", "Nota de Débito C"].include?(am.cbte_tipo)) || (am.invoice.real_total_left) <= 0) %>
+						<%= link_to icon('fas', 'dollar-sign'), paid_invoice_with_debt_invoice_path(am.invoice_id), class: 'btn btn-sm btn-icon btn-outline-success', data: { "skip-pjax": true } unless (am.invoice_id.blank? || !(["Factura A", "Factura B", "Factura C", "Nota de Débito A", "Nota de Débito B", "Nota de Débito C"].include?(am.cbte_tipo)) || (am.invoice.real_total_left) <= 0) %>
 					</td>
 		    	<td>
 		    		<%= link_to icon('fas', 'file-pdf').html_safe, receipt_path(am.receipt_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.receipt_id.blank? || am.cbte_tipo == "Devolución" %>

@@ -87,6 +87,12 @@ module InvoiceManager
               }
             end
           end
+          return {
+            resultado:  false,
+            messages: [
+              "Comprobante pagado previamente."
+            ]
+          }
         end
       ##
       rescue StandardError => error
