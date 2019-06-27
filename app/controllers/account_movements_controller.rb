@@ -5,8 +5,18 @@ class AccountMovementsController < ApplicationController
   # GET /account_movements
   # GET /account_movements.json
   def index
-    @ultimo = @client.account_movements.order(tiempo_de_confirmacion: :asc).last
-    @account_movements = @client.account_movements.search_by_cbte_tipo(params[:cbte_tipo]).search_by_date(params[:from], params[:to]).order(tiempo_de_confirmacion: :asc).order(created_at: :asc).paginate(page: params[:page], per_page: 25)
+    cantidad_por_pagina = 25
+    account_movements   = @client.account_movements
+    # if params[:page]
+    #   pagina = params[:page]
+    # else
+    #   cantidad_registros  = account_movements.count
+    #   ultima_pagina       = cantidad_registros/cantidad_por_pagina + (cantidad_registros%cantidad_por_pagina > 0 ? 1 : 0)
+    #   pagina              = ultima_pagina
+    # end
+    pagina = params[:page] ## borrar esta línea si usamos el algoritmo de arriba
+    @ultimo             = account_movements.order(tiempo_de_confirmacion: :asc).last
+    @account_movements  = account_movements.search_by_cbte_tipo(params[:cbte_tipo]).search_by_date(params[:from], params[:to]).order(tiempo_de_confirmacion: :asc).order(created_at: :asc).paginate(page: pagina, per_page: cantidad_por_pagina)
   end
 
   # GET /account_movements/1

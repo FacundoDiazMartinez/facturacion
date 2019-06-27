@@ -1,6 +1,6 @@
 class InvoicesController < ApplicationController
   load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product]
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver]
+  before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver, :paid_invoice_with_debt]
 
   # GET /invoices
   # GET /invoices.json
@@ -28,7 +28,7 @@ class InvoicesController < ApplicationController
         render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
           layout: 'pdf.html',
           template: 'invoices/show',
-          #zoom: 3.4,
+          zoom: 3.4,
           #si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
@@ -115,14 +115,10 @@ class InvoicesController < ApplicationController
   # PATCH/PUT /invoices/1
   # PATCH/PUT /invoices/1.json
   def update
-    # if !session[:return_to].blank?
-    #   session[:return_to] = session[:return_to] + "/edit"
-    # end
     @client = @invoice.client
     @invoice.user_id = current_user.id
     respond_to do |format|
       if @invoice.update(invoice_params, params[:send_to_afip])##invoice 518
-        # session.delete(:return_to)
         format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.' }
       else
         pp @invoice.errors
@@ -146,27 +142,22 @@ class InvoicesController < ApplicationController
   end
 
   def deliver
+    ## servicio requerido
     require 'barby'
     require 'barby/barcode/code_25_interleaved'
     require 'barby/outputter/png_outputter'
     @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
     InvoiceMailer.send_to_client(@invoice, params[:email], @barcode_path).deliver
-    redirect_to edit_invoice_path(@invoice.id), notice: "Email enviado."
+    redirect_to edit_invoice_path(@invoice.id), notice: "Correo electrónico enviado."
     @invoice.delete_barcode(@barcode_path)
   end
 
   def paid_invoice_with_debt
-    # invoice = current_user.company.invoices.where.not(cbte_tipo: Invoice::COD_NC).find(params[:id])
-    pp invoice = current_user.company.invoices.find(params[:id])
-    pp result  = invoice.paid_invoice_from_client_debt
-    response = result[:response]
-    messages = result[:messages].join(", ")
-    respond_to do |format|
-      if response
-        format.html {redirect_to client_account_movements_path(invoice.client_id), notice: messages}
-      else
-        format.html {redirect_to client_account_movements_path(invoice.client_id), alert: messages}
-      end
+    service_response = InvoiceManager::CreditPayer.call(@invoice)
+    if service_response[:resultado]
+      redirect_to edit_invoice_path(@invoice.id), notice: service_response[:messages].join(". ")
+    else
+      redirect_to client_account_movements_path(@invoice.client_id), alert: service_response[:messages].join(". ")
     end
   end
 
