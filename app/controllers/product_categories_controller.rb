@@ -30,7 +30,7 @@ class ProductCategoriesController < ApplicationController
       if @product_category.save
         index
 
-        format.html { redirect_to product_categories_path, notice: 'Product category was successfully created.' }
+        format.html { redirect_to product_categories_path, notice: 'La categoría de productos fue creada correctamente.' }
         format.json { render :show, status: :created, location: @product_category }
       else
         format.html { render :new }
@@ -46,7 +46,7 @@ class ProductCategoriesController < ApplicationController
     respond_to do |format|
       if @product_category.update(product_category_params)
         index
-        format.html { redirect_to product_categories_path, notice: 'Product category was successfully updated.' }
+        format.html { redirect_to product_categories_path, notice: 'La categoría de productos fue actualizada correctamente.' }
         format.json { render :show, status: :ok, location: @product_category }
       else
         format.html { render :edit }
@@ -59,10 +59,17 @@ class ProductCategoriesController < ApplicationController
   # DELETE /product_categories/1
   # DELETE /product_categories/1.json
   def destroy
-    @product_category.destroy
-    respond_to do |format|
-      format.html { redirect_to product_categories_url, notice: 'Product category was successfully destroyed.' }
-      format.json { head :no_content }
+    if @product_category.products.empty?
+      @product_category.destroy
+      respond_to do |format|
+        format.html { redirect_to product_categories_url, notice: 'La categoría de productos fue eliminada correctamente.' }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to product_categories_url, notice: 'No puede eliminar una categoría con productos asociados.' }
+        format.json { head :no_content }
+      end
     end
   end
 
