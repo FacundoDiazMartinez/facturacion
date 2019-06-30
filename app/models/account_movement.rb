@@ -148,9 +148,9 @@ class AccountMovement < ApplicationRecord
     def set_saldo
       unless confirmado?
         if debe
-          self.saldo = self.client.saldo + self.total# el saldo aumenta
+          self.saldo = self.client.saldo + self.total
         elsif haber
-          self.saldo = self.client.saldo - self.total# el saldo disminuye
+          self.saldo = self.client.saldo - self.total
         end
       end
     end
@@ -229,7 +229,8 @@ class AccountMovement < ApplicationRecord
     end
 
     ##genera movimiento de cuenta corriente ROJO desde una factura (o nota) o VERDE desde una nota
-    def self.create_from_invoice invoice, old_real_total_left
+    def self.create_from_invoice(invoice, old_real_total_left)
+      old_real_total_left ||= 0
       if invoice.confirmado?
           am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
           am.client_id    = invoice.client_id
@@ -238,9 +239,9 @@ class AccountMovement < ApplicationRecord
           am.observation  = invoice.observation
           am.total        = invoice.total.to_f
           if invoice.is_credit_note?
-            #am.amount_available = invoice.total - old_real_total_left
-            am.debe         = false
-            am.haber        = true
+            am.amount_available = (invoice.total - old_real_total_left) < 0 ? 0 : invoice.total - old_real_total_left
+            am.debe             = false
+            am.haber            = true
           else
             am.debe         = true
             am.haber        = false
@@ -295,21 +296,19 @@ class AccountMovement < ApplicationRecord
   #PROCESOS
 
   private
-  #FILTROS DE BUSQUEDA
-    def self.search_by_cbte_tipo cbte_tipo
-      if !cbte_tipo.blank?
-        where(cbte_tipo: cbte_tipo)
-      else
-        all
-      end
+  def self.search_by_cbte_tipo cbte_tipo
+    if !cbte_tipo.blank?
+      where(cbte_tipo: cbte_tipo)
+    else
+      all
     end
+  end
 
-    def self.search_by_date from, to
-      if !from.blank? && !to.blank?
-        where(created_at: from..to)
-      else
-        all
-      end
+  def self.search_by_date from, to
+    if !from.blank? && !to.blank?
+      where(created_at: from..to)
+    else
+      all
     end
-  #FILTROS DE BUSQUEDA
+  end
 end

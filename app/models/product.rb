@@ -334,31 +334,35 @@ class Product < ApplicationRecord
 			end
 		end
 
-    def impact_stock_by_cred_note attrs={}
-      product_quantity_not_delivered = Invoice.find(attrs[:associated_invoice]).get_product_quantity_not_delivered(self.id).to_f
-      reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
-      delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+    def impact_stock_by_cred_note(attrs = {})
+      if attrs[:associated_invoice]
+        comprobante = Invoice.where(id: attrs[:associated_invoice]).first
+        if comprobante
+          product_quantity_not_delivered = comprobante.get_product_quantity_not_delivered(self.id).to_f
+          reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+          delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+          if product_quantity_not_delivered <= 0  #Puede ser negativo si por error se hizo un remito por mas cantidad de lo que se vendio en la factura
+            delivered_stock.quantity -= attrs[:quantity].to_f
+          else
+            if (attrs[:quantity].to_f <= product_quantity_not_delivered)  #Si la cantidad deuelta es menor o igual que la cantidad que falta entregar
+              reserved_stock.quantity -= attrs[:quantity].to_f
+            else                                                          #Si la cantidad devuelta es mayor que lo que falta devolver
+              remaining_quantity = attrs[:quantity].to_f - product_quantity_not_delivered
+              reserved_stock.quantity -= product_quantity_not_delivered
+              delivered_stock.quantity -= remaining_quantity
+            end
+            if reserved_stock.quantity < 0  #No queremos reservas negativas
+              reserved_stock.quantity = 0
+            end
+            reserved_stock.save
+          end
+          delivered_stock.save
 
-      if product_quantity_not_delivered <= 0  #Puede ser negativo si por error se hizo un remito por mas cantidad de lo que se vendio en la factura
-        delivered_stock.quantity -= attrs[:quantity].to_f
-      else
-        if (attrs[:quantity].to_f <= product_quantity_not_delivered)  #Si la cantidad deuelta es menor o igual que la cantidad que falta entregar
-          reserved_stock.quantity -= attrs[:quantity].to_f
-        else                                                          #Si la cantidad devuelta es mayor que lo que falta devolver
-          remaining_quantity = attrs[:quantity].to_f - product_quantity_not_delivered
-          reserved_stock.quantity -= product_quantity_not_delivered
-          delivered_stock.quantity -= remaining_quantity
+          available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+          available_stock.quantity += attrs[:quantity].to_f
+          available_stock.save
         end
-        if reserved_stock.quantity < 0  #No queremos reservas negativas
-          reserved_stock.quantity = 0
-        end
-        reserved_stock.save
       end
-      delivered_stock.save
-
-      available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
-      available_stock.quantity += attrs[:quantity].to_f
-      available_stock.save
     end
 
     # def rollback_stock_by_cred_note

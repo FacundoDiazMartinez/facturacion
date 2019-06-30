@@ -54,8 +54,6 @@ class InvoicesController < ApplicationController
     end
   end
 
-
-
   # GET /invoices/1/edit
   def edit
     @client = @invoice.client
@@ -167,7 +165,7 @@ class InvoicesController < ApplicationController
       render :json => invoices.map{ |invoice| {
         id: invoice.id,
         total_payed: invoice.total_pay,
-        real_total_left: (invoice.is_credit_note? ? 0 : invoice.real_total_left),
+        real_total_left: invoice.real_total_left,
         real_total: invoice.real_total,
         total_left: invoice.total_left}
          } #{total_payed: @invoice.total_pay, total_left: @invoice.total_left}

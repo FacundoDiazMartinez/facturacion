@@ -41,7 +41,11 @@
                 <% when "8" %>
                 <%= payment.payment_name %> - Factura asociada: <%= payment.compensation_payment.asociatedClientInvoice %>
                 <% when "6" %>
-                <%= payment.account_movement.receipt.nil? ? "NC: #{payment.account_movement.invoice.full_number}" : "RX: "%> <%= link_to payment.account_movement.receipt.number, receipt_path(payment.account_movement.receipt.id, format: :pdf) %>
+                  <% if payment.account_movement.receipt.nil? && payment.account_movement.invoice %>
+                    <%= link_to "NC: #{payment.account_movement.invoice.full_number}", invoice_path(payment.account_movement.invoice.id, format: :pdf) %>
+                  <% else %>
+                    <%= link_to "RX: #{payment.account_movement.receipt.number}", receipt_path(payment.account_movement.receipt.id, format: :pdf) %>
+                  <% end %>
                 <% else %>
                 <%= payment.payment_name %>
                 <% end %>

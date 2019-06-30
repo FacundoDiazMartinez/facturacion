@@ -75,7 +75,8 @@ class Invoice < ApplicationRecord
   after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
   after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
   after_save 		:update_expired, :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
-  after_save 		:impact_stock_if_cn, if: Proc.new{|i| i.state == "Confirmado" && i.is_credit_note?}
+	## A SERVICIO
+  after_save 		:impact_stock_if_cn ##para que impacte en stock con los detalles del producto
   after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
 	after_touch 	:update_total_pay
   before_destroy :check_if_editable
@@ -299,9 +300,11 @@ class Invoice < ApplicationRecord
     end
 
     def impact_stock_if_cn
-      self.invoice_details.each do |id|
-        id.impact_stock_cn
-      end
+			if self.confirmado? && self.is_credit_note?
+	      self.invoice_details.each do |id|
+	        id.impact_stock_cn
+	      end
+			end
     end
 
     def check_cancelled_state_of_invoice
@@ -368,10 +371,12 @@ class Invoice < ApplicationRecord
     end
 
     def real_total
-      if is_invoice?
+      if is_invoice? || is_debit_note?
         self.total.round(2) - self.credit_notes.sum(:total).round(2) + self.credit_notes.sum(:total_pay).round(2)
-      else
-        self.total.round(2)
+      elsif is_credit_note?
+				0
+			# elsif is_debit_note?
+      #   self.total.round(2)
       end
     end
 
@@ -390,46 +395,6 @@ class Invoice < ApplicationRecord
 		def real_total_left_including_debit_notes
       (real_total_including_debit_notes - total_pay).round(2)
     end
-
-		##genera pagos de una factura usando el monto disponible en la cuenta corriente
-		# def paid_invoice_from_client_debt
-    #   if self.real_total_left.round(2) > 0
-    #     result = false
-    #     @band = false
-    #     account_movements_records  = client.account_movements.saldo_por_notas_de_credito
-    #     account_movements_records += client.account_movements.saldo_disponible_para_pagar
-    #     account_movements_records.each do |am|
-    #       @band = true
-    #       pay = self.income_payments.new(
-    #         type_of_payment: "6", ##pago con cuenta corriente
-    #         payment_date: Date.today,
-    #         generated_by_system: true,
-    #         account_movement_id: am.id
-    #       )
-    #       if am.amount_available.to_f >= self.real_total_left.to_f ##si el saldo disponible puede cubrir el faltante de la factura
-    #         pay.total = self.real_total_left.to_f ##el total del pago
-    #       else
-    #         pay.total = am.amount_available.to_f ##el saldo disponible del movimiento
-    #       end
-    #       result = pay.save
-    #       @last_pay = pay
-    #       break if self.real_total_left == 0 || !result
-    #     end
-    #     if @band ##entró al menos una vez al ciclo anterior
-    #       if result
-    #         return {response:  true, messages: ["Pago generado correctamente."]}
-    #       else
-    #         pp "ERRORES AL REGISTRAR EL PAGO"
-    #         pp @last_pay.errors unless @last_pay.nil?
-    #         return {response:  false, messages: ["No tiene saldo disponible para cancelar la factura."]}
-    #       end
-    #     else
-    #       return {response:  false, messages: ["No tiene saldo disponible."]}
-    #     end
-    #   else
-    #     return {response:  true, messages: ["Comprobante pagado."]}
-    #   end
-    # end
 
     def create_sales_file
       if sales_file_id.nil?
@@ -511,7 +476,7 @@ class Invoice < ApplicationRecord
     end
 
 		def old_real_total_left
-			if self.invoice
+			if self.invoice ##tiene comprobante asociado
 				@old_real_total_left = self.invoice.real_total_left
 			end
 		end
