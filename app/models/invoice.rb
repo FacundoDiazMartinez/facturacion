@@ -758,7 +758,7 @@ class Invoice < ApplicationRecord
         response = self.update(
           cae: bill.response.cae,
           cae_due_date: bill.response.cae_due_date,
-          cbte_fch: Date.today,
+          cbte_fch: bill.response.cbte_fch.to_date,
           authorized_on: bill.response.authorized_on.to_time,
           comp_number: bill.response.cbte_hasta.to_s.rjust(8,padstr= '0'),
           imp_tot_conc: bill.response.imp_tot_conc,
