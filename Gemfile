@@ -132,6 +132,7 @@ group :development do
   #Performance
   gem 'ruby-prof'
   gem 'thin'
+  gem "letter_opener"
 end
 
 group :production do

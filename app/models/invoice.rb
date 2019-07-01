@@ -450,11 +450,11 @@ class Invoice < ApplicationRecord
     end
 
     def update params, send_to_afip = false
-        response = super(params)
-        if response && send_to_afip == "true"
-          get_cae
-        end
-        return response && !self.errors.any?
+      response = super(params)
+      if response && send_to_afip == "true"
+        get_cae
+      end
+      return response && !self.errors.any?
     end
 
     def custom_save send_to_afip = false

@@ -50,7 +50,7 @@
                   <div class="input-group-prepend">
                     <div class="input-group-text"><%= icon('fas', 'list') %></div>
                   </div>
-                  <%= select_tag :category, options_for_select( ProductCategory.all.map { |c| [c.name, c.id] }, params[:category] ),{class: 'form-control', prompt: "Todos" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
+                  <%= select_tag :category, options_for_select( current_user.company.product_categories.map { |c| [c.name, c.id] }, params[:category] ),{class: 'form-control', prompt: "Todos" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
                 </div>
               <!-- BUSCAR POR CATEGORÍA -->
 
