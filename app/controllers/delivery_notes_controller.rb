@@ -119,20 +119,6 @@ class DeliveryNotesController < ApplicationController
     end
   end
 
-  def get_product_quantity_left product_id, invoice, invoice_detail_quantity
-    delivered = 0
-    invoice.delivery_notes.where(state: "Finalizado").each do |dn|
-      dn.delivery_note_details.where(product_id: product_id).each do |dn_detail|
-        delivered += dn_detail.quantity
-      end
-    end
-    prod_quantity = invoice_detail_quantity - delivered
-    if prod_quantity < 0
-      prod_quantity = 0
-    end
-    return prod_quantity.to_f
-  end
-
   def autocomplete_invoice
     term = params[:term]
     invoices = current_user.company.invoices.where("comp_number ILIKE ? AND state = 'Confirmado'", "%#{term}%").order(:comp_number).all
@@ -149,4 +135,19 @@ class DeliveryNotesController < ApplicationController
     def delivery_note_params
       params.require(:delivery_note).permit(:invoice_id, :date, :number, :client_id, :active, :state, delivery_note_details_attributes: [:id, :invoice_detail_id, :product_id, :quantity, :depot_id, :observation, :cumpliment, :_destroy])
     end
+
+    def get_product_quantity_left product_id, invoice, invoice_detail_quantity
+      delivered = 0
+      invoice.delivery_notes.where(state: "Finalizado").each do |dn|
+        dn.delivery_note_details.where(product_id: product_id).each do |dn_detail|
+          delivered += dn_detail.quantity
+        end
+      end
+      prod_quantity = invoice_detail_quantity - delivered
+      if prod_quantity < 0
+        prod_quantity = 0
+      end
+      return prod_quantity.to_f
+    end
+
 end

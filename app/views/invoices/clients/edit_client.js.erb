@@ -32,3 +32,5 @@ $("#tributes > tbody > tr").each(function(){ // >>>>>>>>>>>>> Insercion de base 
 	alic 	 = parseFloat(e.closest("tr.fields").find("input.alic").val());
 	e.closest("tr.fields").find("input.importe").val((base_imp * ( alic/100)).toFixed(2));
 })
+
+$("#div_iauthorized").html("<%= j render template: '/invoices/authorized/index.html.erb'%>")

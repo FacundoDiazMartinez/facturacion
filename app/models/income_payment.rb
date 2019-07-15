@@ -10,14 +10,14 @@ class IncomePayment < Payment
 	before_save 	:check_company_id
 	before_save 	:check_client_id
 	after_create 	:set_new_detail_if_credit_card
-	after_destroy :set_amount_available_to_account_movement
+	after_destroy 	:set_amount_available_to_account_movement
 
-	validate 					:check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
-	validate 					:check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
+	validate 		:check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
+	validate 		:check_available_saldo, if: Proc.new{|ip| ip.type_of_payment == "6"}
 
  	#VALIDACIONES
  		def check_max_total
-			unless (invoice.sum_payments - total_was.to_f + total.to_f) <= invoice.total
+			if payments_greater_than_invoice_total?
 				unless type_of_payment == "1" && (invoice.sum_payments + card_payment.subtotal.to_f <= invoice.total)
  					errors.add(:total, "No se puede generar pagos por un total mayor que el de la factura. Si desea generar saldo a favor puede hacerlo desde la cuenta corriente.")
 				end
@@ -25,9 +25,6 @@ class IncomePayment < Payment
  		end
 
  		def check_available_saldo
- 			pp "Inc Pay - 34 -CHECK AVAILABLE SALDO"
- 			pp total
- 			pp invoice.client.account_movements.where('amount_available > 0').sum(:amount_available)
  			errors.add(:total, "Inc Pay - 37 - No posee el saldo suficiente en su cuenta corriente.") unless (total.to_f <= invoice.client.account_movements.where('account_movements.amount_available > 0').sum(:amount_available).to_f || invoice.is_credit_note?)
  		end
 
@@ -104,5 +101,10 @@ class IncomePayment < Payment
 
 	private
 	default_scope { where(flow: "income") }
+
+	def payments_greater_than_invoice_total?
+		resultado = invoice.sum_payments - self.total_was.to_f + self.total.to_f
+		resultado.round(2) > invoice.total
+	end
 	# default_scope { where(flow: "income", active: true, account_movement: nil) }
 end

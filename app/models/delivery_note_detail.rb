@@ -10,6 +10,9 @@ class DeliveryNoteDetail < ApplicationRecord
   validates_presence_of :delivery_note, message:  "El concepto debe tener asociado un remito."
   validates_presence_of :product, message:  "El concepto debe tener asociado un producto."
   validates_presence_of :depot, message:  "El concepto debe tener asociado un depósito."
+  validate :same_or_less_quantity
+
+  #validate :same_or_less_quantity
 
   validate :depot_has_stock?
 
@@ -71,6 +74,26 @@ class DeliveryNoteDetail < ApplicationRecord
       if disponible < self.quantity.to_f
         errors.add(:quantity, "El deposito que seleccionó no tiene suficiente stock disponible. Disponible = #{disponible} #{self.product.measurement_unit_name}")
       end
+    end
+  end
+
+  def same_or_less_quantity
+    invoice_detail_quantity = 0
+    delivery_note_detail = 0
+    invoice_product_quantity = 0
+    self.delivery_note.invoice.invoice_details.where(product_id: self.product_id).each do |inv_det|
+      invoice_product_quantity = inv_det.quantity
+    end
+
+    delivered_quantity = 0
+    self.delivery_note.invoice.delivery_notes.where(state: "Finalizado").each do |delivery_note|
+      delivery_note.delivery_note_details.where(product_id: self.product_id).each do |dn_det|
+        delivered_quantity += dn_det.quantity
+      end
+    end
+    diferencia = invoice_product_quantity - delivered_quantity
+    unless self.quantity <= diferencia
+      errors.add(:quantity, "Se esta intentando entregar mayor cantidad que la que se reservo cuando se realizo la factura. Si desea proceeder modifique la cantidad")
     end
   end
 

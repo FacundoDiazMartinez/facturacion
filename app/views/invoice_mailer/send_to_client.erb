@@ -10,7 +10,16 @@
         <tr>
           <td class="bodycopy">
             <p>
-              Buenos días, <%= @invoice.client.name %> se le envía como dato adjunto, <%= @invoice.name_with_comp %>
+              Buenos días, <%= @invoice.client.name %>, se le envía como dato adjunto:
+            </p>
+            <p>
+              <%= @invoice.account_movement.comprobante %> - <%= @invoice.cbte_fch %>
+            </p>
+              <% @invoice.receipts.each do |receipt| %>
+                <p>
+                  <%= receipt.full_name %> - <%= receipt.date.to_date.strftime("%d-%m-%Y") %>
+                </p>
+              <% end %>
             </p>
             <p>
               Por cualquier consulta, por favor, no dude en llamarnos.

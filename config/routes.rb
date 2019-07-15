@@ -55,6 +55,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :stadistics do
+    collection do
+      get :sales
+    end
+  end
+
   resources :receipts do
     resources :account_movements
     get :autocomplete_invoice, on: :collection
@@ -214,6 +220,8 @@ Rails.application.routes.draw do
     get :paid_invoice_with_debt, on: :member
     get :get_associated_invoice_details, on: :member
     get :get_total_payed_and_left, on: :collection
+    get :sales_per_month, on: :collection
+    get :states_per_month, on: :collection
   end
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

@@ -44,12 +44,15 @@ module InvoiceManager
                     )
                     vector_documentos << "RX: #{receipt.number}"
     						  else
-                    raise StandardError, "Pago: #{income_payment.errors}"
+                    raise StandardError, "Pago: #{income_payment.errors.map{|e| e.message}.join(', ')}"
                   end
                 else
                   raise StandardError, "Detalles del recibo: #{rd.errors}"
                 end
               elsif am.invoice && am.invoice.is_credit_note?
+                pp am
+                pp "A PAGAR"
+                pp a_pagar
                 ## nota de credito
                 income_payment = IncomePayment.new(
                   type_of_payment: "6", #pago con cuenta corriente
@@ -59,13 +62,16 @@ module InvoiceManager
                   account_movement_id: am.id,
                   total: a_pagar
                 )
+                pp "INCOME PAYMENT"
+                pp income_payment
                 if income_payment.save
                   am.update_columns(
                     amount_available: am.amount_available - a_pagar
                   )
                   vector_documentos << "NC: #{am.invoice.comp_number}"
                 else
-                  raise StandardError, "Pago: #{income_payment.errors}."
+                  pp income_payment.errors
+                  raise StandardError, "Pago: #{income_payment.errors.map{|e| e.message}.join(', ')}."
                 end
               end
               break if @invoice.reload.real_total_left == 0

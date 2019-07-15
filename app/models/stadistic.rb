@@ -1,0 +1,4 @@
+class Stadistic < ApplicationRecord
+
+
+end

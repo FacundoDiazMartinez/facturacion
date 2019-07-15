@@ -481,6 +481,19 @@ class Invoice < ApplicationRecord
 			end
 		end
 
+    def check_delivery_note_quantity_left?
+      a_entregar = invoice_details.joins(:product).where("products.tipo = 'Producto'").map(&:quantity).inject(0) {|suma, quantity| suma + quantity}
+      delivered = 0
+      self.delivery_notes.where(state: "Finalizado").each do |dn|
+        delivered += dn.delivery_note_details.map(&:quantity).inject(0) { |suma, quantity| suma + quantity }
+      end
+      
+      if a_entregar > delivered
+        return true
+      end
+      return false
+    end
+
     def touch_account_movement
       AccountMovement.create_from_invoice(self, @old_real_total_left)
     end
@@ -597,6 +610,14 @@ class Invoice < ApplicationRecord
         "Sin confirmar"
       else
         "#{sale_point_name} - #{comp_number}"
+      end
+    end
+
+    def short_name
+      if comp_number.nil?
+        "Sin confirmar"
+      else
+        "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number}"
       end
     end
 

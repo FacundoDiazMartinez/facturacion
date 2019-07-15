@@ -28,6 +28,7 @@ class InvoicesController < ApplicationController
         render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
           layout: 'pdf.html',
           template: 'invoices/show',
+          show_as_html: true,
           #zoom: 3.4,
           #si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
@@ -253,6 +254,18 @@ class InvoicesController < ApplicationController
     @invoice.client = associated_invoice.client
     @invoice.save
   end
+
+  #ESTADISTICAS
+  def sales_per_month
+    invoices = Invoice.where(cbte_fch: Date.today.at_beginning_of_year .. Date.today.at_end_of_year).group_by_month(:cbte_fch, format: "%b %Y", time_zone: "Buenos Aires").count
+    render json: invoices
+  end
+
+  def states_per_month
+    invoices = Invoice.where(cbte_fch: Date.today.at_beginning_of_year .. Date.today.at_end_of_year).group_by_state(:state).group_by_month(:cbte_fch, format: "%b %Y", time_zone: "Buenos Aires").count
+    render json: invoices
+  end
+  #ESTADISTICAS
 
   private
     # Use callbacks to share common setup or constraints between actions.

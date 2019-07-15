@@ -103,6 +103,12 @@
   <% end %>
   <!-- TRIBUTOS -->
 
+  <!-- AUTORIZADOS -->
+    <div class="authorized" style="display: none;" id="div_iauthorized">
+      <%= render template: '/invoices/authorized/index.html.erb', locals: { form: form } %>
+    </div>
+  <!-- AUTORIZADOS -->
+
   <!-- PAGOS -->
   <div id="ipayments">
     <%= render template: '/invoices/payment/index.html.erb', locals: { form: form } %>

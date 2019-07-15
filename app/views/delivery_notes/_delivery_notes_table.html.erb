@@ -16,9 +16,9 @@
       <tr>
         <td><%= delivery_note.number %></td>
         <td><%= l(delivery_note.date) %></td>
-        <td><%= link_to delivery_note.invoice.comp_number, edit_invoice_path(delivery_note.invoice_id) %></td>
+        <td><%= link_to delivery_note.invoice.account_movement.comprobante, edit_invoice_path(delivery_note.invoice_id) %></td>
         <td><%= link_to delivery_note.user.name, user_path(delivery_note.user_id) %></td>
-        <td><%= delivery_note.state %></td>
+        <td><%= dn_state_label_helper(delivery_note) %></td>
         <td>
           <%= link_to icon('fas', 'eye').html_safe, delivery_note_path(delivery_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_delivery_note_path(delivery_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, DeliveryNote %>

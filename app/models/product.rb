@@ -50,7 +50,7 @@ class Product < ApplicationRecord
 	  	"4" => "metros cúbicos",
 	  	"5" => "litros",
 	  	"6" => "1000 kWh",
-	  	"7" => "unidades",
+	  	"7" => "unidad",
 	  	"8" => "pares",
 	  	"9" => "docenas",
 	  	"10" => "quilates",
@@ -165,6 +165,16 @@ class Product < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   	#ATRIBUTOS
+
+  		#este metodo chequea que los available stock esten todos concordando, pero no se esta ejecutando en ningun lado, lo corro en consola por ahora
+  		def check_available_stock
+  			available = 0
+  			available += stocks.where(state: "Disponible").map(&:quantity).inject(0) { |suma, quantity| suma + quantity }
+  			unless available_stock == available
+  				update_column(:available_stock, available)
+  			end
+  		end
+
   		def parent_code
   			parent.nil? ? "" : parent.code
   		end
@@ -334,33 +344,73 @@ class Product < ApplicationRecord
 			end
 		end
 
-    def impact_stock_by_cred_note(attrs = {})
+    # def impact_stock_by_cred_note(attrs = {})
+    #   if attrs[:associated_invoice]
+    #   	pp "Invoice.where(id: attrs[:associated_invoice]).first"
+    #     pp comprobante = Invoice.where(id: attrs[:associated_invoice]).first
+    #     if comprobante
+    #     	pp "product_quantity_not_delivered" #bien
+    #       pp product_quantity_not_delivered = comprobante.get_product_quantity_not_delivered(self.id).to_f
+    #       pp "reserved_stock"
+    #       pp reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+    #       pp "delivered_stock"
+    #       pp delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+    #       if product_quantity_not_delivered = 0  #En caso que la NC sea por el total de productos, y se hayan entregado todos
+    #         pp "delivered_stock.quantity"
+    #         pp delivered_stock.quantity -= attrs[:quantity].to_f
+    #       else
+    #         if (attrs[:quantity].to_f <= product_quantity_not_delivered)  #Si la cantidad devuelta es menor o igual que la cantidad que falta entregar
+    #           pp "reserved_stock.quantity"
+    #           pp reserved_stock.quantity -= attrs[:quantity].to_f
+    #         else #Si la cantidad devuelta (NC) es mayor que lo que falta entregar
+    #         	pp "remainig_quantity"	
+    #           pp remaining_quantity = attrs[:quantity].to_f - product_quantity_not_delivered #NC.quantity - prod.not.delivered
+    #           pp "reserved_stock.quantity"
+    #           pp reserved_stock.quantity -= product_quantity_not_delivered
+    #           pp delivered_stock.quantity -= remaining_quantity
+    #         end
+    #         if reserved_stock.quantity < 0  #No queremos reservas negativas
+    #           pp "reserved_stock.quantity"
+    #           reserved_stock.quantity = 0
+    #         end
+    #         reserved_stock.save
+    #       end
+    #       delivered_stock.save
+
+    #       available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+    #       available_stock.quantity += attrs[:quantity].to_f
+    #       available_stock.save
+    #     end
+    #   end
+    # end
+     def impact_stock_by_cred_note(attrs = {})
       if attrs[:associated_invoice]
         comprobante = Invoice.where(id: attrs[:associated_invoice]).first
+        reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+    		delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+    		available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
         if comprobante
-          product_quantity_not_delivered = comprobante.get_product_quantity_not_delivered(self.id).to_f
-          reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
-          delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
-          if product_quantity_not_delivered <= 0  #Puede ser negativo si por error se hizo un remito por mas cantidad de lo que se vendio en la factura
-            delivered_stock.quantity -= attrs[:quantity].to_f
-          else
-            if (attrs[:quantity].to_f <= product_quantity_not_delivered)  #Si la cantidad deuelta es menor o igual que la cantidad que falta entregar
-              reserved_stock.quantity -= attrs[:quantity].to_f
-            else                                                          #Si la cantidad devuelta es mayor que lo que falta devolver
-              remaining_quantity = attrs[:quantity].to_f - product_quantity_not_delivered
-              reserved_stock.quantity -= product_quantity_not_delivered
-              delivered_stock.quantity -= remaining_quantity
-            end
-            if reserved_stock.quantity < 0  #No queremos reservas negativas
-              reserved_stock.quantity = 0
-            end
-            reserved_stock.save
+        	delivered_stock_saved = 0
+        	#En este bloque seteamos cantidad reservada y entregada para el producto en cuestion
+          reserved_stock_saved = comprobante.invoice_details.where(product_id: self.id)
+          
+          comprobante.delivery_notes.where(state: "Finalizado").each do |dn|
+        		delivered_stock_saved += dn.delivery_note_details.where(product_id: self.id).map(&:quantity).inject(0) { |suma, quantity| suma + quantity }
+      		end
+      		#Fin del bloque
+          
+          if (attrs[:quantity].to_f > delivered_stock_saved) #Si la NC es mayor que la cantidad entregada en los remitos
+          	delivered_stock -=	delivered_stock_saved
+          	reserved_stock.quantity 	-=	(attrs[:quantity].to_f - delivered_stock_saved)
+          	available_stock.quantity +=	attrs[:quantity].to_f
+          else #Si la NC es menor igual que la cantidad entrega en los remitos
+          	# Saca el total de la cantidad entregada, y lo pasa a disponible
+          	delivered_stock.quantity  -=	attrs[:quantity].to_f
+          	available_stock.quantity +=	attrs[:quantity].to_f
           end
           delivered_stock.save
-
-          available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
-          available_stock.quantity += attrs[:quantity].to_f
           available_stock.save
+          reserved_stock.save
         end
       end
     end
@@ -415,12 +465,30 @@ class Product < ApplicationRecord
     	freeze
     end
 
-    def rollback_delivered_stock attrs={}
-  		s = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
-  		s.quantity = s.quantity.to_f - attrs[:quantity].to_f
-  		if s.save
-  			add_stock attrs
-  		end
+    def rollback_stock_from_delivered_to_reserved attrs={}
+    	#Se buscan los depositos con stock entregado y reservado
+  		delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+  		reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
+  		
+  		#Se resta la cantidad de productos al deposito Entregado, y se suman al depósito Reservado
+  		delivered_stock.quantity = delivered_stock.quantity.to_f - attrs[:quantity].to_f
+  		reserved_stock.quantity = reserved_stock.quantity.to_f + attrs[:quantity].to_f
+  		
+  		delivered_stock.save
+  		reserved_stock.save
+		end
+
+		def rollback_stock_from_delivered_to_available attrs={}
+    	#Se buscan los depositos con stock entregado y reservado
+  		delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
+  		available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+  		
+  		#Se resta la cantidad de productos al deposito Entregado, y se suman al depósito Reservado
+  		delivered_stock.quantity = delivered_stock.quantity.to_f - attrs[:quantity].to_f
+  		available_stock.quantity = available_stock.quantity.to_f + attrs[:quantity].to_f
+  		
+  		delivered_stock.save
+  		available_stock.save
 		end
 
     	#IMPORTAR EXCEL o CSV

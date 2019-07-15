@@ -25,7 +25,7 @@
         <td class="text_right"><%= det.product.measurement_unit_name %></td>
         <td class="text_right">$ <%= det.bonus_amount %></td>
         <td class="text_right">$ <%= det.iva_amount %></td>
-        <td class="text_right">$ <%= det.subtotal %></td>
+        <td class="text_right">$ <%= det.subtotal.round(2) %></td>
       </tr>
     <% end %>
   </table>
@@ -51,13 +51,13 @@
           <% end %>
         </b>
       </td>
-      <td class="text_right"><b>$ <%= total_of_page %></b></td>
+      <td class="text_right"><b>$ <%= total_of_page.round(2) %></b></td>
       <td rowspan="2" ></td>
     </tr>
 
     <tr>
       <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%= @budget.total %></b></td>
+      <td class="text_right"><b>$ <%= @budget.total.round(2) %></b></td>
     </tr>
   </table>
   </div>

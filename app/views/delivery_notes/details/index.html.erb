@@ -14,7 +14,7 @@
 			<th></th>
 			<th scope="col">Código</th>
 			<th scope="col">Producto</th>
-			<th scope="col">Cantidad entregada</th>
+			<th scope="col">Cantidad a entregar</th>
 			<th scope="col">Depósito</th>
 			<th scope="col">Observación</th>
 			<th scope="col"></th>
@@ -25,19 +25,26 @@
 			<% if !f.object.marked_for_destruction? %>
 		      	<tr class="fields" id="<%= f.index %>">
 					<td>
-			        <% if @delivery_note.editable? %>
-			            <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
-			        <% else %>
-			            #
-			        <% end %>
-					<%= f.hidden_field :product_id, class: 'product_id' %>
-          <%= f.hidden_field :invoice_detail_id %>
+			            <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary'  if @delivery_note.editable? %>
+
+						<%= f.hidden_field :product_id, class: 'product_id' %>
+	          			<%= f.hidden_field :invoice_detail_id %>
 					</td>
-		      		<td><%= autocomplete_field_tag :code, f.object.product_code, autocomplete_product_code_products_path, class: 'delivery_note-autocomplete_field form-control code', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@delivery_note.editable? || !f.object.invoice_detail_id.nil? %></td>
-		      		<td><%= text_field_tag :name, f.object.product_name, class: 'form-control name', disabled: !@delivery_note.editable?  %></td>
-					<td><%= f.number_field :quantity, class: 'form-control quantity', disabled: !@delivery_note.editable?, required: true, min: 0 %></td>
-					<td><%= f.select :depot_id, options_for_select(current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, f.object.depot_id),{prompt: "Seleccione..."}, {class: 'form-control depot_id', disabled: !@delivery_note.editable?, required: true} %></td>
-					<td><%= f.text_field :observation, class: 'form-control', disabled: !@delivery_note.editable? %></td>
+		      		<td>
+		      			<%= autocomplete_field_tag :code, f.object.product_code, autocomplete_product_code_products_path, class: 'delivery_note-autocomplete_field form-control code', data: { noMatchesLabel: "Crear nuevo producto." }, disabled: !@delivery_note.editable? || !f.object.invoice_detail_id.nil? %>
+		      		</td>
+		      		<td>
+		      			<%= text_field_tag :name, f.object.product_name, class: 'form-control name', disabled: !@delivery_note.editable?  %>
+		      		</td>
+					<td>
+						<%= f.number_field :quantity, class: 'form-control quantity', disabled: !@delivery_note.editable?, required: true, min: 0 %>
+					</td>
+					<td>
+						<%= f.select :depot_id, options_for_select(current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, f.object.depot_id),{prompt: "Seleccione..."}, {class: 'form-control depot_id', disabled: !@delivery_note.editable?, required: true} %>
+					</td>
+					<td>
+						<%= f.text_field :observation, class: 'form-control', disabled: !@delivery_note.editable? %>
+					</td>
 					<td class="verical-align">
 						<% if @delivery_note.editable? %>
 							<%= f.link_to_remove icon('fas', 'times') %>

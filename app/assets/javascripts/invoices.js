@@ -573,6 +573,31 @@ function toggleTributes2(){
 	});
 }
 
+function toggleAuthorized(){
+	var display = $("#div_iauthorized").css('display');
+	if (display != 'none'){
+		//$("#div_itributes").hide('fast');
+		//$("#toggle_tributes").html("").append($("<i class='fa fa-eye'></i>")).button();
+		//$("#toggle_tributes").append(' Tributos');
+	}
+	else{
+		$("#div_iauthorized").show('fast');
+		//$("#toggle_tributes").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
+		//$("#toggle_tributes").append(' Tributos');
+		$([document.documentElement, document.body]).animate({
+      scrollTop: $("#div_iauthorized").offset().top
+    }, 500, function(){
+    	$("#div_iauthorized").effect( "shake" );
+    });
+	}
+}
+
+function toggleAuthorized2(){
+	$("#div_iauthorized").click(function(){
+  	$("#div_iauthorized").toggle();
+	});
+}
+
 
 function getPaymentRequest(url, data, action) {
   $.ajax({

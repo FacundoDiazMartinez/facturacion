@@ -22,6 +22,7 @@
 						<%= link_to "<span class='nav-span'>Remitos</span>".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
 						<%# link_to "<span class='nav-span'>Expedientes</span>".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Clientes</span>".html_safe, clients_path, class: 'dropdown-item', title: 'Clientes' if can? :read, Client %>
+						<%#= link_to "<span class='nav-span'>Estadísticas</span>".html_safe, sales_stadistics_path, class: 'dropdown-item', title: 'Estadísticas' if can? :read, Stadistic %>
 				</div>
 			</li>
 

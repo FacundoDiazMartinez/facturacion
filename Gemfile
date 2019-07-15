@@ -26,6 +26,9 @@ gem 'jbuilder', '~> 2.5'
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
+#Gema para generar los gráficos
+gem "chartkick"
+gem 'groupdate'
 
 # GENA código de barras
 gem 'barby', '~> 0.6.6'

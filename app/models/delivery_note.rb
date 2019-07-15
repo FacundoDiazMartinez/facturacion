@@ -103,11 +103,26 @@ class DeliveryNote < ApplicationRecord
 
     def adjust_stocks_by_dn_cancelled
       self.delivery_note_details.each do |dnd|
-        dnd.product.rollback_delivered_stock(quantity: dnd.quantity, depot_id: dnd.depot_id)
+        if self.invoice.state == "Confirmado"
+          dnd.product.rollback_stock_from_delivered_to_reserved(quantity: dnd.quantity, depot_id: dnd.depot_id, delivery_note_id: self.id)
+        elsif self.invoice.state == "Anulado"
+          update_column(:state, "Anulado")
+        elsif self.invoice.state == "Anulado parcialmente"
+          total_cn_details = 0
+          dnd.delivery_note.invoice.credit_notes.each do |cn|
+            cn.invoice_details.each do |cn_detail|
+              if cn_detail.product_id == dnd.product_id
+                total_cn_details += cn_detail.quantity
+              end
+            end
+          end
+          dnd.product.rollback_stock_from_delivered_to_available(quantity: (dnd.quantity - total_cn_details), depot_id: dnd.depot_id, delivery_note_id: self.id)
+        end
       end
-      self.invoice.invoice_details.each do |id|
-        id.reserve_stock
-      end
+      #COMENTE ESTO, VER SI HACE FALTA
+      # self.invoice.invoice_details.each do |id|
+      #   id.reserve_stock
+      # end
     end
 
     def adjust_stocks_by_dn_finalized
