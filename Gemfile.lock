@@ -1193,7 +1193,7 @@ DEPENDENCIES
   jquery-ui-rails
   jquery-validation-rails
   letter_opener
-  listen
+  listen (>= 3.0.5, < 3.2)
   nested_form
   numbers_and_words
   pg (>= 0.18, < 2.0)

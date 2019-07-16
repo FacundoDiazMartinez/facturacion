@@ -400,13 +400,13 @@ class Product < ApplicationRecord
       		#Fin del bloque
           
           if (attrs[:quantity].to_f > delivered_stock_saved) #Si la NC es mayor que la cantidad entregada en los remitos
-          	delivered_stock -=	delivered_stock_saved
-          	reserved_stock.quantity 	-=	(attrs[:quantity].to_f - delivered_stock_saved)
-          	available_stock.quantity +=	attrs[:quantity].to_f
+          	delivered_stock.quantity 	-=	delivered_stock_saved
+          	reserved_stock.quantity		-=	(attrs[:quantity].to_f - delivered_stock_saved)
+          	available_stock.quantity 	+=	attrs[:quantity].to_f
           else #Si la NC es menor igual que la cantidad entrega en los remitos
           	# Saca el total de la cantidad entregada, y lo pasa a disponible
-          	delivered_stock.quantity  -=	attrs[:quantity].to_f
-          	available_stock.quantity +=	attrs[:quantity].to_f
+          	delivered_stock.quantity  	-=	attrs[:quantity].to_f
+          	available_stock.quantity 	+=	attrs[:quantity].to_f
           end
           delivered_stock.save
           available_stock.save
