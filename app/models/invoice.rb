@@ -451,19 +451,21 @@ class Invoice < ApplicationRecord
 
     def update params, send_to_afip = false
       response = super(params)
-      if response && send_to_afip == "true"
-        get_cae
-      end
+      confirm_invoice(response, send_to_afip)
       return response && !self.errors.any?
     end
 
     def custom_save send_to_afip = false
       response = save
-      if response && send_to_afip == "true"
-        get_cae
-      end
+      confirm_invoice(response, send_to_afip)
       return response && !self.errors.any?
     end
+
+		def confirm_invoice(response, send_to_afip)
+			if response && send_to_afip == "true"
+				InvoiceManager::Confirmator.call(self)
+      end
+		end
 
 		##after_save genera un recibo para una factura confirmada y con pagos
     def check_receipt
@@ -640,61 +642,8 @@ class Invoice < ApplicationRecord
     end
 	#ATRIBUTOS
 
-
   #AFIP
     #FUNCIONES
-    def set_constants
-      if self.company.environment == "production"
-        #PRODUCCION
-        Afip.pkey               = "#{Rails.root}/app/afip/facturacion.key"
-        Afip.cert               = "#{Rails.root}/app/afip/produccion.crt"
-        Afip.auth_url           = "https://wsaa.afip.gov.ar/ws/services/LoginCms"
-        Afip.service_url        = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
-        Afip.cuit               = self.company.cuit || raise(Afip::NullOrInvalidAttribute.new, "Please set CUIT env variable.")
-        Afip::AuthData.environment = :production
-        Afip.environment 	      = :production
-        #http://ayuda.egafutura.com/topic/5225-error-certificado-digital-computador-no-autorizado-para-acceder-al-servicio/
-      else
-        #TEST
-        Afip.cuit = "20368642682"
-        Afip.pkey = "#{Rails.root}/app/afip/facturacion.key"
-        Afip.cert = "#{Rails.root}/app/afip/testing.crt"
-        Afip.auth_url = "https://wsaahomo.afip.gov.ar/ws/services/LoginCms"
-        Afip.service_url = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
-        Afip::AuthData.environment = :test
-      end
-
-      Afip.default_concepto   = Afip::CONCEPTOS.key(self.company.concepto)
-      Afip.default_documento  = "CUIT"
-      Afip.default_moneda     = self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
-      Afip.own_iva_cond       = self.company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
-    end
-
-    def set_bill
-      set_constants
-      bill = Afip::Bill.new(
-        net:            self.net_amount_sum,
-        doc_num:        self.client.document_number,
-        sale_point:     self.sale_point.name,
-        documento:      Afip::DOCUMENTOS.key(self.client.document_type),
-        moneda:         self.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym,
-        iva_cond:       self.client.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym,
-        concepto:       self.concepto,
-        ivas:           self.iva_array,
-        cbte_type:      self.cbte_tipo,
-        fch_serv_desde: self.fch_serv_desde,
-        fch_serv_hasta: self.fch_serv_hasta,
-        due_date:       self.fch_vto_pago,
-        tributos:       self.tributes.map{|t| [t.afip_id, t.desc, t.base_imp, t.alic, t.importe]},
-        cant_reg:       1,
-        no_gravado:     self.no_gravado,
-        exento:         self.exento,
-        otros_imp:      self.otros_imp
-      )
-      bill.doc_num = self.client.document_number
-      return bill
-    end
-
     def code_hash
       {
         cuit: self.company.cuit,
@@ -707,9 +656,9 @@ class Invoice < ApplicationRecord
 
     def code_numbers(code_hash)
       require "check_digit.rb"
-      code = code_hash.values.join("")
-      last_digit = CheckDigit.new(code).calculate
-      result = "#{code}#{last_digit}"
+      code 				= code_hash.values.join("")
+      last_digit 	= CheckDigit.new(code).calculate
+      result 			= "#{code}#{last_digit}"
       result.size.odd? ? "0" + result : result
     end
 
@@ -725,41 +674,6 @@ class Invoice < ApplicationRecord
       self.tributes.sum(:importe).to_f.round(2)
     end
 
-    def auth_bill bill
-      bill.authorize
-      if not bill.authorized?
-        afip_errors(bill)
-      else
-        set_cae(bill)
-      end
-      return bill
-    end
-
-    def get_cae
-      # begin
-        auth_bill(set_bill)
-      # rescue
-      #   errors.add(:base, "Error interno de AFIP, intente nuevamente más tarde.")
-      # end
-    end
-
-    def afip_errors(bill)
-      if not bill.response.observaciones.nil?
-        if bill.response.observaciones.any?
-          if bill.response.observaciones[:obs].class == Hash
-            self.errors.add(:bill, bill.response.observaciones[:obs][:msg])
-          elsif bill.response.observaciones[:obs].class == Array
-            bill.response.observaciones[:obs].each do |obs|
-              self.errors.add(:bill, obs[:msg])
-            end
-          end
-        end
-      end
-      if not bill.response.errores.nil?
-        self.errors.add(:bill, bill.response.errores[:msg])
-      end
-    end
-
     def self.get_tributos company
       Afip.default_concepto = Afip::CONCEPTOS.key(company.concepto)
       Afip.default_documento = "CUIT"
@@ -773,43 +687,13 @@ class Invoice < ApplicationRecord
       end
     end
     #FUNCIONES
-
-    #PROCESOS
-      def set_cae bill
-        response = self.update(
-          cae: bill.response.cae,
-          cae_due_date: bill.response.cae_due_date,
-          cbte_fch: bill.response.cbte_fch.to_date,
-          authorized_on: bill.response.authorized_on.to_time,
-          comp_number: bill.response.cbte_hasta.to_s.rjust(8,padstr= '0'),
-          imp_tot_conc: bill.response.imp_tot_conc,
-          imp_op_ex: bill.response.imp_op_ex,
-          imp_trib: bill.response.try(:imp_trib) || 0.0,
-          imp_neto: bill.response.imp_neto,
-          imp_iva: bill.response.try(:imp_iva) || 0,
-          imp_total: bill.response.imp_total,
-          state: "Confirmado"
-        )
-        self.activate_commissions
-        if response && !self.associated_invoice.nil? && self.is_credit_note?
-          total_from_notes = self.invoice.credit_notes.sum(:total).round(2)
-          if total_from_notes == self.invoice.total.round(2)
-            self.invoice.update_column(:state, "Anulado")
-          else
-            self.invoice.update_column(:state, "Anulado parcialmente")
-          end
-        end
-      end
-    #PROCESOS
   #AFIP
 
-  #FILL_COMP_NUMBER
   def fill_comp_number
-    if !self.comp_number.nil?
+    unless self.comp_number.nil?
       self.comp_number.to_s.rjust(8,padstr= '0')
     end
   end
-  #FILL_COMP_NUMBER
 
   def all_payments_string
 		array = []

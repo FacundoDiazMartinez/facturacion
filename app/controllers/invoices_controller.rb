@@ -11,12 +11,10 @@ class InvoicesController < ApplicationController
   # GET /invoices/1
   # GET /invoices/1.json
   def show
-
     # la siguiene variable la cree para el pdf:
     Product.unscoped do
       @group_details = @invoice.invoice_details.includes(:product).in_groups_of(15, fill_with= nil)
     end
-
     respond_to do |format|
       format.html
       format.pdf do
@@ -36,7 +34,6 @@ class InvoicesController < ApplicationController
           encoding:"UTF-8"
       end
     end
-
     @invoice.delete_barcode(@barcode_path)
   end
 
@@ -66,12 +63,16 @@ class InvoicesController < ApplicationController
     @client = @invoice.client
     respond_to do |format|
       if @invoice.custom_save(params[:send_to_afip])
-        format.html{redirect_to edit_invoice_path(@invoice.id), notice: "El comprobante fue creado con éxito."}
+        format.html{redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."}
       else
         pp @invoice.errors
-        format.html {render :new}
+        format.html { render :new, alert: "Comprobante" }
       end
     end
+  end
+
+  def confirm
+    ##hay que hacer que la confirmación sea por separado
   end
 
   def cancel
