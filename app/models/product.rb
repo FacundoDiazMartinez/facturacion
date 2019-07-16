@@ -383,7 +383,7 @@ class Product < ApplicationRecord
     #     end
     #   end
     # end
-     def impact_stock_by_cred_note(attrs = {})
+    def impact_stock_by_cred_note(attrs = {})
       if attrs[:associated_invoice]
         comprobante = Invoice.where(id: attrs[:associated_invoice]).first
         reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
@@ -405,7 +405,7 @@ class Product < ApplicationRecord
           	available_stock.quantity 	+=	attrs[:quantity].to_f
           else #Si la NC es menor igual que la cantidad entrega en los remitos
           	# Saca el total de la cantidad entregada, y lo pasa a disponible
-          	delivered_stock.quantity  	-=	attrs[:quantity].to_f
+          	delivered_stock.quantity  -=	attrs[:quantity].to_f
           	available_stock.quantity 	+=	attrs[:quantity].to_f
           end
           delivered_stock.save
