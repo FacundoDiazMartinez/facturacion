@@ -389,6 +389,15 @@ class Product < ApplicationRecord
         reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
     		delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
     		available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
+    		if reserved_stock.new_record?
+    			reserved_stock.quantity = 0
+    		end
+    		if delivered_stock.new_record?
+    			delivered_stock.quantity = 0
+    		end
+    		if available_stock.new_record?
+    			available_stock.quantity = 0
+    		end
         if comprobante
         	delivered_stock_saved = 0
         	#En este bloque seteamos cantidad reservada y entregada para el producto en cuestion
