@@ -7,11 +7,7 @@
       <th class="description_header">Cantidad</th>
       <th class="description_header">Precio Unit.</th>
       <th class="description_header">Bonificación</th>
-      <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
-        <th class="description_header">Subtotal</th>
-      <% else %>
-        <th class="description_header">Subtotal c/IVA</th>
-      <% end %>
+      <th class="description_header">Subtotal</th>
       <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
         <th class="description_header">I.V.A.</th>
       <% end %>
