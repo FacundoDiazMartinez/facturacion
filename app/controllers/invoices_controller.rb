@@ -179,7 +179,6 @@ class InvoicesController < ApplicationController
   def autocomplete_product_code
     term = params[:term]
     products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    pp products
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03",best_depot_id: product.stocks.where(state: "Disponible").order(quantity: :desc).first.nil? ? nil : product.stocks.where(state: "Disponible").order(quantity: :desc).first.depot_id, depots_with_quantities: product.stocks.where(state: "Disponible")}}
   end
 

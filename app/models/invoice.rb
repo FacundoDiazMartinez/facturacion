@@ -101,8 +101,10 @@ class Invoice < ApplicationRecord
 
   	def self.search_by_state state
   		if not state.blank?
+        pp state
   			where(state: state)
   		else
+        pp "ELSEEEE"
   			all
   		end
   	end

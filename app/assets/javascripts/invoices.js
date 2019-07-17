@@ -238,10 +238,19 @@ function calculateNeto_withBonifications(){
 
 function calculateTotalOfInvoice(){
 		var inv_total = parseFloat(0); // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Suma de totales [CON IVA]  (para sumarles luego los tributos CON DESCUENTO)
+		var iva_am = parseFloat(0);
 		$("tr.fields:visible > td > input.subtotal").each(function(){
 			inv_total += parseFloat($(this).val());
-			$("#total_details").text("Total concepto: \xa0 \xa0 \xa0 $ " + inv_total.toFixed(2));  //>>>>>> Muestra el total de los conceptos
+			console.log(inv_total);
+			//$("#total_details").text("Total conceptos: \xa0 \xa0 \xa0 $ " + inv_total.toFixed(2));  //>>>>>> Muestra el total de los conceptos
 		});
+		$("tr.fields:visible > td > input.iva_amount").each(function(){
+			iva_am += parseFloat($(this).val());
+			console.log(iva_am);
+		});
+		total_conceptos = inv_total - iva_am;
+		console.log(total_conceptos);
+		$("#total_details").text("Total conceptos: \xa0 \xa0 \xa0 $ " + total_conceptos.toFixed(2));  //>>>>>> Muestra el total de los conceptos
 		bonif_gral = $("#invoice_bonification").val();
 		if (bonif_gral != 0) {
 			inv_total -= (inv_total * (bonif_gral / 100));  // >>>>>>>>>>>>>>>> Descuento general al TOTAL
