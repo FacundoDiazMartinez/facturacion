@@ -71,11 +71,11 @@
 // Saltos de página
 .alwaysbreak {
    //page-break-before: always;
-  display: block;
-  clear: both;
+  //display: block;
+  //clear: both;
   page-break-after: always;
   margin-bottom: 0;
-  overflow-y: hidden;
+  //overflow-y: hidden;
  }
 .nobreak:before {
   clear:both;
