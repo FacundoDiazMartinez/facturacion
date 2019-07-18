@@ -12,18 +12,19 @@
 <!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
     <div class=" border">
       <table class="width_100">
-        <tr style="line-height: 10px !important;">
-          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 415px; line-height: 10px;"><%= @invoice.company.name %></th>
-          <th class="text_size_invoice_type invoice_type"><%= Invoice.available_cbte_type(@invoice.company, @invoice.client).first.first.last %>
+        <tr style="line-height: 8px !important;">
+          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 830px;"><%= @invoice.company.name %>
+          </th>
+          <th class="text_size_invoice_type invoice_type" style="padding-left: 25px;"><%= Invoice.available_cbte_type(@invoice.company, @invoice.client).first.first.last %>
             <table>
               <tbody>
                 <td>
-                  <td style="font-size: 11px; padding-left: 250px;"> <br> COD.<%= @invoice.cbte_tipo %></td>
+                  <td style="font-size: 11px; padding-top: 10px;"> <br> COD.<%= @invoice.cbte_tipo %></td>
                 </td>
               </tbody>
             </table>
           </th>
-          <th class="text_size_25 header_word_break" style="width: 400px;">
+          <th class="text_size_25 header_word_break" style="width: 800px;">
             <%= @invoice.nombre_comprobante.upcase %>
           </th>
         </tr>

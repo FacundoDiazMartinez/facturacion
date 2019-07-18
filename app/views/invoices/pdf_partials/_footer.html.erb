@@ -12,7 +12,7 @@
       <tr>
         <td rowspan="2" style="width: 33%;"> <br> <center> <%= wicked_pdf_image_tag '/images/afip.png',:width => "150"%> </center></td>
 
-        <td rowspan="2" style="width: 34%;">
+        <td rowspan="2" style="width: 20% !important;">
           <b>
             <center>
               <% if @invoice.check_authorized_invoice %>
@@ -28,7 +28,7 @@
                   <%# file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 35) } %>
                   <%#= image_tag(@barcode_path, class: "img-responsive") %>
                   <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
-                  <% bar_png = barcode.to_png(xdim:1, height: 35) %>
+                  <% bar_png = barcode.to_png(xdim:1, height: 30) %>
                   <% image = Base64.encode64(bar_png.to_s).gsub(/\s+/, "") %>
                   <%= image_tag "data:image/png;base64,#{Rack::Utils.escape(image)}" %>
                   <%= barcode.to_s %>
