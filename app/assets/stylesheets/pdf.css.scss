@@ -74,6 +74,8 @@
   display: block;
   clear: both;
   page-break-after: always;
+  margin-bottom: 0;
+  overflow-y: hidden;
  }
 .nobreak:before {
   clear:both;
