@@ -2,7 +2,7 @@
 <br>
 <div class="row footer_bottom">
   <% if @invoice.company.invoice_footer.length > 0 %>
-    <div class="container" style="border-style: dotted;border-width: 1px; padding-right: : 10px; padding-left: 10px; height:90px; overflow: hidden; font-size: 10px !important;">
+    <div class="container" style="border-style: dotted; border-width: 1px; padding-right: 10px; padding-left: 10px; height:90px; overflow: hidden; font-size: 10px !important;">
       <%= @invoice.company.invoice_footer.html_safe %>
     </div>
   <% end %>
@@ -23,11 +23,15 @@
               <% else %>
                 -- Comprobante NO Autorizado --
                 <% if !@invoice.cae.blank? %>
+                  <%# barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
+                  <%# outputter = Barby::PngOutputter.new(barcode) %>
+                  <%# file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 35) } %>
+                  <%#= image_tag(@barcode_path, class: "img-responsive") %>
                   <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
-                  <% outputter = Barby::PngOutputter.new(barcode) %>
-                  <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 35) } %>
-                  <%= image_tag(@barcode_path, class: "img-responsive") %>
-                  <%= barcode %>
+                  <% bar_png = barcode.to_png(xdim:1, height: 35) %>
+                  <% image = Base64.encode64(bar_png.to_s).gsub(/\s+/, "") %>
+                  <%= image_tag "data:image/png;base64,#{Rack::Utils.escape(image)}" %>
+                  <%= barcode.to_s %>
                 <% end %>
               <% end %>
             </center>
