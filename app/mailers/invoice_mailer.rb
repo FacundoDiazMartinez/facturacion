@@ -18,7 +18,7 @@ class InvoiceMailer < ApplicationMailer
 		      		render_to_string(pdf: 'Recibo', template: 'receipts/show.pdf.erb', layout: 'pdf.html')
 		     	)
 		    end
-	      	mail to: email, subject: "Factura Nº #{invoice.full_number} - #{invoice.company.name}"
+	      	mail to: @email, subject: "Factura Nº #{invoice.full_number} - #{invoice.company.name}"
 	    end
 	end
 
