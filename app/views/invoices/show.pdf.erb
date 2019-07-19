@@ -1,8 +1,11 @@
+<% real_total_page = 3 * @group_details.count %>
+<% page_number_if = 1 %>
 <% for i in 1..3 do %>
   <% total_page = 0 %>
    <!--  @group_details lo cree en el controlador de invoices (en el show) con un include de productos. Son los detalles de la factura en grupos de a 20 -->
   <% @group_details.each_with_index do |details_page, index| %>
-    <% if i == 1 || i == 2 || i == 3 %>
+    <% if page_number_if < real_total_page %>
+      <% page_number_if += 1 %>
       <div class="alwaysbreak">
     <% end %>
 
@@ -11,7 +14,7 @@
           <div class="row">
             <div class="border">
               <center>
-                <h2 class="text_size_25" style="line-height: 3px !important;">
+                <h2 class="text_size_25" style="line-height: 2px !important;">
                   <% case i
                     when 1 %>
                       ORIGINAL
