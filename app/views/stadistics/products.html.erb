@@ -1,12 +1,14 @@
 <%= form_tag products_stadistics_path, remote: true, id: 'search_form' do %>
   <div class="col-sm-5 col-xs-5">
     <div class="form-group">
-        <label class="sr-only" for="exampleInputAmount">Mes</label>
-        <div class="input-group">
-            <div class="input-group-addon">Mes</div>
-            <%= text_field_tag :month, params[:month], class: 'form-control', onkeyup: 'remoteSubmit("#search_form");' %>
-          
-        </div>
+        <div class="row">
+        	<hr>
+        	<h4 style="padding-top: 10px; padding-right: 10px;">Selecccione un mes para filtrar: </h4>
+        	<span style="padding-top: 5px;">        	
+        	<%= select_tag :month,options_for_select([["Enero", 1], ["Febrero", 2], ["Marzo", 3], ["Abril", 4], ["Mayo", 5], ["Junio", 6], ["Julio", 7], ["Agosto", 8], ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]], Date.today.month),
+      		class: 'form-control',onchange: 'remoteSubmit("#search_form");'%>
+      		</span>
+      	</div>
     </div>
   </div>
   

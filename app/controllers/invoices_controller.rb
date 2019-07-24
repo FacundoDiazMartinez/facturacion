@@ -1,6 +1,7 @@
 class InvoicesController < ApplicationController
   load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product]
   before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver, :paid_invoice_with_debt]
+  before_action :set_date_for_graphs, only: [:sales_per_month, :amount_per_month, :commissioner_per_month, :states_per_month]
 
   # GET /invoices
   # GET /invoices.json
@@ -258,22 +259,22 @@ class InvoicesController < ApplicationController
   #ESTADISTICAS
   def sales_per_month
     #cbte_fch = Invoice.cbte_fch.to_date
-    invoices = Invoice.where(state: "Confirmado", cbte_fch: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
+    invoices = Invoice.where(state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
     render json: invoices  
   end
 
   def states_per_month
-    invoices = Invoice.where(cbte_fch: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s).group(:state).count
+    invoices = Invoice.where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group(:state).count
     render json: invoices
   end
 
   def amount_per_month
-    invoices = Invoice.where(state: "Confirmado", cbte_fch: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").sum(:total)
+    invoices = Invoice.where(state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").sum(:total)
     render json: invoices
   end
 
   def commissioner_per_month
-    invoices = Invoice.joins(:commissioners, commissioners: :user).where(commissioners: {created_at: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s}).group("users.first_name || ' ' || users.last_name").sum(:total_commission)
+    pp invoices = Invoice.joins(:commissioners, commissioners: :user).where(commissioners: {created_at: @first_date .. @last_date}).group("users.first_name || ' ' || users.last_name").sum(:total_commission)
     render json: invoices
   end
 
@@ -287,6 +288,11 @@ class InvoicesController < ApplicationController
   #ESTADISTICAS
 
   private
+    def set_date_for_graphs
+      month = params[:month].blank? ? Date.today.month : params[:month]
+      @first_date = "01/#{month}/#{Date.today.year}".to_date
+      @last_date = @first_date + 1.months - 1.days
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_invoice
       @invoice = current_user.company.invoices.find(params[:id])
