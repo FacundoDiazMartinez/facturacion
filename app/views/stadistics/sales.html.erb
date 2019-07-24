@@ -1,7 +1,24 @@
-<div class="col-xs-6 col-sm-6 col-md-6">
-	<%= render template: '/stadistics/sales/sales_per_month.html.erb' %>
+<hr>
+<div class="row">
+	<div class="form-group col-md-6 col-xs-12">
+		<%= render template: '/stadistics/sales/sales_per_month.html.erb' %>
+	</div>
+	<div class="form-group col-md-6 col-xs-12">
+		<%= render template: '/stadistics/sales/states_per_month.html.erb' %>
+	</div>
 </div>
-<div class="col-xs-6 col-sm-6 col-md-6">
-	<%= render template: '/stadistics/sales/states_per_month.html.erb' %>
-	
+
+<div class="row">
+	<div class="form-group col-md-6 col-xs-12">
+		<%= render template: '/stadistics/sales/amount_per_month.html.erb' %>
+	</div>
+	<div class="form-group col-md-6 col-xs-12">
+		<%= render template: '/stadistics/sales/commissioners_per_month.html.erb' %>
+	</div>
+</div>
+
+<div class="row">
+	<div class="form-group col-md-12 col-xs-12">
+		<%= render template: '/stadistics/sales/sales_per_year.html.erb' %>
+	</div>
 </div>

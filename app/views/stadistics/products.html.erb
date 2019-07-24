@@ -1,0 +1,22 @@
+<%= form_tag products_stadistics_path, remote: true, id: 'search_form' do %>
+  <div class="col-sm-5 col-xs-5">
+    <div class="form-group">
+        <label class="sr-only" for="exampleInputAmount">Mes</label>
+        <div class="input-group">
+            <div class="input-group-addon">Mes</div>
+            <%= text_field_tag :month, params[:month], class: 'form-control', onkeyup: 'remoteSubmit("#search_form");' %>
+          
+        </div>
+    </div>
+  </div>
+  
+<% end %>
+<div id="graphics_products">
+  <%= render '/stadistics/products/graphics' %>
+</div>
+
+<div class="row">
+	<div class="form-group col-md-12 col-xs-12">
+		<%= render template: '/stadistics/products/top_ten_products_per_year.html.erb' %>
+	</div>
+</div>

@@ -2,6 +2,7 @@ class ProductsController < ApplicationController
   load_and_authorize_resource except: :autocomplete_product_code
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   before_action :set_s3_direct_post, only: [:new, :edit, :create, :update, :index]
+  before_action :set_date_for_graphs, only: [:top_ten_products_per_month, :top_ten_sales_per_month]
   # GET /products
   # GET /products.json
   def index
@@ -114,7 +115,39 @@ class ProductsController < ApplicationController
     render :json => [{iva: category.iva_aliquot}]
   end
 
+  #ESTADISTICAS
+  def top_ten_products_per_month
+    pp @first_date
+    pp @last_date
+    company = current_user.company_id
+    pp Invoice.joins(invoice_details: :product).where( state: "Confirmado", cbte_fch: @first_date .. @last_date)
+    pp chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: @first_date.to_s .. @last_date.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.quantity}.reduce(:+).to_f]}
+    chart_data = chart_data.sort_by{|a| a.last}.last(10)
+    render json: chart_data
+  end
+
+  def top_ten_products_per_year
+    company = current_user.company_id
+    chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.quantity}.reduce(:+).to_f]}
+    chart_data = chart_data.sort_by{|a| a.last}.last(10)
+    render json: chart_data
+  end
+
+  def top_ten_sales_per_month
+    company = current_user.company_id
+    chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: @first_date.to_s .. @last_date.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.subtotal.to_i}.reduce(:+).to_f]}
+    chart_data = chart_data.sort_by{|a| a.last}.last(10)
+    render json: chart_data
+  end
+
+  #ESTADISTICAS
+
   private
+    def set_date_for_graphs
+      month = params[:month].blank? ? Date.today.month : params[:month]
+      @first_date = "01/#{month}/#{Date.today.year}".to_date
+      @last_date = @first_date + 1.months - 1.days
+    end
     # Use callbacks to share common setup or constraints between actions.
     def set_product
       @product = current_user.company.products.find(params[:id])

@@ -1,10 +1,10 @@
-<div class="form-group col-xs-12 col-sm-6">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-    	<h4>Ventas por mes</h4>
-    </div>
-    <div class="panel-body">
-      <%= area_chart sales_per_month_invoices_path %>
-    </div>
-  </div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<center>
+			<h4>Cantidad de ventas <%= I18n.t("date.month_names")[Date.today.month] %></h4>
+		</center>
+	</div>
+	<div class="panel-body">
+	  <%= area_chart sales_per_month_invoices_path %>
+	</div>
 </div>

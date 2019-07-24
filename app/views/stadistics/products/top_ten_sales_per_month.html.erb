@@ -1,0 +1,10 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<center>
+			<h4>Top 10 subtotales en <%= I18n.t("date.month_names")[Date.today.month] %></h4>
+		</center>
+	</div>
+	<div class="panel-body">
+	  <%= bar_chart top_ten_sales_per_month_products_path(month: params[:month]), height: "500px", prefix: "$" %>
+	</div>
+</div>

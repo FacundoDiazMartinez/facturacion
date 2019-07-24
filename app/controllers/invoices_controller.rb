@@ -257,13 +257,32 @@ class InvoicesController < ApplicationController
 
   #ESTADISTICAS
   def sales_per_month
-    invoices = Invoice.where(cbte_fch: Date.today.at_beginning_of_year .. Date.today.at_end_of_year).group_by_month(:cbte_fch, format: "%b %Y", time_zone: "Buenos Aires").count
-    render json: invoices
+    #cbte_fch = Invoice.cbte_fch.to_date
+    invoices = Invoice.where(state: "Confirmado", cbte_fch: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
+    render json: invoices  
   end
 
   def states_per_month
-    invoices = Invoice.where(cbte_fch: Date.today.at_beginning_of_year .. Date.today.at_end_of_year).group_by_state(:state).group_by_month(:cbte_fch, format: "%b %Y", time_zone: "Buenos Aires").count
+    invoices = Invoice.where(cbte_fch: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s).group(:state).count
     render json: invoices
+  end
+
+  def amount_per_month
+    invoices = Invoice.where(state: "Confirmado", cbte_fch: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").sum(:total)
+    render json: invoices
+  end
+
+  def commissioner_per_month
+    invoices = Invoice.joins(:commissioners, commissioners: :user).where(commissioners: {created_at: Date.today.at_beginning_of_month.to_s .. Date.today.at_end_of_month.to_s}).group("users.first_name || ' ' || users.last_name").sum(:total_commission)
+    render json: invoices
+  end
+
+  def sales_per_year
+    #pp invoices = Invoice.where(state: "Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_week("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").sum(:total)
+    #pp invo = invoices.count
+    #render json: invo
+    invoices = Invoice.where(state:"Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_month("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
+    render json: invoices  
   end
   #ESTADISTICAS
 

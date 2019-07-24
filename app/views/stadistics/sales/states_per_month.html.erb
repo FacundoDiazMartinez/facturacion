@@ -1,10 +1,10 @@
-<div class="form-group col-xs-12 col-sm-6">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-    	<h4>Estado de comprobantes por mes</h4>
-    </div>
-    <div class="panel-body">
-      <%= pie_chart states_per_month_invoices_path %>
-    </div>
-  </div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<center>
+			<h4>Comprobantes por estado de <%= I18n.t("date.month_names")[Date.today.month] %></h4>
+		</center>
+	</div>
+	<div class="panel-body">
+	  <%= pie_chart states_per_month_invoices_path, colors: ["#000000", "#17a2b8","#28a745","#7E817C"] %>
+	</div>
 </div>
