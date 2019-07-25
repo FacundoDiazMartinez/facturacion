@@ -12,20 +12,6 @@ class Depot < ApplicationRecord
 
   default_scope { where(active: true) }
 
-  # TABLA
-  # 	create_table "depots", force: :cascade do |t|
-	 #    t.string "name"
-	 #    t.boolean "active", default: true, null: false
-	 #    t.bigint "company_id"
-	 #    t.float "stock_count", default: 0.0, null: false
-	 #    t.boolean "filled", default: false, null: false
-	 #    t.string "location", null: false
-	 #    t.datetime "created_at", null: false
-	 #    t.datetime "updated_at", null: false
-	 #    t.index ["company_id"], name: "index_depots_on_company_id"
-	 #  end
-  # TABLA
-
 
   #FILTROS DE BUSQUEDA
   	def self.search_by_name name

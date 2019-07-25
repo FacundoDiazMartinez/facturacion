@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :province do
-    name {"Salta"}
+    name { "Salta" }
   end
 end

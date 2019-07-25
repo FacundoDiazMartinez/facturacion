@@ -4,8 +4,6 @@ module InvoiceManager
       @invoice = invoice
     end
 
-    ##debe registrar detalles para los recibos que posean saldo disponible en sus movimientos de cuenta
-    ##los detalles de los recibos son los encargados de vincular el recibo con la factura
     def call
       begin
       ActiveRecord::Base.transaction do

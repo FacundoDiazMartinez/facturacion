@@ -122,6 +122,7 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'shoulda-matchers'
   gem 'guard-rspec'
+  gem 'faker', :git => 'https://github.com/stympy/faker.git', :branch => 'master'
 end
 
 group :development do
@@ -136,6 +137,7 @@ group :development do
   gem 'ruby-prof'
   gem 'thin'
   gem "letter_opener"
+  gem "churn"
 end
 
 group :production do
