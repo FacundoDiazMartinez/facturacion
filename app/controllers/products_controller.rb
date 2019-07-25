@@ -117,15 +117,29 @@ class ProductsController < ApplicationController
 
   #ESTADISTICAS
   def top_ten_products_per_month
-    pp @first_date
-    pp @last_date
     company = current_user.company_id
-    pp Invoice.joins(invoice_details: :product).where( state: "Confirmado", cbte_fch: @first_date .. @last_date)
-    pp chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: @first_date.to_s .. @last_date.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.quantity}.reduce(:+).to_f]}
-    chart_data = chart_data.sort_by{|a| a.last}.last(10)
-    render json: chart_data
+    invoices = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date)
+    unless invoices.blank?
+      chart_data = invoices.map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.quantity}.reduce(:+).to_f]}
+      chart_data = chart_data.sort_by{|a| a.last}.last(10)
+      render json: chart_data
+    else
+      render json: {}
+    end
   end
 
+  def top_ten_sales_per_month
+    company = current_user.company_id
+    invoices = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date)
+    unless invoices.blank?
+      chart_data = invoices.map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.subtotal.to_i}.reduce(:+).to_f]}
+      chart_data = chart_data.sort_by{|a| a.last}.last(10)
+      render json: chart_data
+    else
+      render json: {}
+    end
+  end
+  
   def top_ten_products_per_year
     company = current_user.company_id
     chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.quantity}.reduce(:+).to_f]}
@@ -133,12 +147,6 @@ class ProductsController < ApplicationController
     render json: chart_data
   end
 
-  def top_ten_sales_per_month
-    company = current_user.company_id
-    chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: @first_date.to_s .. @last_date.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.subtotal.to_i}.reduce(:+).to_f]}
-    chart_data = chart_data.sort_by{|a| a.last}.last(10)
-    render json: chart_data
-  end
 
   #ESTADISTICAS
 
