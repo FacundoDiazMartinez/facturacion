@@ -67,8 +67,8 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1
   # PATCH/PUT /products/1.json
   def update
+    @product.updated_by = current_user.id
     respond_to do |format|
-      @product.updated_by = current_user.id
       if @product.update(product_params)
         format.html { render :show, notice: 'El producto fue actualizado con éxito.' }
         format.json { render :show, status: :ok, location: @product }
@@ -82,9 +82,10 @@ class ProductsController < ApplicationController
   # DELETE /products/1
   # DELETE /products/1.json
   def destroy
+    @product.updated_by = current_user.id
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_url, notice: 'Se elimino correctamente el producto.' }
+      format.html { redirect_to products_url, notice: 'Se eliminó correctamente el producto.' }
       format.json { head :no_content }
     end
   end
@@ -139,7 +140,7 @@ class ProductsController < ApplicationController
       render json: {}
     end
   end
-  
+
   def top_ten_products_per_year
     company = current_user.company_id
     chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.quantity}.reduce(:+).to_f]}

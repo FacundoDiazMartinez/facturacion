@@ -5,12 +5,12 @@ module UserActivityManager
     end
 
     def call
-      activity_for_minimum_stock_reached
+      activity_for_minimum_stock_reached!
     end
 
     private
 
-    def activity_for_minimum_stock_reached
+    def activity_for_minimum_stock_reached!
       UserActivity.create(
         user_id:  @product.created_by,
         photo:    "/images/product.png",

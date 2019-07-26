@@ -1,10 +1,10 @@
 class Product < ApplicationRecord
 	belongs_to :product_category, optional: true
 	belongs_to :company
-	belongs_to :user_who_updates, foreign_key: "updated_by", class_name: "User", optional: true
-	belongs_to :user_who_creates, foreign_key: "created_by", class_name: "User", optional: true
+	belongs_to :user_who_creates, class_name: "User", foreign_key: "created_by", optional: true
+  belongs_to :user_who_updates, class_name: "User", foreign_key: "updated_by", optional: true
 	belongs_to :supplier, optional: true
-	belongs_to :parent, foreign_key: "product_id", class_name: "Product", optional: true
+	belongs_to :parent, class_name: "Product", foreign_key: "product_id", optional: true
 
 	has_many   :childs, ->(product) { where product_id: product.id }, class_name: "Product"
 	has_many   :stocks, dependent: :destroy
@@ -65,18 +65,17 @@ class Product < ApplicationRecord
   	"98" => "otras unidades"
 	}
 
-  before_validation :validate_price
-  validates_uniqueness_of :code,
+  validates :code,
     presence: { message: "Debe ingresar un código en el producto." },
-    uniqueness: { scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active },
-    on: :create
+    uniqueness: { scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador."}
   validates_uniqueness_of :name,
     presence: { message: "El nombre del producto no puede estar en blanco." },
-    uniqueness: { scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active },
-    on: :create
+    uniqueness: { scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre."}
 	validates_presence_of :price,
     presence: { message: "Debe ingresar el precio del producto." },
     numericality: { greater_than: 0, message: "El precio debe ser mayor a 0." }
+  validates :cost_price,
+    presence: { message: "Debe ingresar el precio de costo del producto." }
 	validates_presence_of :created_by, :updated_by, :company_id
 	validates_presence_of :iva_aliquot, message: "Ingrese un valor para el IVA."
   validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}, allow_blank: true
@@ -95,6 +94,12 @@ class Product < ApplicationRecord
     validate_uniqueness_of_in_memory(stocks, [:active, :state, :depot_id], 'Está intentando generar estados duplicados para un mismo depósito.')
   end
 
+  def check_net_price
+		if net_price.to_f == 0.0
+			self.net_price = (price.to_f / (1 + simple_iva_aliquot.to_f)).round(2)
+		end
+	end
+
 	#este metodo chequea que los available stock esten todos concordando, pero no se esta ejecutando en ningun lado, lo corro en consola por ahora
 	def check_available_stock
 		available = 0
@@ -106,14 +111,6 @@ class Product < ApplicationRecord
 
 	def parent_code
 		parent.nil? ? "" : parent.code
-	end
-
-	def updated_by=(updated_by)
-		@updated_by = updated_by
-	end
-
-	def updated_by
-		@updated_by
 	end
 
 	def simple_iva_aliquot
@@ -200,16 +197,6 @@ class Product < ApplicationRecord
 
 	def user_activity_for_create
 		UserActivity.create_new_product(self)
-	end
-
-  def validate_price
-    self.errors.add(:price, "El precio del producto debe ser positivo") unless self.price > 0
-  end
-
-	def check_net_price
-		if net_price.to_f == 0.0
-			self.net_price = (price.to_f / (1 + simple_iva_aliquot.to_f)).round(2)
-		end
 	end
 
 	def self.create params
@@ -344,7 +331,7 @@ class Product < ApplicationRecord
   end
 
   def destroy
-  	update_columns(active: false, updated_by: updated_by)
+  	update_columns(active: false)
   	run_callbacks :destroy
   	freeze
   end
