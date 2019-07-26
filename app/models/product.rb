@@ -68,10 +68,12 @@ class Product < ApplicationRecord
   before_validation :validate_price
   validates_uniqueness_of :code,
     presence: { message: "Debe ingresar un código en el producto." },
-    uniqueness: { scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active }
+    uniqueness: { scope: [:company_id, :active, :tipo], message: "Ya existe un producto con el mismo identificador.", if: :active },
+    on: :create
   validates_uniqueness_of :name,
     presence: { message: "El nombre del producto no puede estar en blanco." },
-    uniqueness: { scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active }
+    uniqueness: { scope: [:company_id, :active], message: "Ya existe un producto con el mismo nombre.", if: :active },
+    on: :create
 	validates_presence_of :price,
     presence: { message: "Debe ingresar el precio del producto." },
     numericality: { greater_than: 0, message: "El precio debe ser mayor a 0." }
