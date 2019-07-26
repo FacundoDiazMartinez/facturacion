@@ -1,64 +1,48 @@
 class Supplier < ApplicationRecord
   belongs_to :company
+  belongs_to :creator, class_name: "User", foreign_key: 'created_by'
+  belongs_to :updater, class_name: "User", foreign_key: 'updated_by'
+
   has_many 	 :purchase_orders
   has_many 	 :purchase_invoices
   has_many   :product_categories
   has_many   :products
   has_many   :price_changes
 
-  after_validation   :set_create_activity, on: :create
-  after_validation   :set_update_activity, on: :update
+  validates_presence_of :name, message: "Debe ingresar el nombre del proveedor."
+  validates_presence_of :document_type, message: "Tipo de documento inválido."
+  validates_presence_of :document_number, message: "Documento requerido."
+  validates_presence_of :titular, message: "Debe ingresar el nombre del titular o representante."
+  validates_presence_of :company_id, :created_by, :updated_by
 
   default_scope { where(active: true ) }
 
-  #ATRIBUTOS
 	def full_document
 	"#{Afip::DOCUMENTOS.key(document_type)}: #{document_number}"
 	end
 
-  def current_user=(var)
-    @current_user = var
-  end
-
-  def current_user
-    @current_user
-  end
-
   def full_document
     "#{Afip::DOCUMENTOS.key(document_type)}: #{document_number}"
   end
-  #ATRIBUTOS
 
-  #PROCESOS
-  	def set_create_activity
-  		UserActivity.create_for_new_supplier self, current_user
-  	end
+  def destroy
+		update_column(:active, false)
+		run_callbacks :destroy
+	end
 
-  	def set_update_activity
-  		UserActivity.create_for_updated_supplier self, current_user
-  	end
-
-    def destroy
-  		update_column(:active, false)
-  		run_callbacks :destroy
-  	end
-  #PROCESOS
-
-  #FILTROS DE BUSQUEDA
-    def self.search_by_name name
-      if !name.nil?
-        where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
-      else
-        all
-      end
+  def self.search_by_name name
+    if !name.nil?
+      where("LOWER(name) LIKE LOWER(?)", "%#{name}%")
+    else
+      all
     end
+  end
 
-    def self.search_by_document document_number
-      if !document_number.blank?
-        where("document_number ILIKE ?", "#{document_number}%")
-      else
-        all
-      end
+  def self.search_by_document document_number
+    if !document_number.blank?
+      where("document_number ILIKE ?", "#{document_number}%")
+    else
+      all
     end
-  #FILSTROS DE BUSQUEDA
+  end
 end

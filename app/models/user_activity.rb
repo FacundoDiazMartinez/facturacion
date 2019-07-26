@@ -1,6 +1,8 @@
 class UserActivity < ApplicationRecord
   belongs_to :user
 
+  validates_presence_of :title, :body
+
   def self.create_for_confirmed_invoice invoice  #Se ejecuta cuando una factura se confirma
   	UserActivity.create(
         user_id: invoice.user.id,
@@ -34,24 +36,6 @@ class UserActivity < ApplicationRecord
         photo: "/images/edit.png",
         title: "El usuario #{client.user.name} editó un cliente",
         body: "El día #{I18n.l(Date.today)} el usuario #{client.user.name} editó al cliente #{client.name}."
-    )
-  end
-
-  def self.create_for_new_supplier supplier, user #Se ejecuta cuando se crea un proveedor
-    UserActivity.create(
-        user_id: user.id,
-        photo: "/images/supplier.png",
-        title: "El usuario #{user.name} registró un nuevo proveedor",
-        body: "El día #{I18n.l(Date.today)} el usuario #{user.name} registró al proveedor #{supplier.name}."
-    )
-  end
-
-  def self.create_for_updated_supplier supplier, user #Se ejecuta cuando se actualiza un proveedor
-    UserActivity.create(
-        user_id: user.id,
-        photo: "/images/edit.png",
-        title: "El usuario #{user.name} editó un proveedor",
-        body: "El día #{I18n.l(Date.today)} el usuario #{user.name} editó al proveedor #{supplier.name}."
     )
   end
 

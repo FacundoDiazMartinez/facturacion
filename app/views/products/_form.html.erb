@@ -23,13 +23,13 @@
       <div class="card mb-4 card-shadow">
           <div class="card-body">
 
-            <div class="form-group row">
-              <%= f.label :product_id, "Pertenece a",class: 'col-sm-2 col-form-label' %>
+            <!-- <div class="form-group row">
+              <%# f.label :product_id, "Pertenece a",class: 'col-sm-2 col-form-label' %>
               <div class="col-sm-10">
-                <%= autocomplete_field_tag :code, f.object.parent_code, autocomplete_product_code_products_path(), class: 'form-control', placeholder: "Ingrese el código del producto padre.", id_element: "#product_product_id" %>
-                <%= f.hidden_field :product_id %>
+                <%# autocomplete_field_tag :code, f.object.parent_code, autocomplete_product_code_products_path(), class: 'form-control', placeholder: "Ingrese el código del producto padre.", id_element: "#product_product_id" %>
+                <%# f.hidden_field :product_id %>
               </div>
-            </div>
+            </div> -->
 
             <div class="form-row">
               <div class="form-group col-md-4">
@@ -55,7 +55,7 @@
               <div class="form-group col-md-4">
                 <%= f.label :supplier_id, "Proveedor" %>
                 <div class="input-group mb-3" id="supplier">
-                  <%= f.select :supplier_id, current_user.company.suppliers.all.map{|pc| [pc.name, pc.id]}, {include_blank: "Sin proveedor"}, {:class => 'form-control'} %>
+                  <%= f.select :supplier_id, current_user.company.suppliers.all.map{|pc| [pc.name, pc.id]}, {include_blank: "Seleccione..."}, {:class => 'form-control'} %>
                   <div class="input-group-append p-0">
                     <%= link_to icon('fas', 'plus'), new_supplier_path(), data:{remote: true, toggle: 'modal', target: '#supplier_modal'}, class: 'btn btn-success' %>
                   </div>
@@ -64,7 +64,7 @@
               <div class="form-group col-md-4">
                 <%= f.label :product_category_id, "Categoría" %>
                 <div class="input-group mb-3" id="category">
-                  <%= f.select :product_category_id, current_user.company.product_categories.all.order("name ASC").map{|pc| [pc.name, pc.id]}, {include_blank: "Sin categoría"}, {:class => 'form-control'} %>
+                  <%= f.select :product_category_id, current_user.company.product_categories.all.order("name ASC").map{|pc| [pc.name, pc.id]}, {include_blank: "Seleccione..."}, {:class => 'form-control'} %>
                   <div class="input-group-append p-0">
                     <%= link_to icon('fas', 'plus'), new_product_category_path(), data:{remote: true, toggle: 'modal', target: '#product_category_modal'}, class: 'btn btn-success' %>
                   </div>
@@ -99,22 +99,22 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <%= f.label :cost_price, "Precio de costo*" %>
-              <%= f.number_field :cost_price, :class => 'form-control', step: '.01' %>
+              <%= f.number_field :cost_price, :class => 'form-control', step: '.01', required: true %>
             </div>
             <div class="form-group col-md-6">
               <%= f.label :gain_margin, "Márgen de ganancia (%)*" %>
-              <%= f.number_field :gain_margin, :class => 'form-control', step: '.01' %>
+              <%= f.number_field :gain_margin, :class => 'form-control', step: '.01', required: true %>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group col-md-6">
               <%= f.label :net_price, "Precio bruto*" %>
-              <%= f.number_field :net_price, :class => 'form-control', step: '.01' %>
+              <%= f.number_field :net_price, :class => 'form-control', step: '.01', required: true %>
             </div>
             <div class="form-group col-md-6">
               <%= f.label :iva_aliquot, "Alícuota de IVA" %>
-              <%= f.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {}, {class: 'form-control'} %>
+              <%= f.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {}, {class: 'form-control', required: true} %>
             </div>
           </div>
 
