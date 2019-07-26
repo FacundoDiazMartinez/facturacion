@@ -62,7 +62,7 @@ class Product < ApplicationRecord
   	"67" => "gramo activo",
   	"68" => "gramo base",
   	"96" => "packs",
-  	"98" => "otras unidades"
+  	"98" => "otras unidades",
 	}
 
   validates :code,
