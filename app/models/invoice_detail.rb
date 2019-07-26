@@ -83,10 +83,14 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def product_attributes=(attributes)
-      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id], active: true).first_or_initialize
+      prod = Product.unscoped.where(
+        name: attributes[:name],
+        code: attributes[:code],
+        company_id: attributes[:company_id],
+        active: true
+        ).first_or_initialize
       prod.iva_aliquot = self.iva_aliquot
       self.product = prod
-
       attributes["id"] = product.id
       super
     end
