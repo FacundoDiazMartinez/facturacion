@@ -76,7 +76,7 @@ class InvoiceDetail < ApplicationRecord
         iva_percentage = 0
       end
       product.price             ||= price_per_unit * (1 + iva_percentage)
-      product.save
+      product.save unless product.persisted?
     end
 
     def set_total_to_invoice
@@ -84,10 +84,15 @@ class InvoiceDetail < ApplicationRecord
     end
 
     def product_attributes=(attributes)
-      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id], active: true).first_or_initialize
+      prod = Product.unscoped.where(
+        name: attributes[:name],
+        code: attributes[:code],
+        company_id: attributes[:company_id],
+        active: true
+        ).first_or_initialize
+      pp prod
       prod.iva_aliquot = self.iva_aliquot
       self.product = prod
-
       attributes["id"] = product.id
       super
     end

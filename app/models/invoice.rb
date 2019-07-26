@@ -458,7 +458,7 @@ class Invoice < ApplicationRecord
     end
 
     def custom_save send_to_afip = false
-      response = save
+      response = self.save
       confirm_invoice(response, send_to_afip)
       return response && !self.errors.any?
     end
