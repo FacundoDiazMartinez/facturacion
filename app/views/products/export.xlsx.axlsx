@@ -1,9 +1,10 @@
 wb = xlsx_package.workbook
 title = wb.styles.add_style(:bg_color => "80CBC4", :fg_color=>"#FF000000", :sz=>14,  :border=> {:style => :thin, :color => "80CBC4"})
 wb.add_worksheet(name: "Productos") do |sheet|
-    sheet.add_row(["Categoría", "Código Interno *", "Nombre *", "Código de Proveedor", "Precio de costo", "(%)I.V.A.", "($)Precio Bruto", "($)Precio Final *", "Medida", "Unidad de medida", "Stock", "Vendidos en " + (Date.today.year-1).to_s, "Vendidos en " + (Date.today.year).to_s], :style=> title)
+    sheet.add_row(["Categoría", "Código Interno *", "Nombre *", "Código de Proveedor", "Precio de costo", "(%)I.V.A.", "($)Precio Bruto", "($)Precio Final *", "Medida", "Unidad de medida", "Stock", "Vendidos en " + (Date.today.year-1).to_s, "Vendidos en " + (Date.today.year).to_s, "Ventas Enero", "Ventas Febrero", "Ventas Marzo", "Ventas Abril", "Ventas Mayo", "Ventas Junio", "Ventas Julio", "Ventas Agosto", "Ventas Septiembre", "Ventas Octubre", "Ventas Noviembre", "Ventas Diciembre"], :style=> title)
     @products.each do |product|
     product_presenter = ProductPresenter.new(product)
-        sheet.add_row([product.category_name, product.code, product.name,product.supplier_code, product.cost_price, product.iva, product.net_price, product.price, product.measurement, product.measurement_unit_name, product.available_stock, product_presenter.sales_for_last_year, product_presenter.sales_for_current_year])
+    sales_per_month_array = product_presenter.sales_per_month 
+        sheet.add_row([product.category_name, product.code, product.name,product.supplier_code, product.cost_price, product.iva, product.net_price, product.price, product.measurement, product.measurement_unit_name, product.available_stock, product_presenter.sales_for_last_year, product_presenter.sales_for_current_year, sales_per_month_array[0], sales_per_month_array[1], sales_per_month_array[2], sales_per_month_array[3], sales_per_month_array[4], sales_per_month_array[5], sales_per_month_array[6], sales_per_month_array[7], sales_per_month_array[8], sales_per_month_array[9], sales_per_month_array[10], sales_per_month_array[11]])
     end
 end
