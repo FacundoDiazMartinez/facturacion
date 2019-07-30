@@ -10,7 +10,8 @@ $(document).on('railsAutocomplete.select', '.client-autocomplete_field', functio
 	$.each( data.item, function( key, value ) {
 	  $("#client_"+key).val(value);
 	});
-
+	$('#client_enabled').prop('checked', data.item['enabled']);
+	$('#client_enabled_observation').prop('disabled', data.item['enabled']);
 });
 
 $(document).on("keyup click", ".client_name", function(){

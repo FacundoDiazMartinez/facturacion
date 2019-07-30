@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_25_142554) do
+ActiveRecord::Schema.define(version: 2019_07_30_134929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -245,6 +245,8 @@ ActiveRecord::Schema.define(version: 2019_07_25_142554) do
     t.boolean "valid_for_account", default: true, null: false
     t.string "contact_1"
     t.string "contact_2"
+    t.boolean "enabled", default: true
+    t.string "enabled_observation"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end

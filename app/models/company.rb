@@ -49,15 +49,15 @@ class Company < ApplicationRecord
 	before_validation :set_code, on: :create
 	before_validation :clean_cuit
 
-	validates_presence_of :name, 					message: "Debe ingresar el nombre de su compañía."
-	validates_presence_of :society_name, 	message: "Debe ingresar su razón social."
-	validates_presence_of :code, 					message: "Error al generar el código de su compañía. Intentelo nuevamente por favor."
+	validates_presence_of :name, 				message: "Debe ingresar el nombre de su compañía."
+	validates_presence_of :society_name, 		message: "Debe ingresar su razón social."
+	validates_presence_of :code, 				message: "Error al generar el código de su compañía. Intentelo nuevamente por favor."
 	validates_presence_of :moneda, 				message: "Debe seleccionar su moneda principal."
-	validates_presence_of :activity_init_date, message: "Debe indicar la fecha de inicio de actividad de su compañía."
+	validates_presence_of :activity_init_date, 	message: "Debe indicar la fecha de inicio de actividad de su compañía."
 	validates_presence_of :country, 			message: "Debe seleccionar el país."
-	validates_presence_of :province_id, 	message: "Debe seleccionar una provincia."
-	validates_presence_of :locality_id, 	message: "Debe seleccionar una localidad."
-	validates_presence_of :postal_code, 	message: "Debe ingresar el código postal de la localidad."
+	validates_presence_of :province_id, 		message: "Debe seleccionar una provincia."
+	validates_presence_of :locality_id, 		message: "Debe seleccionar una localidad."
+	validates_presence_of :postal_code, 		message: "Debe ingresar el código postal de la localidad."
 	validates_presence_of :address, 			message: "Debe ingresar la dirección de su compañía."
 	validates :cuit,
 		presence: { message: "El C.U.I.T. no puede estar en blanco." },

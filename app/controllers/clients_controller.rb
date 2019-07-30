@@ -67,6 +67,6 @@ class ClientsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def client_params
-      params.require(:client).permit(:name, :address, :document_type, :document_number, :iva_cond, :valid_for_account, :recharge, :payment_day, :observation, :contact_1, :contact_2, client_contacts_attributes: [:id, :name, :email, :charge, :phone, :mobile_phone, :_destroy], authorized_personals_attributes: [:id, :first_name, :last_name, :dni, :need_purchase_order])
+      params.require(:client).permit(:name, :address, :document_type, :document_number, :iva_cond, :valid_for_account, :recharge, :payment_day, :observation, :contact_1, :contact_2, :enabled, :enabled_observation, client_contacts_attributes: [:id, :name, :email, :charge, :phone, :mobile_phone, :_destroy], authorized_personals_attributes: [:id, :first_name, :last_name, :dni, :need_purchase_order])
     end
 end
