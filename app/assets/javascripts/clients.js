@@ -11,7 +11,14 @@ $(document).on('railsAutocomplete.select', '.client-autocomplete_field', functio
 	  $("#client_"+key).val(value);
 	});
 	$('#client_enabled').prop('checked', data.item['enabled']);
-	$('#client_enabled_observation').prop('disabled', data.item['enabled']);
+	if (data.item['enabled']) {
+		$('#client_enabled_observation').prop('disabled', data.item['enabled']);
+		$('#client_enabled_observation').css('border-color', 'rgba(0, 0, 0, 0.21)');
+	}
+	else
+	{
+		$('#client_enabled_observation').css('border-color', 'red');
+	}
 });
 
 $(document).on("keyup click", ".client_name", function(){
