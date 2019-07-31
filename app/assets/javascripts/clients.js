@@ -14,6 +14,7 @@ $(document).on('railsAutocomplete.select', '.client-autocomplete_field', functio
 	if (data.item['enabled']) {
 		$('#client_enabled_observation').prop('disabled', data.item['enabled']);
 		$('#client_enabled_observation').css('border-color', 'rgba(0, 0, 0, 0.21)');
+		$('.btn_save').prop('disabled', false);
 	}
 	else
 	{
