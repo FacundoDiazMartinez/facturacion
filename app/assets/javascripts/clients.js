@@ -18,6 +18,7 @@ $(document).on('railsAutocomplete.select', '.client-autocomplete_field', functio
 	else
 	{
 		$('#client_enabled_observation').css('border-color', 'red');
+		$('.btn_save').prop('disabled', true);
 	}
 });
 
