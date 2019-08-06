@@ -7,13 +7,17 @@
   <div class="card-body">
     <div id="saldo_disponible" class="text-muted ml-4"></div>
     <div class="row">
+      <% @invoice.income_payments.each do |payment| %>
+        <%= error_explanation payment %>
+      <% end %>
+      
       <div class="table-responsive">
         <table class="table table-striped invoice-table" id="payments" style="width: 100%;">
           <thead>
             <tr>
               <th scope="col">Tipo de pago</th>
               <th scope="col">Monto ($)</th>
-              <th scope="col">Fecha de pago</th>
+              <th scope="col">Fecha de cobro</th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -51,7 +55,11 @@
                 <% end %>
               </td>
               <td><%= payment.total.round(2) %></td>
-              <td><%= payment.payment_date %></td>
+              <% if payment.type_of_payment == '4' %>
+                <td><%= payment.cheque_payment.expiration.nil? ? '' : payment.cheque_payment.expiration  %></td>
+              <% else %>
+                <td></td>
+              <% end %>
               <td>
                 <% if payment.persisted? && !@invoice.editable? && payment.account_movement_id.nil? %>
                 <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>

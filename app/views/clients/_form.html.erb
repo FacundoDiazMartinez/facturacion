@@ -35,7 +35,7 @@
     <div class="col">
       <%= f.label :valid_for_account, "¿Cta. Cte.?" %><br>
       <center>
-        <%= f.check_box :valid_for_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle' %>
+        <%= f.check_box :valid_for_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle',:style => "width: 50px; height: 50px;" %>
       </center>
     </div>
     <div class="col">
@@ -73,13 +73,13 @@
 <hr>
 <div class="form-group">
   <div class="row">
-    <div class="col">
+    <div class="col-6">
       <%= f.label :enabled, "¿Cliente habilitado?" %><br>
       <center>
         <%= f.check_box :enabled, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle enabled', onchange: 'toggleClientChecked()' %>
       </center>
     </div>
-    <div class="col" style="display: none;" id="enabled_observation">
+    <div class="col-6" style="display: none;" id="enabled_observation">
       <%= f.label :enabled_observation, "Observación" %>
       <%= f.text_area :enabled_observation, class: 'form-control form-control-sm', rows:2 %>
     </div>
@@ -177,6 +177,11 @@
   };
 
   $(document).ready(function(){
+    // $('#client_enabled').bootstrapToggle({
+    //   on: 'Si',
+    //   off: 'No'
+    // });
+
     if($("#client_enabled").is(':checked')) 
     {
       $('#enabled_observation').hide("slow");
@@ -186,8 +191,11 @@
     {
       $('#enabled_observation').show("slow");
       $('#enabled_observation').removeAttr("disabled");
-    }
+    };
+    $('input[type=checkbox][data-toggle^=toggle]').bootstrapToggle()
   });
+
+
 </script>
 
 <script type="text/javascript">

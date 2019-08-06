@@ -40,13 +40,9 @@ module InvoiceManager
         state: "Confirmado"
       )
       @invoice.activate_commissions
-      if response && @invoice.is_credit_note? && !@invoice.associated_invoice.nil?
-        if @invoice.invoice.credit_notes.sum(:total).round(2) == @invoice.invoice.total.round(2)
-          @invoice.invoice.update_column(:state, "Anulado")
-        else
-          @invoice.invoice.update_column(:state, "Anulado parcialmente")
-        end
-      end
+      # if response && @invoice.is_credit_note? && !@invoice.associated_invoice.nil?
+      #    InvoiceManager::StateChecker.new(@invoice).call
+      # end
     end
 
     def display_confirmation_errors(bill)

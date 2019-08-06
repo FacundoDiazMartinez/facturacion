@@ -36,16 +36,22 @@
 
 <div class="form-group row">
   <%= label_tag :enabled, "Habilitado", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-  <div class="col-md-9">
-    <%= f.check_box :enabled, class: 'form-control form-control-sm address' %>
+  <div class="col-md-3">
+    <%= f.check_box :enabled, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle form-control form-control-sm address' %>
   </div>
 </div>
 
 <div class="form-group row">
   <%= label_tag :enabled_observation, "¿Por que fue deshabilitado?", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.text_field :enabled_observation, class: 'form-control form-control-sm address' %>
+    <%= f.text_area :enabled_observation, class: 'form-control form-control-sm address', rows:2 %>
   </div>
 </div>
 
 <center><i>* Campos obligatorios</i></center>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('input[type=checkbox][data-toggle^=toggle]').bootstrapToggle()
+  });
+</script>

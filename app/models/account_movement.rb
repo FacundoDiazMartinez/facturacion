@@ -62,7 +62,7 @@ class AccountMovement < ApplicationRecord
     elsif cbte_tipo == "Devolución"
       "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()} - #{receipt.sale_point.name} - #{receipt.number}"
     else #Recibo X
-      "#{cbte_tipo[-1,1]} - #{receipt.sale_point.name} - #{receipt.number}"
+      "RX - #{receipt.sale_point.name} - #{receipt.number}"
     end
   end
 

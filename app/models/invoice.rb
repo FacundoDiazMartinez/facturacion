@@ -67,6 +67,8 @@ class Invoice < ApplicationRecord
 	validate 									:cbte_tipo_inclusion
 	validate 									:at_least_one_detail
 	validate 									:fch_ser_if_service
+  before_validation         :stock_between_invoice_and_credit_notes, if: Proc.new{ |i| i.is_credit_note? || i.state == "Pendiente" }
+	#after_validation					:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.is_credit_note? && i.state == "Confirmado" }
 
 	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
 	before_save 	:set_total_and_total_pay
@@ -104,7 +106,6 @@ class Invoice < ApplicationRecord
         pp state
   			where(state: state)
   		else
-        pp "ELSEEEE"
   			all
   		end
   	end
@@ -327,6 +328,8 @@ class Invoice < ApplicationRecord
       end
       if total_cancellation
         associated_invoice.update_column(:state, "Anulado")
+			else
+				associated_invoice.update_column(:state, "Anulado parcialmente")
       end
     end
 
@@ -397,6 +400,68 @@ class Invoice < ApplicationRecord
 		def real_total_left_including_debit_notes
       (real_total_including_debit_notes - total_pay).round(2)
     end
+
+    def stock_between_invoice_and_credit_notes
+      unless self.associated_invoice.nil?
+				#anulada_totalmente = true
+        invoice = self.invoice
+        invoice.invoice_details.each do |invoice_detail|
+          invoice_product     = invoice_detail.product
+          invoice_quantity    = invoice_detail.quantity
+          cn_detail_quantity  = 0
+
+          invoice.credit_notes.each do |credit_note|
+            credit_note.invoice_details.where(product_id: invoice_product.id).each do |cn_detail|
+              cn_detail_quantity += cn_detail.quantity
+            end
+          end
+
+          self.invoice_details.each do |cn_detail|
+            if cn_detail.product_id == invoice_product.id
+              cn_detail_quantity += cn_detail.quantity
+            end
+          end
+					if cn_detail_quantity > invoice_quantity
+						errors.add(:quantity, "La cantidad ingresada de uno o más de los productos supera a la cantidad de la factura inicial asociada.")
+					elsif cn_detail_quantity < invoice_quantity
+						#ACTUALIZA LA FACTURA A ANULADA parcialmente
+						#anulada_totalmente = false
+					end
+        end
+				# unless self.errors.any?
+				# 	if anulada_totalmente
+				# 		invoice.update_columns(state: "Anulado")
+				# 	else
+				# 		invoice.update_columns(state: "Anulado parcialmente")
+				# 	end
+				# end
+      end
+    end
+
+		def set_state_for_invoice_with_cn
+			pp "ENTROOO"
+			invoice = self.invoice
+			invoice_details_quantity = 0
+			credit_notes_quantity = 0
+			invoice.invoice_details.each do |inv_det|
+				pp "A1"
+				invoice_details_quantity += inv_det.quantity
+			end
+			invoice.credit_notes.each do |invoice_credit_notes|
+				pp "A2"
+				invoice_credit_notes.invoice_details.each do |credit_note_detail|
+					credit_notes_quantity += credit_note_detail.quantity
+				end
+			end
+
+			if invoice_details_quantity < credit_notes_quantity
+				pp "A3"
+				invoice.update_columns(state: "Anulado parcialmente")
+			else
+				pp "A4"
+			  invoice.update_columns(state: "Anulado")
+			end
+		end
 
     def create_sales_file
       if sales_file_id.nil?
@@ -491,7 +556,7 @@ class Invoice < ApplicationRecord
       self.delivery_notes.where(state: "Finalizado").each do |dn|
         delivered += dn.delivery_note_details.map(&:quantity).inject(0) { |suma, quantity| suma + quantity }
       end
-      
+
       if a_entregar > delivered
         return true
       end

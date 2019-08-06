@@ -18,6 +18,7 @@ class Payment < ApplicationRecord
   has_one :compensation_payment
 
   after_initialize  :set_payment_date
+  after_validation :check_cheque_digits
 
   default_scope { where(active: true) }
 
@@ -189,6 +190,17 @@ class Payment < ApplicationRecord
   #PROCESOS
 
   #FUNCIONES
+    def check_cheque_digits
+      if type_of_payment == "4"
+        if self.cheque_payment.number.to_i.digits.count < 8
+          if invoice_id.blank?
+            purchase_order.errors.add(:base, "Ingrese 8 digitos para el número de cheque")
+          else
+            invoice.errors.add(:base, "Ingrese 8 digitos para el número de cheque")
+          end
+        end
+      end
+    end
 
     def subpayment_show invoice_id
       if type_of_payment.to_i == 6

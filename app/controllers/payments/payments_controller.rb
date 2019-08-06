@@ -51,6 +51,7 @@ class Payments::PaymentsController < ApplicationController
 				if @payment.update(payment_params)
 					format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), notice: "Pago actualizado")}
 				else
+					format.js {render template: '/payments/display_errors.js.erb'}
 					format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), alert: "Error al actualizar el pago. Revise por favor.")}
 				end
 			end

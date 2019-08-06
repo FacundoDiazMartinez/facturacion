@@ -30,6 +30,9 @@ gem 'jbuilder', '~> 2.5'
 gem "chartkick"
 gem 'groupdate'
 
+#Bootstrap toggle para los checkbox
+gem 'bootstrap-toggle-rails'
+
 # GENA código de barras
 gem 'barby', '~> 0.6.6'
 gem 'chunky_png'

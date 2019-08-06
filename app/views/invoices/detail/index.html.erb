@@ -29,13 +29,13 @@
           <thead>
             <tr>
               <th scope="col"></th>
-              <th scope="col">Código</th>
-              <th scope="col">Concepto</th>
-              <th scope="col" style="width:1%;">Cantidad</th>
+              <th scope="col" style="width:9% !important;">Código</th>
+              <th scope="col" style="width:30% !important;">Concepto</th>
+              <th scope="col" style="width:5%;">Cantidad</th>
               <th scope="col">Depósito</th>
               <th scope="col" class="only-desktop">Medida</th>
-              <th scope="col">Precio ($)</th>
-              <th scope="col" class="only-desktop">Bonificado (%)</th>
+              <th scope="col" style="width:9% !important;">Precio ($)</th>
+              <th scope="col" class="only-desktop" style="width:9% !important;">Bonificado (%)</th>
               <% if @invoice.editable? %>
               <th scope="col" class="only-desktop">Comisionantes</th>
               <% end %>
@@ -61,7 +61,7 @@
               </td>
               <td>
                 <div class="input-group">
-                  <div class="input-group-prepend">
+                  <div class="input-group-prepend" style="width: 100% !important;">
                     <%= pf.select :tipo, ["Producto", "Servicio"], {}, {class: 'form-control form-control-sm tipo input-group-text', disabled: !@invoice.editable?, style: 'max-width: 100px;'} %>
                     <%= pf.text_field :name, class: 'form-control form-control-sm name', data: {toggle:"popover"}, readonly: !@invoice.editable? %>
                     <%= pf.hidden_field :company_id, value: current_user.company_id %>

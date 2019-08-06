@@ -29,7 +29,7 @@ $(document).on('pjax:complete', function() {
 function cancel_concept_addition(){
 	if ($.inArray($("#invoice_cbte_tipo").val(), ["03", "08", "13"]) > -1) {
 		$("#add_concept_to_invoice").hide();
-		$("#invoice_cbte_tipo").attr("disabled",true);
+		$("#invoice_cbte_tipo").attr("readonly","readonly");
 	}
 }
 
@@ -295,7 +295,7 @@ function calculateTotalOfInvoice(){
 		$("#invoice_total_pay").val(total_pay.toFixed(2));
 		$("#total_left").val(total_left.toFixed(2));
 		$("#total_left_invoice").text("Total faltante: \xa0 \xa0 \xa0 $" + total_left.toFixed(2));
-		$("#total_left_venta").text("$" + total_left);
+		$("#total_left_venta").text("$" + total_left.toFixed(2));
 		// >>>>>>>>>>>>>>>> Fin Seteo de TOTAL FACTURA y Calculo de TOTAL LEFT
 
 		if ($("#invoice_cbte_tipo").length != 0) {

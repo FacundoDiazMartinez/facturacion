@@ -73,9 +73,7 @@
 
       <!-- BOTONES DE ACCION -->
         <div class="text-center">
-          <% if @invoice.editable? %>
-            <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger' %>
-          <% else %>
+          <% unless @invoice.editable? %>
             <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
           <% end %>
         </div>
@@ -116,7 +114,20 @@
   <!-- PAGOS -->
   <div class="text-center">
     <div hidden><%= check_box_tag :send_to_afip, true %></div>
-    <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: { disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe } if @invoice.editable? %>
+    <div class="row">
+      <div class="col-4">
+      </div>
+      <div class="col-4">
+        <center>
+          <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: { disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe } if @invoice.editable? %>
+        </center>
+      </div>
+      <div class="col-4">
+        <% if @invoice.editable? %>
+          <%= button_tag "#{icon('fas', 'check-circle')} Confirmar comprobante".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger', style:'float: right;' %>
+        <% end %>
+      </div>
+    </div>
   </div>
 <% end %>
 
@@ -158,7 +169,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <%= form_tag deliver_invoice_path(),method: :get do %>
+        <%= form_tag deliver_invoice_path(@invoice.id),method: :get do %>
           <div class="modal-body">
             <h5>Enviar la factura Nº <%= @invoice.full_number %></h5>
             <div class="form-group">
