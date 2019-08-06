@@ -6,7 +6,7 @@ module InvoiceManager
 		end
 
     def call
-			check_state
+			#check_state
 		end
 
     def check_state
