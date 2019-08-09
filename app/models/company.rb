@@ -64,7 +64,7 @@ class Company < ApplicationRecord
 		numericality: { only_integer: true, greater_than: 9999999999, less_than: 99999999999, message: "El C.U.I.T. debe contener únicamente números." }
 	validates :concepto,
 		presence: { message: "Debe seleccionar un concepto." },
-		inclusion: { in: CONCEPTOS, message: "El concepto seleccionado es inválido." }
+		inclusion: { in: ["01","02","03"], message: "El concepto seleccionado es inválido." }
 	validates :email,
 		presence: { message: "Debe ingresar una dirección de correo electrónico." },
 		format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
