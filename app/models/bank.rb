@@ -10,7 +10,7 @@ class Bank < ApplicationRecord
 
   validates :current_amount,
     presence: { message: "Ingrese el monto inicial que quiere asignar al nuevo banco."},
-    numericality: { only_integer: true, greater_than_or_equal_to: 0, message: "El monto inicial debe ser mayor o igual a 0." }
+    numericality: { greater_than_or_equal_to: 0, message: "El monto inicial debe ser mayor o igual a 0." }
 
 
   def update_balance_from_payment payment
