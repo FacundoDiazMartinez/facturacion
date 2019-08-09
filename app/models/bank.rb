@@ -7,10 +7,10 @@ class Bank < ApplicationRecord
   validates :cbu,
     presence: { message: "El CBU no puede estar en blanco." },
     length: { minimum: 22, maximum: 22, message: "C.B.U. inválido. Verifique por favor. Cantidad necesaria de caracteres = 22."}
-  
+
   validates :current_amount,
     presence: { message: "Ingrese el monto inicial que quiere asignar al nuevo banco."},
-    numericality: { only_integer: true, greater_than: 0, message: "El monto inicial debe ser mayor o igual a 0." }
+    numericality: { only_integer: true, greater_than_or_equal_to: 0, message: "El monto inicial debe ser mayor o igual a 0." }
 
 
   def update_balance_from_payment payment
