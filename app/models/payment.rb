@@ -192,11 +192,11 @@ class Payment < ApplicationRecord
   #FUNCIONES
     def check_cheque_digits
       if type_of_payment == "4"
-        if self.cheque_payment.number.to_i.digits.count < 8
+        if self.cheque_payment.number.size < 8
           if invoice.nil?
             purchase_order.errors.add(:base, "Ingrese 8 digitos para el número de cheque") unless purchase_order.new_record?
           else
-            invoice.errors.add(:base, "Ingrese 8 digitos para el número de cheque") unless invoice.new_record?
+            #invoice.errors.add(:base, "Ingrese 8 digitos para el número de cheque") unless invoice.new_record?
           end
           errors.add(:base, "Ingrese 8 digitos para el número de cheque")
         end

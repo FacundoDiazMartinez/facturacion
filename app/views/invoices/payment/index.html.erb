@@ -7,10 +7,6 @@
   <div class="card-body">
     <div id="saldo_disponible" class="text-muted ml-4"></div>
     <div class="row">
-      <% @invoice.income_payments.each do |payment| %>
-        <%= error_explanation payment %>
-      <% end %>
-      
       <div class="table-responsive">
         <table class="table table-striped invoice-table" id="payments" style="width: 100%;">
           <thead>

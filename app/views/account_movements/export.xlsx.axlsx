@@ -26,7 +26,7 @@ wb.add_worksheet(name: "Cuenta Corriente") do |sheet|
             sheet.rows[index+1].cells[1].style=body
             sheet.rows[index+1].cells[3].style=body
             if !am.invoice_id.nil?
-                if (am.invoice.real_total - am.invoice.total_pay) > 0 
+                if (am.invoice.real_total - am.invoice.total_pay) > 0
                     sheet.rows[index+1].cells[4].style=debe_rojo
                 else
                     sheet.rows[index+1].cells[4].style=body_right
@@ -50,7 +50,7 @@ wb.add_worksheet(name: "Cuenta Corriente") do |sheet|
             sheet.rows[index+1].cells[1].style=body
             sheet.rows[index+1].cells[3].style=body
             if !am.invoice_id.nil?
-              if (am.invoice.real_total - am.invoice.total_pay) > 0 
+              if (am.invoice.real_total - am.invoice.total_pay) > 0
                   sheet.rows[index+1].cells[4].style=debe_rojo
               else
                   sheet.rows[index+1].cells[4].style=body_right
@@ -62,10 +62,10 @@ wb.add_worksheet(name: "Cuenta Corriente") do |sheet|
             sheet.rows[index+1].cells[6].style=body_right
         end
     end
-    saldo = @account_movements.sum(:saldo)
+    saldo = @account_movements.last.client.saldo
     if saldo.to_f > 0
         sheet.add_row(["Saldo deudor $" + saldo.to_s ], :style=> saldo_rojo)
     else
         sheet.add_row(["Saldo acreedor $" + (saldo*-1).to_s ], :style=> saldo_negro)
-    end    
+    end
 end
