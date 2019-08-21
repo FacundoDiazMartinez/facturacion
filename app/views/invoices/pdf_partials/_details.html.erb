@@ -28,19 +28,19 @@
           <td class="text_right"><%= det.price_per_unit.round(2) %></td>
         <% else %>
           <!-- Si el comprobante NO ES, FA, NCA, NDA, muestra el precio unitario, sumado al iva (pongo iva/quantity pq iva_amount ya viene multiplicado por la cantidad ) -->
-          <td class="text_right"><%= det.price_per_unit.round(2) + (det.iva_amount / det.quantity).round(2) %></td>
+          <td class="text_right"><%= (det.price_per_unit.round(2) * ( 1 + det.iva )).round(2) %></td>
         <% end %>
 
         <td class="text_right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
-        
+
         <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
           <!-- Si el comprobante es FA, NCA, NDA, muestra el subtotal - iva_amount (ambos estan multiplicados por quantity) -->
           <td class="text_right"><%= (det.subtotal - det.iva_amount).round(2) %>
         <% else %>
           <!-- Sino, precio_unit + (iva_amount/quantity pq iva_amount viene ya multiplicado por quantity) * (y todo esto lo multiplico por la quantidad) quantity  -->
-          <td class="text_right"><%= (det.price_per_unit.round(2) + (det.iva_amount / det.quantity).round(2)) * det.quantity %></td>
+          <td class="text_right"><%= det.subtotal %></td>
         <% end %>
-        
+
         <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
         <!-- Si el comprobante es FA, NCA, NDA, muestra el iva_amount, sino va incluido en el precio -->
           <td class="text_right"><%= det.iva_amount %></td>

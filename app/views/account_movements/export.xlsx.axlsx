@@ -34,10 +34,10 @@ wb.add_worksheet(name: "Cuenta Corriente") do |sheet|
             end
             sheet.rows[index+1].cells[5].style=body_bold
             sheet.rows[index+1].cells[6].style=body_right
-        	if sheet.rows[index+1].cells[6] != 0
-        		sheet.rows[index+1].cells[6].style=last_row_saldo_rojo
-        	else
+        	if sheet.rows[index+1].cells[6].value.to_i < 0
         		sheet.rows[index+1].cells[6].style=last_row_saldo_verde
+        	else
+        		sheet.rows[index+1].cells[6].style=last_row_saldo_rojo
         	end
         else
         	sheet.add_row([l(am.created_at, format: :only_date),

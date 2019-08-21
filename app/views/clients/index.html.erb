@@ -45,7 +45,7 @@
         <% end %>
       </div>
       <div class="card-body">
-        <h5><strong>Saldo total:</strong> $<%= current_user.company.clients.sum(:saldo) %></h5>
+        <h5><strong>Saldo total:</strong> $<%= current_user.company.clients.sum(:saldo).round(2) %></h5>
         <div id="clients_table">
           <%= render 'clients_table' %>
         </div>

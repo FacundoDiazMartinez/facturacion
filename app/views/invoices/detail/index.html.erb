@@ -77,7 +77,7 @@
                 <%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, 7),{}, {class: 'form-control form-control-sm measurement_unit', disabled: !@invoice.editable?, style: 'width: 100px;'} %>
               </td>
               <td>
-                <%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"popover"}, step: :any, disabled: !@invoice.editable? %>
+                <%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: {toggle:"popover"}, step: :any, readonly: true %>
               </td>
               <td class="only-desktop"><%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', disabled: !@invoice.editable? %>
                 <%= f.hidden_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: !@invoice.editable? %></td>
