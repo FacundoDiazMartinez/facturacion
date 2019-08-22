@@ -75,6 +75,7 @@
           <% end %>
         <% end %>
 
+        <!-- ESTE IF NO VA PARA EL RECIBO DE MAGNUS -->
         <% if @receipt.saved_amount_available > 0 %>
         <tr>
           <td class="bg-white">
@@ -87,6 +88,7 @@
         <% end %>
 
       </table>
+    <!-- ESTE ELSE NO VA PARA EL RECIBO DE MAGNUS -->
     <% else %>
       <p class="mb-0">
          Saldo a favor futuras compras $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>

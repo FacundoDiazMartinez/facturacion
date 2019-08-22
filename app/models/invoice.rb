@@ -439,26 +439,21 @@ class Invoice < ApplicationRecord
     end
 
 		def set_state_for_invoice_with_cn
-			pp "ENTROOO"
 			invoice = self.invoice
 			invoice_details_quantity = 0
 			credit_notes_quantity = 0
 			invoice.invoice_details.each do |inv_det|
-				pp "A1"
 				invoice_details_quantity += inv_det.quantity
 			end
 			invoice.credit_notes.each do |invoice_credit_notes|
-				pp "A2"
 				invoice_credit_notes.invoice_details.each do |credit_note_detail|
 					credit_notes_quantity += credit_note_detail.quantity
 				end
 			end
 
 			if invoice_details_quantity < credit_notes_quantity
-				pp "A3"
 				invoice.update_columns(state: "Anulado parcialmente")
 			else
-				pp "A4"
 			  invoice.update_columns(state: "Anulado")
 			end
 		end
