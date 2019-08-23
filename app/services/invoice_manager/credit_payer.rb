@@ -8,7 +8,7 @@ module InvoiceManager
       begin
       ActiveRecord::Base.transaction do
         if @invoice.real_total_left.round(2) > 0 && !@invoice.is_credit_note?
-          monto_faltante = @invoice.real_total_left
+          pp monto_faltante = @invoice.real_total_left
           vector_documentos = []
           account_movements_records  = @invoice.client.account_movements.saldo_por_notas_de_credito
           account_movements_records += @invoice.client.account_movements.saldo_disponible_para_pagar
