@@ -28,6 +28,8 @@ class IvaBooksController < ApplicationController
         template: 'iva_books/informe',
         viewport_size: '1280x1024',
         page_size: 'A4',
+        #zoom: 3.4,
+        #si en local se ve mal, poner en 3.4 solo para local
         encoding:"UTF-8"
       end
     end
