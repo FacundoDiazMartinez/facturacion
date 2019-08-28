@@ -129,7 +129,7 @@
     <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
       <tr>
         <td class="text_right"><b>I.V.A.:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f', @invoice.iva_amount_sum )%> </td>
+        <td class="text_right">$ <%= sprintf('%.2f', @invoice.imp_iva )%> </td>
       </tr>
       <% if page_number == 1 %>
       <tr>

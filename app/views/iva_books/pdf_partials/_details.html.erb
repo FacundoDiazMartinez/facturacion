@@ -58,12 +58,6 @@
             <td class="text_right"><%= det.invoice.imp_trib.round(2) %></td>
             <td class="text_right"><%= det.invoice.bonifications.pluck(:amount).inject(0) { |suma, amount| suma + amount } %></td>
             <td class="text_right"><%= det.invoice.total.round(2) %></td>
-            <!-- Factura, deb o cred "A" ? -->
-            <!--<#% if ((det.invoice.cbte_tipo == "01") || (det.invoice.cbte_tipo == "02") || (det.invoice.cbte_tipo == "03")) %>
-              <td class="text_left"> <b> <#%="$ " +  det.invoice.imp_iva.to_s %> </b> </td>
-            <#% else %>
-              <td class="text_left"> <b> <#%="$ " +  det.invoice.iva_amount_sum.to_s %> </b> </td>
-            <#% end %>-->
           </tr>
         <% end
       end %>
