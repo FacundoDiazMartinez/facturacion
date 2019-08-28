@@ -1,6 +1,6 @@
 '<% if not @client.errors.any? %>'
-	$("#clientModal").modal('hide');
-	$('#clientModal').on('hidden.bs.modal', function (e) {
+	$("#myModal").modal('hide');
+	$('#myModal').on('hidden.bs.modal', function (e) {
   	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
   	$("#invoice_client_id").val("<%= @client.id %>");
 		$("#associated_invoice").attr("disabled", "disabled");

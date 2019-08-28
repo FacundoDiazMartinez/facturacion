@@ -9,6 +9,7 @@ class Client < ApplicationRecord
 	belongs_to :user, optional: true
 
 	default_scope { where(active:true) }
+	scope :consumidor_final, -> { where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final") }
 
 	after_create 	:set_create_activity, if: :belongs_to_user?
 	after_update 	:set_update_activity

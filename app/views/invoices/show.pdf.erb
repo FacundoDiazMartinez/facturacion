@@ -32,18 +32,14 @@
 
        <!-- INICIO Calculo de subtotal e iva por pagina -->
           <% details_per_page = details_per_page.compact %>
-          <% total_page               = details_per_page.map {|a| (a.subtotal.to_f - a.iva_amount.to_f) unless a.nil?}.reduce(:+).to_f %>
-          <% total_page_without_bonif = details_per_page.map {|a| (a.subtotal.to_f - a.iva_amount.to_f) unless a.nil?}.reduce(:+).to_f %>
+          <% total_page               = details_per_page.map {|a| a.subtotal.to_f - a.iva_amount.to_f}.inject(0) { |sum, importe| sum + importe }.to_f %>
+          <% total_page_without_bonif = details_per_page.map {|a| a.subtotal.to_f - a.iva_amount.to_f}.inject(0) { |sum, importe| sum + importe }.to_f %>
           <% total_page_iva           = details_per_page.pluck(:subtotal).inject(0) { |sum, importe| sum + importe }.to_f %>
-          <% iva_page                 = details_per_page.map {|a| (a.iva_amount.to_f) unless a.nil?}.reduce(:+).to_f %>
+          <% iva_page                 = details_per_page.pluck(:iva_amount).inject(0) { |sum, importe| sum + importe }.to_f %>
 
-          <% if @invoice.bonification != 0 %>
-            <% total_page -= total_page * (@invoice.bonification / 100) %>
-            <% iva_page -= iva_page * (@invoice.bonification / 100) %>
-          <% end %>
           <% @invoice.bonifications.each do |bon| %>
             <% total_page -= total_page * (bon.percentage / 100) %>
-            <% iva_page -= iva_page * (bon.percentage / 100) %>
+            <% iva_page   -= iva_page * (bon.percentage / 100) %>
           <% end %>
         <!-- FIN Calculo de subtotal e iva por pagina -->
 

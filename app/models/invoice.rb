@@ -141,10 +141,12 @@ class Invoice < ApplicationRecord
     end
 
     def iva_amount_sum
-			total_calculado = self.invoice_details.inject(0) {|sum, detail| sum + detail.iva_amount}
-			total_calculado -= self.bonification
-			total_calculado = self.bonifications.inject(total_calculado) {|sum, bonification| sum - bonification.amount}
-			return total_calculado
+			iva_calculado = self.invoice_details
+				.inject(0) { |sum, detail| sum + detail.iva_amount }
+			iva_calculado -= self.bonifications
+				.map { |bonif| iva_calculado * (bonif.percentage.to_f / 100) }
+				.inject(0) { |sum, descuento| sum + descuento }
+			return iva_calculado
     end
 
     def self.available_cbte_type(company, client)

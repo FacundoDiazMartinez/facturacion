@@ -3,15 +3,14 @@ class Invoices::ClientsController < ApplicationController
 	before_action :set_client, only: [:edit, :update]
 
 	def show
-		@client = current_user.company.clients.find(params[:id])
+		@client = current_company.clients.find(params[:id])
 	end
 
 	def edit
-
 	end
 
 	def update
-		@client = current_user.company.clients.find_by_full_document(client_params).first_or_initialize
+		@client = current_company.clients.find_by_full_document(client_params).first_or_initialize
 		@client.set_attributes(params["client"].as_json)
 		@client.user_id = current_user.id
 		respond_to do |format|
@@ -27,13 +26,13 @@ class Invoices::ClientsController < ApplicationController
 
 	def autocomplete_name
 		term = params[:term]
-    	clients = current_user.company.clients.where('LOWER(name) ILIKE ?', "%#{term}%").all
+    	clients = current_company.clients.where('LOWER(name) ILIKE ?', "%#{term}%").all
     	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
 	end
 
 	def autocomplete_document
 		term = params[:term]
-    	clients = current_user.company.clients.where('document_number ILIKE ?', "%#{term}%").all
+    	clients = current_company.clients.where('document_number ILIKE ?', "%#{term}%").all
     	render :json => clients.map { |client| client.attributes.merge({"label" => client.name}).except("company_id", "active", "created_at", "updated_at", "saldo") }
 	end
 
@@ -43,12 +42,12 @@ class Invoices::ClientsController < ApplicationController
 			if params[:invoice_id].blank?
 				@invoice = Invoice.new
 			else
-				@invoice = current_user.company.invoices.find(params[:invoice_id])
+				@invoice = current_company.invoices.find(params[:invoice_id])
 			end
 		end
 
 		def set_client
-			@client = current_user.company.clients.find(params[:id])
+			@client = current_company.clients.find(params[:id])
 		end
 
 		def client_params

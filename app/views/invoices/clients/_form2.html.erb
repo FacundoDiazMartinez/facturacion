@@ -1,0 +1,50 @@
+<div id="client_errors"></div>
+<%= hidden_field_tag :invoice_id , params[:invoice_id] %>
+<div class="row">
+  <div class="form-group col-sm-12 col-md-6">
+    <%= label_tag :name, "Nombre *" %>
+    <%= f.autocomplete_field :name, autocomplete_name_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field client_name', placeholder: "Ingrese nombre del cliente", required: true, autocomplete: false %>
+  </div>
+
+  <div class="form-group col-sm-12 col-md-6">
+    <%= label_tag :document_number, "Documento *" %>
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text client_document'} %>
+      </div>
+      <%= f.autocomplete_field :document_number, autocomplete_document_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field', placeholder: "Ingrese documento del cliente", required: true %>
+    </div>
+  </div>
+
+  <div class="form-group col-sm-12 col-md-6">
+    <%= label_tag :iva_cond, "Condición I.V.A. *" %>
+    <%= f.select :iva_cond, Client::IVA_COND , {} , { class: 'form-control form-control-sm client_iva_con' } %>
+  </div>
+
+  <div class="form-group col-sm-12 col-md-6">
+    <%= label_tag :address, "Dirección" %>
+    <%= f.text_field :address, class: 'form-control form-control-sm address' %>
+  </div>
+
+  <div class="form-group col-sm-12 col-md-6">
+    <%= label_tag :enabled, "Habilitado" %>
+    <div class="toggle-block">
+      <%= f.check_box :enabled, data:{ toggle: 'toggle', on: "Si", off: "No" }, class: 'toggle' %>
+    </div>
+  </div>
+
+  <div class="form-group col-sm-12 col-md-6">
+    <%= label_tag :enabled_observation, "¿Por qué fue deshabilitado?" %>
+    <%= f.text_area :enabled_observation, class: 'form-control form-control-sm address', rows:4 %>
+  </div>
+
+</div>
+<div class="text-center">
+  <i>* Campos obligatorios</i>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('input[type=checkbox][data-toggle^=toggle]').bootstrapToggle()
+  });
+</script>
