@@ -1,29 +1,42 @@
+$(document).on("keyup click", ".client_name", function(){
+	if ($(this).val().length == 0) {
+		defaultClientData();
+	}
+})
+
 $(document).on('railsAutocomplete.select', '.client-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
 		if (data.item.nomatch.length) {
-			$('input[name^="client["]').each(function(){
-			    $(this).val("");
-			});
+			$('input[name^="client["]').each(function(){ $(this).val("");	});
 			$("input.client-autocomplete_field").val(data.item.nomatch);
 		}
 	}
-	alert(data.item)
-	$.each( data.item, function( key, value ) { $("#client_" + key ).val(value)	});
-	$('#client_enabled').prop('checked', data.item['enabled']);
-
-	if (data.item['enabled']) {
-		$('#client_enabled_observation').prop('disabled', data.item['enabled']);
-		$('#client_enabled_observation').css('border-color', 'rgba(0, 0, 0, 0.21)');
-		$('.btn_save').prop('disabled', false);
-	}	else {
-		$('#client_enabled_observation').css('border-color', 'red');
-		$('.btn_save').prop('disabled', true);
-	}
+	assignValuesToInputs(data)
+	bindEnabledInputHandler()
 });
 
-$(document).on("keyup click", ".client_name", function(){
-	if ($(this).val().length == 0) {
-		$(".client_iva_con").val("Responsable Inscripto");
-		$(".client_document").val("80");
-	}
-})
+function assignValuesToInputs(data) {
+	let enabled_client_input = $('#client_enabled')
+	let client_observation	 = $('#client_enabled_observation')
+
+	$.each( data.item, function( key, value ) { $("#client_" + key ).val(value)	});
+	enabled_client_input.prop('checked', data.item['enabled']).trigger('change')
+}
+
+function defaultClientData() {
+	$(".client_iva_con").val("Responsable Inscripto");
+	$(".client_document").val("80");
+}
+
+function bindEnabledInputHandler() {
+	$('#client_enabled').change(function() {
+		if (this.checked) {
+			$(this).val('true')
+			$('#client_enabled_observation').removeAttr('style')
+		} else {
+			$(this).val('false')
+			$('#client_enabled_observation').css('border-color', 'red')
+		}
+		alert($(this.val()))
+	})
+}

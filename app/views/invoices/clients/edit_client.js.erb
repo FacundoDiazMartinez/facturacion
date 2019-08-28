@@ -1,27 +1,31 @@
-'<% if not @client.errors.any? %>'
+<% if not @client.errors.any? %>
 	$("#myModal").modal('hide');
 	$('#myModal').on('hidden.bs.modal', function (e) {
+		<% if @client.enabled %>
   	$("#client_form").html("<%= j render '/invoices/client_column' %> ");
   	$("#invoice_client_id").val("<%= @client.id %>");
 		$("#associated_invoice").attr("disabled", "disabled");
-		// $("#ipayments").show();
-		// $("#itributes").show();
-  	var options = <%= raw Invoice.available_cbte_type(current_user.company, @client).to_json %>
+
+  	var options = <%= raw Invoice.available_cbte_type(current_company, @client).to_json %>
   	$('#invoice_cbte_tipo').html("");
   	$.each(options, function(i, option) {
 	    $('#invoice_cbte_tipo').append( new Option(option[0],option[1]) );
 		});
-		// addRechargeToDetails();
-		"<% if @client.saldo.to_f < 0.0 && @client.valid_for_account %>"
+
+		<% if @client.saldo.to_f < 0.0 && @client.valid_for_account %>
 			$("#saldo_disponible").html("Saldo disponible en cuenta corriente: $<%= -@client.saldo.to_f %>");
-		"<% else %>"
+		<% else %>
 			$("#saldo_disponible").html("");
-		"<% end %>"
+		<% end %>
 		$("#invoice_cbte_tipo").trigger("change");
+
+		<% else %>
+			alert("El cliente seleccionado está inhabilitado para operaciones de venta.")
+		<% end %>
 	});
-'<% else %>'
+<% else %>
 	$("#client_errors").html("<%= j error_explanation(@client) %>");
-'<% end %>'
+<% end %>
 
 $("#invoice_total").val("0.00");
 $("#total_left").val("0.00");

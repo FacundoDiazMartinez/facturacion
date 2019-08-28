@@ -34,7 +34,6 @@ class Invoice < ApplicationRecord
 	accepts_nested_attributes_for :bonifications, 	allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :client, 															 reject_if: :all_blank
 
-
 	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado", "Anulado parcialmente"]
   COD_INVOICE = ["01", "06", "11"]
   COD_ND = ["02", "07", "12"]
@@ -49,6 +48,7 @@ class Invoice < ApplicationRecord
 	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
 	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
+	validate									:enabled_client
 	validate 									:at_least_one_detail
 	validate 									:cbte_tipo_inclusion
 	validate 									:fch_ser_if_service
@@ -101,6 +101,10 @@ class Invoice < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   #VALIDACIONES
+		def enabled_client
+		  errors.add("Cliente", "El cliente seleccionado está inhabilitado para operaciones.") unless client && client.enabled?
+		end
+
     def check_if_editable
       errors.add(:base, "No puede modificar un comprobante confirmado.") unless editable?
       valid?
