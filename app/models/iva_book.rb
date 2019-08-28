@@ -99,10 +99,10 @@ class IvaBook < ApplicationRecord
         ib.net_amount = -invoice.net_amount
         ib.iva_amount = -invoice.iva_amount
       else
-        ib.net_amount = invoice.imp_neto
+        ib.net_amount = invoice.net_amount
         ib.iva_amount = invoice.iva_amount
       end
-      ib.total      = ib.net_amount + ib.iva_amount
+      ib.total      = ((ib.net_amount - invoice.imp_op_ex) + invoice.iva_amount) + ib.net_amount
       ib.save
     end
 
