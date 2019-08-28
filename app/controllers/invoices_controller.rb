@@ -3,14 +3,10 @@ class InvoicesController < ApplicationController
   before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver, :paid_invoice_with_debt]
   before_action :set_date_for_graphs, only: [:sales_per_month, :amount_per_month, :commissioner_per_month, :states_per_month]
 
-  # GET /invoices
-  # GET /invoices.json
   def index
-    @invoices = current_user.company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_number(params[:comp_number]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 9)
+    @invoices = current_company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_number(params[:comp_number]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 9)
   end
 
-  # GET /invoices/1
-  # GET /invoices/1.json
   def show
     # la siguiene variable la cree para el pdf:
     Product.unscoped do
@@ -38,7 +34,6 @@ class InvoicesController < ApplicationController
     @invoice.delete_barcode(@barcode_path)
   end
 
-  # GET /invoices/new
   def new
     if !session[:new_invoice].blank?
       @invoice = Invoice.new(session[:new_invoice]["invoice"])
@@ -46,66 +41,45 @@ class InvoicesController < ApplicationController
         @invoice.invoice_details.build(detail)
       end
       session.delete(:new_invoice)
-      @client = current_user.company.clients.find(@invoice.client_id)
+      @client = current_company.clients.find(@invoice.client_id)
     else
-      @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
-      @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_user.company.first_sale_point, user_id: current_user.id)
+      @client = current_company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+      @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_company.first_sale_point, user_id: current_user.id)
     end
   end
 
-  # GET /invoices/1/edit
   def edit
     @client = @invoice.client
   end
 
   def create
-    @invoice = current_user.company.invoices.new(invoice_params)
+    @invoice = current_company.invoices.new(invoice_params)
     @invoice.user_id = current_user.id
     @client = @invoice.client
-    respond_to do |format|
-      if @invoice.custom_save(params[:send_to_afip])
-        format.html{redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."}
-      else
-        pp @invoice.errors
-        format.html { render :new, alert: "Comprobante" }
-      end
+    @invoice = InvoiceManager::TotalsSetter.call(@invoice)
+
+    if @invoice.custom_save(params[:send_to_afip])
+      redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."
+    else
+      pp @invoice.errors
+      render :new, alert: "Error al registrar el comprobante."
     end
   end
 
-  def confirm
-    ##hay que hacer que la confirmación sea por separado
-  end
-
-  def cancel
-    associated_invoice = current_user.company.invoices.find(params[:id])
-    @invoice = InvoiceManager::Canceller.new(associated_invoice).call
-    pp @invoice
-    @client = @invoice.client
-    @invoice.valid?
-    pp @invoice
-    respond_to do |format|
-      format.html {render :new}
-    end
-  end
-
-  # PATCH/PUT /invoices/1
-  # PATCH/PUT /invoices/1.json
   def update
     @client = @invoice.client
     @invoice.user_id = current_user.id
-    respond_to do |format|
-      if @invoice.update(invoice_params, params[:send_to_afip])##invoice 518
-        format.html { redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.' }
-      else
-        pp @invoice.errors
-        @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
-        format.html { render :edit }
-      end
+    @invoice = InvoiceManager::TotalsSetter.call(@invoice)
+    pp @invoice
+    if @invoice.update(invoice_params, params[:send_to_afip])
+      redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.'
+    else
+      pp @invoice.errors
+      @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
+      render :edit
     end
   end
 
-  # DELETE /invoices/1
-  # DELETE /invoices/1.json
   def destroy
     respond_to do |format|
       if @invoice.destroy
@@ -115,6 +89,20 @@ class InvoicesController < ApplicationController
         format.hmtl { render :edit }
       end
     end
+  end
+
+  def confirm
+    ##hay que hacer que la confirmación sea por separado
+  end
+
+  def cancel
+    associated_invoice = current_company.invoices.find(params[:id])
+    @invoice = InvoiceManager::Canceller.new(associated_invoice).call
+    pp @invoice
+    @client = @invoice.client
+    @invoice.valid?
+    pp @invoice
+    render :new
   end
 
   def deliver
@@ -160,7 +148,7 @@ class InvoicesController < ApplicationController
 
   def autocomplete_invoice_number
     term = params[:term]
-    invoices = current_user.company.invoices.joins(:sale_point).select("invoices.id as invoice_id, sale_points.id, sale_points.name as sale_point_name, invoices.sale_point_id, invoices.comp_number, invoices.cbte_fch, invoices.updated_at, invoices.state, invoices.total, invoices.total_pay").where("sale_points.name || ' -  ' || invoices.comp_number ILIKE ? AND (invoices.total > invoices.total_pay) AND client_id = ? AND comp_number IS NOT NULL", "%#{term}%", params[:client_id]).order(:updated_at).all
+    invoices = current_company.invoices.joins(:sale_point).select("invoices.id as invoice_id, sale_points.id, sale_points.name as sale_point_name, invoices.sale_point_id, invoices.comp_number, invoices.cbte_fch, invoices.updated_at, invoices.state, invoices.total, invoices.total_pay").where("sale_points.name || ' -  ' || invoices.comp_number ILIKE ? AND (invoices.total > invoices.total_pay) AND client_id = ? AND comp_number IS NOT NULL", "%#{term}%", params[:client_id]).order(:updated_at).all
 
     render :json => invoices.map { |invoice| {:id => invoice.invoice_id, :label => invoice.full_name, :value => invoice.name, total: invoice.total, faltante: invoice.total - invoice.total_pay} }
   end
@@ -168,7 +156,7 @@ class InvoicesController < ApplicationController
   def autocomplete_associated_invoice
     term = params[:term]
     client_id = params[:client_id]
-    invoices = current_user.company.clients.find(client_id).invoices.where(state: ["Confirmado", "Anulado parcialmente"]).where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%").where(cbte_tipo: ["01", "06", "11"]).order('comp_number DESC')
+    invoices = current_company.clients.find(client_id).invoices.where(state: ["Confirmado", "Anulado parcialmente"]).where('comp_number ILIKE ? AND cae IS NOT NULL', "%#{term}%").where(cbte_tipo: ["01", "06", "11"]).order('comp_number DESC')
     render :json => invoices.map{|i| {:id => i.id, :label => "Factura Nº: #{i.comp_number}", :value => i.comp_number}}
   end
 
@@ -215,12 +203,12 @@ class InvoicesController < ApplicationController
 
   def set_associated_invoice
     if params[:id].blank?
-      @invoice = current_user.company.invoices.new
+      @invoice = current_company.invoices.new
     else
       set_invoice
     end
     @associated = true
-    associated_invoice = current_user.company.invoices.where(comp_number: params[:associated_invoice]).first
+    associated_invoice = current_company.invoices.where(comp_number: params[:associated_invoice]).first
     if associated_invoice.is_credit_note?
       associated_invoice.invoice_details.each do |id|
         @invoice.invoice_details.new(id.attributes.except("id"))
@@ -235,7 +223,7 @@ class InvoicesController < ApplicationController
   def sales_per_month
     #cbte_fch = Invoice.cbte_fch.to_date
     invoices = Invoice.where(state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
-    render json: invoices  
+    render json: invoices
   end
 
   def states_per_month
@@ -258,7 +246,7 @@ class InvoicesController < ApplicationController
     #pp invo = invoices.count
     #render json: invo
     invoices = Invoice.where(state:"Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_month("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
-    render json: invoices  
+    render json: invoices
   end
   #ESTADISTICAS
 
@@ -270,12 +258,12 @@ class InvoicesController < ApplicationController
     end
     # Use callbacks to share common setup or constraints between actions.
     def set_invoice
-      @invoice = current_user.company.invoices.find(params[:id])
+      @invoice = current_company.invoices.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :bonification,
+      params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired,
         income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
           cash_payment_attributes: [:id, :total],
           debit_payment_attributes: [:id, :total, :bank_id],
@@ -289,8 +277,8 @@ class InvoicesController < ApplicationController
           product_attributes: [:id, :code, :company_id, :name, :tipo],
           commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
         client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
-        tributes_attributes: [:id, :afip_id, :desc, :base_imp, :alic, :importe, :_destroy],
-        bonifications_attributes: [:id, :subtotal, :observation, :percentage, :amount, :_destroy]
+        tributes_attributes: [:id, :afip_id, :desc, :alic, :_destroy],
+        bonifications_attributes: [:id, :observation, :percentage, :_destroy]
       )
     end
 

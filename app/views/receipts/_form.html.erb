@@ -1,6 +1,6 @@
 <%= nested_form_for @receipt do |form| %>
 <%= error_explanation @receipt %>
-<div class="card shadow">
+<div class="card ">
   <div class="card-body">
     <div class="row">
       <!-- PRIMERA COLUMNA -->
@@ -65,7 +65,7 @@
   </h3>
   <%= autocomplete_field_tag :comp_number, nil, autocomplete_invoice_and_debit_note_receipts_path, :fields => {:client_id => '#receipt_client_id'}, class: 'receipt_associated-invoice-autocomplete_field form-control form-control-sm comp_number' , disabled: !@receipt.editable?, placeholder: "Ingrese nº de comprobante" %>
 </div>
-<div class="card shadow">
+<div class="card ">
   <div class="card-body">
     <div class="row">
       <div class="table-responsive">

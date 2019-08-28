@@ -11,7 +11,7 @@
 			<div class="col-12">
 				<%= @notification.body %>
 				<span><small><%= icon('fas', 'time') %> Hace <%= distance_of_time_in_words(Time.now ,@notification.updated_at.to_time) %></small></span>
-				<div class="card shadow">
+				<div class="card ">
 					<%= @notification.description.html_safe %>
 				</div>
 			</div>

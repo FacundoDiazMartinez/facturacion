@@ -12,7 +12,7 @@
 		<div class="col">
 			<div class="container-fluid">
 				<p class="text-muted">Últimos movimientos</p>
-	      		<div class="card card-fluid card-shadow" id="amovements">
+	      		<div class="card card-fluid " id="amovements">
 	      			<% @account_movements = @client.account_movements.order("created_at ASC").paginate(page: params[:page], per_page: 10) %>
 	      			<%= render '/account_movements/account_movements_table' %>
 	      		</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_30_134929) do
+ActiveRecord::Schema.define(version: 2019_08_26_190943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -531,6 +531,8 @@ ActiveRecord::Schema.define(version: 2019_07_30_134929) do
     t.bigint "budget_id"
     t.boolean "expired", default: false
     t.float "bonification", default: 0.0, null: false
+    t.decimal "base_imponible", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_tributos", precision: 8, scale: 2, default: "0.0"
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"

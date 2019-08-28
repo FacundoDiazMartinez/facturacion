@@ -40,9 +40,6 @@ module InvoiceManager
         state: "Confirmado"
       )
       @invoice.activate_commissions
-      # if response && @invoice.is_credit_note? && !@invoice.associated_invoice.nil?
-      #    InvoiceManager::StateChecker.new(@invoice).call
-      # end
     end
 
     def display_confirmation_errors(bill)

@@ -45,30 +45,29 @@ class Client < ApplicationRecord
 			end
 		end
 
-	    def self.search_by_document document_number
-	      	if !document_number.blank?
-	        	where("document_number ILIKE ?", "#{document_number}%")
-	      	else
-	        	all
-	      	end
-	    end
+    def self.search_by_document document_number
+      	if !document_number.blank?
+        	where("document_number ILIKE ?", "#{document_number}%")
+      	else
+        	all
+      	end
+    end
 
-	    def self.search_by_expired expired
-	    	unless expired.blank?
-	    		joins(:invoices).distinct.where("invoices.expired = ?", expired)
-	    	else
-	    		all
-	    	end
-	    end
+    def self.search_by_expired expired
+    	unless expired.blank?
+    		joins(:invoices).distinct.where("invoices.expired = ?", expired)
+    	else
+    		all
+    	end
+    end
 
-	    def self.search_by_valid_for_account valid
-	    	unless valid.blank?
-	    		where("clients.valid_for_account = ?", valid)
-	    	else
-	    		all
-	    	end
-	    end
-
+    def self.search_by_valid_for_account valid
+    	unless valid.blank?
+    		where("clients.valid_for_account = ?", valid)
+    	else
+    		all
+    	end
+    end
 	#FILTROS DE BUSQUEDA
 
 	#ATRIBUTOS
@@ -113,11 +112,16 @@ class Client < ApplicationRecord
 		end
 
 		def update_debt
-			self.reload ##actualiza las asociaciones
-			last_acc_mov 	= self.account_movements.where.not(tiempo_de_confirmacion: nil, active: false).order(tiempo_de_confirmacion: :desc).first
+			self.reload
+			last_acc_mov 	= self.account_movements
+				.where.not(
+					tiempo_de_confirmacion: nil,
+					active: false
+				).order(tiempo_de_confirmacion: :desc)
+				.first
 			last_saldo 		= last_acc_mov.nil? ? 0.0 : last_acc_mov.saldo #En caso de que no exista ningun movimiento, creo el saldo en 0.0
 			self.update_column(:saldo, last_saldo)
-			Invoice.paid_unpaid_invoices self
+			InvoiceManager::UnpaidInvoicesPayer.call(self)
 		end
 	#PROCESOS
 
