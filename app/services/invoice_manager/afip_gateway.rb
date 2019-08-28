@@ -62,13 +62,14 @@ module InvoiceManager
     def iva_array
       i = Array.new
       iva_hash = @bill.invoice_details
-        .group_by{|invoice_detail| invoice_detail.iva_aliquot }
-        .map{|aliquot, inv_det| {
+        .group_by{ |invoice_detail| invoice_detail.iva_aliquot }
+        .map{ |aliquot, inv_det| {
           aliquot: aliquot,
-          net_amount: inv_det.sum{|id| id.neto},
-          iva_amount: inv_det.sum{|s| s.iva_amount}
+          net_amount: inv_det.sum{ |id| id.neto },
+          iva_amount: inv_det.sum{ |s| s.iva_amount }
           }
         }
+      iva_hash = aplica_descuentos_globales(iva_hash)
 
       iva_hash.each do |iva|
         i << [ iva[:aliquot], iva[:net_amount].round(2), iva[:iva_amount].round(2) ]
@@ -86,6 +87,17 @@ module InvoiceManager
 
     def otros_imp
       @bill.tributes.sum(:importe).to_f.round(2)
+    end
+
+    def aplica_descuentos_globales(iva_hash)
+      @bill.bonifications.each do |bonification|
+        iva_hash.each do |iva|
+          iva[:net_amount] -= iva[:net_amount] * (bonification.percentage / 100)
+          iva[:iva_amount] -=  iva[:iva_amount] * (bonification.percentage / 100)
+        end
+      end
+
+      return iva_hash
     end
   end
 end

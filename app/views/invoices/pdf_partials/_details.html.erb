@@ -95,9 +95,9 @@
         <td class="text_right">
           <b>
             <% if total_pages > 1 %>
-              Subtotal página:
+              Subtotal conceptos página:
             <% else %>
-              Subtotal:
+              Subtotal conceptos:
             <% end %>
           </b>
         </td>
@@ -105,16 +105,18 @@
       </tr>
 
     <% if @invoice.bonifications.any? %>
+      <% descuentos_aplicados = 0 %>
       <% @invoice.bonifications.each_with_index do |bon, index| %>
         <tr>
           <td class="text_right"><b>Desc. <%= bon.percentage.round(0) %>%</b></td>
+          <% descuentos_aplicados +=  total_of_page_without_bonif * (bon.percentage / 100) %>
           <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif * (bon.percentage / 100)) %></td>
         </tr>
       <% end %>
       <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
       <tr>
         <td class="text_right"><b>Subtotal:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f', total_of_page_without_bonif -=  @invoice.bonification ) %></td>
+        <td class="text_right">$ <%= sprintf('%.2f', total_of_page_without_bonif -=  descuentos_aplicados ) %></td>
       </tr>
       <% else %>
         <tr>
@@ -127,7 +129,7 @@
     <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
       <tr>
         <td class="text_right"><b>I.V.A.:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f', @invoice.iva_amount_sum )%> </td>
+        <td class="text_right">$ <%= sprintf('%.2f', @invoice.imp_iva )%> </td>
       </tr>
       <% if page_number == 1 %>
       <tr>

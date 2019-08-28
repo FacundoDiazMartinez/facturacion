@@ -35,16 +35,14 @@ class InvoicesController < ApplicationController
   end
 
   def new
-    if !session[:new_invoice].blank?
-      @invoice = Invoice.new(session[:new_invoice]["invoice"])
-      session[:new_invoice]["invoice_details"].each do |detail|
-        @invoice.invoice_details.build(detail)
+    begin
+      if !session[:new_invoice].blank?
+        restore_invoice_from_session
+      else
+        set_new_invoice
       end
-      session.delete(:new_invoice)
-      @client = current_company.clients.find(@invoice.client_id)
-    else
-      @client = current_company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
-      @invoice = Invoice.new(client_id: @client.id, company_id: current_user.company_id, sale_point_id: current_company.first_sale_point, user_id: current_user.id)
+    rescue StandardError => error
+      redirect_to invoices_path, alert: error.message
     end
   end
 
@@ -57,7 +55,6 @@ class InvoicesController < ApplicationController
     @invoice.user_id = current_user.id
     @client = @invoice.client
     @invoice = InvoiceManager::TotalsSetter.call(@invoice)
-
     if @invoice.custom_save(params[:send_to_afip])
       redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."
     else
@@ -284,5 +281,22 @@ class InvoicesController < ApplicationController
 
     def client_params
       params.require(:client).permit(:name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond)
+    end
+
+    def restore_invoice_from_session
+      @invoice            = Invoice.new(session[:new_invoice]["invoice"])
+      @invoice.company_id = current_company.id
+      @client             = current_company.clients.find(@invoice.client_id)
+      session[:new_invoice]["invoice_details"].map { |detail| @invoice.invoice_details.build(detail) }
+      session.delete(:new_invoice)
+    end
+
+    def set_new_invoice
+      @client   = current_company.clients.consumidor_final.first_or_create
+      @invoice  = current_company.invoices.new.tap do |invoice|
+        invoice.client_id     = @client.id
+        invoice.sale_point_id = current_company.first_sale_point
+        invoice.user_id       = current_user.id
+      end
     end
 end

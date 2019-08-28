@@ -140,13 +140,6 @@ class Invoice < ApplicationRecord
 			return invoice_details.where(iva_aliquot: ["03", "04", "05", "06"]).inject(0) {|sum, detail| sum + detail.neto }.round(2)
     end
 
-    def iva_amount_sum
-			total_calculado = self.invoice_details.inject(0) {|sum, detail| sum + detail.iva_amount}
-			total_calculado -= self.bonification
-			total_calculado = self.bonifications.inject(total_calculado) {|sum, bonification| sum - bonification.amount}
-			return total_calculado
-    end
-
     def self.available_cbte_type(company, client)
       Afip::CBTE_TIPO.map{|k,v| [v, k] if Afip::AVAILABLE_TYPES[company.iva_cond_sym][client.iva_cond_sym].include?(k)}.compact
     end
