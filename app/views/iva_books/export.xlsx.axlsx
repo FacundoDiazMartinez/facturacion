@@ -1,0 +1,26 @@
+wb = xlsx_package.workbook
+title = wb.styles.add_style(:bg_color => "80CBC4", :fg_color=>"#FF000000", :sz=>14,  :border=> {:style => :thin, :color => "80CBC4"})
+number_right  = wb.styles.add_style( alignment: {horizontal: :right})
+text_left   = wb.styles.add_style( alignment: {horizontal: :left})
+wb.add_worksheet(name: "Libro IVA") do |sheet|
+    sheet.add_row(["Fecha", "Destinatario", "Documento", "Condición IVA", "Comprobante Nº", "Nº Autorización", "Neto", "Imp. Ex.", "I.V.A", "Otros Trib.", "Descuentos", "Total"], :style=> title)
+    @iva_books.each_with_index do |ib, index|
+      if ib.tipo == "Débito Fiscal"
+        sheet.add_row([ib.date.to_s, ib.invoice.client_name, ib.invoice.client_document, ib.invoice.client_iva_cond, ib.full_invoice, "CAE:#{ib.invoice.cae.to_s}", ib.invoice.imp_neto.round(2), ib.invoice.imp_op_ex.round(2), ib.invoice.imp_iva.round(2), ib.invoice.imp_trib.round(2), ib.invoice.bonifications.map(&:amount).inject(0) { |suma, amount| suma + amount }, ib.invoice.total.round(2)])
+      else
+        sheet.add_row([ib.date.to_s, ib.purchase_invoice.supplier.name, ib.purchase_invoice.supplier.document_number, ib.purchase_invoice.supplier.iva_cond, ib.full_invoice, "CAE:#{ib.purchase_invoice.cae}", ib.purchase_invoice.net_amount.round(2), ib.purchase_invoice.imp_op_ex.round(2), ib.purchase_invoice.iva_amount.round(2), "-" , "-", ib.purchase_invoice.total.round(2)])
+      end
+      sheet.rows[index+1].cells[0].style=text_left
+      sheet.rows[index+1].cells[1].style=text_left
+      sheet.rows[index+1].cells[2].style=text_left
+      sheet.rows[index+1].cells[3].style=text_left
+      sheet.rows[index+1].cells[4].style=text_left
+      sheet.rows[index+1].cells[5].style=text_left
+      sheet.rows[index+1].cells[6].style=number_right
+      sheet.rows[index+1].cells[7].style=number_right
+      sheet.rows[index+1].cells[8].style=number_right
+      sheet.rows[index+1].cells[9].style=number_right
+      sheet.rows[index+1].cells[10].style=number_right
+      sheet.rows[index+1].cells[11].style=number_right
+    end
+end

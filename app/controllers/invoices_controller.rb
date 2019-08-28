@@ -235,7 +235,7 @@ class InvoicesController < ApplicationController
   def sales_per_month
     #cbte_fch = Invoice.cbte_fch.to_date
     invoices = Invoice.where(state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
-    render json: invoices  
+    render json: invoices
   end
 
   def states_per_month
@@ -258,7 +258,7 @@ class InvoicesController < ApplicationController
     #pp invo = invoices.count
     #render json: invo
     invoices = Invoice.where(state:"Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_month("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
-    render json: invoices  
+    render json: invoices
   end
   #ESTADISTICAS
 

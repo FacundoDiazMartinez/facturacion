@@ -10,7 +10,7 @@ class IvaBooksController < ApplicationController
 
 
   def generate_pdf
-    @group_details = @iva_books.in_groups_of(20, fill_with= nil)
+    @group_details = @iva_books.in_groups_of(15, fill_with= nil)
     @from = params[:from]
     @to = params[:to]
 
@@ -28,10 +28,26 @@ class IvaBooksController < ApplicationController
         template: 'iva_books/informe',
         viewport_size: '1280x1024',
         page_size: 'A4',
-        #zoom: 3.4,
+        orientation: 'Landscape',
+        zoom: 3.4,
         #si en local se ve mal, poner en 3.4 solo para local
         encoding:"UTF-8"
       end
+    end
+  end
+
+  def export
+    if params[:iva_compras] == true
+      tipo = "Compras"
+      @iva_books = current_user.company.iva_books.joins(:purchase_invoice).includes(purchase_invoice: :supplier).find_by_period(params[:from], params[:to]).search_by_tipo(params[:iva_compras])
+    else
+      tipo = "Ventas"
+      @iva_books = current_user.company.iva_books.joins(:invoice).includes(invoice: :client).includes(invoice: :sale_point).includes(invoice: :bonifications).find_by_period(params[:from], params[:to]).search_by_tipo(params[:iva_compras])
+    end
+    respond_to do |format|
+      format.xlsx {
+        render xlsx: "export.xlsx.axlsx", disposition: "attachment", filename: "Libro-IVA-#{tipo}-Desde:#{params[:from]}-Hasta:#{params[:to]}.xlsx"
+      }
     end
   end
 

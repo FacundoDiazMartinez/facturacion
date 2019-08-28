@@ -580,9 +580,9 @@ class Invoice < ApplicationRecord
   #PROCESOS
 
 	#ATRIBUTOS
-    def client
-      Client.unscoped{ super }
-    end
+    # def client
+    #   Client.unscoped{ super }
+    # end
 
 		def client_name
 			client.nil? ? "Sin nombre" : client.name

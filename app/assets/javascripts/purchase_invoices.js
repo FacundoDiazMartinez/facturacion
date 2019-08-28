@@ -32,11 +32,11 @@ $(document).on("change", "#purchase_invoice_cbte_tipo", function(){
 
 $(document).on("change","#purchase_invoice_net_amount", function(){ //Cuando cambia valor en MONTO NETO
 	if ($("#purchase_invoice_iva_amount").val() != "") {
-		$("#purchase_invoice_iva_amount").val(parseFloat($("#purchase_invoice_net_amount").val()) * parseFloat($("#purchase_invoice_iva_aliquot :selected").text()));
+		$("#purchase_invoice_iva_amount").val(parseFloat(($("#purchase_invoice_net_amount").val() - parseFloat($("#purchase_invoice_imp_op_ex").val())) * parseFloat($("#purchase_invoice_iva_aliquot :selected").text())));
 		$("#purchase_invoice_total").val(parseFloat($("#purchase_invoice_net_amount").val()) + parseFloat($("#purchase_invoice_iva_amount").val()));
 	}
 	else {
-		$("#purchase_invoice_total").val($("#purchase_invoice_net_amount").val());
+		$("#purchase_invoice_total").val(parseFloat($("#purchase_invoice_net_amount").val()));
 	}
 })
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_30_134929) do
+ActiveRecord::Schema.define(version: 2019_08_27_135313) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -704,13 +704,14 @@ ActiveRecord::Schema.define(version: 2019_07_30_134929) do
     t.date "date"
     t.float "net_amount", default: 0.0, null: false
     t.float "iva_amount", default: 0.0, null: false
-    t.float "imp_op_ex", default: 0.0, null: false
+    t.float "imp_op_ex", default: 0.0
     t.float "total", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "purchase_order_id"
     t.boolean "active", default: true
     t.string "iva_aliquot"
+    t.string "cae"
     t.index ["arrival_note_id"], name: "index_purchase_invoices_on_arrival_note_id"
     t.index ["company_id"], name: "index_purchase_invoices_on_company_id"
     t.index ["purchase_order_id"], name: "index_purchase_invoices_on_purchase_order_id"

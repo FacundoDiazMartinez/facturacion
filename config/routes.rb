@@ -108,7 +108,10 @@ Rails.application.routes.draw do
 
   resources :notifications, only: [:index, :show]
   resources :iva_books do
-    get :generate_pdf, on: :collection
+    collection do
+      get :generate_pdf
+      get :export
+    end
   end
   resources :purchase_invoices do
     get :autocomplete_arrival_note_id, on: :collection
