@@ -6,7 +6,7 @@
 
   <!-- HEADER -->
   <p class="text-muted">Datos del comprobante</p>
-    <div class="card card-shadow">
+    <div class="card ">
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
@@ -104,7 +104,7 @@
   <!-- HEADER -->
 
   <!-- DETALLE -->
-  <div class="card card-shadow">
+  <div class="card ">
     <div class="card-body">
       <%= render template: '/purchase_orders/details/index.html.erb', locals:{form: form} %>
     </div>
@@ -112,7 +112,7 @@
   <!-- DETALLE -->
 
   <!-- PAGOS -->
-   <div class="card card-shadow">
+   <div class="card ">
     <div class="card-body">
       <%= render template: '/purchase_orders/payments/index.html.erb', locals:{form: form} %>
     </div>

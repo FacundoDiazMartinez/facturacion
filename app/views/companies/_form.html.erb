@@ -7,7 +7,7 @@
     <% if @company.logo.blank? %>
       <p class="text-muted">Selecciona un logo para tu empresa</p>
     <% end %>
-    <div class="card mb-4 card-shadow" style="width:15%;margin:auto;">
+    <div class="card mb-4 " style="width:15%;margin:auto;">
       <div class="comp_container caption captionload">
         <img src="/images/load.gif" width="80%">
       </div>
@@ -21,7 +21,7 @@
   <hr>
   <!-- INFORMACIÓN BÁSICA -->
     <p class="text-muted">Completa los datos principales de tu empresa</p>
-    <div class="card mb-4 card-shadow">
+    <div class="card mb-4 ">
       <div class="card-body">
         <div class="form-row">
           <div class="form-group col-md-6">
@@ -83,7 +83,7 @@
 
   <!-- UBICACIÓN -->
   <p class="text-muted">Ingresa los datos de ubicación</p>
-  <div class="card mb-4 card-shadow">
+  <div class="card mb-4 ">
     <div class="card-body">
       <div class="form-row">
         <div class="form-group col-md-6">
@@ -122,7 +122,7 @@
     Registra tus puntos de venta
     <%= f.link_to_add "#{icon'fas', 'plus'} Añadir punto de venta".html_safe, :sale_points,  class: 'btn btn-sm btn-success float-md-right', data: {target: '#sale_points'} %>
   </p>
-  <div class="card mb-4 card-shadow">
+  <div class="card mb-4 ">
     <div  class="card-body">
       <div id="sale_points" class="form-row">
         <%= f.fields_for :sale_points, :wrapper => false do |sf| %>
@@ -154,7 +154,7 @@
 
   <!-- Nota al pie de factura -->
   <p class="text-muted">Ingresa un pie de factura (opcional)</p>
-  <div class="card mb-4 card-shadow">
+  <div class="card mb-4 ">
     <div class="card-body">
       <div class="form-group">
         <%= f.label 'Pie de factura'%>

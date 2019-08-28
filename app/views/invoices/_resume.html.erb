@@ -1,0 +1,63 @@
+<div class="form-group">
+  <a href="#" class="linkeable toggle-resumen-link">
+    <span class="toggle-resumen-label">Mostrar</span> resumen
+  </a>
+</div>
+<div class="row toggle-resumen-target" style="display:none">
+  <div class="col-md-3">
+    <div class="card p-3">
+      <p class="text-muted">Conceptos</p>
+      <p class="important-number text-right">$ <span class="total_details">0.00</span></p>
+      <p class="text-muted">Conceptos + I.V.A.</p>
+      <p class="important-number text-right">$ <span class="detail_iva">0.00</span></p>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <p class="text-muted">Tributos</p>
+      <p class="important-number text-right">$ <span class="total_tributes">0.00</span></p>
+      <p class="text-muted">Notas de débito</p>
+      <p class="important-number text-right">$ <span><%= number_with_precision(invoice.debit_notes.pluck(:total).inject(0) { |sum, importe| sum + importe }, precision: 2, separator: '.') %></span></p>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <p class="text-muted">Descuentos</p>
+      <p class="important-number text-right">$ <span class="total_bonifications">0.00</span></p>
+      <p class="text-muted">Notas de crédito</p>
+      <p class="important-number text-right">$ <span><%= number_with_precision(invoice.credit_notes.pluck(:total).inject(0) { |sum, importe| sum + importe }, precision: 2, separator: '.') %></span></p>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card p-3">
+      <p class="text-muted">TOTAL VENTA</p>
+      <p class="important-number text-right">$ <span class="final_total">0.00</span></p>
+      <p class="text-muted">Pagos</p>
+      <p class="important-number text-right">$ <span class="total_payments">0.00</span></p>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(() => {
+    $('.toggle-resumen-link').on('click', (e) => {
+      e.preventDefault();
+      let target = $('.toggle-resumen-target');
+      let label = $('.toggle-resumen-label');
+      if (target.css('display') == 'none') {
+        target.show('fast');
+        label.text('Ocultar');
+
+        $([document.documentElement, document.body]).animate({
+          scrollTop: target.offset().top
+        }, 300, function(){
+        	target.effect( "shake" );
+        });
+
+      } else {
+        target.hide('fast');
+        label.text('Mostrar');
+      }
+    })
+  })
+</script>

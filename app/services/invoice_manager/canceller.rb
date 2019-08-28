@@ -19,12 +19,11 @@ module InvoiceManager
     	invoice.attributes = atributos.except!(*["id", "state", "cbte_tipo", "header_result", "authorized_on", "cae_due_date", "cae", "cbte_fch", "comp_number", "associated_invoice", "total_pay"])
 			invoice.cbte_tipo = (@associated_invoice.cbte_tipo.to_i + 2).to_s.rjust(2,padstr= '0').to_s
     	invoice.cbte_fch = Date.today
-    	pp invoice
     	return invoice
 		end
 
 		def asignar_detalles_de_la_factura (invoice)
-			@associated_invoice.invoice_details.each do |detail| # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DETALLES
+			@associated_invoice.invoice_details.each do |detail|
 				invoice_detail = invoice.invoice_details.build(detail.attributes.except!(*["id", "invoice_id"]))
         @associated_invoice.credit_notes.each do |cn|
           cn.invoice_details.where(product_id: detail.product_id).each do |cn_detail|
@@ -36,7 +35,7 @@ module InvoiceManager
 
 		def asignar_tributos_de_la_factura(invoice)
 			if invoice.tributes.size > 0
-        invoice.tributes.each do |tribute| # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TRIBUTOS
+        invoice.tributes.each do |tribute|
           invoice.tributes.build(tribute.attributes.except!(*["id", "invoice_id"]))
         end
       end

@@ -34,44 +34,26 @@ class Invoice < ApplicationRecord
 	accepts_nested_attributes_for :bonifications, 	allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :client, 															 reject_if: :all_blank
 
-	before_validation :check_if_confirmed
 
 	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado", "Anulado parcialmente"]
   COD_INVOICE = ["01", "06", "11"]
   COD_ND = ["02", "07", "12"]
   COD_NC = ["03", "08", "13"]
 
-  TRIBUTOS = [
-   ["Impuestos nacionales", "1"],
-   ["Impuestos provinciales", "2"],
-   ["Impuestos municipales", "3"],
-   ["Impuestos Internos", "4"],
-   ["Otro", "99"],
-   ["IIBB", "5"],
-   ["Percepción de IVA", "6"],
-   ["Percepción de IIBB", "7"],
-   ["Percepciones por Impuestos Municipales", "8"],
-   ["Otras Percepciones", "9"],
-   ["Percepción de IVA a no Categorizado", "13"]
-  ]
-
+	before_validation 				:check_if_confirmed
+	before_validation         :stock_between_invoice_and_credit_notes, if: Proc.new{ |i| i.is_credit_note? || i.state == "Pendiente" }
 	validates_presence_of 		:client_id, message: "El comprobante debe estar asociado a un cliente."
-	#validates_presence_of :associated_invoice, message: "El comprobante debe estar asociado a un documento a aular.", if: Proc.new{ |i| not i.is_invoice? }
 	validates	 								:total, presence: { message: "El total no debe estar en blanco." },
 																		numericality: { greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0." }
 	validates_presence_of 		:total_pay, message: "El total pagado no debe estar en blanco."
 	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
 	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
-	validates_numericality_of :bonification, :greater_than => -100, :less_than => 100
-	validate 									:cbte_tipo_inclusion
 	validate 									:at_least_one_detail
+	validate 									:cbte_tipo_inclusion
 	validate 									:fch_ser_if_service
-  before_validation         :stock_between_invoice_and_credit_notes, if: Proc.new{ |i| i.is_credit_note? || i.state == "Pendiente" }
-	#after_validation					:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.is_credit_note? && i.state == "Confirmado" }
 
 	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
-	before_save 	:set_total_and_total_pay
 	after_create 	:create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
   after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
@@ -79,7 +61,7 @@ class Invoice < ApplicationRecord
   after_save 		:update_expired, :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
 	## A SERVICIO
   after_save 		:impact_stock_if_cn ##para que impacte en stock con los detalles del producto
-  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.state == "Confirmado" && i.is_credit_note? && !i.associated_invoice.nil?}
+  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.confirmado? && i.is_credit_note? && !i.associated_invoice.nil?}
 	after_touch 	:update_total_pay
   before_destroy :check_if_editable
   #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
@@ -103,7 +85,6 @@ class Invoice < ApplicationRecord
 
   	def self.search_by_state state
   		if not state.blank?
-        pp state
   			where(state: state)
   		else
   			all
@@ -121,100 +102,49 @@ class Invoice < ApplicationRecord
 
   #VALIDACIONES
     def check_if_editable
-      errors.add(:base, "No puede modificar una factura confirmada") unless editable?
-      errors.blank?
+      errors.add(:base, "No puede modificar un comprobante confirmado.") unless editable?
+      valid?
     end
 
-		##debe validar que para la factura exista al menos 1 detalle (conceptos)
     def at_least_one_detail
 			errors.add(:base, "El comprobante debe tener al menos 1 (un) concepto") unless self.invoice_details.reject(&:marked_for_destruction?).count > 0
     end
 
-		##validación para comprobantes de servicio
     def fch_ser_if_service
       unless concepto == "Productos"
-        errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") unless !self.fch_serv_desde.blank?
-        errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") unless !self.fch_serv_hasta.blank?
-        errors.add(:fch_vto_pago, "Debe ingresar la fecha de vencimiento ") unless !self.fch_vto_pago.blank?
+        errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") if self.fch_serv_desde.blank?
+        errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") if self.fch_serv_hasta.blank?
+        errors.add(:fch_vto_pago, "Debe ingresar la fecha de vencimiento ") if self.fch_vto_pago.blank?
       end
+    end
+
+		def cbte_tipo_inclusion
+      errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.map{|k,v| v}.include?(cbte_tipo)
     end
   #VALIDACIONES
 
-
 	#FUNCIONES
-		##before_save calcula el monto total en base a los conceptos, tributos, descuentos y pagos
-    def set_total_and_total_pay
-      suma_conceptos 	= self.invoice_details.reject(&:marked_for_destruction?).pluck(:subtotal).reduce(:+)
-			tributos 				= self.tributes.reject(&:marked_for_destruction?)
-			suma_tributos		= tributos.any? ? tributos.pluck(:importe).reduce(:+) : 0 ##controla que existan objetos
-			descuentos			= self.bonifications.reject(&:marked_for_destruction?)
-      suma_descuentos	= descuentos.any? ? descuentos.pluck(:amount).reduce(:+) : 0 ##controla que existan objetos
-			self.total 			= suma_conceptos + suma_tributos - suma_descuentos
-			pagos						= self.income_payments.reject(&:marked_for_destruction?)
-			self.total_pay	= pagos.any? ? pagos.pluck(:total).reduce(:+) : 0 ##controla que existan objetos
-    end
-
 		def total_left
-			left = total.to_f - total_pay.to_f
-      return left.round(2)
+      return (total.to_f - total_pay.to_f).round(2)
 		end
 
 		def editable?
 			state != 'Confirmado' && state != 'Anulado' && state != 'Anulado parcialmente'
 		end
 
-    def iva_array
-      i = Array.new
-      iva_hash = invoice_details.all.group_by{|i_d| i_d.iva_aliquot}.map{|aliquot, inv_det| {aliquot:aliquot, net_amount: inv_det.sum{|id| id.neto}, iva_amount: inv_det.sum{|s| s.iva_amount}}}
-      iva_hash.each do |iva|
-        i << [ iva[:aliquot], iva[:net_amount].round(2), iva[:iva_amount].round(2) ]
-      end
-      return i
-    end
-
     def check_authorized_invoice
-      if (self.cae.length > 0) && (self.company.environment == "production")
-        return true
-      else
-        return false
-      end
-    end
-
-    def self.applicable_iva_for_detail(aliquot)
-      case aliquot
-      when nil
-       return 0
-      when 0.0
-        return 0
-      when 10.5
-        return 1
-      when 21.0
-        return 2
-      when 27.0
-        return 3
-      end
+      (self.cae.length > 0) && (self.company.environment == "production")
     end
 
     def net_amount_sum
-      total = 0
-      invoice_details.where(iva_aliquot: ["03", "04", "05", "06"]).each do |detail|
-        total += detail.neto
-      end
-      return total.round(2)
+			return invoice_details.where(iva_aliquot: ["03", "04", "05", "06"]).inject(0) {|sum, detail| sum + detail.neto }.round(2)
     end
 
     def iva_amount_sum
-      total = 0
-      invoice_details.each do |detail|
-        total += detail.iva_amount.to_f.round(2)
-      end
-      if bonification != 0
-        total -= total * (bonification / 100)
-      end
-      self.bonifications.each do |bon|
-        total -= total * (bon.percentage / 100)
-      end
-      return total
+			total_calculado = self.invoice_details.inject(0) {|sum, detail| sum + detail.iva_amount}
+			total_calculado -= self.bonification
+			total_calculado = self.bonifications.inject(total_calculado) {|sum, bonification| sum - bonification.amount}
+			return total_calculado
     end
 
     def self.available_cbte_type(company, client)
@@ -271,37 +201,9 @@ class Invoice < ApplicationRecord
       end
     end
     handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| invoice.cbte_fch.to_date + 30.days }
-
-		def get_product_quantity_not_delivered product_id
-			product = Product.unscoped.find(product_id)
-			required_quantity = 0
-			self.invoice_details.where(product_id: product.id).each do |id|
-				required_quantity += id.quantity
-			end
-			delivered_quantity = 0
-			self.delivery_notes.where(state: "Finalizado").each do |dn|
-				dn.delivery_note_details.where(product_id: product.id).each do |dnd|
-					delivered_quantity += dnd.quantity
-				end
-			end
-			not_delivered = required_quantity.to_f - delivered_quantity.to_f
-			return not_delivered
-		end
 	#FUNCIONES
 
   #PROCESOS
-    def get_default_tributes
-      company.default_tributes.each do |trib|
-        tributes.build(afip_id: trib.tribute_id,
-          desc: Invoice::TRIBUTOS.map{|t| t.first if t.last == "1"}.compact.first,
-          base_imp: total.to_f.round(2),
-          # base_imp: 0,
-          alic: trib.default_aliquot
-        )
-      end
-      return tributes
-    end
-
     def impact_stock_if_cn
 			if self.confirmado? && self.is_credit_note?
 	      self.invoice_details.each do |id|
@@ -340,48 +242,11 @@ class Invoice < ApplicationRecord
       end
     end
 
-		##itera a traves de los movimientos de cuenta y sus recibos asociados para pagar los comprobantes
-		##cada recibo puede tener detalles (receipt_details) que contienen los comprobantes asociados que el cliente quiere pagar
-    def self.paid_unpaid_invoices client
-      client.account_movements.saldo_disponible_para_pagar.each do |am|
-        am.receipt.receipt_details.order(:id).each do |rd| #itera para cada detalle del recibo, que contienen los comprobantes asociados
-          invoice = rd.invoice
-          unless invoice.is_credit_note?
-						if invoice.real_total_left.to_f > 0
-							income_payment = IncomePayment.new(
-								type_of_payment: "6", #pago con cuenta corriente
-								payment_date: Date.today,
-								invoice_id: invoice.id,
-								generated_by_system: true,
-								account_movement_id: am.id
-							)
-              income_payment.total = (am.amount_available.to_f >= invoice.real_total_left.to_f) ? invoice.real_total_left.to_f : am.amount_available.to_f
-							if income_payment.save
-								am.update_columns(
-									amount_available: am.amount_available - income_payment.total
-								)
-                rd.update_columns(
-									total: income_payment.total,
-									total_payed_boolean: (invoice.real_total_left - income_payment.total) == 0 ##determina si se está cancelando la factura o es un pago parcial
-								)
-						  else
-                pp income_payment.errors
-              end
-            end
-            break if am.amount_available == 0
-          end
-        end
-				break if am.amount_available == 0
-      end
-    end
-
     def real_total
       if is_invoice? || is_debit_note?
         self.total.round(2) - self.credit_notes.sum(:total).round(2) + self.credit_notes.sum(:total_pay).round(2)
       elsif is_credit_note?
 				0
-			# elsif is_debit_note?
-      #   self.total.round(2)
       end
     end
 
@@ -428,35 +293,8 @@ class Invoice < ApplicationRecord
 						#anulada_totalmente = false
 					end
         end
-				# unless self.errors.any?
-				# 	if anulada_totalmente
-				# 		invoice.update_columns(state: "Anulado")
-				# 	else
-				# 		invoice.update_columns(state: "Anulado parcialmente")
-				# 	end
-				# end
       end
     end
-
-		def set_state_for_invoice_with_cn
-			invoice = self.invoice
-			invoice_details_quantity = 0
-			credit_notes_quantity = 0
-			invoice.invoice_details.each do |inv_det|
-				invoice_details_quantity += inv_det.quantity
-			end
-			invoice.credit_notes.each do |invoice_credit_notes|
-				invoice_credit_notes.invoice_details.each do |credit_note_detail|
-					credit_notes_quantity += credit_note_detail.quantity
-				end
-			end
-
-			if invoice_details_quantity < credit_notes_quantity
-				invoice.update_columns(state: "Anulado parcialmente")
-			else
-			  invoice.update_columns(state: "Anulado")
-			end
-		end
 
     def create_sales_file
       if sales_file_id.nil?
@@ -473,10 +311,6 @@ class Invoice < ApplicationRecord
       end
     end
 
-    def cbte_tipo_inclusion
-      errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.map{|k,v| v}.include?(cbte_tipo)
-    end
-
     def create_iva_book
       IvaBook.add_from_invoice(self)
     end
@@ -485,13 +319,10 @@ class Invoice < ApplicationRecord
        File.delete(path) if File.exist?(path)
     end
     handle_asynchronously :delete_barcode, :run_at => Proc.new { 5.seconds.from_now }
-    # correr en consola: rake jobs:work
 
     def set_state
-      if editable? && (total.to_f > 0.0)
-				if total.to_f <= total_pay.to_f
-					update_column(:state, "Pagado")
-				end
+      if editable? && (total.to_f > 0.0) && (total.to_f <= total_pay.to_f)
+				update_column(:state, "Pagado")
       end
     end
 
@@ -529,7 +360,6 @@ class Invoice < ApplicationRecord
       end
 		end
 
-		##after_save genera un recibo para una factura confirmada y con pagos
     def check_receipt
       Receipt.create_from_invoice(self) if self.confirmado? && self.income_payments.any? && self.receipts.empty?
     end
@@ -595,19 +425,6 @@ class Invoice < ApplicationRecord
 		def client_iva_cond
 			client.nil? ? "Consumidor Final" : client.iva_cond
 		end
-
-    def sum_details
-      total = 0
-      self.invoice_details.map{|d| total += d.subtotal}
-      if self.bonification != 0
-        total -= total * (self.bonification / 100)
-      end
-      self.bonifications.each do |bon|
-        total -= total * (bon.percentage / 100)
-      end
-      self.tributes.map{|t| total += t.importe}
-      return total.round(2)
-    end
 
     def confirmed_notes
       notes.where(state: "Confirmado")
@@ -677,14 +494,6 @@ class Invoice < ApplicationRecord
       end
     end
 
-    def short_name
-      if comp_number.nil?
-        "Sin confirmar"
-      else
-        "#{cbte_tipo.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number}"
-      end
-    end
-
     def sale_point_name
       sale_point.name
     end
@@ -705,7 +514,6 @@ class Invoice < ApplicationRecord
 	#ATRIBUTOS
 
   #AFIP
-    #FUNCIONES
     def code_hash
       {
         cuit: self.company.cuit,
@@ -723,32 +531,6 @@ class Invoice < ApplicationRecord
       result 			= "#{code}#{last_digit}"
       result.size.odd? ? "0" + result : result
     end
-
-    def no_gravado
-      self.invoice_details.where(iva_aliquot: "01").sum(:subtotal).to_f.round(2)
-    end
-
-    def exento
-      self.invoice_details.where(iva_aliquot: "02").sum(:subtotal).to_f.round(2)
-    end
-
-    def otros_imp
-      self.tributes.sum(:importe).to_f.round(2)
-    end
-
-    def self.get_tributos company
-      Afip.default_concepto = Afip::CONCEPTOS.key(company.concepto)
-      Afip.default_documento = "CUIT"
-      Afip.default_moneda = company.moneda.parameterize.underscore.gsub(" ", "_").to_sym
-      Afip.own_iva_cond = company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
-      Afip::AuthData.environment = :test
-      begin
-        Afip::Bill.get_tributos.map{|t| [t[:desc], t[:id]]}
-      rescue
-        TRIBUTOS
-      end
-    end
-    #FUNCIONES
   #AFIP
 
   def fill_comp_number

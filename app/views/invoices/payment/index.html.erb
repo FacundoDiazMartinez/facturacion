@@ -1,9 +1,9 @@
-<h3 class="d-flex mb-2">
-  <div class="p-2" id="payment_title">
+<h3 class="mb-2">
+  <div id="payment_title">
   	<%= @invoice.is_credit_note? ? "Devoluciones de dinero" : "Pagos" %>
   </div>
 </h3>
-<div class="card shadow">
+<div class="card ">
   <div class="card-body">
     <div id="saldo_disponible" class="text-muted ml-4"></div>
     <div class="row">
@@ -76,15 +76,13 @@
         </table>
       </div>
     </div>
-    <div class="text-right">
-      <%= label_tag :total_invoice, "Total factura:    $ 0.00", id:'total_invoice', style: 'font-weight: boldest;' %>
-    </div>
-    <div class="text-right">
-      <%= label_tag :total_left_invoice, "Total faltante:    $ 0.00", id:'total_left_invoice' %>
-    </div>
     <div class="text-center m-2">
       <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-secondary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'inline' : 'none'};" if @invoice.editable? %>
       <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-secondary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'inline' : 'none'};" if @invoice.editable? %>
+    </div>
+    <div class="resume text-right">
+      <p class="important-number">Total pagos: $<span class="total_payments">0.00</span></p>
+      <p class="important-number">Total faltante: $<span class="total_payments_left">0.00</span></p>
     </div>
   </div>
 </div>

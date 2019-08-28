@@ -11,7 +11,6 @@ class InvoiceDetail < ApplicationRecord
 
   before_validation :check_product
   before_validation :calculate_iva_amount
-  after_save :set_total_to_invoice
   after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
   after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
   #after_validation :impact_stock_cn, if: Proc.new{|detail| detail.invoice.is_credit_note? && quantity_changed? && detail.product.tipo == "Producto" && detail.invoice.state == "Confirmado"}
@@ -79,10 +78,6 @@ class InvoiceDetail < ApplicationRecord
       product.save unless product.persisted?
     end
 
-    def set_total_to_invoice
-      invoice.update_attribute(:total, invoice.sum_details)
-    end
-
     def product_attributes=(attributes)
       prod = Product.unscoped.where(
         name: attributes[:name],
@@ -95,21 +90,6 @@ class InvoiceDetail < ApplicationRecord
       attributes["id"] = product.id
       super
     end
-
-    # def commissioners_attributes=(attributes)
-    #   attributes.each do |num,c|
-    #     if c["_destroy"] == "false"
-    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first_or_initialize
-    #       com.percentage = c["percentage"]
-    #       com.total_commission = 0
-    #     else
-    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first
-    #       if !com.nil?
-    #         com.destroy
-    #       end
-    #     end
-    #   end
-    # end
 
     def product
       Product.unscoped{super}
