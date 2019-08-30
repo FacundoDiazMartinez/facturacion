@@ -109,8 +109,10 @@
       <% @invoice.bonifications.each_with_index do |bon, index| %>
         <tr>
           <td class="text_right"><b>Desc. <%= bon.percentage.round(0) %>%</b></td>
-          <% descuentos_aplicados +=  total_of_page_without_bonif * (bon.percentage / 100) %>
-          <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif * (bon.percentage / 100)) %></td>
+          <% total_de_pagina_auxiliar = total_of_page_without_bonif %>
+          <% descuentos_aplicados     += total_de_pagina_auxiliar * (bon.percentage / 100) %>
+          <% total_de_pagina_auxiliar -= descuentos_aplicados  %>
+          <td class="text_right">$ <%= sprintf('%.2f',total_de_pagina_auxiliar * (bon.percentage / 100)) %></td>
         </tr>
       <% end %>
       <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
