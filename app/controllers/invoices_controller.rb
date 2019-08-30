@@ -55,6 +55,7 @@ class InvoicesController < ApplicationController
     @invoice.user_id = current_user.id
     @client = @invoice.client
     @invoice = InvoiceManager::TotalsSetter.call(@invoice)
+
     if @invoice.custom_save(params[:send_to_afip])
       redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."
     else
@@ -67,7 +68,7 @@ class InvoicesController < ApplicationController
     @client = @invoice.client
     @invoice.user_id = current_user.id
     @invoice = InvoiceManager::TotalsSetter.call(@invoice)
-    pp @invoice
+
     if @invoice.update(invoice_params, params[:send_to_afip])
       redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.'
     else
@@ -93,12 +94,10 @@ class InvoicesController < ApplicationController
   end
 
   def cancel
-    associated_invoice = current_company.invoices.find(params[:id])
-    @invoice = InvoiceManager::Canceller.new(associated_invoice).call
-    pp @invoice
-    @client = @invoice.client
+    associated_invoice  = current_company.invoices.find(params[:id])
+    @invoice            = InvoiceManager::Canceller.new(associated_invoice).call
+    @client             = @invoice.client
     @invoice.valid?
-    pp @invoice
     render :new
   end
 

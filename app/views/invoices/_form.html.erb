@@ -70,7 +70,7 @@
             <div class="form-group row">
               <%= form.label :cbte_tipo, "Tipo", class:'col-4 col-form-label col-form-label-sm' %>
               <div class="col-8">
-                <%= form.select :cbte_tipo, options_for_select(Invoice.available_cbte_type(current_user.company, @client), form.object.cbte_tipo), {},{ class: 'form-control', disabled: !@invoice.editable?, autofocus: 'true'} %>
+                <%= form.select :cbte_tipo, options_for_select(InvoiceManager::CbteTypesGetter.call(current_company, @client), form.object.cbte_tipo), {},{ class: 'form-control', disabled: !@invoice.editable?, autofocus: 'true'} %>
               </div>
             </div>
           </div>

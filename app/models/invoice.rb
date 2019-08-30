@@ -5,7 +5,6 @@ class Invoice < ApplicationRecord
 	belongs_to :user
   belongs_to :invoice, foreign_key: :associated_invoice, optional: true
   belongs_to :budget, optional: true
-  belongs_to :sales_file, optional: true
 
   default_scope { where(active: true) }
   scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
@@ -39,8 +38,7 @@ class Invoice < ApplicationRecord
   COD_ND = ["02", "07", "12"]
   COD_NC = ["03", "08", "13"]
 
-	before_validation 				:check_if_confirmed
-	before_validation         :stock_between_invoice_and_credit_notes, if: Proc.new{ |i| i.is_credit_note? || i.state == "Pendiente" }
+	before_validation         :stock_between_invoice_and_credit_notes
 	validates_presence_of 		:client_id, message: "El comprobante debe estar asociado a un cliente."
 	validates	 								:total, presence: { message: "El total no debe estar en blanco." },
 																		numericality: { greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0." }
@@ -48,56 +46,51 @@ class Invoice < ApplicationRecord
 	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
 	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
-	validate									:enabled_client
-	validate 									:at_least_one_detail
-	validate 									:cbte_tipo_inclusion
-	validate 									:fch_ser_if_service
+	validate 									:check_if_confirmed, :enabled_client, :at_least_one_detail, :tipo_de_comprobante_habilitado, :fecha_de_servicio
 
 	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
-	after_create 	:create_sales_file, if: Proc.new{|b| b.sales_file.nil? && !b.budget.nil?}
 	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
   after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
   after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
-  after_save 		:update_expired, :check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
+  after_save 		:check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
 	## A SERVICIO
   after_save 		:impact_stock_if_cn ##para que impacte en stock con los detalles del producto
   after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.confirmado? && i.is_credit_note? && !i.associated_invoice.nil?}
 	after_touch 	:update_total_pay
-  before_destroy :check_if_editable
   #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
 	#FILTROS DE BUSQUEDA
-  	def self.search_by_client name
-  		if not name.blank?
-  			joins(:client).where("clients.name ILIKE ?", "%#{name}%")
-  		else
-  			all
-  		end
-  	end
+	def self.search_by_client name
+		if not name.blank?
+			joins(:client).where("clients.name ILIKE ?", "%#{name}%")
+		else
+			all
+		end
+	end
 
-  	def self.search_by_tipo tipo
-  		if not tipo.blank?
-  			where(cbte_tipo: tipo)
-  		else
-  			all
-  		end
- 	  end
+	def self.search_by_tipo tipo
+		if not tipo.blank?
+			where(cbte_tipo: tipo)
+		else
+			all
+		end
+	  end
 
-  	def self.search_by_state state
-  		if not state.blank?
-  			where(state: state)
-  		else
-  			all
-  		end
-  	end
+	def self.search_by_state state
+		if not state.blank?
+			where(state: state)
+		else
+			all
+		end
+	end
 
-    def self.search_by_number comp_number
-      if not comp_number.blank?
-        where("comp_number ILIKE ?", "%#{comp_number}%")
-      else
-        all
-      end
+  def self.search_by_number comp_number
+    if not comp_number.blank?
+      where("comp_number ILIKE ?", "%#{comp_number}%")
+    else
+      all
     end
+  end
 	#FILTROS DE BUSQUEDA
 
   #VALIDACIONES
@@ -105,16 +98,11 @@ class Invoice < ApplicationRecord
 		  errors.add("Cliente", "El cliente seleccionado está inhabilitado para operaciones.") unless client && client.enabled?
 		end
 
-    def check_if_editable
-      errors.add(:base, "No puede modificar un comprobante confirmado.") unless editable?
-      valid?
-    end
-
     def at_least_one_detail
 			errors.add(:base, "El comprobante debe tener al menos 1 (un) concepto") unless self.invoice_details.reject(&:marked_for_destruction?).count > 0
     end
 
-    def fch_ser_if_service
+    def fecha_de_servicio
       unless concepto == "Productos"
         errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") if self.fch_serv_desde.blank?
         errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") if self.fch_serv_hasta.blank?
@@ -122,30 +110,42 @@ class Invoice < ApplicationRecord
       end
     end
 
-		def cbte_tipo_inclusion
-      errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless available_cbte_type.map{|k,v| v}.include?(cbte_tipo)
+		def tipo_de_comprobante_habilitado
+      errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless InvoiceManager::CbteTypesGetter.call(self.company, self.client).map{|k,v| v}.include?(cbte_tipo)
     end
   #VALIDACIONES
 
 	#FUNCIONES
 		def total_left
-      return (total.to_f - total_pay.to_f).round(2)
+      (total.to_f - total_pay.to_f).round(2)
 		end
 
 		def editable?
 			state != 'Confirmado' && state != 'Anulado' && state != 'Anulado parcialmente'
 		end
 
-    def check_authorized_invoice
+		def confirmado?
+		  self.state == "Confirmado"
+		end
+
+		def is_invoice?
+      COD_INVOICE.include?(cbte_tipo) || cbte_tipo.nil?
+    end
+
+    def is_credit_note?
+      COD_NC.include?(cbte_tipo)
+    end
+
+    def is_debit_note?
+      COD_ND.include?(cbte_tipo)
+    end
+
+		def set_expired!
+		  update_columns(expired: true)
+		end
+
+    def authorized_invoice?
       (self.cae.length > 0) && (self.company.environment == "production")
-    end
-
-    def self.available_cbte_type(company, client)
-      Afip::CBTE_TIPO.map{|k,v| [v, k] if Afip::AVAILABLE_TYPES[company.iva_cond_sym][client.iva_cond_sym].include?(k)}.compact
-    end
-
-    def available_cbte_type
-      Afip::CBTE_TIPO.map{|k,v| [v, k] if Afip::AVAILABLE_TYPES[company.iva_cond_sym][client.iva_cond_sym].include?(k)}.compact
     end
 
     def tipo
@@ -153,7 +153,7 @@ class Invoice < ApplicationRecord
     end
 
     def destroy(mode = :soft)
-      if self.state == "Pendiente" || self.state == "Pagado" ##editable?
+      if self.editable?
         update_column(:active, false)
         run_callbacks :destroy
         freeze
@@ -167,38 +167,13 @@ class Invoice < ApplicationRecord
     end
 
     def check_if_confirmed
-      if state_was == "Confirmado" && changed?
-        errors.add("Factura confirmada", "No puede modificar una factura confirmada.")
-      end
+      errors.add("Factura confirmada", "No puede modificar una factura confirmada.") unless editable?
     end
-
-		def confirmado?
-		  self.state == "Confirmado"
-		end
-
-    def is_invoice?
-      COD_INVOICE.include?(cbte_tipo) || cbte_tipo.nil?
-    end
-
-    def is_credit_note?
-      COD_NC.include?(cbte_tipo)
-    end
-
-    def is_debit_note?
-      COD_ND.include?(cbte_tipo)
-    end
-
-    def update_expired
-      if (Date.today - self.cbte_fch.to_date).to_i >= 30 && (self.total - self.total_pay > 0)
-        self.expired = true
-      end
-    end
-    handle_asynchronously :update_expired, :run_at => Proc.new { |invoice| invoice.cbte_fch.to_date + 30.days }
 	#FUNCIONES
 
   #PROCESOS
     def impact_stock_if_cn
-			if self.confirmado? && self.is_credit_note?
+			if self.is_credit_note? && self.confirmado?
 	      self.invoice_details.each do |id|
 	        id.impact_stock_cn
 	      end
@@ -217,9 +192,8 @@ class Invoice < ApplicationRecord
             count += cn_id.quantity
           end
         end
-        if count != id_quantity
-          total_cancellation = false
-        end
+
+        total_cancellation = false if count != id_quantity
       end
       if total_cancellation
         associated_invoice.update_column(:state, "Anulado")
@@ -228,10 +202,11 @@ class Invoice < ApplicationRecord
       end
     end
 
+		## muy muy raro este metodo
     def update_payment_belongs
       income_payments.each do |p|
-        p.update_column(:user_id, self.user_id) unless !p.user_id.blank?
-        p.update_column(:company_id, self.company_id) unless !p.company_id.blank?
+        p.update_column(:user_id, self.user_id) if p.user_id.blank?
+        p.update_column(:company_id, self.company_id) if p.company_id.blank?
       end
     end
 
@@ -260,48 +235,35 @@ class Invoice < ApplicationRecord
     end
 
     def stock_between_invoice_and_credit_notes
-      unless self.associated_invoice.nil?
-				#anulada_totalmente = true
-        invoice = self.invoice
-        invoice.invoice_details.each do |invoice_detail|
-          invoice_product     = invoice_detail.product
-          invoice_quantity    = invoice_detail.quantity
-          cn_detail_quantity  = 0
+			if self.is_credit_note? || self.state == "Pendiente"
+	      unless self.associated_invoice.nil?
+					#anulada_totalmente = true
+	        invoice = self.invoice
+	        invoice.invoice_details.each do |invoice_detail|
+	          invoice_product     = invoice_detail.product
+	          invoice_quantity    = invoice_detail.quantity
+	          cn_detail_quantity  = 0
 
-          invoice.credit_notes.each do |credit_note|
-            credit_note.invoice_details.where(product_id: invoice_product.id).each do |cn_detail|
-              cn_detail_quantity += cn_detail.quantity
-            end
-          end
+	          invoice.credit_notes.each do |credit_note|
+	            credit_note.invoice_details.where(product_id: invoice_product.id).each do |cn_detail|
+	              cn_detail_quantity += cn_detail.quantity
+	            end
+	          end
 
-          self.invoice_details.each do |cn_detail|
-            if cn_detail.product_id == invoice_product.id
-              cn_detail_quantity += cn_detail.quantity
-            end
-          end
-					if cn_detail_quantity > invoice_quantity
-						errors.add(:quantity, "La cantidad ingresada de uno o más de los productos supera a la cantidad de la factura inicial asociada.")
-					elsif cn_detail_quantity < invoice_quantity
-						#ACTUALIZA LA FACTURA A ANULADA parcialmente
-						#anulada_totalmente = false
-					end
-        end
-      end
-    end
-
-    def create_sales_file
-      if sales_file_id.nil?
-        if budget_id.nil?
-          sf = SalesFile.create(
-            company_id: company_id,
-            client_id: client_id,
-            responsable_id: user_id
-          )
-          update_column(:sales_file_id, sf.id)
-        else
-          update_column(:sales_file_id, budget.sales_file_id)
-        end
-      end
+	          self.invoice_details.each do |cn_detail|
+	            if cn_detail.product_id == invoice_product.id
+	              cn_detail_quantity += cn_detail.quantity
+	            end
+	          end
+						if cn_detail_quantity > invoice_quantity
+							errors.add(:quantity, "La cantidad ingresada de uno o más de los productos supera a la cantidad de la factura inicial asociada.")
+						elsif cn_detail_quantity < invoice_quantity
+							#ACTUALIZA LA FACTURA A ANULADA parcialmente
+							#anulada_totalmente = false
+						end
+	        end
+	      end
+			end
     end
 
     def create_iva_book
