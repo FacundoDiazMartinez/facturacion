@@ -18,7 +18,6 @@ class IvaBook < ApplicationRecord
     "13"=>"NCC"
   }
 
-
   #FILTROS DE BUSQUEDA
   	def self.find_by_period from, to
   		if !from.blank? && !to.blank?
@@ -74,22 +73,6 @@ class IvaBook < ApplicationRecord
   #ATRIBUTOS
 
   #PROCESOS
-    def self.add_from_invoice invoice
-      ib            = where(invoice_id: invoice.id).first_or_initialize
-      ib.tipo       = ib.clase
-      ib.company_id = invoice.company_id
-      ib.date       = invoice.cbte_fch
-      if ["03", "08", "13"].include?(invoice.cbte_tipo.to_s)
-        ib.net_amount = -invoice.imp_neto
-        ib.iva_amount = -invoice.imp_iva
-      else
-        ib.net_amount = invoice.imp_neto
-        ib.iva_amount = invoice.imp_iva
-      end
-      ib.total      = ib.net_amount + ib.iva_amount
-      ib.save unless !ib.changed?
-    end
-
     def self.add_from_purchase invoice
       ib            = where(purchase_invoice_id: invoice.id).first_or_initialize
       ib.tipo       = ib.clase
@@ -106,10 +89,5 @@ class IvaBook < ApplicationRecord
       end
       ib.save
     end
-
-    # def destroy
-  	# 	update_column(:active, false)
-  	# 	run_callbacks :destroy
-  	# end
   #PROCESOS
 end

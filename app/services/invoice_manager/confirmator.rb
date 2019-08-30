@@ -7,11 +7,12 @@ module InvoiceManager
 
     def call
       begin
-        verifica_cliente_con_cuenta_corriente
+        verifica_cliente_con_cuenta_corriente()
         comprobante = InvoiceManager::AfipGateway.call(@invoice)
         comprobante.authorize
         if comprobante.authorized?
   				update_invoice_data(comprobante)
+          InvoiceManager::IvaBookGenerator.call(@invoice)
         else
   				display_confirmation_errors(comprobante)
         end
