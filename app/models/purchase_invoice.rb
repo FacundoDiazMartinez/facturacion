@@ -31,14 +31,6 @@ class PurchaseInvoice < ApplicationRecord
         all
       end
    end
-
-    def self.search_by_state state
-      if not state.blank?
-        where(state: state)
-      else
-        all
-      end
-    end
   #FILTROS DE BUSQUEDA
 
   # ATRIBUTOS

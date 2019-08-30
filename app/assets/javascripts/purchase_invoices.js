@@ -6,12 +6,12 @@ toggle_invoice_a_div();
 function toggle_invoice_a_div(){
 	if ($("#purchase_invoice_cbte_tipo").val() == 01) {
 		$("#invoice_a_div").show();
-		$("#purchase_invoice_total").attr("disabled","true");
+		// $("#purchase_invoice_total").attr("disabled","true");
 		$( ".invoice_amount" ).trigger( "change" );
 	}
 	else {
 		$("#invoice_a_div").hide();
-		$("#purchase_invoice_total").removeAttr("disabled");
+		// $("#purchase_invoice_total").removeAttr("disabled");
 		$("#purchase_invoice_total").val(invoice_amount);
 	}
 }
@@ -46,11 +46,17 @@ $(document).on("change","#purchase_invoice_iva_amount", function(){ //Cuando cam
 
 $(document).on("change","#purchase_invoice_iva_aliquot", function(){
 	if ($("#purchase_invoice_iva_aliquot").val() != "") {
-		$("#purchase_invoice_iva_amount").attr("disabled","true");
-		$("#purchase_invoice_iva_amount").val(parseFloat($("#purchase_invoice_net_amount").val()) * parseFloat($("#purchase_invoice_iva_aliquot :selected").text()));
-		$( ".invoice_amount" ).trigger( "change" );
-	}
-	else {
-		$("#purchase_invoice_iva_amount").removeAttr("disabled");
+		if (!isNaN(($("#purchase_invoice_iva_aliquot :selected").text()))) {
+			$("#purchase_invoice_iva_amount").val(parseFloat($("#purchase_invoice_net_amount").val()) * parseFloat($("#purchase_invoice_iva_aliquot :selected").text()));
+			$( ".invoice_amount" ).trigger( "change" );
+		}
+		else {
+			if (($("#purchase_invoice_iva_aliquot :selected").text() == "Exento") || ($("#purchase_invoice_iva_aliquot :selected").text() == "No gravado")) {
+				// $("#purchase_invoice_iva_amount").attr("disabled","true");
+				$("#purchase_invoice_iva_amount").val(parseFloat(0));
+				$("#purchase_invoice_total").val(parseFloat($("#purchase_invoice_net_amount").val()));
+			}
+		}
+		// $("#purchase_invoice_iva_amount").attr("disabled","true");
 	}
 })
