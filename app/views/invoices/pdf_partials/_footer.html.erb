@@ -15,7 +15,7 @@
         <td rowspan="2" style="width: 20% !important;">
           <b>
             <center>
-              <% if @invoice.check_authorized_invoice %>
+              <% if @invoice.authorized_invoice? %>
                 <% barcode = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
                 <% outputter = Barby::PngOutputter.new(barcode) %>
                 <% file = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 30) } %>

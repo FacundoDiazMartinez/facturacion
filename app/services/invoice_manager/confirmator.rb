@@ -25,6 +25,7 @@ module InvoiceManager
     end
 
     private
+
     def update_invoice_data(invoice)
       response = @invoice.update(
         cae: invoice.response.cae,

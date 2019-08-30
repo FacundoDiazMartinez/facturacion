@@ -14,7 +14,7 @@
       <tr>
         <th class="invoice_text_size invoice_text_left invoice_header_width">
           <%= @invoice.company.society_name %></th>
-        <th class="invoice_text_size invoice_c"><%= @invoice.available_cbte_type.first.first.last %></th>
+        <th class="invoice_text_size invoice_c"><%= InvoiceManager::CbteTypesGetter.call(@invoice.company, @invoice.client).first.first.last %></th>
         <th class="invoice_text_size invoice_header_width">FACTURA</th>
       </tr>
         <br>
@@ -23,17 +23,17 @@
         <td class="invoice_header_width"><b>Razon Social: </b><%= @invoice.company.society_name %></td>
         <td></td>
         <td class="invoice_header_width">
-          <b>Punto de Venta: <%= @invoice.sale_point.fill_name %> 
+          <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
             Comp.Nro: <%= @invoice.fill_comp_number %></b></td>
       </tr>
-      
+
       <tr>
         <td class="invoice_header_width"><b>Domicilio Comercial:</b> <%= @invoice.company.address %></td>
         <td></td>
         <td class="invoice_header_width"><b>Fecha de Emision: <%= Date.today.strftime("%d/%m/%Y") %></b></td>
       </tr>
-        
-      <tr>  
+
+      <tr>
         <td class="invoice_header_width"><b>Condicion frente al IVA: <%= @invoice.company.iva_cond %></b></td>
         <td></td>
         <td  class="invoice_header_width"><b>CUIT: </b><%= @invoice.company.cuit %></td>
@@ -48,7 +48,7 @@
       <tr>
         <td></td>
         <td></td>
-        <td class="invoice_header_width""><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date %></td>
+        <td class="invoice_header_width"><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date %></td>
       </tr>
     </table>
     </div>
@@ -65,14 +65,14 @@
       <td><b>Apellido y Nombre / Razon Social: </b> <%= @invoice.client.name %></td>
       <td></td>
     </tr>
-    
+
     <tr>
       <td><b>Condicion frente al IVA: </b><%= @invoice.client.iva_cond %></td>
       <td><b>Domicilio: </b> <%= @invoice.company.iva_cond %></td>
       <td></td>
     </tr>
-      
-    <tr>  
+
+    <tr>
       <td><b>Condicion de venta: </b><%= @invoice.payment_array %></td>
       <td></td>
       <td></td>
@@ -121,7 +121,7 @@
       <th></th>
       <th></th>
     </tr>
-    
+
     <tr>
       <td></td>
       <td></td>
@@ -129,18 +129,18 @@
       <td></td>
       <td class="invoice_text_right"><b>Subtotal: $ <%= det.subtotal %></b></td>
     </tr>
-      
-    <tr> 
+
+    <tr>
       <td></td>
-      <td></td> 
+      <td></td>
       <td></td>
       <td></td>
       <td class="invoice_text_right"><b>Importe Otros Tributos: $ 0,00</b></td>
     </tr>
 
-    <tr> 
+    <tr>
       <td></td>
-      <td></td> 
+      <td></td>
       <td></td>
       <td></td>
       <td class="invoice_text_right"><b>Importe Total: $ <%= det.subtotal %></b></td>
@@ -157,7 +157,7 @@
       <td>Pag. 1/1</td>
       <td class="invoice_text_right"><b>CAE Num.:</b> NUMERO DE CAE</td>
     </tr>
-    
+
     <tr>
       <td></td>
       <td></td>
@@ -177,7 +177,7 @@
   }
   .invoice-border {
     border: 1px solid black;
-  }  
+  }
 
   .invoice_text_right {
     text-align: right;
@@ -188,7 +188,7 @@
   }
 
   .invoice_description_header {
-    background: lightgray; 
+    background: lightgray;
     border: 1px solid black;
   }
   .invoice_header_width {
@@ -199,11 +199,11 @@
     padding:5px;
   }
   .footer_top {
-    position: absolute !important; 
+    position: absolute !important;
     bottom:20px !important;
   }
   .footer_bottom {
-    position: absolute !important; 
+    position: absolute !important;
     bottom:10px !important;
   }
-</style> 
+</style>
