@@ -7,6 +7,7 @@ module InvoiceManager
 
     def call
       begin
+        verifica_cliente_con_cuenta_corriente
         comprobante = InvoiceManager::AfipGateway.call(@invoice)
         comprobante.authorize
         if comprobante.authorized?
@@ -52,6 +53,12 @@ module InvoiceManager
             raise StandardError, "Servidor AFIP: #{bill.response.observaciones[:obs].split('. ')}"
           end
         end
+      end
+    end
+
+    def verifica_cliente_con_cuenta_corriente
+      if @invoice.is_invoice? && (@invoice.total_left > 0)  && !@invoice.client.valid_for_account?
+        raise StandardError, "Cliente inhabilitado para Cuenta Corriente. Ingrese pagos por la totalidad de la factura."
       end
     end
   end

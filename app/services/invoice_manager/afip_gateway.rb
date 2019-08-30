@@ -8,14 +8,14 @@ module InvoiceManager
     def call
       establece_constantes
       comprobante = Afip::Bill.new(
-        net:            @bill.net_amount_sum,
+        net:            suma_montos_netos_con_descuento,
         doc_num:        @bill.client.document_number,
         sale_point:     @bill.sale_point.name,
         documento:      Afip::DOCUMENTOS.key(@bill.client.document_type),
         moneda:         @bill.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym,
         iva_cond:       @bill.client.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym,
         concepto:       @bill.concepto,
-        ivas:           iva_array,
+        ivas:           vector_de_iva_con_descuento,
         cbte_type:      @bill.cbte_tipo,
         fch_serv_desde: @bill.fch_serv_desde,
         fch_serv_hasta: @bill.fch_serv_hasta,
@@ -59,17 +59,16 @@ module InvoiceManager
       Afip.own_iva_cond       = @bill.company.iva_cond.parameterize.underscore.gsub(" ", "_").to_sym
     end
 
-    def iva_array
+    def vector_de_iva_con_descuento
       i = Array.new
       iva_hash = @bill.invoice_details
         .group_by{ |invoice_detail| invoice_detail.iva_aliquot }
         .map{ |aliquot, inv_det| {
           aliquot: aliquot,
-          net_amount: inv_det.sum{ |id| id.neto },
-          iva_amount: inv_det.sum{ |s| s.iva_amount }
+          net_amount: inv_det.sum{ |id| aplica_descuentos_globales(id.neto) },
+          iva_amount: inv_det.sum{ |s| aplica_descuentos_globales(s.iva_amount) }
           }
         }
-      iva_hash = aplica_descuentos_globales(iva_hash)
 
       iva_hash.each do |iva|
         i << [ iva[:aliquot], iva[:net_amount].round(2), iva[:iva_amount].round(2) ]
@@ -89,15 +88,17 @@ module InvoiceManager
       @bill.tributes.sum(:importe).to_f.round(2)
     end
 
-    def aplica_descuentos_globales(iva_hash)
-      @bill.bonifications.each do |bonification|
-        iva_hash.each do |iva|
-          iva[:net_amount] -= iva[:net_amount] * (bonification.percentage / 100)
-          iva[:iva_amount] -=  iva[:iva_amount] * (bonification.percentage / 100)
-        end
-      end
+    def suma_montos_netos_con_descuento
+      @bill.invoice_details
+        .where(iva_aliquot: ["03", "04", "05", "06"])
+        .inject(0) {|sum, detail| sum + aplica_descuentos_globales(detail.neto) }.round(2)
+    end
 
-      return iva_hash
+    def aplica_descuentos_globales(importe)
+      @bill.bonifications.each do |bonification|
+        importe -= importe * (bonification.percentage / 100)
+      end
+      return importe
     end
   end
 end

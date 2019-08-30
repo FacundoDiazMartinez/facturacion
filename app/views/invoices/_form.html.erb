@@ -6,10 +6,8 @@
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
-            <div class="col-md-4">
-              <div id="client_form">
-                <%= render '/invoices/client_column' %>
-              </div>
+            <div id="client_form" class="col-md-4">
+              <%= render '/invoices/client_column' %>
             </div>
             <%= form.hidden_field :client_id, value: @client.id %>
           <!-- PRIMERA COLUMNA -->

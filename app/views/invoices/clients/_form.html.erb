@@ -37,7 +37,7 @@
 <div class="form-group row">
   <%= label_tag :enabled, "Habilitado", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-3">
-    <%= f.check_box :enabled, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle form-control form-control-sm address' %>
+    <%= f.check_box :enabled, data: { toggle: 'toggle', on: "Si", off: "No" }, class: 'toggle form-control form-control-sm address' %>
   </div>
 </div>
 
@@ -48,10 +48,10 @@
   </div>
 </div>
 
-<center><i>* Campos obligatorios</i></center>
+<div class="text-center"><i>* Campos obligatorios</i></div>
 
 <script type="text/javascript">
   $(document).ready(function(){
-    $('input[type=checkbox][data-toggle^=toggle]').bootstrapToggle()
+    $('.toggle').bootstrapToggle()
   });
 </script>
