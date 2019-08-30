@@ -50,7 +50,6 @@ class Invoice < ApplicationRecord
 
 	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
 	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
-  after_save 		:create_iva_book, if: Proc.new{|i| i.state == "Confirmado"} #FALTA UN AFTER SAVE PARA CUANDO SE ANULA
   after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
   after_save 		:check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
 	## A SERVICIO
@@ -167,7 +166,7 @@ class Invoice < ApplicationRecord
     end
 
     def check_if_confirmed
-      errors.add("Factura confirmada", "No puede modificar una factura confirmada.") unless editable?
+      errors.add("Factura confirmada", "No puede modificar una factura confirmada.") if state_was == "Confirmado" && changed?
     end
 	#FUNCIONES
 
@@ -264,10 +263,6 @@ class Invoice < ApplicationRecord
 	        end
 	      end
 			end
-    end
-
-    def create_iva_book
-      IvaBook.add_from_invoice(self)
     end
 
     def delete_barcode path
