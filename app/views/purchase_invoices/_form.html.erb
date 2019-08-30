@@ -29,7 +29,7 @@
         <div class="form-group col-md-6">
           <%= form.label :supplier_id %>
           <div class="input-group">
-            <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', aria:{label: "Proveedor", describedby: "add-supplier"}} %>
+            <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', required: true, aria:{label: "Proveedor", describedby: "add-supplier"}} %>
             <div class="input-group-append">
               <%= link_to icon('fas', 'plus'), new_supplier_path(), data:{remote: true, toggle: 'modal', target: '#supplierModal'}, class: 'btn btn-success' %>
             </div>
@@ -75,15 +75,15 @@
           <%= form.label :iva_amount %>
           <div class="input-group">
             <div class="input-group-prepend">
-              <%= form.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {prompt: "Personalizado"}, {class: 'form-control', required: true} %>
+              <%= form.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {prompt: "Seleccione..."}, {class: 'form-control', required: true} %>
             </div>
-            <%= form.number_field :iva_amount, class: 'form-control invoice_amount', min: 0, disabled:true %>
+            <%= form.number_field :iva_amount, class: 'form-control invoice_amount', min: 0, readonly:true %>
           </div>
         </div>
 
         <div class="form-group col-md-6">
           <%= form.label :total %>
-          <%= form.number_field :total, class: 'form-control' %>
+          <%= form.number_field :total, class: 'form-control', readonly: true %>
         </div>
       </div>
     </div>

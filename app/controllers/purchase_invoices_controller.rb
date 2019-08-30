@@ -4,7 +4,7 @@ class PurchaseInvoicesController < ApplicationController
   # GET /purchase_invoices
   # GET /purchase_invoices.json
   def index
-    @purchase_invoices = current_user.company.purchase_invoices.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("purchase_invoices.created_at DESC").paginate(page: params[:page])
+    @purchase_invoices = current_company.purchase_invoices.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).order("purchase_invoices.created_at DESC").paginate(page: params[:page], per_page: 10)
   end
 
   # GET /purchase_invoices/1
