@@ -33,7 +33,7 @@ class Invoice < ApplicationRecord
 	accepts_nested_attributes_for :bonifications, 	allow_destroy: true, reject_if: :all_blank
   accepts_nested_attributes_for :client, 															 reject_if: :all_blank
 
-	STATES = ["Pendiente", "Pagado", "Confirmado", "Anulado", "Anulado parcialmente"]
+	STATES = ["Pendiente", "Confirmado", "Anulado", "Anulado parcialmente"]
   COD_INVOICE = ["01", "06", "11"]
   COD_ND = ["02", "07", "12"]
   COD_NC = ["03", "08", "13"]
@@ -46,10 +46,10 @@ class Invoice < ApplicationRecord
 	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
 	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{ |i| i.state == "Pendiente" }
-	validate 									:check_if_confirmed, :cliente_habilitado, :at_least_one_detail, :tipo_de_comprobante_habilitado, :fecha_de_servicio
+	validate 									:verifica_confirmado, :cliente_habilitado, :al_menos_un_detalle, :tipo_de_comprobante_habilitado, :fecha_de_servicio
 
 	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
-	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
+	after_save 		:touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
   after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
   after_save 		:check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
 	## A SERVICIO
@@ -92,7 +92,7 @@ class Invoice < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   #VALIDACIONES
-	def check_if_confirmed
+	def verifica_confirmado
 		errors.add("Factura confirmada", "No puede modificar una factura confirmada.") if state_was == "Confirmado" && changed?
 	end
 
@@ -100,7 +100,7 @@ class Invoice < ApplicationRecord
 	  errors.add("Cliente", "El cliente seleccionado está inhabilitado para operaciones.") unless client && client.enabled?
 	end
 
-  def at_least_one_detail
+  def al_menos_un_detalle
 		errors.add(:base, "El comprobante debe tener al menos 1 (un) concepto") unless self.invoice_details.reject(&:marked_for_destruction?).count > 0
   end
 
@@ -123,11 +123,23 @@ class Invoice < ApplicationRecord
 		end
 
 		def editable?
-			state != 'Confirmado' && state != 'Anulado' && state != 'Anulado parcialmente'
+			self.state == "Pendiente"
 		end
 
 		def confirmado?
-		  self.state == "Confirmado"
+			["Confirmado", "Anulado", "Anulado parcialmente"].include?(self.state)
+		end
+
+		def totalmante_anulado?
+		  self.state == "Anulado"
+		end
+
+		def parcialmente_anulado?
+		  self.state == "Anulado parcialmente"
+		end
+
+		def anulado?
+			["Anulado", "Anulado parcialmente"].include?(self.state)
 		end
 
 		def is_invoice?
@@ -151,7 +163,7 @@ class Invoice < ApplicationRecord
     end
 
     def tipo
-      Afip::CBTE_TIPO[cbte_tipo]
+      InvoiceManager::CbteTypeGetter.call(self)
     end
 
     def destroy(mode = :soft)
@@ -198,7 +210,6 @@ class Invoice < ApplicationRecord
       end
     end
 
-		## muy muy raro este metodo
     def update_payment_belongs
       income_payments.each do |p|
         p.update_column(:user_id, self.user_id) if p.user_id.blank?
@@ -267,12 +278,6 @@ class Invoice < ApplicationRecord
     end
     handle_asynchronously :delete_barcode, :run_at => Proc.new { 5.seconds.from_now }
 
-    def set_state
-      if editable? && (total.to_f > 0.0) && (total.to_f <= total_pay.to_f)
-				update_column(:state, "Pagado")
-      end
-    end
-
     def update params, send_to_afip = false
       response = super(params)
       confirm_invoice(response, send_to_afip)
@@ -297,7 +302,6 @@ class Invoice < ApplicationRecord
 
     def update_total_pay
       update_column(:total_pay, sum_payments)
-      set_state
     end
 
 		def old_real_total_left
@@ -341,7 +345,7 @@ class Invoice < ApplicationRecord
     end
 
     def touch_commissioners
-      self.commissioners.map{|c| c.run_callbacks(:save)}
+      self.commissioners.each { |c| c.run_callbacks(:save) }
     end
   #PROCESOS
 
@@ -415,19 +419,11 @@ class Invoice < ApplicationRecord
     end
 
     def full_name
-      "Pto. venta: #{sale_point_name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
+      "Pto. venta: #{sale_point.name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
     end
 
     def name
-      if comp_number.nil?
-        "Sin confirmar"
-      else
-        "#{sale_point_name} - #{comp_number}"
-      end
-    end
-
-    def sale_point_name
-      sale_point.name
+      comp_number.nil? ? "Sin confirmar" : "#{sale_point.name} - #{comp_number}"
     end
 
     def name_with_comp

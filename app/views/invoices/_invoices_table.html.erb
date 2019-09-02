@@ -16,25 +16,20 @@
           <li>
             <div class="row">
               <div class="col-md-9" style="padding: 5px 0px 0px 15px;">
-                  <h5>Total: <span class="text-info">$<%= invoice.total %></span></h5>
+                <h5>Total: <span class="text-info">$<%= invoice.total %></span></h5>
               </div>
               <div class="col-md-3 float-right">
                 <div class="row">
-                  <%  if !invoice.editable? %>
-                    <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: "_blank", class: 'btn btn-link' %>
-                  <% end %>
+                  <%= link_to icon('fas', 'eye').html_safe, invoice_path(invoice.id, format: :pdf), target: "_blank", class: 'btn btn-link' if invoice.confirmado? %>
                   <%= link_to icon('fas', 'pencil-alt').html_safe, edit_invoice_path(invoice), class: 'btn btn-link' %>
-                  <%  if invoice.editable? %>
-                    <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-link' %>
-                  <% end -%>
+                  <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-link' if invoice.editable? %>
                 </div>
               </div>
             </div>
-
           </li>
         </ul>
       </div>
-    <% end -%>
+    <% end %>
   </div>
 <% else %>
   <div class="table-responsive">
@@ -62,33 +57,17 @@
             <td class="only-desktop"><%= invoice.tipo %></td>
             <td>$ <%= invoice.total %></td>
             <td class="only-desktop"><%= invoice_state(invoice.state) %></td>
-            <td>
-              $ <%= invoice.total_left%>
+            <td>$ <%= invoice.total_left%>
               <% if invoice.real_total_left_including_debit_notes.to_f <= 0 %>
                 <span class="text-success">
                   <%= icon("fas","check-circle") %>
                 </span>
               <% end %>
             </td>
-            <td>
-              <%  if !invoice.editable? && invoice.is_invoice? && invoice.state != "Anulado" %>
-                <%= link_to icon('fas', 'eraser').html_safe, cancel_invoice_path(invoice.id), data: {confirm: "Está por anular un comprobante. ¿Está seguro que desea continuar?", "skip-pjax" => true}, class: 'btn btn-sm btn-icon btn-outline-danger' %>
-              <% end %>
-            </td>
-            <td>
-              <%  unless invoice.editable? %>
-                <%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-              <% end %>
-            </td>
-            <td>
-              <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-            </td>
-            <td>
-              <%  if invoice.editable? %>
-                <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-              <% end %>
-            </td>
-
+            <td><%= link_to icon('fas', 'eraser').html_safe, cancel_invoice_path(invoice.id), data: {confirm: "Está por anular un comprobante. ¿Está seguro que desea continuar?", "skip-pjax" => true}, class: 'btn btn-sm btn-icon btn-outline-danger' if (invoice.is_invoice? && (invoice.confirmado? || invoice.parcialmente_anulado?)) %></td>
+            <td><%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless invoice.editable? %></td>
+            <td><%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+            <td><%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if invoice.editable? %></td>
           </tr>
             <% invoice.notes.each do |note| %>
               <tr class="px-4 bg-light">
@@ -100,25 +79,10 @@
                 <td>$ <%= note.total %></td>
                 <td class="only-desktop"> <%= icon('fas', 'long-arrow-alt-up') %> &nbsp; &nbsp; &nbsp;<%= invoice_state(note.state) %></td>
                 <td>$ <%= note.total_left %></td>
-                <td>
-                  <%  if !note.editable? && note.is_invoice? && note.state != "Anulado" %>
-                    <%= link_to icon('fas', 'eraser').html_safe, cancel_invoice_path(note.id), data: {confirm: "Está por anular un comprobante. ¿Está seguro que desea continuar?", "skip-pjax" => true}, class: 'btn btn-sm btn-icon btn-outline-danger' %>
-                  <% end %>
-                </td>
-                <td>
-                  <% unless note.editable? %>
-                    <%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-                  <% end %>
-                </td>
-                <td>
-                  <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(note.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-                </td>
-                <td>
-                  <%  if note.editable? %>
-                    <%= link_to icon('fas', 'trash').html_safe, note, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-                  <% end %>
-                </td>
-
+                <td></td>
+                <td><%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless note.editable? %></td>
+                <td><%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(note.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
+                <td><%= link_to icon('fas', 'trash').html_safe, note, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if note.editable? %></td>
               </tr>
             <% end %>
         <% end %>

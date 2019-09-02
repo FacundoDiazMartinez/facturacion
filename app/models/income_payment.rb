@@ -38,15 +38,14 @@ class IncomePayment < Payment
  	#VALIDACIONES
 
  	#ATRIBUTOS
+	def credit_card_id
+		@credit_card_id
+	end
 
- 		def credit_card_id
- 			@credit_card_id
- 		end
-
-		def card_payment_attributes=(attributes)
-				@credit_card_id = attributes[:credit_card_id]
-				super
-		end
+	def card_payment_attributes=(attributes)
+		@credit_card_id = attributes[:credit_card_id]
+		super
+	end
  	#ATRIBUTOS
 
 	#PROCESOS
