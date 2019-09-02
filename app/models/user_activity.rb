@@ -3,7 +3,7 @@ class UserActivity < ApplicationRecord
 
   validates_presence_of :title, :body
 
-  def self.create_for_confirmed_invoice invoice  #Se ejecuta cuando una factura se confirma
+  def self.create_for_confirmed_invoice invoice
   	UserActivity.create(
         user_id: invoice.user.id,
         photo: "/images/invoice.png",

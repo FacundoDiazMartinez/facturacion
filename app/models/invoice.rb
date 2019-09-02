@@ -7,10 +7,10 @@ class Invoice < ApplicationRecord
   belongs_to :budget, optional: true
 
   default_scope { where(active: true) }
-  scope :only_invoices, -> { where(cbte_tipo: COD_INVOICE) }
+  scope :only_invoices, 				-> { where(cbte_tipo: COD_INVOICE) }
   scope :unassociated_invoices, -> { where(associated_invoice: nil) }
-  scope :debit_notes, -> { where(cbte_tipo: COD_ND).where(state: "Confirmado") }
-  scope :credit_notes, -> { where(cbte_tipo: COD_NC).where(state: "Confirmado") }
+  scope :debit_notes, 					-> { where(cbte_tipo: COD_ND).where(state: "Confirmado") }
+  scope :credit_notes, 					-> { where(cbte_tipo: COD_NC).where(state: "Confirmado") }
 
   has_many :notes, 															foreign_key: :associated_invoice, class_name: 'Invoice'
   has_many :debit_notes, 	-> { debit_notes }, 	foreign_key: :associated_invoice, class_name: 'Invoice'
@@ -45,8 +45,8 @@ class Invoice < ApplicationRecord
 	validates_presence_of 		:total_pay, message: "El total pagado no debe estar en blanco."
 	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
 	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
-	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{|i| i.state == "Pendiente"}
-	validate 									:check_if_confirmed, :enabled_client, :at_least_one_detail, :tipo_de_comprobante_habilitado, :fecha_de_servicio
+	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{ |i| i.state == "Pendiente" }
+	validate 									:check_if_confirmed, :cliente_habilitado, :at_least_one_detail, :tipo_de_comprobante_habilitado, :fecha_de_servicio
 
 	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
 	after_save 		:set_state, :touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
@@ -54,9 +54,8 @@ class Invoice < ApplicationRecord
   after_save 		:check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
 	## A SERVICIO
   after_save 		:impact_stock_if_cn ##para que impacte en stock con los detalles del producto
-  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.confirmado? && i.is_credit_note? && !i.associated_invoice.nil?}
+  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.confirmado? && i.is_credit_note? && !i.associated_invoice.nil? }
 	after_touch 	:update_total_pay
-  #validates_inclusion_of :sale_point_id, in: Afip::BILL.get_sale_points FALTA TERMINAR EN LA GEMA
 
 	#FILTROS DE BUSQUEDA
 	def self.search_by_client name
@@ -73,7 +72,7 @@ class Invoice < ApplicationRecord
 		else
 			all
 		end
-	  end
+	end
 
 	def self.search_by_state state
 		if not state.blank?
@@ -93,25 +92,29 @@ class Invoice < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   #VALIDACIONES
-		def enabled_client
-		  errors.add("Cliente", "El cliente seleccionado está inhabilitado para operaciones.") unless client && client.enabled?
-		end
+	def check_if_confirmed
+		errors.add("Factura confirmada", "No puede modificar una factura confirmada.") if state_was == "Confirmado" && changed?
+	end
 
-    def at_least_one_detail
-			errors.add(:base, "El comprobante debe tener al menos 1 (un) concepto") unless self.invoice_details.reject(&:marked_for_destruction?).count > 0
-    end
+	def cliente_habilitado
+	  errors.add("Cliente", "El cliente seleccionado está inhabilitado para operaciones.") unless client && client.enabled?
+	end
 
-    def fecha_de_servicio
-      unless concepto == "Productos"
-        errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") if self.fch_serv_desde.blank?
-        errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") if self.fch_serv_hasta.blank?
-        errors.add(:fch_vto_pago, "Debe ingresar la fecha de vencimiento ") if self.fch_vto_pago.blank?
-      end
-    end
+  def at_least_one_detail
+		errors.add(:base, "El comprobante debe tener al menos 1 (un) concepto") unless self.invoice_details.reject(&:marked_for_destruction?).count > 0
+  end
 
-		def tipo_de_comprobante_habilitado
-      errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless InvoiceManager::CbteTypesGetter.call(self.company, self.client).map{|k,v| v}.include?(cbte_tipo)
+  def fecha_de_servicio
+    unless concepto == "Productos"
+      errors.add(:fch_serv_desde, "Debe ingresar la fecha de inicio del servicio.") if self.fch_serv_desde.blank?
+      errors.add(:fch_serv_hasta, "Debe ingresar la fecha de finalización del servicio.") if self.fch_serv_hasta.blank?
+      errors.add(:fch_vto_pago, "Debe ingresar la fecha de vencimiento ") if self.fch_vto_pago.blank?
     end
+  end
+
+	def tipo_de_comprobante_habilitado
+    errors.add(:cbte_tipo, "Tipo de comprobante inválido para la transaccíon.") unless InvoiceManager::CbteTypesGetter.call(self.company, self.client).map{|k,v| v}.include?(cbte_tipo)
+  end
   #VALIDACIONES
 
 	#FUNCIONES
@@ -165,12 +168,6 @@ class Invoice < ApplicationRecord
       end
     end
 
-    def check_if_confirmed
-      errors.add("Factura confirmada", "No puede modificar una factura confirmada.") if state_was == "Confirmado" && changed?
-    end
-	#FUNCIONES
-
-  #PROCESOS
     def impact_stock_if_cn
 			if self.is_credit_note? && self.confirmado?
 	      self.invoice_details.each do |id|
@@ -276,22 +273,6 @@ class Invoice < ApplicationRecord
       end
     end
 
-    def set_client params
-      if params[:client][:iva_cond] != "Consumidor Final"
-        client              = company.clients.where(document_number: params[:client][:document_number], document_type: params[:client][:document_type]).first_or_initialize
-        client.name         = params[:client][:name]
-        client.birthday     = params[:client][:birthday]
-        client.phone        = params[:client][:phone]
-        client.mobile_phone = params[:client][:mobile_phone]
-        client.email        = params[:client][:email]
-        client.address      = params[:client][:address]
-        client.iva_cond     = params[:client][:iva_cond]
-        if client.save
-          self.update_column(:client_id, client.id)
-        end
-      end
-    end
-
     def update params, send_to_afip = false
       response = super(params)
       confirm_invoice(response, send_to_afip)
@@ -326,15 +307,20 @@ class Invoice < ApplicationRecord
 		end
 
     def check_delivery_note_quantity_left?
-      a_entregar = invoice_details.joins(:product).where("products.tipo = 'Producto'").map(&:quantity).inject(0) {|suma, quantity| suma + quantity}
+      a_entregar = invoice_details
+				.joins(:product)
+				.where("products.tipo = 'Producto'")
+				.pluck(:quantity)
+				.inject(0) {|suma, quantity| suma + quantity}
       delivered = 0
-      self.delivery_notes.where(state: "Finalizado").each do |dn|
-        delivered += dn.delivery_note_details.map(&:quantity).inject(0) { |suma, quantity| suma + quantity }
+      self.delivery_notes.where(state: "Finalizado").each do |delivery_note|
+        delivered += delivery_note
+					.delivery_note_details
+					.pluck(:quantity)
+					.inject(0) { |suma, quantity| suma + quantity }
       end
 
-      if a_entregar > delivered
-        return true
-      end
+      return true if a_entregar > delivered
       return false
     end
 
@@ -343,7 +329,7 @@ class Invoice < ApplicationRecord
     end
 
     def touch_payments
-      income_payments.map{|p| p.run_callbacks(:save)}
+      income_payments.each{ |p| p.run_callbacks(:save) }
     end
 
     def set_invoice_activity
@@ -360,9 +346,9 @@ class Invoice < ApplicationRecord
   #PROCESOS
 
 	#ATRIBUTOS
-    # def client
-    #   Client.unscoped{ super }
-    # end
+    def client
+      Client.unscoped{ super }
+    end
 
 		def client_name
 			client.nil? ? "Sin nombre" : client.name
@@ -378,10 +364,6 @@ class Invoice < ApplicationRecord
 
     def confirmed_notes
       notes.where(state: "Confirmado")
-    end
-
-    def sum_tributes
-      self.tributes.sum(:importe)
     end
 
     def sum_payments
@@ -409,7 +391,7 @@ class Invoice < ApplicationRecord
     end
 
     def full_number
-      if state == "Confirmado" || state == "Anulado" || state == "Anulado parcialmente"
+      if !editable?
         "#{sale_point.name} - #{comp_number}"
       else
         "Falta confirmar"
@@ -417,7 +399,7 @@ class Invoice < ApplicationRecord
     end
 
     def full_number_with_debt
-      if state == "Confirmado" || state == "Anulado" || state == "Anulado parcialmente"
+      if !editable?
         "#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_left} "
       else
         "Falta confirmar"
@@ -425,7 +407,7 @@ class Invoice < ApplicationRecord
     end
 
     def full_number_with_nc_and_nd
-      if state == "Confirmado" || state == "Anulado" || state == "Anulado parcialmente"
+      if !editable?
         "#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_left_including_debit_notes} "
       else
         "Falta confirmar"
@@ -450,11 +432,11 @@ class Invoice < ApplicationRecord
 
     def name_with_comp
       if is_credit_note?
-        "Nota de crédito: #{name}"
+        "Nota de crédito: #{full_number}"
       elsif is_debit_note?
-        "Nota de débito: #{name}"
+        "Nota de débito: #{full_number}"
       else
-        "Factura: #{name}"
+        "Factura: #{full_number}"
       end
     end
 
@@ -466,11 +448,11 @@ class Invoice < ApplicationRecord
   #AFIP
     def code_hash
       {
-        cuit: self.company.cuit,
-        cbte_tipo: self.cbte_tipo.to_s.rjust(3,padstr= '0'),
-        pto_venta: self.sale_point.name,
-        cae: self.cae,
-        vto_cae: self.cae_due_date
+        cuit: 			self.company.cuit,
+        cbte_tipo: 	self.cbte_tipo.to_s.rjust(3,padstr= '0'),
+        pto_venta: 	self.sale_point.name,
+        cae: 				self.cae,
+        vto_cae: 		self.cae_due_date
       }
     end
 
@@ -484,9 +466,7 @@ class Invoice < ApplicationRecord
   #AFIP
 
   def fill_comp_number
-    unless self.comp_number.nil?
-      self.comp_number.to_s.rjust(8,padstr= '0')
-    end
+    self.comp_number.to_s.rjust(8,padstr= '0') unless self.comp_number.nil?
   end
 
   def all_payments_string

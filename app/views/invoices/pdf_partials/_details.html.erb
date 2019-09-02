@@ -78,7 +78,7 @@
               <tr>
                 <td> <b>Total tributos</b> </td>
                 <td></td>
-                <td class="text_right"><b>$ <%= @invoice.sum_tributes %></b> </td>
+                <td class="text_right"><b>$ <%= @invoice.total_tributos %></b> </td>
               </tr>
             </tfoot>
           </table>
@@ -136,7 +136,7 @@
       <% if page_number == 1 %>
       <tr>
         <td class="text_right"><b>Otros Tributos:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f',@invoice.sum_tributes) %> </td>
+        <td class="text_right">$ <%= sprintf('%.2f',@invoice.total_tributos) %></td>
       </tr>
       <tr>
         <td colspan="2"> <hr> </td>
