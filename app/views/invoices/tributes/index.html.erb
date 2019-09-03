@@ -1,7 +1,8 @@
-<h3 class="mb-2">
-  Tributos
-</h3>
-<div class="card">
+<a onclick="toggleTributes()" id="toggle_tributes2">
+  <h3 style="display: inline-block; padding-left:0px;"><%= icon('fas', 'chevron-down') %> Tributos</h3>
+</a>
+<span class="total_tributos float-right important-number"> Total tributos: $<span class="total_tributes">0.00</span></span>
+<div class="card tributes" style="display: none;" id="div_itributes">
   <div class="card-body">
     <div id="saldo_disponible" class="text-muted ml-4"></div>
     <div class="row">
@@ -36,5 +37,10 @@
     <div class="m-2 text-center">
       <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-secondary', data: {target: '#tributes'} if @invoice.editable? %>
     </div>
+    <div class="resume text-right">
+      <p class="important-number">Total tributos: $<span class="total_tributes">0.00</span></p>
+    </div>
   </div>
 </div>
+
+<hr>
