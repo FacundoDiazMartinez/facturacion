@@ -3,13 +3,13 @@
 <%= @builder.fields_for :retention_payment, @payment.blank? ? RetentionPayment.new(payment_id: @builder.object.id) : @payment.retention_payment do |rpf| %>
 
   <div class="form-group">
-    <%= rpf.label :number, "Numeración" %>
-    <%= rpf.text_field :number, class: 'form-control', required: true %>
+    <%= rpf.label :tribute, "Tributo" %><br>
+    <%= rpf.select :tribute,options_for_select(["IIBB","Act. Económicas", "Ganancias", "I.V.A.", "T.I.S.S.H."]),{},{class: 'form-control form-control-sm tribute_name', requried: true}  %>
   </div>
 
   <div class="form-group">
-    <%= rpf.label :tribute, "Tributo" %><br>
-    <%= rpf.select :tribute,options_for_select(["IIBB","Act. Económicas", "Ganancias", "I.V.A.", "T.I.S.S.H."]),{},{class: 'form-control form-control-sm tribute_name', requried: true}  %>
+    <%= rpf.label :number, "Numeración" %>
+    <%= rpf.text_field :number, class: 'form-control', required: true %>
   </div>
 
   <div class="form-group">
