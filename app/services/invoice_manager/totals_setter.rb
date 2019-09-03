@@ -36,6 +36,8 @@ module InvoiceManager
         conceptos_con_iva     -= bonification.amount
       end
 
+      pp @invoice.bonifications
+
       @invoice.bonification = descuento_total.round(2)
       return true
     end

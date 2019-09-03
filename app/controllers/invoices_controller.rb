@@ -233,18 +233,14 @@ class InvoicesController < ApplicationController
   end
 
   def commissioner_per_month
-    pp invoices = Invoice.joins(:commissioners, commissioners: :user).where(commissioners: {created_at: @first_date .. @last_date}).group("users.first_name || ' ' || users.last_name").sum(:total_commission)
+    invoices = Invoice.joins(:commissioners, commissioners: :user).where(commissioners: {created_at: @first_date .. @last_date}).group("users.first_name || ' ' || users.last_name").sum(:total_commission)
     render json: invoices
   end
 
   def sales_per_year
-    #pp invoices = Invoice.where(state: "Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_week("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").sum(:total)
-    #pp invo = invoices.count
-    #render json: invo
     invoices = Invoice.where(state:"Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_month("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
     render json: invoices
   end
-  #ESTADISTICAS
 
   private
     def set_date_for_graphs
@@ -259,7 +255,7 @@ class InvoicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def invoice_params
-      params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired,
+      params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification,
         income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
           cash_payment_attributes: [:id, :total],
           debit_payment_attributes: [:id, :total, :bank_id],
@@ -273,8 +269,8 @@ class InvoicesController < ApplicationController
           product_attributes: [:id, :code, :company_id, :name, :tipo],
           commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
         client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
-        tributes_attributes: [:id, :afip_id, :desc, :alic, :_destroy],
-        bonifications_attributes: [:id, :observation, :percentage, :_destroy]
+        tributes_attributes: [:id, :afip_id, :base_imp, :importe, :desc, :alic, :_destroy],
+        bonifications_attributes: [:id, :observation, :percentage, :amount, :subtotal, :_destroy]
       )
     end
 

@@ -48,13 +48,11 @@ class Invoice < ApplicationRecord
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{ |i| i.state == "Pendiente" }
 	validate 									:verifica_confirmado, :cliente_habilitado, :al_menos_un_detalle, :tipo_de_comprobante_habilitado, :fecha_de_servicio
 
-	before_save 	:old_real_total_left, if: Proc.new{ |i| i.is_credit_note? } #sólo para notas de crédito
-	after_save 		:touch_commissioners, :touch_payments, :touch_account_movement, :update_payment_belongs
-  after_save 		:set_invoice_activity, if: Proc.new{|i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?)}
-  after_save 		:check_receipt, if: Proc.new{|i| i.state == "Confirmado"}
+	after_save 		:touch_commissioners, :touch_payments, :update_payment_belongs, :check_receipt
+  after_save 		:set_invoice_activity, if: Proc.new{ |i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?) }
 	## A SERVICIO
   after_save 		:impact_stock_if_cn ##para que impacte en stock con los detalles del producto
-  after_save 		:check_cancelled_state_of_invoice, if: Proc.new{ |i| i.confirmado? && i.is_credit_note? && !i.associated_invoice.nil? }
+  after_save 		:check_cancelled_state_of_invoice
 	after_touch 	:update_total_pay
 
 	#FILTROS DE BUSQUEDA
@@ -118,10 +116,6 @@ class Invoice < ApplicationRecord
   #VALIDACIONES
 
 	#FUNCIONES
-		def total_left
-      (total.to_f - total_pay.to_f).round(2)
-		end
-
 		def editable?
 			self.state == "Pendiente"
 		end
@@ -189,25 +183,26 @@ class Invoice < ApplicationRecord
     end
 
     def check_cancelled_state_of_invoice
-      total_cancellation = true
-      associated_invoice = Invoice.find(self.associated_invoice)
-      associated_invoice.invoice_details.each do |id|
-        id_product = id.product
-        id_quantity = id.quantity
-        count = 0
-        associated_invoice.credit_notes.each do |cn|
-          cn.invoice_details.where(product_id: id_product.id).each do |cn_id|
-            count += cn_id.quantity
-          end
-        end
+			if self.confirmado? && self.is_credit_note? && !self.invoice
+	      total_cancellation = true
+	      associated_invoice = self.invoice
+	      associated_invoice.invoice_details.each do |id|
+	        count = 0
+	        associated_invoice.credit_notes.each do |cn|
+						count = cn.invoice_details
+							.where(product_id: id.product_id)
+							.pluck(:quantity)
+							.inject(count) { |sum, n| sum + n }
+	        end
 
-        total_cancellation = false if count != id_quantity
-      end
-      if total_cancellation
-        associated_invoice.update_column(:state, "Anulado")
-			else
-				associated_invoice.update_column(:state, "Anulado parcialmente")
-      end
+	        total_cancellation = false if count != id.quantity
+				end
+	      if total_cancellation
+	        associated_invoice.update_column(:state, "Anulado")
+				else
+					associated_invoice.update_column(:state, "Anulado parcialmente")
+	      end
+			end
     end
 
     def update_payment_belongs
@@ -216,6 +211,10 @@ class Invoice < ApplicationRecord
         p.update_column(:company_id, self.company_id) if p.company_id.blank?
       end
     end
+
+		def total_left
+      (total.to_f - total_pay.to_f).round(2)
+		end
 
     def real_total
       if is_invoice? || is_debit_note?
@@ -304,12 +303,6 @@ class Invoice < ApplicationRecord
       update_column(:total_pay, sum_payments)
     end
 
-		def old_real_total_left
-			if self.invoice ##tiene comprobante asociado
-				@old_real_total_left = self.invoice.real_total_left
-			end
-		end
-
     def check_delivery_note_quantity_left?
       a_entregar = invoice_details
 				.joins(:product)
@@ -328,8 +321,8 @@ class Invoice < ApplicationRecord
       return false
     end
 
-    def touch_account_movement
-      AccountMovement.create_from_invoice(self, @old_real_total_left)
+    def generate_account_movement
+      InvoiceManager::AccountMovementGenerator.call(self)
     end
 
     def touch_payments

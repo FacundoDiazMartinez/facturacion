@@ -1,7 +1,7 @@
 class AccountMovement < ApplicationRecord
   ##confirmado actua como una bandera que indica que el movimiento se registró en la cuenta corriente del cliente
   include Deleteable
-  belongs_to :client#,  touch: true ##### COMENTADO PARA QUE SÓLO ACTUALICE MOVIMIENTOS CONFIRMADOS
+  belongs_to :client
   belongs_to :invoice, optional: true
   belongs_to :receipt, optional: true, touch: true
 
@@ -226,33 +226,6 @@ class AccountMovement < ApplicationRecord
     ##los recibos confirmados no deben poder eliminarse
     def destroy_receipt
       self.receipt.destroy unless receipt.nil?
-    end
-
-    ##genera movimiento de cuenta corriente ROJO desde una factura (o nota) o VERDE desde una nota
-    def self.create_from_invoice(invoice, old_real_total_left)
-      old_real_total_left ||= 0
-      if invoice.confirmado?
-          am              = AccountMovement.where(invoice_id: invoice.id).first_or_initialize
-          am.client_id    = invoice.client_id
-          am.invoice_id   = invoice.id
-          am.cbte_tipo    = Afip::CBTE_TIPO[invoice.cbte_tipo]
-          am.observation  = invoice.observation
-          am.total        = invoice.total.to_f
-          if invoice.is_credit_note?
-            am.amount_available = (invoice.total - old_real_total_left) < 0 ? 0 : invoice.total - old_real_total_left
-            am.debe             = false
-            am.haber            = true
-          else
-            am.debe         = true
-            am.haber        = false
-          end
-          if am.save
-            am.confirmar!
-          else
-            pp am.errors
-          end
-          return am
-        end
     end
 
     def self.generate_from_receipt_from_invoice receipt, invoice

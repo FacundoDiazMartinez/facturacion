@@ -6,22 +6,29 @@ module InvoiceManager
     end
 
     def call
-      begin
+      ActiveRecord::Base.transaction do
         verifica_cliente_con_cuenta_corriente()
-        comprobante = InvoiceManager::AfipGateway.call(@invoice)
+        comprobante           = AfipGateway.call(@invoice)
+        movimiento_de_cuenta  = AccountMovementGenerator.call(@invoice)
+
         comprobante.authorize
         if comprobante.authorized?
   				update_invoice_data(comprobante)
-          InvoiceManager::IvaBookGenerator.call(@invoice)
+          IvaBookGenerator.call(@invoice)
         else
   				display_confirmation_errors(comprobante)
+          raise ActiveRecord::Rollback
         end
         return comprobante
+
+      rescue ActiveRecord::RecordInvalid => exception
+        @invoice.errors.add("Comprobante no confirmado.1", exception.message)
       rescue StandardError => error
-        @invoice.errors.add("Comprobante no confirmado.", error.message)
-        puts error.inspect
+        @invoice.errors.add("Comprobante no confirmado.2", error.message)
+        raise ActiveRecord::Rollback, error.message
       rescue NoMethodError => error
-        puts "NoMethodError: #{error.inspect}"
+        @invoice.errors.add("Comprobante no confirmado.3", error.message)
+        raise ActiveRecord::Rollback, error.message
       end
     end
 
