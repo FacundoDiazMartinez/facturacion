@@ -7,5 +7,5 @@ Afip.setup do |config|
 	config.openssl_bin 	= "/usr/local/opt/openssl/bin/openssl"
 	config.service_url  = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx?WSDL"
 	#config.service_url = "https://fwshomo.afip.gov.ar/wsctg/services/CTGService_v4.0?wsdl"
-	#Afip.service_url   	= "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
+	#Afip.service_url   = "https://servicios1.afip.gov.ar/wsfev1/service.asmx?WSDL"
 end
