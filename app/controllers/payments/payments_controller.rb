@@ -41,7 +41,9 @@ class Payments::PaymentsController < ApplicationController
 			respond_to do |format|
 				if @payment.update(payment_params)
 					format.html {redirect_back(fallback_location: receipt_path(@payment.account_movement.receipt_id), notice: "Pago actualizado")}
+					format.js {render template: '/payments/edit_payment_success.js.erb'}
 				else
+					format.js {render template: '/payments/display_errors.js.erb'}
 					format.html {redirect_back(fallback_location: receipt_path(@payment.account_movement.receipt_id), alert: "Error al actualizar el pago. Revise por favor.")}
 				end
 			end
@@ -50,6 +52,7 @@ class Payments::PaymentsController < ApplicationController
 			respond_to do |format|
 				if @payment.update(payment_params)
 					format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), notice: "Pago actualizado")}
+					format.js {render template: '/payments/edit_payment_success.js.erb'}
 				else
 					format.js {render template: '/payments/display_errors.js.erb'}
 					format.html {redirect_back(fallback_location: invoice_path(@payment.invoice_id), alert: "Error al actualizar el pago. Revise por favor.")}

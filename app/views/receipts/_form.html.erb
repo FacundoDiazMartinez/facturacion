@@ -104,7 +104,9 @@
   <!-- FACTURAS ASOCIADAS -->
 
   <!-- PAGOS -->
-  <%= render template: '/receipts/payments/index.html.erb', locals:{form: form} %>
+  <div id="receipt_payments">
+    <%= render template: '/receipts/payments/index.html.erb', locals:{form: form} %>
+  </div>
   <!-- PAGOS -->
 
   <% if @receipt.state == "Pendiente" %>
