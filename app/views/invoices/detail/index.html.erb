@@ -100,7 +100,7 @@
       <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-secondary', data: {target: '#details'}, id: "add_concept_to_invoice" if @invoice.editable? %>
     </div>
     <div class="resume text-right">
-      <p class="important-number">Total conceptos: $<span class="total_details">0.00</span></p>
+      <h5 class="important-number">Total conceptos s/imp: $<span class="total_details">0.00</span></h5>
     </div>
   </div>
 </div>

@@ -81,8 +81,7 @@
       <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-secondary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'inline' : 'none'};" if @invoice.editable? %>
     </div>
     <div class="resume text-right">
-      <p class="important-number">Total pagos: $<span class="total_payments">0.00</span></p>
-      <p class="important-number">Total faltante: $<span class="total_payments_left">0.00</span></p>
+      <h5 class="important-number">Total pagos: $<span class="total_payments">0.00</span></h5>
     </div>
   </div>
 </div>

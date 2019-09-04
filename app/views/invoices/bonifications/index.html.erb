@@ -1,6 +1,6 @@
 <a onclick="toggleBonification()" id="toggle_bonifications2" class="pt-2">
-  <h3 style="display: inline-block; padding-left:0px;"><%= icon('fas', 'chevron-down') %> Descuentos</h3>
-  <span class="total_descuentos float-right important-number">Total descuentos: $<span class="total_bonifications">0.00</span></span>
+  <h3 style="display: inline-block; cursor:pointer; padding-left:0px;"><%= icon('fas', 'chevron-down') %> Descuentos</h3>
+  <span class="total_descuentos float-right important-number" style="font-size: 20px;">Total descuentos: $<span class="total_bonifications">0.00</span></span>
 </a>
 <div id="saldo_disponible" class="text-muted ml-4"></div>
 <div class="card bonifications" style="display: none;" id="div_ibonifications">
@@ -56,7 +56,7 @@
       <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar descuento</span>".html_safe, :bonifications, class: 'btn btn-secondary', data: {target: '#bonifications'}, id: 'bonifications_add_button' if @invoice.editable? %>
     </div>
     <div class="resume text-right">
-      <p class="important-number">Total descuentos: $<span class="total_bonifications">0.00</span></p>
+      <h5 class="important-number">Total descuentos: $<span class="total_bonifications">0.00</span></h5>
     </div>
   </div>
 </div>

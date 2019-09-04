@@ -104,16 +104,26 @@
   <!-- FACTURAS ASOCIADAS -->
 
   <!-- PAGOS -->
-  <%= render template: '/receipts/payments/index.html.erb', locals:{form: form} %>
+  <div id="receipt_payments">
+    <%= render template: '/receipts/payments/index.html.erb', locals:{form: form} %>
+  </div>
   <!-- PAGOS -->
 
   <% if @receipt.state == "Pendiente" %>
-    <center>
-      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_receipt', name: 'button', value: "save" %>
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+      <center>
+        <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_receipt', name: 'button', value: "save" %>
+      </center>
+    </div>
+    <div class="col" style="text-align: right !important;">
       <% if @receipt.persisted? %>
-        <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'confirm_btn', name: 'button', value: "confirm" %>
+        <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger pull-right', id: 'confirm_btn', name: 'button', value: "confirm" %>
       <% end %>
-    </center>
+    </div>
+  </div>
   <% end %>
 
 <% end %>
