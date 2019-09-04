@@ -94,7 +94,6 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 		trigger: "hover"
 	});
 	$(this).closest("tr.fields").find("select.tipo").val(data.item.tipo);
-
 	$(this).closest("tr.fields").find("input.price").val(data.item.price);
 	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
 	$(this).closest("tr.fields").find("input.subtotal").val(data.item.price);
@@ -138,7 +137,8 @@ $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', functi
 
 	$(this).closest("tr.fields").find("select.iva_aliquot").val(data.item.iva_aliquot);
 	$(this).closest("tr.fields").find("input.bonus_percentage").val(recharge).trigger("change");
-	// calculateInvoiceDetailSubtotal($(this).closest("tr.fields").find("input.subtotal"));
+
+	if_debit_note_selected();
 });
 
 function setVars(current_field){
@@ -382,18 +382,23 @@ $(document).on('nested:fieldRemoved:invoice_details nested:fieldRemoved:tributes
 
 function if_debit_note_selected(){
 	cbte_tipo = $("#invoice_cbte_tipo");
+
 	if (COD_ND.indexOf(cbte_tipo.val()) != -1) {
 	  concept_codes = $(".code");
 	  concept_codes.each(function(){
-	    if ($(this).val() == "") {
-	      $(this).val("-");
-	      $(this).attr("readonly",true);
-	      $(this).closest("tr.fields").find(".tipo").val("Servicio");
-				$(this).closest("tr.fields").find(".depot_id").attr("disabled", true);
-	    }
+	    $(this).val("-");
+	    $(this).attr("readonly",true);
+			$(this).closest("tr.fields").find(".product_id").val("");
+	    $(this).closest("tr.fields").find(".tipo").val("Servicio");
+			$(this).closest("tr.fields").find(".depot_id").attr("disabled", true);
+			$(this).closest("tr.fields").find(".price").removeAttr("readonly");
 	  })
 	}
 }
+
+$(document).on("change", "#invoice_cbte_tipo", function() {
+	if_debit_note_selected()
+})
 
 $(document).on("change", ".importe, #invoice_bonification", function(){
 	calculateTotalOfInvoice();
@@ -418,7 +423,7 @@ function check_payment_limit(){  //Funcion que indica si se superó el monto de 
 }
 
 $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
-	if ($.inArray($(this).val(), ["03", "08", "13"]) > -1 ) {
+	if ($.inArray($(this).val(), COD_NC) > -1 ) {
 		$("#payment_title").html("Devoluciones de dinero");
 	}else{
 		$("#payment_title").html("Pagos");
