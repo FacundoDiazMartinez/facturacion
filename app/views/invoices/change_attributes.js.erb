@@ -1,13 +1,11 @@
-<%
-  nested_form_for @invoice do |f|
+<%nested_form_for @invoice do |f|
     @builder = f
-  end
-%>
+  end%>
 
-$("#idetails").html("<%= j render template: '/invoices/detail/index.html.erb', locals:{form: @builder} %>");
-$("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb', locals:{form: @builder} %>");
+$("#idetails").html("<%= j render template: '/invoices/detail/index.html.erb', locals:{ form: @builder } %>");
+$("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb', locals:{ form: @builder } %>");
 
 $("#dynamic_attributes").html("<%= j render '/invoices/dynamic_attributes', form: @builder %>");
 
 
-debit_note_selected();
+if_debit_note_selected();

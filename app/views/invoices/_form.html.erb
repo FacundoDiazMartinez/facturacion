@@ -2,7 +2,7 @@
   <%= form.hidden_field :budget_id %>
   <%= error_explanation @invoice %>
   <!-- HEADER -->
-    <div class="card   invoice-header">
+    <div class="card invoice-header">
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
@@ -97,12 +97,12 @@
     <%= render template: '/invoices/detail/index.html.erb', locals: { form: form } %>
   </div>
 
-  <div class="pt-4 pr-3">
+  <div>
     <%= render template: '/invoices/bonifications/index.html.erb', locals: { form: form } %>
   </div>
 
   <% if current_company.iva_cond == "Responsable Inscripto" %>
-    <div class="pt-4 pr-3">
+    <div>
       <%= render template: '/invoices/tributes/index.html.erb', locals: { form: form } %>
     </div>
   <% end %>
@@ -117,7 +117,7 @@
   </div>
   <!-- PAGOS -->
 
-  <div class="invoice-resume pr-3">
+  <div class="invoice-resume">
     <%= render 'resume', invoice: @invoice %>
   </div>
 
@@ -132,9 +132,7 @@
         </center>
       </div>
       <div class="col-4">
-        <% if @invoice.editable? %>
-          <%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger', style:'float: right;' %>
-        <% end %>
+        <%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger', style:'float: right;' unless @invoice.confirmado? %>
       </div>
     </div>
   </div>
@@ -166,7 +164,7 @@
     </div>
 </div>
 
-<% if @invoice.state == "Confirmado" || @invoice.state == "Anulado" %>
+<% if @invoice.confirmado? %>
   <div class="modal fade bd-example-modal-lg" id="sendClientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">

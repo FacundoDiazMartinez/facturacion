@@ -1,9 +1,9 @@
-<a onclick="toggleBonification()" id="toggle_bonifications2" class="pt-2">
-  <h3 style="display: inline-block; cursor:pointer; padding-left:0px;"><%= icon('fas', 'chevron-down') %> Descuentos</h3>
-  <span class="total_descuentos float-right important-number" style="font-size: 20px;">Total descuentos: $<span class="total_bonifications">0.00</span></span>
-</a>
+<div class="form-group">
+  <a class="h3 toggle-card" data-target="#div_ibonifications" data-label-info="#bonification_resume">Descuentos</a>
+  <span id="bonification_resume" class="total_descuentos float-right important-number">Total descuentos: $<span class="total_bonifications">0.00</span></span>
+</div>
 <div id="saldo_disponible" class="text-muted ml-4"></div>
-<div class="card bonifications" style="display: none;" id="div_ibonifications">
+<div id="div_ibonifications" class="card" style="display: none;">
   <div class="card-body">
     <div class="row">
       <div class="table-responsive">
@@ -60,4 +60,3 @@
     </div>
   </div>
 </div>
-<hr>

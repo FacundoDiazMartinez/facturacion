@@ -393,6 +393,7 @@ function if_debit_note_selected(){
 			$(this).closest("tr.fields").find(".depot_id").attr("disabled", true);
 			$(this).closest("tr.fields").find(".price").removeAttr("readonly");
 	  })
+		console.log("Listo")
 	}
 }
 
@@ -470,7 +471,6 @@ $(document).on("change", "select.afip_id", function(){
 	$(this).closest("tr.fields").find("input.desc").val($(this).find('option:selected').text());
 })
 
-
 $(document).on("change", "input.base_imp", function(){
 	calculateTrib($(this));
 })
@@ -496,40 +496,6 @@ function toggleHeader(){
 		$(".invoice-header").show('fast');
 		$("#toggle_header").html("").append($("<i class='fa fa-eye-slash'></i>")).button();
 		$("#toggle_header").append(' Encabezado');
-	}
-}
-
-function toggleBonification(){
-	var display = $(".bonifications").css('display');
-	if (display == 'none'){
-		$(".bonifications").show('fast');
-		$(".total_descuentos").hide('fast');
-		$([document.documentElement, document.body]).animate({
-      	scrollTop: $("#div_ibonifications").offset().top - 100,
-    	}, 500, function() {
-    	$("#div_ibonifications").effect( "shake" );
-    });
-	}
-	else {
-		$(".bonifications").hide('fast');
-		$(".total_descuentos").css("display", "inline");
-	}
-}
-
-function toggleTributes(){
-	let display = $("#div_itributes").css('display');
-	if (display == 'none') {
-		$("#div_itributes").show('fast');
-		$(".total_tributos").hide('fast');
-		$([document.documentElement, document.body]).animate({
-      scrollTop: $("#div_itributes").offset().top - 100
-    }, 500, function() {
-    	$("#div_itributes").effect( "shake" );
-    });
-	}
-	else {
-		$("#div_itributes").hide('fast');
-		$(".total_tributos").css("display", "inline");
 	}
 }
 

@@ -1,10 +1,10 @@
-<a onclick="toggleTributes()" id="toggle_tributes2">
-  <h3 style="display: inline-block; cursor: pointer; padding-left:0px;"><%= icon('fas', 'chevron-down') %> Tributos</h3>
-</a>
-  <span class="total_tributos float-right important-number" style="font-size: 20px;"> Total tributos: $<span class="total_tributes">0.00</span></span>
-<div class="card tributes" style="display: none;" id="div_itributes">
+<div class="form-group">
+  <a class="h3 toggle-card" data-target="#div_itributes" data-label-info="#tributes_resume">Tributos</a>
+  <span id="tributes_resume" class="total_tributos float-right important-number"> Total tributos: $<span class="total_tributes">0.00</span></span>
+</div>
+<div id="saldo_disponible" class="text-muted ml-4"></div>
+<div id="div_itributes" class="card" style="display: none;" >
   <div class="card-body">
-    <div id="saldo_disponible" class="text-muted ml-4"></div>
     <div class="row">
       <div class="table-responsive">
         <table class="table table-striped invoice-table" id="tributes">
@@ -42,5 +42,3 @@
     </div>
   </div>
 </div>
-
-<hr>
