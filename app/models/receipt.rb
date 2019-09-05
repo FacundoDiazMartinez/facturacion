@@ -1,6 +1,6 @@
 class Receipt < ApplicationRecord
   include Deleteable
-  #RECIBO DE PAGO
+
   belongs_to :client
   belongs_to :sale_point
   belongs_to :company
@@ -20,10 +20,9 @@ class Receipt < ApplicationRecord
 
   validates_uniqueness_of :number, scope: [:company, :active], message: "Número de recibo repetido."
   validates_inclusion_of  :state, in: STATES
-  validate                :uniqueness_of_invoice_id #valida los detalles para que no se repitan los comprobantes a pagar
-  validate                :at_least_one_active_payment #valida que exista al menos un pago para recibos CONFIRMADOS
+  validate                :uniqueness_of_invoice_id # valida los detalles para que no se repitan los comprobantes a pagar
+  validate                :at_least_one_active_payment
 
-  #after_save :save_amount_available
   after_save :update_daily_cash
 
   after_touch :account_movement_updated ## establece el total del recibo a partir de los pagos
@@ -78,7 +77,7 @@ class Receipt < ApplicationRecord
     end
 
     def editable?
-      state == "Pendiente"
+      self.state == "Pendiente"
     end
 
     def account_movement_payments
@@ -106,33 +105,6 @@ class Receipt < ApplicationRecord
     def set_number
       last_r = Receipt.where(company_id: company_id).last
       self.number = last_r.nil? ? "00000001" : (last_r.number.to_i + 1).to_s.rjust(8,padstr= '0') unless (!self.number.blank? || self.total < 0)
-    end
-
-    ## genera un recibo de pago cuando una factura confirmada tiene pagos
-    ## ejecutado en after_save de invoice
-    def self.create_from_invoice invoice
-      if invoice.confirmado? && invoice.total_pay > 0
-        if invoice.receipts.empty?
-          ##genera un recibo nuevo asociado a la factura (a traves de receipt_details)
-          r               = Receipt.new
-          r.cbte_tipo     = invoice.is_credit_note? ? "99" : "00"
-          r.total         = invoice.total_pay
-          r.date          = invoice.created_at
-          r.company_id    = invoice.company_id
-          r.client_id     = invoice.client_id
-          r.sale_point_id = invoice.sale_point_id
-          r.user_id       = invoice.user_id
-          if r.save
-            ReceiptDetail.save_from_invoice(r, invoice) ##genera un detalle para el recibo con vinculación a la factura
-            AccountMovement.generate_from_receipt_from_invoice(r, invoice) ##genera un movimiento de cuenta con todos los pagos de la factura
-            r.reload ##IMPORTANTE recarga asociaciones
-            r.confirmar!
-            r.reload
-          else
-            pp r.errors
-          end
-        end
-      end
     end
 
     def destroy
@@ -201,7 +173,7 @@ class Receipt < ApplicationRecord
         self.reload
         self.saved_amount_available = self.account_movement.amount_available ## el saldo para futuras compras se calcula con el movimiento de cuenta confirmado
         self.state                  = "Finalizado"
-        self.save!
+        self.save
       end
     end
 

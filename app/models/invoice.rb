@@ -296,7 +296,8 @@ class Invoice < ApplicationRecord
 		end
 
     def check_receipt
-      Receipt.create_from_invoice(self) if self.confirmado? && self.income_payments.any? && self.receipts.empty?
+			InvoiceManager::ReceiptGenerator.call(self)
+      #Receipt.create_from_invoice(self) if self.confirmado? && self.income_payments.any? && self.receipts.empty?
     end
 
     def update_total_pay
