@@ -37,6 +37,7 @@
             <%= select_tag :state, options_for_select(PurchaseOrder::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
           <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
         <% end %>
       </div>
 

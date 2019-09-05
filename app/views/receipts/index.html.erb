@@ -29,6 +29,7 @@
             <%= text_field_tag :to, params[:to], class: 'form-control datepicker', placeholder: 'Fecha hasta...', onchange: 'remoteSubmit("#search_form")' %>
           </div>
           <!-- BUSCAR POR FECHA -->
+          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
         <% end %>
       </div>
 

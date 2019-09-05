@@ -57,11 +57,7 @@
               </div>
             </div>
             <div class="col-2">
-              <!-- CAMBIAR TIPO DE VISTA -->
-                <%= button_tag icon('fas', 'list-ul'), onclick:'changeView("list")', type:'button', class:'btn btn-light' %>
-                <%= button_tag icon('fas', 'th-large'), onclick:'changeView("table")', type:'button', class:'btn btn-light' %>
-                <%= hidden_field_tag :view, params[:view], onchange: 'remoteSubmit("#search_form")' %>
-              <!-- CAMBIAR TIPO DE VISTA -->
+              <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
             </div>
           </div>
         <% end %>

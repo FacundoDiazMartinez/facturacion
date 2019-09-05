@@ -33,7 +33,6 @@ $(document).on("change", ".new_type_of_payment", function(){
 			var now=date.getDate()+"/"+(date.getMonth()+1)+"/"+date.getFullYear();
 			$(".acc_movement_payment_date").val(now);
 			$("#payment_date_div").hide();
-			
 			getPaymentRequest("/payments/cheque_payments/new", data, "");
 			break;
 		case '5':
@@ -83,6 +82,5 @@ $(document).on("change", ".edit_type_of_payment", function(){
 		case '8':
 			getPaymentRequest("/payments/compensation_payments/new", data, "edit_");
 			break;
-
 	}
 })

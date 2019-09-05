@@ -49,10 +49,11 @@
                 <div class="input-group-prepend">
                   <div class="input-group-text"><%= icon('fas', 'clipboard-list') %></div>
                 </div>
-                <%= select_tag :category, options_for_select( ProductCategory.all.map { |c| [c.name, c.id] }, params[:category] ),{class: 'form-control', prompt: "Todos" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
+                <%= select_tag :category, options_for_select( current_company.product_categories.map { |c| [c.name, c.id] }, params[:category] ),{class: 'form-control', prompt: "Todos" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
                 <%# text_field_tag :category, params[:category], class: 'form-control', placeholder: 'Buscar por categoría', onkeyup: 'remoteSubmit("#search_form")' %>
               </div>
             <!-- BUSCAR POR CATEGORÍA -->
+            <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
           <% end %>
         <!-- Buscador de servicios -->
       </div>
