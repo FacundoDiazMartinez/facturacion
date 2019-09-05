@@ -44,11 +44,11 @@
                 <%= payment.payment_name %>
                 <% end %>
               </td>
-              <td class="pay">$ <%= payment.total %></td>
+              <td class="pay">$ <%= number_with_precision(payment.total, precision: 2, separator: '.', delimiter: ',') %></td>
               <% if payment.type_of_payment == '4' %>
                 <td><%= payment.cheque_payment.issuance_date %></td>
               <% else %>
-                <td></td>
+                <td><%= payment.created_at.to_date %></td>
               <% end %>
               <% if payment.type_of_payment == '4' %>
                 <td><%= payment.cheque_payment.expiration %></td>

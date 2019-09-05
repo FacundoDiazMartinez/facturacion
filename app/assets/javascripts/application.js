@@ -72,14 +72,6 @@ $(document).ready(function() {
   });
 });
 
-$(document).on("click", "button[type=submit]", function(){
-  // if ($(document).find("form").valid()) {
-  //   $(this).attr("readonly", true);
-  //   //$(this).closest("form").submit();
-  // }
-});
-
-
 $(document).on("keyup", "input.ui-autocomplete-input", function(e){
   target = $($(this).data("id-element"))
   if (target.length != 0){
@@ -100,11 +92,6 @@ $(document).on('pjax:complete', function() {
       startView: 2
   });
 })
-
-function remoteSubmit(form_id){
-  form = $(form_id);
-  $.get(form.attr("action"), form.serialize(), null , "script");
-};
 
 function reloadLocality(province, dropdown){
   $.ajax({

@@ -27,6 +27,7 @@
             <%= text_field_tag :document_number, params[:document_number], class: 'form-control', placeholder: 'Buscar por documento', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
           <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
         <% end %>
       </div>
       <div id="suppliers_table" class="card-body">

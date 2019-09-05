@@ -19,16 +19,6 @@
           </div>
           <!-- BUSCAR POR numero -->
 
-          <!-- BUSCAR POR USUARIO -->
-          <%= label_tag :transporter, "Usuario", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'user') %></div>
-            </div>
-            <%= text_field_tag :transporter, params[:transporter], class: 'form-control', placeholder: 'Transportista', onkeyup: 'remoteSubmit("#search_form")' %>
-          </div>
-          <!-- BUSCAR POR USUARIO -->
-
           <!-- BUSCAR POR SENDER -->
           <%= label_tag :from_depot_id, "Remitente", class: 'sr-only' %>
           <div class="input-group mb-2 col">
@@ -58,6 +48,7 @@
             <%= select_tag :state, options_for_select(TransferRequest::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
           <!-- BUSCAR POR TIPO DE ESTADO -->
+          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
       <% end %>
       </div>
       <div class="card-body" id="transfer_requests_table">
