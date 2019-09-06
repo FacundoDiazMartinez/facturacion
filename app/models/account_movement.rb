@@ -279,7 +279,7 @@ class AccountMovement < ApplicationRecord
 
   def self.search_by_date from, to
     if !from.blank? && !to.blank?
-      where(created_at: from..to)
+      where(tiempo_de_confirmacion: from.to_date..to.to_date+1)
     else
       all
     end
