@@ -35,7 +35,7 @@
               <li>
                 Descargue este archivo excel que posee el formato correcto con el que se debe trabajar.
                 <center>
-                  <%= link_to "#{icon('fas', 'download')} Descargar archivo formateado".html_safe, export_products_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday' %>
+                  <%= link_to "#{icon('fas', 'download')} Descargar archivo formateado".html_safe, export_products_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday', data: { 'skip-pjax': true } %>
                 </center>
               </li>
               <li>

@@ -4,7 +4,7 @@
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group">
         <!-- Categorias -->
-        <%= link_to "#{icon('fas', 'dollar-sign')} Lista de precios".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
+        <%# link_to "#{icon('fas', 'dollar-sign')} Lista de precios".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
         <!-- Categorias -->
         <!-- Categorias -->
         <%= link_to "#{icon('fas', 'list')} Categorías".html_safe, product_categories_path, class: 'btn btn-sm btn-outline-secondary', title: "Categorías disponibles de los productos." %>
@@ -54,12 +54,6 @@
                 </div>
               <!-- BUSCAR POR CATEGORÍA -->
 
-              <!-- BUSCAR POR STOCK -->
-              <!-- <label>
-                <%= check_box_tag :stock, params[:stock],params[:stock], {onchange: 'remoteSubmit("#search_form")'} %>
-                <%= label_tag :stock, " Sólo con disponibilidad en inventario" %>
-              </label> -->
-              <!-- BUSCAR POR STOCK -->
               <!-- TIPO DE VISTA -->
               <div class="col">
                 <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>

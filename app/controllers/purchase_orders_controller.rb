@@ -1,14 +1,12 @@
 class PurchaseOrdersController < ApplicationController
+  include DailyCashChecker
   before_action :set_purchase_order, only: [:show, :edit, :update, :destroy, :approve, :add_payment]
+  before_action :check_daily_cash, only: [:new, :create, :edit, :update, :add_payment]
 
-  # GET /purchase_orders
-  # GET /purchase_orders.json
   def index
     @purchase_orders = current_user.company.purchase_orders.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("purchase_orders.id DESC").paginate(page: params[:page])
   end
 
-  # GET /purchase_orders/1
-  # GET /purchase_orders/1.json
   def show
     Product.unscoped do
       @group_details = @purchase_order.purchase_order_details.includes(:product).in_groups_of(20, fill_with= nil)
@@ -28,18 +26,14 @@ class PurchaseOrdersController < ApplicationController
     end
   end
 
-  # GET /purchase_orders/new
   def new
     @purchase_order = PurchaseOrder.new
     Depot.check_at_least_one current_user.company_id
   end
 
-  # GET /purchase_orders/1/edit
   def edit
   end
 
-  # POST /purchase_orders
-  # POST /purchase_orders.json
   def create
     @purchase_orders = current_user.company.purchase_orders.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("purchase_orders.created_at DESC").paginate(page: params[:page])
     @purchase_order = current_user.company.purchase_orders.new(purchase_order_params)
@@ -54,8 +48,6 @@ class PurchaseOrdersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /purchase_orders/1
-  # PATCH/PUT /purchase_orders/1.json
   def update
     respond_to do |format|
       if @purchase_order.update(purchase_order_params, params[:send_mail], params[:email])
@@ -70,8 +62,6 @@ class PurchaseOrdersController < ApplicationController
   def add_payment
   end
 
-  # DELETE /purchase_orders/1
-  # DELETE /purchase_orders/1.json
   def destroy
     @purchase_order.destroy
     respond_to do |format|
@@ -128,23 +118,22 @@ class PurchaseOrdersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_purchase_order
-      @purchase_order = PurchaseOrder.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def purchase_order_params
-      params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :total_pay, :created_at, :user_id, :shipping, :shipping_cost, :company_id,
-        expense_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
-          cash_payment_attributes: [:id, :total],
-          debit_payment_attributes: [:id, :total, :bank_id],
-          card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
-          bank_payment_attributes: [:id, :bank_id, :total],
-          cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
-          retention_payment_attributes: [:id, :number, :total, :observation],
-          compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
-        ],
-         purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :supplier_code, :cost_price, :name, :price]])
-    end
+  def set_purchase_order
+    @purchase_order = PurchaseOrder.find(params[:id])
+  end
+
+  def purchase_order_params
+    params.require(:purchase_order).permit(:state, :supplier_id, :observation, :total, :total_pay, :created_at, :user_id, :shipping, :shipping_cost, :company_id,
+      expense_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
+        cash_payment_attributes: [:id, :total],
+        debit_payment_attributes: [:id, :total, :bank_id],
+        card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+        bank_payment_attributes: [:id, :bank_id, :total],
+        cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
+        retention_payment_attributes: [:id, :number, :total, :observation],
+        compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
+      ],
+       purchase_order_details_attributes: [:id, :quantity, :total, :_destroy, product_attributes:[:id, :code, :supplier_code, :cost_price, :name, :price]])
+  end
 end

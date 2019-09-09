@@ -1,5 +1,4 @@
 class AccountMovement < ApplicationRecord
-  ##confirmado actua como una bandera que indica que el movimiento se registró en la cuenta corriente del cliente
   include Deleteable
   belongs_to :client
   belongs_to :invoice, optional: true
@@ -185,31 +184,6 @@ class AccountMovement < ApplicationRecord
   	def self.sum_total_from_receipts_per_client client_id
   		Client.find(client_id).receipts.select("receipts.total").sum(:total)
   	end
-
-    def self.del
-      ReceiptDetail.delete_all
-      IvaBook.delete_all
-      InvoiceDetail.delete_all
-      DailyCashMovement.delete_all
-      Payment.delete_all
-      AccountMovement.unscoped.delete_all
-      Invoice.delete_all
-      Receipt.delete_all
-      Client.update_all(saldo: 0)
-      DailyCashMovement.delete_all
-    end
-
-    def self.reset
-      ReceiptDetail.unscoped.all.map{|am| am.destroy(:hard)}
-      AccountMovement.unscoped.all.map{|am| am.destroy(:hard)}
-      InvoiceDetail.unscoped.all.map{|am| am.destroy(:hard)}
-      IvaBook.unscoped.all.map{|am| am.destroy(:hard)}
-      Payment.unscoped.all.map{|am| am.destroy(:hard)}
-      Invoice.unscoped.all.map{|am| am.destroy(:hard)}
-      Receipt.unscoped.all.map{|am| am.destroy(:hard)}
-      Client.update_all(saldo: 0)
-      DailyCashMovement.unscoped.all.map{|am| am.destroy(:hard)}
-    end
   #FUNCIONES
 
   #PROCESOS
@@ -226,39 +200,6 @@ class AccountMovement < ApplicationRecord
     ##los recibos confirmados no deben poder eliminarse
     def destroy_receipt
       self.receipt.destroy unless receipt.nil?
-    end
-
-    def self.generate_from_receipt_from_invoice receipt, invoice
-      account_movement = create_from_receipt receipt
-      AccountMovement.unscoped do
-        self.generate_account_movement_payment invoice, account_movement.id
-      end
-    end
-
-    ##guarda y devuelte un movimiento de cuenta inactivo para un recibo
-    def self.create_from_receipt receipt
-      if receipt.persisted?
-        am             = AccountMovement.unscoped.where(receipt_id: receipt.id).first_or_initialize
-        am.client_id   = receipt.client_id
-        am.receipt_id  = receipt.id
-        am.cbte_tipo   = Receipt::CBTE_TIPO[receipt.cbte_tipo]
-        am.debe        = receipt.cbte_tipo == "99"
-        am.haber       = receipt.cbte_tipo != "99"
-        am.total       = receipt.total.to_f
-        am.saldo       = 0 #receipt.client.saldo - receipt.total.to_f ##el saldo es igual al saldo del cliente menos el total del remito
-        am.active      = false ##el recibo debe ser el encargado de confirmar el movimiento de cuenta
-        am.save
-        return am
-      end
-    end
-
-    ##utilizado para registrar pagos en un recibo generado a partir de una factura
-    def self.generate_account_movement_payment invoice, account_movement_id
-      invoice.income_payments.where(generated_by_system: false, account_movement_id: nil).each do |income_payment| ##itera sobre los pagos de la factura
-        income_payment.account_movement_id = account_movement_id ##asocia los pagos de la factura con el movimiento de cuenta del recibo para evitar duplicación
-        income_payment.invoice_id          = nil ##desvincula el pago de la factura
-        income_payment.save
-      end
     end
 
     ##sólo debe ser posible para movimientos de cuenta no gravados

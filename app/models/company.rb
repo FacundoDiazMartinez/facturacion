@@ -111,19 +111,13 @@ class Company < ApplicationRecord
 	end
 
 	def first_sale_point
-	  if sale_points.first.nil?
-			raise Exceptions::EmptySalePoint
-		else
-			sale_points.first.id
-		end
+		raise Exceptions::EmptySalePoint if sale_points.nil?
+		return sale_points.first.id
 	end
 
 	def last_depot
-	  if depots.last.nil?
-	  	raise Exceptions::EmptyDepot
-		else
-			depots.last.id
-	  end
+		raise Exceptions::EmptyDepot if depots.nil?
+		return depots.last.id
 	end
 
 	def grouped_users_by_role

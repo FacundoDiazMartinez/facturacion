@@ -1,7 +1,11 @@
 class InvoicesController < ApplicationController
   load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product]
+  include DailyCashChecker
+  include SalePointsGetter
   before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver, :paid_invoice_with_debt]
   before_action :set_date_for_graphs, only: [:sales_per_month, :amount_per_month, :commissioner_per_month, :states_per_month]
+  before_action :check_daily_cash, only: [:new, :create, :edit, :update]
+  before_action :get_company_sale_points, only: [:new, :edit]
 
   def index
     @invoices = current_company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_number(params[:comp_number]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 9)
@@ -243,55 +247,54 @@ class InvoicesController < ApplicationController
   end
 
   private
-    def set_date_for_graphs
-      month = params[:month].blank? ? Date.today.month : params[:month]
-      @first_date = "01/#{month}/#{Date.today.year}".to_date
-      @last_date = @first_date + 1.months - 1.days
-    end
-    # Use callbacks to share common setup or constraints between actions.
-    def set_invoice
-      @invoice = current_company.invoices.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def invoice_params
-      params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification,
-        income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
-          cash_payment_attributes: [:id, :total],
-          debit_payment_attributes: [:id, :total, :bank_id],
-          card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
-          bank_payment_attributes: [:id, :bank_id, :ticket, :total],
-          cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
-          retention_payment_attributes: [:id, :number, :total, :observation, :tribute],
-          compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
-        ],
-        invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :depot_id, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
-          product_attributes: [:id, :code, :company_id, :name, :tipo],
-          commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
-        client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
-        tributes_attributes: [:id, :afip_id, :base_imp, :importe, :desc, :alic, :_destroy],
-        bonifications_attributes: [:id, :observation, :percentage, :amount, :subtotal, :_destroy]
-      )
-    end
+  def set_date_for_graphs
+    month = params[:month].blank? ? Date.today.month : params[:month]
+    @first_date = "01/#{month}/#{Date.today.year}".to_date
+    @last_date = @first_date + 1.months - 1.days
+  end
 
-    def client_params
-      params.require(:client).permit(:name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond)
-    end
+  def set_invoice
+    @invoice = current_company.invoices.find(params[:id])
+  end
 
-    def restore_invoice_from_session
-      @invoice            = Invoice.new(session[:new_invoice]["invoice"])
-      @invoice.company_id = current_company.id
-      @client             = current_company.clients.find(@invoice.client_id)
-      session[:new_invoice]["invoice_details"].map { |detail| @invoice.invoice_details.build(detail) }
-      session.delete(:new_invoice)
-    end
+  def invoice_params
+    params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification,
+      income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
+        cash_payment_attributes: [:id, :total],
+        debit_payment_attributes: [:id, :total, :bank_id],
+        card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+        bank_payment_attributes: [:id, :bank_id, :ticket, :total],
+        cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
+        retention_payment_attributes: [:id, :number, :total, :observation, :tribute],
+        compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
+      ],
+      invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :depot_id, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
+        product_attributes: [:id, :code, :company_id, :name, :tipo],
+        commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
+      client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
+      tributes_attributes: [:id, :afip_id, :base_imp, :importe, :desc, :alic, :_destroy],
+      bonifications_attributes: [:id, :observation, :percentage, :amount, :subtotal, :_destroy]
+    )
+  end
 
-    def set_new_invoice
-      @client   = current_company.clients.consumidor_final.first_or_create
-      @invoice  = current_company.invoices.new.tap do |invoice|
-        invoice.client_id     = @client.id
-        invoice.sale_point_id = current_company.first_sale_point
-        invoice.user_id       = current_user.id
-      end
+  def client_params
+    params.require(:client).permit(:name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond)
+  end
+
+  def restore_invoice_from_session
+    @invoice            = Invoice.new(session[:new_invoice]["invoice"])
+    @invoice.company_id = current_company.id
+    @client             = current_company.clients.find(@invoice.client_id)
+    session[:new_invoice]["invoice_details"].map { |detail| @invoice.invoice_details.build(detail) }
+    session.delete(:new_invoice)
+  end
+
+  def set_new_invoice
+    @client   = current_company.clients.consumidor_final.first_or_create
+    @invoice  = current_company.invoices.new.tap do |invoice|
+      invoice.client_id     = @client.id
+      invoice.user_id       = current_user.id
     end
+  end
 end

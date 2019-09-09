@@ -3,24 +3,19 @@ class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   before_action :set_s3_direct_post, only: [:new, :edit, :create, :update, :index]
   before_action :set_date_for_graphs, only: [:top_ten_products_per_month, :top_ten_sales_per_month]
-  # GET /products
-  # GET /products.json
+
   def index
     @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order(name: :asc).paginate(page: params[:page], per_page: 15)
   end
 
-  # GET /products/1
-  # GET /products/1.json
   def show
     #@stocks = @product.stocks.where(active: true).paginate(page: params[:page], per_page: 5)
   end
 
-  # GET /products/new
   def new
     @product = Product.new
   end
 
-  # GET /products/1/edit
   def edit
   end
 
@@ -47,8 +42,6 @@ class ProductsController < ApplicationController
     end
   end
 
-  # POST /products
-  # POST /products.json
   def create
     @product = current_user.company.products.new(product_params)
     @product.updated_by = current_user.id
@@ -64,8 +57,6 @@ class ProductsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /products/1
-  # PATCH/PUT /products/1.json
   def update
     @product.updated_by = current_user.id
     respond_to do |format|
@@ -79,8 +70,6 @@ class ProductsController < ApplicationController
     end
   end
 
-  # DELETE /products/1
-  # DELETE /products/1.json
   def destroy
     @product.updated_by = current_user.id
     @product.destroy
@@ -118,7 +107,6 @@ class ProductsController < ApplicationController
     render :json => [{iva: category.iva_aliquot}]
   end
 
-  #ESTADISTICAS
   def top_ten_products_per_month
     company = current_user.company_id
     invoices = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date)
@@ -150,10 +138,8 @@ class ProductsController < ApplicationController
     render json: chart_data
   end
 
-
-  #ESTADISTICAS
-
   private
+
     def set_date_for_graphs
       month = params[:month].blank? ? Date.today.month : params[:month]
       @first_date = "01/#{month}/#{Date.today.year}".to_date

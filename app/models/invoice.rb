@@ -48,7 +48,7 @@ class Invoice < ApplicationRecord
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{ |i| i.state == "Pendiente" }
 	validate 									:verifica_confirmado, :cliente_habilitado, :al_menos_un_detalle, :tipo_de_comprobante_habilitado, :fecha_de_servicio
 
-	after_save 		:touch_commissioners, :touch_payments, :update_payment_belongs, :check_receipt
+	after_save 		:touch_commissioners, :touch_payments, :update_payment_belongs
   after_save 		:set_invoice_activity, if: Proc.new{ |i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?) }
 	## A SERVICIO
   after_save 		:impact_stock_if_cn ##para que impacte en stock con los detalles del producto
@@ -294,11 +294,6 @@ class Invoice < ApplicationRecord
 				InvoiceManager::Confirmator.call(self)
       end
 		end
-
-    def check_receipt
-			InvoiceManager::ReceiptGenerator.call(self)
-      #Receipt.create_from_invoice(self) if self.confirmado? && self.income_payments.any? && self.receipts.empty?
-    end
 
     def update_total_pay
       update_column(:total_pay, sum_payments)

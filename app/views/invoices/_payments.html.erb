@@ -2,7 +2,6 @@
   <a id="payment_title" class="h3 toggle-card" data-target="#div_ipayments" data-label-info="#payments_resume"><%= @invoice.is_credit_note? ? "Devoluciones de dinero" : "Pagos" %></a>
   <span id="payments_resume" class="total_pagos float-right important-number" style="display:none">Total pagos: $<span class="total_payments">0.00</span></span>
 </div>
-<div id="saldo_disponible" class="text-muted ml-4"></div>
 <div id="div_ipayments" class="card">
   <div class="card-body">
     <div class="row">
@@ -56,17 +55,15 @@
                 <td></td>
               <% end %>
               <td>
-                <% if payment.persisted? && !@invoice.editable? && payment.account_movement_id.nil? %>
-                <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: {toggle: 'modal', target: '#showPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-                <% end %>
-                <% unless (payment.errors.any? || payment.id.blank?) || !@invoice.editable? %>
-                <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#editPaymentModal', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+              <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: { toggle: 'modal', target: '#mainModalLg', remote: true }, class: "btn btn-sm btn-icon btn-outline-secondary" if payment.persisted? && @invoice.confirmado? && payment.account_movement_id.nil? %>
+              <% unless (payment.errors.any? || payment.id.blank?) || @invoice.confirmado? %>
+                <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#mainModalLg', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
                 <% if payment.type_of_payment != "1" %>
-                <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
+                  <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                 <% else %>
-                <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
+                  <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                 <% end %>
-                <% end -%>
+              <% end -%>
               </td>
             </tr>
             <% end -%>
@@ -89,16 +86,7 @@
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div id="payment_modal">
-      	<%= render template: '/invoices/payment/new.html.erb', locals:{form: form} %>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade bd-example-modal-lg" id="showPaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div id="show_modal">
+      	<%= render template: '/invoices/payment/new.html.erb', locals: { form: formulario } %>
       </div>
     </div>
   </div>

@@ -1,121 +1,104 @@
 <%= nested_form_for @invoice do |form| %>
+<%= error_explanation @invoice %>
   <%= form.hidden_field :budget_id %>
-  <%= error_explanation @invoice %>
-  <!-- HEADER -->
-    <div class="card invoice-header">
-      <div class="card-body">
-        <div class="row">
-          <!-- PRIMERA COLUMNA -->
-            <div id="client_form" class="col-md-4">
-              <%= render '/invoices/client_column' %>
-            </div>
-            <%= form.hidden_field :client_id, value: @client.id %>
-          <!-- PRIMERA COLUMNA -->
+  <div class="card invoice-header">
+    <div class="card-body">
+      <div class="row">
+        <div id="client_form" class="col-md-4">
+          <%= render '/invoices/client_column' %>
+        </div>
+        <%= form.hidden_field :client_id, value: @client.id %>
 
-          <!-- SEGUNDA COLUMNA -->
-            <div class="col-md-4">
-              <div class="form-group row">
-                <%= form.label :total, class:'col-4 col-form-label col-form-label-sm' %>
-                <div class="col-8">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">$</span>
-                    </div>
-                    <%= form.text_field :total, class: 'form-control text-right', readonly: true %>
-                  </div>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <%= form.label :total, class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
                 </div>
-              </div>
-
-              <div class="form-group row">
-                <%= form.label :total_pay, class:'col-4 col-form-label col-form-label-sm' %>
-                <div class="col-8">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">$</span>
-                    </div>
-                    <%= form.text_field :total_pay, class: 'form-control text-right', readonly: true %>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <%= label_tag :total_left, "Monto faltante", class:'col-4 col-form-label col-form-label-sm' %>
-                <div class="col-8">
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">$</span>
-                    </div>
-                    <%= text_field_tag :total_left, @invoice.total_left.round(2), class: 'form-control text-right',style: "font-weight: bold;", readonly: true %>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <!-- SEGUNDA COLUMNA -->
-
-          <!-- TERCERA COLUMNA -->
-          <div class="col-md-4">
-            <div class="form-group row">
-              <%= form.label :concepto, class:'col-4 col-form-label col-form-label-sm' %>
-              <div class="col-8">
-                <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: !@invoice.editable?} %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= form.label :sale_point_id, "Punto de venta", class:'col-4 col-form-label col-form-label-sm' %>
-              <div class="col-8">
-                <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @invoice.sale_point_id), {}, {class: 'form-control', disabled: !@invoice.
-                editable?} %>
-              </div>
-            </div>
-            <div class="form-group row">
-              <%= form.label :cbte_tipo, "Tipo", class:'col-4 col-form-label col-form-label-sm' %>
-              <div class="col-8">
-                <%= form.select :cbte_tipo, options_for_select(InvoiceManager::CbteTypesGetter.call(current_company, @client), form.object.cbte_tipo), {},{ class: 'form-control', disabled: @invoice.confirmado?, autofocus: 'true'} %>
+                <%= form.text_field :total, class: 'form-control text-right', readonly: true %>
               </div>
             </div>
           </div>
-          <!-- TERCERA COLUMNA -->
+
+          <div class="form-group row">
+            <%= form.label :total_pay, class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <%= form.text_field :total_pay, class: 'form-control text-right', readonly: true %>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <%= label_tag :total_left, "Monto faltante", class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <%= text_field_tag :total_left, @invoice.total_left.round(2), class: 'form-control text-right',style: "font-weight: bold;", readonly: true %>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="row" id="dynamic_attributes">
-          <%= render '/invoices/dynamic_attributes', form: form %>
+        <div class="col-md-4">
+          <div class="form-group row">
+            <%= form.label :concepto, class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: @invoice.confirmado?} %>
+            </div>
+          </div>
+          <div class="form-group row">
+            <%= form.label :sale_point_id, "Punto de venta", class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <%= form.select :sale_point_id, options_for_select( @sale_points.map{|sp| [sp.name, sp.id]}, @invoice.sale_point_id ), {}, {class: 'form-control', disabled: @invoice.confirmado?} %>
+            </div>
+          </div>
+          <div class="form-group row">
+            <%= form.label :cbte_tipo, "Tipo", class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <%= form.select :cbte_tipo, options_for_select(InvoiceManager::CbteTypesGetter.call(current_company, @client), form.object.cbte_tipo), {},{ class: 'form-control', disabled: @invoice.confirmado?, autofocus: 'true'} %>
+            </div>
+          </div>
         </div>
-
-      <!-- BOTONES DE ACCION -->
-        <% if @invoice.confirmado? %>
-        <div class="text-center">
-            <hr class="invoice-header">
-            <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
-        </div>
-        <% end %>
-        <!-- BOTONES DE ACCION -->
       </div>
+
+      <div class="row" id="dynamic_attributes">
+        <%= render '/invoices/dynamic_attributes', form: form %>
+      </div>
+
+      <% if @invoice.confirmado? %>
+      <div class="text-center">
+        <hr class="invoice-header">
+        <%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'btn btn-success' %>
+      </div>
+      <% end %>
     </div>
-  <!-- HEADER -->
+  </div>
 
   <div id="idetails">
-    <%= render template: '/invoices/detail/index.html.erb', locals: { form: form } %>
+    <%= render 'details', { form: form, invoice: @invoice } %>
   </div>
 
   <div>
-    <%= render template: '/invoices/bonifications/index.html.erb', locals: { form: form } %>
+    <%= render 'bonifications', { form: form, invoice: @invoice } %>
   </div>
 
-  <% if current_company.iva_cond == "Responsable Inscripto" %>
-    <div>
-      <%= render template: '/invoices/tributes/index.html.erb', locals: { form: form } %>
-    </div>
-  <% end %>
+  <%= render 'taxes', { form: form, invoice: @invoice } if current_company.iva_cond == "Responsable Inscripto" %>
 
   <div class="authorized" style="display: none;" id="div_iauthorized">
-    <%= render template: '/invoices/authorized/index.html.erb', locals: { form: form } %>
+    <%= render 'authorized_people', { form: form, client: @client } %>
   </div>
 
-  <!-- PAGOS -->
   <div id="ipayments">
-    <%= render template: '/invoices/payment/index.html.erb', locals: { form: form } %>
+    <%= render 'payments', { formulario: form, invoice: @invoice } %>
   </div>
-  <!-- PAGOS -->
 
   <div class="invoice-resume">
     <%= render 'resume', invoice: @invoice %>
@@ -137,22 +120,6 @@
     </div>
   </div>
 <% end %>
-
-<div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div id="payment_modal">
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div id="myModalContent" class="modal-content">
-    </div>
-  </div>
-</div>
 
 <div class="modal fade bd-example-modal-lg" id="confirm_invoice_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   	<div class="modal-dialog modal-lg">
@@ -201,14 +168,7 @@
   </div>
 <% end -%>
 
-<div class="modal fade bd-example-modal-lg" id="editPaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div id="edit_payment_modal">
-      </div>
-    </div>
-  </div>
-</div>
+<%= render_modal_lg %>
 <%= render '/invoices/detail/search_product' %>
 
 <script>

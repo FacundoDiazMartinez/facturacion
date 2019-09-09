@@ -60,7 +60,6 @@ class Receipt < ApplicationRecord
     ## calcula la suma de los pagos del recibo después de guardar
     ## el touch lo provoca account movement
     def account_movement_updated
-      #self.saved_amount_available = self.account_movement.amount_available
       self.total                  = self.account_movement.total
       self.save
     end
