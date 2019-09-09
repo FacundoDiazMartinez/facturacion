@@ -39,4 +39,4 @@ class ProductPresenter
  		sales_per_month
  	end
 
-end
+endend
