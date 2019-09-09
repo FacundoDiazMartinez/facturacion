@@ -33,6 +33,13 @@ class Depot < ApplicationRecord
       else
         all
       end
+        when "Disponible"
+          where(filled: false)
+        when "Lleno"
+          where(filled: true)
+        else
+          all
+        end
     end
 
     def destroy

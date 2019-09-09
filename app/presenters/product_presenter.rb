@@ -40,3 +40,4 @@ class ProductPresenter
  	end
 
 endend
+end

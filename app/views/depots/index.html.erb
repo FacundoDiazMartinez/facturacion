@@ -18,11 +18,13 @@
 
           <!-- BUSCAR POR DISPONIBILIDAD-->
           <%= label_tag :state, "Disponibilidad", class: 'sr-only' %>
+          <%= label_tag :filled, "Disponibilidad", class: 'sr-only' %>
           <div class="input-group col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
             </div>
             <%= select_tag :state, options_for_select([["Disponible"], ["Lleno"]]), {prompt: 'Buscar por disponibilidad...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+            <%= select_tag :filled, options_for_select([["Disponible"], ["Lleno"]]), {prompt: 'Buscar por disponibilidad...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
           <!-- BUSCAR POR DISPONIBILIDAD-->
           <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>

@@ -14,7 +14,7 @@
               <li>
                 Descargar este archivo excel que tiene el formato con el que debes trabajar.
                 <center>
-                  <%= link_to "#{icon('fas', 'download')} Descargar formato".html_safe, export_services_path(empty: true, format: :xlsx), class: 'btn btn-sm' %>
+                  <%= link_to "#{icon('fas', 'download')} Descargar formato".html_safe, export_services_path(empty: true, format: :xlsx), data: {'skip-pjax': true}, class: 'btn btn-sm' %>
                 </center>
               </li>
               <li>
