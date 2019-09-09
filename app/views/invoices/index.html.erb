@@ -43,8 +43,6 @@
                     <%= select_tag :cbte_tipo, options_for_select(Afip::CBTE_TIPO.map {|c| [c.second, c.first]}, params[:cbte_tipo]), {prompt: 'Buscar por tipo...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
                   </div>
                 </div>
-                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-                <!-- BUSCAR POR TIPO DE COMPROBANTE -->
                 <div class="col-12 col-md-3 mt-1 mb-1">
                   <div class="input-group">
                     <div class="input-group-prepend">

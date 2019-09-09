@@ -3,7 +3,6 @@
 </h3>
 <div class="card">
   <div class="card-body">
-    <div id="saldo_disponible" class="text-muted ml-4"></div>
 		<div class="row">
 			<div class="table-responsive">
       <table class="table table-striped invoice-table" id="authorized" style="width: 100%;">
@@ -15,7 +14,7 @@
           </tr>
         </thead>
         <tbody>
-          <% @client.authorized_personals.each do |ap| %>
+          <% client.authorized_personals.each do |ap| %>
             <tr class="fields">
               <td><%= ap.first_name %></td>
               <td><%= ap.dni %></td>

@@ -11,12 +11,6 @@
   	$.each(options, function(i, option) {
 	    $('#invoice_cbte_tipo').append( new Option(option[0],option[1]) );
 		});
-
-		<% if @client.saldo.to_f < 0.0 && @client.valid_for_account %>
-			$("#saldo_disponible").html("Saldo disponible en cuenta corriente: $<%= -@client.saldo.to_f %>");
-		<% else %>
-			$("#saldo_disponible").html("");
-		<% end %>
 		$("#invoice_cbte_tipo").trigger("change");
 
 		<% else %>

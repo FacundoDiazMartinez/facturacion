@@ -1,8 +1,7 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'users').html_safe %> Registrar pago</h5>
+  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'dollar-sign').html_safe %> Registrar pago</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<% DailyCash.current_daily_cash current_user.company_id %>
 <%= render "/invoices/payment/form", form: form %>

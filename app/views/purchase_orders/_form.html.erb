@@ -1,5 +1,3 @@
-<% DailyCash.current_daily_cash current_user.company_id %>
-
 <%= nested_form_for @purchase_order do |form| %>
 
 <%= error_explanation @purchase_order %>
@@ -13,7 +11,7 @@
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :supplier_id, "Proveedor" %>
-              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier', disabled: !@purchase_order.editable?} %>
+              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier', disabled: !@purchase_order.editable? } %>
               <%= form.hidden_field :supplier_id, class: 'pu-supplier-id' %>
             </div>
             <div id="supplier_form">

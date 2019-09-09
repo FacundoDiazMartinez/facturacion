@@ -56,8 +56,6 @@ $(document).ready(function() {
     $('#file_input').click();
   })
 
-
-
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 
 

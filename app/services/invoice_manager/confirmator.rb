@@ -8,27 +8,27 @@ module InvoiceManager
     def call
       ActiveRecord::Base.transaction do
         verifica_cliente_con_cuenta_corriente()
-        comprobante           = AfipGateway.call(@invoice)
-        movimiento_de_cuenta  = AccountMovementGenerator.call(@invoice)
+        AccountMovementGenerator.call(@invoice)
+        ReceiptGenerator.call(@invoice) if @invoice.total_pay > 0
 
+        comprobante = AfipGateway.call(@invoice)
         comprobante.authorize
         if comprobante.authorized?
   				update_invoice_data(comprobante)
           IvaBookGenerator.call(@invoice)
         else
   				display_confirmation_errors(comprobante)
-          raise ActiveRecord::Rollback
         end
-        return comprobante
 
       rescue ActiveRecord::RecordInvalid => exception
         @invoice.errors.add("Comprobante no confirmado.1", exception.message)
+        raise ActiveRecord::Rollback
       rescue StandardError => error
         @invoice.errors.add("Comprobante no confirmado.2", error.message)
-        raise ActiveRecord::Rollback, error.message
+        raise ActiveRecord::Rollback
       rescue NoMethodError => error
         @invoice.errors.add("Comprobante no confirmado.3", error.message)
-        raise ActiveRecord::Rollback, error.message
+        raise ActiveRecord::Rollback
       end
     end
 
@@ -53,13 +53,13 @@ module InvoiceManager
     end
 
     def display_confirmation_errors(bill)
-      raise StandardError, "Servidor AFIP: #{bill.response.errores[:msg]}." unless bill.response.errores.nil?
+      raise ActiveRecord::Rollback, "Servidor AFIP: #{bill.response.errores[:msg]}." unless bill.response.errores.nil?
       unless bill.response.observaciones.nil?
         if bill.response.observaciones.any?
           if bill.response.observaciones[:obs].class == Hash
-            raise StandardError, "Servidor AFIP: #{bill.response.observaciones[:obs][:msg]}"
+            raise ActiveRecord::Rollback, "Servidor AFIP: #{bill.response.observaciones[:obs][:msg]}."
           elsif bill.response.observaciones[:obs].class == Array
-            raise StandardError, "Servidor AFIP: #{bill.response.observaciones[:obs].split('. ')}"
+            raise ActiveRecord::Rollback, "Servidor AFIP: #{bill.response.observaciones[:obs].split('. ')}"
           end
         end
       end

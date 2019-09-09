@@ -7,6 +7,10 @@ body {
   background-color: $light-background !important;
 }
 
+.dropdown-toggle::after {
+  margin: 0 5px;
+}
+
 /// BOTONES /////
 .btn-floated {
     position: fixed;

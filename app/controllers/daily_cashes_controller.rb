@@ -1,7 +1,6 @@
 class DailyCashesController < ApplicationController
   before_action :set_daily_cash, only: [:show, :edit, :update, :destroy]
-  # GET /daily_cashes
-  # GET /daily_cashes.json
+
   def index
     @daily_cash = current_user.company.daily_cashes.where(date: Date.today).search_by_flow(params[:flow]).search_by_user(params[:user]).first
     @daily_cash_movements = DailyCash.all_daily_cash_movements(@daily_cash, params[:user], params[:payment_type]).paginate(page: params[:page], per_page: 10)
@@ -12,7 +11,6 @@ class DailyCashesController < ApplicationController
   end
 
   def edit
-
   end
 
   def create
@@ -27,6 +25,7 @@ class DailyCashesController < ApplicationController
         redirect_to session.delete(:return_to), params: session[:new_invoice], notice: "Ahora puede continuar con su operación."
       end
     else
+      pp @daily_cash.errors
       render :new
     end
   end
@@ -41,15 +40,13 @@ class DailyCashesController < ApplicationController
     end
   end
 
-
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_daily_cash
-      @daily_cash = current_user.company.daily_cashes.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def daily_cash_params
-      params.require(:daily_cash).permit(:state, :initial_amount, :final_amount)
-    end
+  def set_daily_cash
+    @daily_cash = current_user.company.daily_cashes.find(params[:id])
+  end
+
+  def daily_cash_params
+    params.require(:daily_cash).permit(:state, :initial_amount, :final_amount)
+  end
 end

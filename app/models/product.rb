@@ -1,6 +1,6 @@
 class Product < ApplicationRecord
-	belongs_to :product_category, optional: true
 	belongs_to :company
+	belongs_to :product_category, optional: true
 	belongs_to :user_who_creates, class_name: "User", foreign_key: "created_by", optional: true
   belongs_to :user_who_updates, class_name: "User", foreign_key: "updated_by", optional: true
 	belongs_to :supplier, optional: true
@@ -415,7 +415,7 @@ class Product < ApplicationRecord
   		if !product.save
   			invalid << [i, product.errors.messages.values]
   		else
-  			if !depot_id.blank?
+  			unless depot_id.blank?
     			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
           if type_of_movement == "0"
             stock.quantity = row[:stock]

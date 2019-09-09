@@ -40,16 +40,6 @@ module Subpayment
     AccountMovementPayment.find_by_id(self.payment_id)
   end
 
-  # def update_account_movement
-  #   unless self.account_movement_payment.nil?
-  #     pp self.account_movement_payment
-  #     pp saved_change_to_total
-  #     difference = saved_change_to_total.last - saved_change_to_total.first
-  #     new_total  = self.account_movement_payment.total + difference
-  #     self.account_movement_payment.update_column(:total, new_total)
-  #   end
-  # end
-
   def update_invoice
 		unless payment.nil?
 	  	if not self.payment.invoice_id.blank?

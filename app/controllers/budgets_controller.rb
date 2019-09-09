@@ -110,8 +110,6 @@ class BudgetsController < ApplicationController
       session[:return_to] = "/invoices/new.html"
     end
 
-    # DailyCash.current_daily_cash current_user.company_id
-
     respond_to do |format|
       format.html {render template: "/invoices/new.html.erb"}
     end

@@ -6,14 +6,7 @@ class ReceiptDetail < ApplicationRecord
   validate   :invoices_clients_validation
 
   before_save :total_payed_boolean
-  scope      :only_invoices, -> {joins(:invoice).where(invoices: {cbte_tipo: Invoice::COD_INVOICE})}
-
-  ##vincula el recibo con la factura para ejecutar pagos
-	def self.save_from_invoice receipt, invoice
-  	rd             = ReceiptDetail.where(invoice_id: invoice.id, receipt_id: receipt.id).first_or_initialize
-  	rd.total       = receipt.total
-  	rd.save
- 	end
+  scope       :only_invoices, -> {joins(:invoice).where(invoices: {cbte_tipo: Invoice::COD_INVOICE})}
 
   def total_payed_boolean
     self.total_payed_boolean = (self.invoice.real_total_left - self.total) == 0
