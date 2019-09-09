@@ -17,7 +17,6 @@ class InvoicesController < ApplicationController
       @group_details = @invoice.invoice_details.includes(:product).in_groups_of(15, fill_with= nil)
     end
     respond_to do |format|
-      format.html
       format.pdf do
         @barcode_path = "#{Rails.root}/tmp/invoice#{@invoice.id}_barcode.png"
         require 'barby'
@@ -27,7 +26,6 @@ class InvoicesController < ApplicationController
         render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
           layout: 'pdf.html',
           template: 'invoices/show',
-          show_as_html: true,
           #zoom: 3.4,
           #si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
