@@ -5,6 +5,7 @@ class DepotsController < ApplicationController
   # GET /depots.json
   def index
     @depots = current_user.company.depots.search_by_name(params[:name]).search_by_availability(params[:state]).order("depots.created_at DESC").paginate(page: params[:page], per_page: 9)
+    @depots = current_user.company.depots.search_by_name(params[:name]).search_by_availability(params[:filled]).order("depots.created_at DESC").paginate(page: params[:page], per_page: 9)
   end
 
   # GET /depots/1

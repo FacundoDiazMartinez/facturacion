@@ -24,15 +24,13 @@ class Depot < ApplicationRecord
 
     def self.search_by_availability state
       case state
-      when "Disponible"
-        where(filled: false)
-      when "LLeno"
-        where(filled: true)
-      when ""
-        all
-      else
-        all
-      end
+        when "Disponible"
+          where(filled: false)
+        when "Lleno"
+          where(filled: true)
+        else
+          all
+        end
     end
 
     def destroy

@@ -6,7 +6,7 @@ class NotificationsController < ApplicationController
   		PrivatePub.publish_to(
 				"/facturacion/notifications/#{current_user.id}",
 				"$('.notifications').html('0');
-				 document.title = 'Desideral.com'"
+				 document.title = 'Facturación'"
 			)
   	end
 

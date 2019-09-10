@@ -35,14 +35,14 @@
               <li>
                 Descargue este archivo excel que posee el formato correcto con el que se debe trabajar.
                 <center>
-                  <%= link_to "#{icon('fas', 'download')} Descargar archivo formateado".html_safe, export_products_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday', data: { 'skip-pjax': true } %>
+                  <%= link_to "#{icon('fas', 'download')} Descargar archivo formateado".html_safe, export_products_path(empty: true, format: :xlsx), class: 'btn btn-sm btn-seconday', data: {'skip-pjax': true} %>
                 </center>
               </li>
               <li>
                 Complete el archivo anterior con los productos ordenando cada columna como corresponda, siempre respetando los campos obligatorios (indicados con un asterisco "*" ).
               </li>
               <li>
-                Por último, cargar el archivo a continuacón, le avisaremos cuando la carga finalice.
+                Por último, cargar el archivo a continuación, le avisaremos cuando la carga finalice.
               </li>
             </ol>
             <hr>
