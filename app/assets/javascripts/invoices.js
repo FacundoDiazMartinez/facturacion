@@ -276,17 +276,6 @@ function calculateTotalOfInvoice(){
 		$(".total_payments").text(total_pay.toFixed(2));
 		$(".total_payments_left").text(total_left.toFixed(2));
 
-		if ($("#invoice_cbte_tipo").length != 0) {
-			var is_invoice = $.inArray($("#invoice_cbte_tipo").val(), COD_INVOICE )
-			if (total_left > 0 || is_invoice < 0) {
-				$("#normal").show();
-				$("#with_alert").hide();
-			} else {
-				$("#normal").hide();
-				$("#with_alert").show();
-			}
-		}
-
 		complete_payments();
 }
 
@@ -528,10 +517,6 @@ function getPaymentRequest(url, data, action) {
 	  });
   });
 }
-
-$(document).on("click", "#with_alert", function(){
-	alert("No se pueden generar mas pagos ya que el monto faltante del comprobante es $ 0.00")
-})
 
 function hideConcept(text){
 	var current_index = $('th:contains("'+ text +'")').index();

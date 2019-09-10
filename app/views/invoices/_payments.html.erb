@@ -1,5 +1,5 @@
 <div class="form-group">
-  <a id="payment_title" class="h3 toggle-card" data-target="#div_ipayments" data-label-info="#payments_resume"><%= @invoice.is_credit_note? ? "Devoluciones de dinero" : "#{icon('fas', 'angle-double-down')} Pagos".html_safe %></a>
+  <a id="payment_title" class="h3 toggle-card" data-target="#div_ipayments" data-label-info="#payments_resume"><%= invoice.is_credit_note? ? "Devoluciones de dinero" : "#{icon('fas', 'angle-double-down')} Pagos".html_safe %></a>
   <span id="payments_resume" class="total_pagos float-right important-number" style="display:none">Total pagos: $<span class="total_payments">0.00</span></span>
 </div>
 <div id="div_ipayments" class="card">
@@ -16,7 +16,7 @@
             </tr>
           </thead>
           <tbody>
-            <% @invoice.income_payments.each do |payment| %>
+            <% invoice.income_payments.each do |payment| %>
             <% if payment.errors.empty? %>
             <tr>
               <td>
@@ -55,9 +55,9 @@
                 <td></td>
               <% end %>
               <td>
-              <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(@invoice.id)), data: { toggle: 'modal', target: '#mainModalLg', remote: true }, class: "btn btn-sm btn-icon btn-outline-secondary" if payment.persisted? && @invoice.confirmado? && payment.account_movement_id.nil? %>
-              <% unless (payment.errors.any? || payment.id.blank?) || @invoice.confirmado? %>
-                <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#mainModalLg', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+              <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(invoice.id)), data: { toggle: 'modal', target: '#mainModalLg', remote: true }, class: "btn btn-sm btn-icon btn-outline-secondary" if payment.persisted? && invoice.confirmado? && payment.account_movement_id.nil? %>
+              <% unless (payment.errors.any? || payment.id.blank?) || invoice.confirmado? %>
+                <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: invoice.id), data: {toggle: 'modal', target: '#mainModalLg', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
                 <% if payment.type_of_payment != "1" %>
                   <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                 <% else %>
@@ -73,8 +73,7 @@
       </div>
     </div>
     <div class="text-center m-2">
-      <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-secondary', type: 'button', id: "normal", style: "display: #{@invoice.total_left > 0 ? 'inline' : 'none'};" if @invoice.editable? %>
-      <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-secondary', type: 'button', remote: true, id: "with_alert", style: "display: #{@invoice.total_left <= 0 ? 'inline' : 'none'};" if @invoice.editable? %>
+      <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: { toggle: 'modal', target: '#paymentModal' }, class: 'btn btn-secondary new_payment', type: 'button' if invoice.editable? %>
     </div>
     <div class="resume text-right">
       <h5 class="important-number">Total pagos: $<span class="total_payments">0.00</span></h5>
@@ -91,3 +90,24 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+$('.new_payment').on('click', (e) => {
+  $('#details .depot_id').filter(':visible').each( (index, select) => {
+    if ($(select).val() == "") {
+      e.stopPropagation();
+      alert("Selecciona el depósito del detalle antes de continuar.")
+      $([document.documentElement, document.body]).animate({
+          scrollTop: $(select).offset().top - 200,
+        }, 500 );
+      $(select).focus()
+      return false
+    }
+  })
+  console.log($('.total_payments_left').text())
+  if ($('.total_payments_left').text() <= 0) {
+    e.stopPropagation();
+    alert("El monto faltante debe ser mayor a 0 para registrar pagos.")
+  }
+});
+</script>
