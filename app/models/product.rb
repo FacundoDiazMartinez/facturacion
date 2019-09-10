@@ -381,26 +381,14 @@ class Product < ApplicationRecord
   		row = Hash[[header, spreadsheet[i]].transpose]
   		product = where(code: row[:code], company_id: current_user.company_id ).first_or_initialize
   		if categories["#{row[:product_category_name]}"].nil?
-  			pc = ProductCategory.new(name: row[:product_category_name], company_id: current_user.company_id)
+  			pc = ProductCategory.where(name: row[:product_category_name], company_id: current_user.company_id).first_or_initialize
   			if pc.save
   				product_category_id = pc.id
   				categories["#{row[:product_category_name]}"] = product_category_id
   			end
   		end
   		product.supplier_id 		  	= supplier_id
-  		product.supplier_id 		  	= supplier_id
   		product.product_category_id = categories["#{row[:product_category_name]}"]
-  		product.code 				      	= row[:code]
-  		product.supplier_code 			= row[:supplier_code]
-  		product.name 				      	= row[:name]
-  		product.cost_price 			  	= row[:cost_price].round(2) unless row[:cost_price].nil?
-  		product.net_price 			  	= row[:net_price].round(2) unless row[:net_price].nil?
-  		product.price 				    	= row[:price].round(2) unless row[:price].nil?
-  		product.measurement_unit 		= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
-  		product.iva_aliquot 		  	= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
-  		product.company_id 			  	= current_user.company_id
-  		product.created_by 			  	= current_user.id
-  		product.updated_by 			  	= current_user.id
   		product.code 				      	= row[:code]
   		product.supplier_code 			= row[:supplier_code]
   		product.name 				      	= row[:name]
@@ -447,9 +435,6 @@ class Product < ApplicationRecord
     end
   end
 
-	def self.permited_params
-	  [:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit, :stock]
-	end
 
 	def self.open_spreadsheet(file)
     case File.extname(file.original_filename)
@@ -461,6 +446,9 @@ class Product < ApplicationRecord
 	end
 
 	private
+	def self.permited_params
+		[:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit, :stock]
+	end
 
 	def self.default_scope
 	 	where(active: true, tipo: "Producto")
