@@ -24,7 +24,7 @@ function toggleLabel(labelSelector) {
 function shakeAnimationWithScroll(target) {
   $([document.documentElement, document.body]).animate({
       scrollTop: target.offset().top - 200,
-    }, 500, function() {
+    }, 300, function() {
     target.effect("shake");
   });
 }

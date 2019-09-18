@@ -1,106 +1,92 @@
-<h3 class="d-flex mb-2">
-  <div class="p-2">
-  	Conceptos
-  </div>
-  <div class="p-2">
-  	<div class="dropdown ">
-  		<%= button_tag icon('fas', 'eye-slash'), id: "hideConceptsButton", type: 'button', class: 'btn btn-info btn-sm dropdown-toggle', data: {toggle: 'dropdown'}, aria:{haspopup: true, expanded: false} %>
-  		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-  			<%= button_tag "Código", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Código")' %>
-  			<%= button_tag "Concepto", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Concepto")' %>
-  			<%= button_tag "Cantidad", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Cantidad")' %>
-  			<%= button_tag "Depósito", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Depósito")' %>
-  			<%= button_tag "Medida", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Medida")' %>
-  			<%= button_tag "Precio", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Precio")' %>
-        <%= button_tag "Bonificado (%)", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Bonificado (%)")' %>
-  			<%= button_tag "Comisionantes", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Comisionantes")' %>
-  			<%= button_tag "I.V.A.", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("I.V.A.")' %>
-  			<%= button_tag "Subtotal", class: 'dropdown-item', type: 'button', onclick: 'hideConcept("Subtotal")' %>
-  		</div>
-  	</div>
-	</div>
-</h3>
+<div id="idetails">
+  <h3 class="d-flex mb-2">
+    <div class="p-2">
+    	Conceptos
+    </div>
+  </h3>
 
-<div class="card show">
-  <div class="card-body">
-    <div class="row">
-      <div class="table-responsive">
-        <table class="table table-striped invoice-table" id="details">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col" style="width:9% !important;">Código</th>
-              <th scope="col" style="width:30% !important;">Concepto</th>
-              <th scope="col" style="width:5%;">Cantidad</th>
-              <th scope="col">Depósito</th>
-              <th scope="col" class="only-desktop">Medida</th>
-              <th scope="col" style="width:9% !important;">Precio ($)</th>
-              <th scope="col" class="only-desktop" style="width:9% !important;">Bonificado (%)</th>
-              <% if invoice.editable? %>
-              <th scope="col" class="only-desktop">Comisionantes</th>
-              <% end %>
-              <th scope="col">I.V.A.</th>
-              <th scope="col" style="width:9%;">Subtotal</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <%= form.fields_for :invoice_details, (invoice.invoice_details.build if invoice.invoice_details.empty?), wrapper: false do |f| %>
-            <tr class="fields" id="<%= f.index %>">
-              <%= f.fields_for :product, (f.object.build_product if f.object.product.nil?) do |pf| %>
-              <td>
+  <div class="card show">
+    <div class="card-body">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-striped invoice-table" id="details">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col" style="width:9% !important;">Código</th>
+                <th scope="col" style="width:30% !important;">Concepto</th>
+                <th scope="col" style="width:5%;">Cantidad</th>
+                <th scope="col">Depósito</th>
+                <th scope="col" class="only-desktop">Medida</th>
+                <th scope="col" style="width:9% !important;">Precio ($)</th>
+                <th scope="col" class="only-desktop" style="width:9% !important;">Bonificado (%)</th>
                 <% if invoice.editable? %>
-                <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'input-group-text btn btn-secondary', min_length: 3 %>
-                <% else %>
-                #
+                <th scope="col" class="only-desktop">Comisionantes</th>
                 <% end %>
-              </td>
-              <td>
-                <%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: invoice.confirmado? %>
-                <%= pf.hidden_field :id, class: 'product_id' %>
-              </td>
-              <td>
-                <div class="input-group">
-                  <div class="input-group-prepend">
-                    <%= pf.select :tipo, ["Producto", "Servicio"], {}, {class: 'form-control form-control-sm tipo input-group-text', disabled: invoice.confirmado?, style: 'max-width: 100px;'} %>
-                    <%= pf.hidden_field :company_id, value: current_user.company_id %>
+                <th scope="col">I.V.A.</th>
+                <th scope="col" class="text-center" style="width:9%;">Subtotal</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= form.fields_for :invoice_details, (invoice.invoice_details.build if invoice.invoice_details.empty?), wrapper: false do |f| %>
+              <tr class="fields" id="<%= f.index %>">
+                <%= f.fields_for :product, (f.object.build_product if f.object.product.nil?) do |pf| %>
+                <td>
+                  <% if invoice.editable? %>
+                  <%= link_to icon('fas', 'search'), search_product_invoices_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'input-group-text btn btn-secondary', min_length: 3 %>
+                  <% else %>
+                  #
+                  <% end %>
+                </td>
+                <td>
+                  <%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: invoice.confirmado? %>
+                  <%= pf.hidden_field :id, class: 'product_id' %>
+                </td>
+                <td>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <%= pf.select :tipo, ["Producto", "Servicio"], {}, {class: 'form-control form-control-sm tipo input-group-text', disabled: invoice.confirmado?, style: 'max-width: 100px;'} %>
+                      <%= pf.hidden_field :company_id, value: current_user.company_id %>
+                    </div>
+                    <%= pf.text_field :name, class: 'form-control form-control-sm name', data: {toggle:"popover"}, disabled: invoice.confirmado? %>
                   </div>
-                  <%= pf.text_field :name, class: 'form-control form-control-sm name', data: {toggle:"popover"}, disabled: invoice.confirmado? %>
-                </div>
-              </td>
+                </td>
+                <% end %>
+                <td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"popover"}, step: :any, required: true, disabled: invoice.confirmado? %></td>
+                <td><%= f.select :depot_id, current_company.depots.order(created_at: :asc).map{ |d| [d.name, d.id] }, { prompt: "Seleccione..." }, {class: 'form-control form-control-sm depot_id', required: true, disabled: invoice.confirmado?, style: 'max-width: 100px;'} %></td>
+                <td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, 7),{}, {class: 'form-control form-control-sm measurement_unit', disabled: invoice.confirmado?, style: 'width: 100px;'} %></td>
+                <td><%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: { toggle: "popover" }, step: :any, readonly: true %></td>
+                <td class="only-desktop">
+                  <%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', disabled: invoice.confirmado? %>
+                  <%= f.hidden_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: invoice.confirmado? %>
+                </td>
+                <% if invoice.editable? %>
+                <td class="text-center">
+                  <%= render '/invoices/detail/commissioner_fields', f: f %>
+                </td>
+                <% end %>
+                <td>
+                  <%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
+                  <%= f.select :iva_aliquot, options_for_select(Iva::ALICUOTAS.map{|iva, id| [id, iva]}, f.object.iva_aliquot.blank? ? "03" : f.object.iva_aliquot ), {}, { class: 'form-control form-control-sm iva_aliquot', data: { toggle:"tooltip" }, style: 'width: 100px;', disabled: invoice.confirmado? } %>
+                </td>
+                <td class="text-center"><%= f.hidden_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: invoice.confirmado? %><span><strong>$<%= f.object.subtotal %></strong></span></td>
+                <% if invoice.editable? %>
+                <td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
+                <% end %>
+              </tr>
               <% end %>
-              <td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"popover"}, step: :any, required: true, disabled: invoice.confirmado? %></td>
-              <td><%= f.select :depot_id, current_company.depots.order(created_at: :asc).map{ |d| [d.name, d.id] }, { prompt: "Seleccione..." }, {class: 'form-control form-control-sm depot_id', required: true, disabled: invoice.confirmado?, style: 'max-width: 100px;'} %></td>
-              <td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, 7),{}, {class: 'form-control form-control-sm measurement_unit', disabled: invoice.confirmado?, style: 'width: 100px;'} %></td>
-              <td><%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: { toggle: "popover" }, step: :any, readonly: true %></td>
-              <td class="only-desktop">
-                <%= f.number_field :bonus_percentage, class: 'form-control form-control-sm bonus_percentage', disabled: invoice.confirmado? %>
-                <%= f.hidden_field :bonus_amount, class: 'form-control form-control-sm bonus_amount', disabled: invoice.confirmado? %>
-              </td>
-              <% if invoice.editable? %>
-              <td class="text-center">
-                <%= render '/invoices/detail/commissioner_fields', f: f %>
-              </td>
-              <% end %>
-              <td>
-                <%= f.hidden_field :iva_amount, class: 'form-control form-control-sm iva_amount' %>
-                <%= f.select :iva_aliquot, options_for_select(Iva::ALICUOTAS.map{|iva, id| [id, iva]}, f.object.iva_aliquot.blank? ? "03" : f.object.iva_aliquot ), {}, { class: 'form-control form-control-sm iva_aliquot', data: { toggle:"tooltip" }, style: 'width: 100px;', disabled: invoice.confirmado? } %>
-              </td>
-              <td><%= f.hidden_field :subtotal, class: 'form-control form-control-sm subtotal', readonly: true, disabled: invoice.confirmado? %><span><strong>$<%= f.object.subtotal %></strong></span></td>
-              <% if invoice.editable? %>
-              <td class="verical-align"><%= f.link_to_remove icon('fas', 'trash') %></td>
-              <% end %>
-            </tr>
-            <% end %>
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-    <div class="m-2 text-center">
-      <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-secondary', data: {target: '#details'}, id: "add_concept_to_invoice" if invoice.editable? %>
-    </div>
-    <div class="resume text-right">
-      <h5 class="important-number">Total conceptos s/imp: $<span class="total_details">0.00</span></h5>
+      <div class="m-2 text-center">
+        <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :invoice_details, class: 'btn btn-secondary', data: {target: '#details'}, id: "add_concept_to_invoice" if invoice.editable? %>
+      </div>
+      <div class="resume text-right">
+        <h5 class="important-number">Total conceptos s/imp: $<span class="total_details">0.00</span></h5>
+        <h5 class="important-number">Total conceptos: $<span class="detail_iva">0.00</span></h5>
+      </div>
     </div>
   </div>
 </div>

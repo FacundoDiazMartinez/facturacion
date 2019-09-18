@@ -42,8 +42,6 @@ function calculateBudgetSubtotal(subtotal){
 
 	$("#budget_total").val(total);
 	total_venta = total;
-	complete_payments();
-	//iva_aliquot	 		= subtotal.closest("tr.fields").find("select.iva_aliquot").trigger("change");
 }
 
 $(document).on("change", ".price, .quantity, .bonus_amount, .bonus_percentage, .budget_iva_aliquot", function(){

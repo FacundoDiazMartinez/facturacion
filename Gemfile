@@ -18,8 +18,6 @@ gem 'uglifier', '>= 1.3.0'
 gem 'cancancan', '~> 2.0'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'
-# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
-gem 'turbolinks', '~> 5'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -29,9 +27,6 @@ gem 'jbuilder', '~> 2.5'
 #Gema para generar los gráficos
 gem "chartkick"
 gem 'groupdate'
-
-#Bootstrap toggle para los checkbox
-gem 'bootstrap-toggle-rails'
 
 # GENA código de barras
 gem 'barby', '~> 0.6.6'
@@ -61,6 +56,8 @@ gem 'bootsnap', '>= 1.1.0', require: false
 #Boostrap
 gem 'bootstrap', '~> 4.1.3'
 gem 'bootstrap-toggle-rails'
+
+gem 'alertifyjs-rails'
 
 #Fontawesome
 gem 'font-awesome-sass', '~> 5.3.1'

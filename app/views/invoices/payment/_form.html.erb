@@ -11,7 +11,7 @@
 			<%= f.text_field :payment_date, class: 'form-control form-control-sm datepicker acc_movement_payment_date', disabled: !@invoice.editable? %>
 		</div>
 		<%= label_tag :amount_left, "Monto faltante: " %>
-		<span id="total_left_venta">$ <%= @invoice.total_left %></span>
+		$ <span class="total_payments_left"><%= @invoice.total_left %></span>
 
 		<div id="payment_detail">   </div>
 

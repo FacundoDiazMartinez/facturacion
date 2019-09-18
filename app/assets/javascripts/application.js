@@ -22,6 +22,8 @@
 //= require invoices
 //= require users
 //= require litecode-alert
+//= require alertify
+//= require alertify/confirm-modal
 //= require popper
 //= require bootstrap
 //= require bootstrap-toggle

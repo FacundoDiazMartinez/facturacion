@@ -4,6 +4,12 @@ $(document).on("keyup click", ".client_name", function(){
 	}
 })
 
+$(document).on("click","#client_name", function(){
+	//evita que se autcomplete con formularios del navegador
+	$(this).val("");
+	$(this).attr('autocomplete', 'none');
+});
+
 $(document).on('railsAutocomplete.select', '.client-autocomplete_field', function(event, data){
 	if (typeof data.item.nomatch !== 'undefined'){
 		if (data.item.nomatch.length) {

@@ -44,15 +44,6 @@ $(document).on('keyup','.delivery_note_associated-invoice-autocomplete_field', f
 	}
 })
 
-// $(document).on('click', '.input-group-text',function(e){
-// 	e.preventDefault();
-// 	if ($("#invoice_comp_number").val() != "") {
-// 		alert("AD")
-// 		$(this).attr("data-toggle", "")
-// 		return false;
-// 	}
-// });
-
 $(document).on("click", "#modal_button_dn", function(){
 	form = $(this).closest("form");
 	if (form.valid()) {

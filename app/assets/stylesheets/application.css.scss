@@ -25,6 +25,9 @@
 @import "companies";
 @import "bootstrap-datepicker";
 @import "jquery-ui";
+@import "alertify";
+@import "alertify/default";
+@import "alertify/bootstrap";
 @import "users";
 @import "popup";
 @import "notifications";
@@ -34,9 +37,6 @@
 @import "summernote-bs4";
 @import "summernote-custom-theme.min";
 @import "text-format";
-
-
-
 
 @font-face {
 	font-family: 'Montserrat Regular';
@@ -57,7 +57,11 @@
 }
 
 * {
-	font-family: "Montserrat Regular";
+	font-family: "Montserrat";
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
+	font-weight: 400;
 }
 
 .custom-control-label{
@@ -65,9 +69,6 @@
   font-weight: normal;
 }
 
-label{
-	font-weight: bold;
-}
 .close{
   font-size: 1rem;
 }

@@ -58,8 +58,9 @@ class InvoiceDetail < ApplicationRecord
         name: attributes[:name],
         code: attributes[:code],
         company_id: attributes[:company_id],
-        active: true
+        active: true,
         ).first_or_initialize
+      prod.cost_price  = 0
       prod.iva_aliquot = self.iva_aliquot
       self.product = prod
       attributes["id"] = product.id

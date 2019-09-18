@@ -4,12 +4,15 @@
   end
 %>
 
-$("#idetails").html("<%= j render template: '/invoices/detail/index.html.erb', locals:{form: @builder} %>");
-$("#ipayments").html("<%= j render template: '/invoices/payment/index.html.erb', locals:{form: @builder} %>");
+console.log($("#invoice_associated_invoice").val())
+
+$("#idetails").html("<%= j render( partial: '/invoices/details', locals: { form: @builder, invoice: @invoice }) %>");
+$("#ipayments").html("<%= j render( partial: '/invoices/payments', locals: { form: @builder, invoice: @invoice }) %>");
 
 if_debit_note_selected();
 
-$.get("/invoices/" + $("#invoice_associated_invoice").val() + "/get_associated_invoice_details", null, null,"script")
+if ($("#invoice_associated_invoice").val()) {
+  $.get("/invoices/" + $("#invoice_associated_invoice").val() + "/get_associated_invoice_details", null, null,"script")
   .done(function(data){
     details = jQuery.parseJSON(data);
     $.each(details, function(index, detail){
@@ -18,23 +21,22 @@ $.get("/invoices/" + $("#invoice_associated_invoice").val() + "/get_associated_i
         $("#add_concept_to_invoice").click();
       }
       tr = $("#details tr.fields:last");
-        tr.find('input.code').val(detail.product_attributes.code);
-        tr.find('input.product_id').val(detail.product_attributes.id);
-        tr.find('select.tipo').val(detail.product_attributes.tipo);
-        tr.find('input.name').val(detail.product_attributes.name);
-        tr.find('input.company_id').val(detail.product_attributes.company_id);
-
-        tr.find('input.quantity').val(detail.quantity);
-        tr.find('select.depot_id').val(detail.depot_id);
-        tr.find('select.measurement_unit').val(detail.measurement_unit);
-        tr.find('input.price').val(detail.price_per_unit);
-        tr.find('input.bonus_percentage').val(detail.bonus_percentage);
-        tr.find('input.bonus_amount').val(detail.bonus_amount);
-        tr.find('input.iva_amount').val(detail.iva_amount);
-        tr.find('select.iva_aliquot').val(detail.iva_aliquot);
-        tr.find('input.subtotal').val(detail.subtotal);
-
-        tr.find('input.quantity').trigger("change");
+      tr.find('input.code').val(detail.product_attributes.code);
+      tr.find('input.product_id').val(detail.product_attributes.id);
+      tr.find('select.tipo').val(detail.product_attributes.tipo);
+      tr.find('input.name').val(detail.product_attributes.name);
+      tr.find('input.company_id').val(detail.product_attributes.company_id);
+      tr.find('input.quantity').val(detail.quantity);
+      tr.find('select.depot_id').val(detail.depot_id);
+      tr.find('select.measurement_unit').val(detail.measurement_unit);
+      tr.find('input.price').val(detail.price_per_unit);
+      tr.find('input.bonus_percentage').val(detail.bonus_percentage);
+      tr.find('input.bonus_amount').val(detail.bonus_amount);
+      tr.find('input.iva_amount').val(detail.iva_amount);
+      tr.find('select.iva_aliquot').val(detail.iva_aliquot);
+      tr.find('input.subtotal').val(detail.subtotal);
+      tr.find('input.quantity').trigger("change");
     });
   }
 );
+}

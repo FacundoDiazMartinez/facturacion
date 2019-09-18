@@ -86,7 +86,7 @@ class IncomePayment < Payment
 
 	def set_total_pay_to_invoice
 		sum = invoice.sum_payments
-		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
+		invoice.update_column(:total_pay, sum)
 	end
 
 	def set_notification

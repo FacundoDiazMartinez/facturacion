@@ -5,7 +5,7 @@ class InvoicesController < ApplicationController
   before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver, :paid_invoice_with_debt]
   before_action :set_date_for_graphs, only: [:sales_per_month, :amount_per_month, :commissioner_per_month, :states_per_month]
   before_action :check_daily_cash, only: [:new, :create, :edit, :update]
-  before_action :get_company_sale_points, only: [:new, :edit]
+  before_action :get_company_sale_points, only: [:new, :edit, :create, :update]
 
   def index
     @invoices = current_company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_number(params[:comp_number]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 9)
@@ -53,28 +53,26 @@ class InvoicesController < ApplicationController
   end
 
   def create
-    @invoice = current_company.invoices.new(invoice_params)
-    @invoice.user_id = current_user.id
-    @client = @invoice.client
-    @invoice = InvoiceManager::TotalsSetter.call(@invoice)
+    @invoice      = current_company.invoices.new(invoice_params)
+    @invoice.user = current_user
+    @client       = @invoice.client
+    @invoice      = InvoiceManager::TotalsSetter.call(@invoice)
 
     if @invoice.custom_save(params[:send_to_afip])
       redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."
     else
-      pp @invoice.errors
       render :new, alert: "Error al registrar el comprobante."
     end
   end
 
   def update
-    @client = @invoice.client
-    @invoice.user_id = current_user.id
-    @invoice = InvoiceManager::TotalsSetter.call(@invoice)
+    @client           = @invoice.client
+    @invoice.user_id  = current_user.id
+    @invoice          = InvoiceManager::TotalsSetter.call(@invoice)
 
     if @invoice.update(invoice_params, params[:send_to_afip])
-      redirect_to edit_invoice_path(@invoice.id), notice: 'Comprobante actualizado con éxito.'
+      redirect_to edit_invoice_path(@invoice), notice: 'Comprobante actualizado con éxito.'
     else
-      pp @invoice.errors
       @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
       render :edit
     end
@@ -212,14 +210,11 @@ class InvoicesController < ApplicationController
         @invoice.invoice_details.new(id.attributes.except("id"))
       end
     end
-
     @invoice.client = associated_invoice.client
-    @invoice.save
   end
 
   #ESTADISTICAS
   def sales_per_month
-    #cbte_fch = Invoice.cbte_fch.to_date
     invoices = Invoice.where(state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
     render json: invoices
   end

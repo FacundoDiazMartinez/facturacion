@@ -4,11 +4,11 @@ $(document).on("keyup", ".subpayment_total", function(){
 })
 
 $(document).on("change", ".new_type_of_payment", function(){
-	selected_payment 	= $(this).val();
-	invoice_id 			= $("#invoice_id_for_payment").val();
+	selected_payment 		= $(this).val();
+	invoice_id 					= $("#invoice_id_for_payment").val();
 	purchase_order_id 	= $("#purchase_order_id_for_payment").val();
-	client_id 			= $("#client_id_for_payment").val();
-	receipt_id 			= $("#receipt_id_for_payment").val();
+	client_id 					= $("#client_id_for_payment").val();
+	receipt_id 					= $("#receipt_id_for_payment").val();
 	account_movement_id = $("#account_movement_id_for_payment").val();
 
 	invoice_client_id = $("#invoice_client_id").val();
