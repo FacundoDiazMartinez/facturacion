@@ -157,10 +157,13 @@ Rails.application.routes.draw do
       get :edit_multiple
       put :update_multiple
       post :import
+      get :top_ten_products_per_month
+      get :top_ten_products_per_year
+      get :top_ten_sales_per_month
     end
-    get :top_ten_products_per_month, on: :collection
-    get :top_ten_products_per_year, on: :collection
-    get :top_ten_sales_per_month, on: :collection
+    member do
+      get :get_depots
+    end
   end
 
   resources :services do

@@ -88,11 +88,9 @@
 
   <%= render 'taxes', { form: form, invoice: @invoice } if current_company.iva_cond == "Responsable Inscripto" %>
 
-  <div class="authorized" style="display: none;" id="div_iauthorized">
-    <%= render 'authorized_people', { form: form, client: @client } %>
-  </div>
-
   <%= render 'payments', { form: form, invoice: @invoice } %>
+
+  <%= render 'authorized_people', { form: form, client: @client } %>
 
   <div class="invoice-resume">
     <%= render 'resume', invoice: @invoice %>

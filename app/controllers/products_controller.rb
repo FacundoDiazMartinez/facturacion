@@ -81,8 +81,19 @@ class ProductsController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
-    products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
+    products = Product.unscoped.where(active: true, company_id: current_company.id).where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
+  end
+
+  def get_depots
+    begin
+      unless params[:id].blank?
+        stocks = current_company.products.unscoped.find(params[:id]).stocks
+        render :json => stocks.map{ |stock| { depot_id: stock.depot_id, label: "#{stock.depot.name} - #{stock.quantity}" } }
+      end
+    rescue
+      head :no_content
+    end
   end
 
   def import

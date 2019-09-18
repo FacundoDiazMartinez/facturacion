@@ -138,14 +138,13 @@ class InvoicesController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
-    products = Product.unscoped.includes(:depots).where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03",best_depot_id: product.stocks.where(state: "Disponible").order(quantity: :desc).first.nil? ? nil : product.stocks.where(state: "Disponible").order(quantity: :desc).first.depot_id, depots_with_quantities: product.stocks.where(state: "Disponible")}}
+    products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03" } }
   end
 
   def autocomplete_invoice_number
     term = params[:term]
     invoices = current_company.invoices.joins(:sale_point).select("invoices.id as invoice_id, sale_points.id, sale_points.name as sale_point_name, invoices.sale_point_id, invoices.comp_number, invoices.cbte_fch, invoices.updated_at, invoices.state, invoices.total, invoices.total_pay").where("sale_points.name || ' -  ' || invoices.comp_number ILIKE ? AND (invoices.total > invoices.total_pay) AND client_id = ? AND comp_number IS NOT NULL", "%#{term}%", params[:client_id]).order(:updated_at).all
-
     render :json => invoices.map { |invoice| {:id => invoice.invoice_id, :label => invoice.full_name, :value => invoice.full_number, total: invoice.total, faltante: invoice.total - invoice.total_pay} }
   end
 

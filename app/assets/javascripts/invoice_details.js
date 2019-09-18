@@ -14,43 +14,19 @@ $(document).on('nested:fieldAdded:invoice_details', (event) => {
 $(document).on('nested:fieldRemoved:invoice_details', (event) => runDetails() )
 
 $(document).on('railsAutocomplete.select', '.invoice-autocomplete_field', function(event, data){
+	let currentRow = $(this).closest("tr.fields")
   var recharge = parseFloat($("#client_recharge").val() * -1);
+  if ((typeof data.item.nomatch !== 'undefined') && (data.item.nomatch.length)) {	currentRow.find("input.autocomplete_field").val(data.item.nomatch)	}
 
-  if ((typeof data.item.nomatch !== 'undefined') && (data.item.nomatch.length)) {
-		$(this).closest("tr.fields").find("input.autocomplete_field").val(data.item.nomatch);
-	}
-
-	fillInvoiceDetailInputs(data, this);
-
-	$(this).closest("tr.fields").find("select.depot_id > option").each(function(index){
-		if (index > 0) {
-			name_to_clean = $(this).text();
-			i = name_to_clean.indexOf(" [ Stock");
-			if (i >= 0) {
-				depot_name = jQuery.trim(name_to_clean).substring(0, i);
-				$(this).text(depot_name);
-			}
-		}
-	});
-
-	data.item.depots_with_quantities.forEach(function(depot){
-		$(this).closest("tr.fields").find("select.depot_id > option").each(function(i){
-			if (i > 0) {
-				option = $(this);
-				if (depot.depot_id == option.val()) {
-					depot_name = option.text();
-					option.text(depot_name + " [ Stock: " + depot.quantity + " ]");
-				}
-			}
-		});
-	});
+	fillInvoiceDetailInputs(data, this)
+	fillDetailDepots(currentRow)
 
 	if (data.item.tipo == "Servicio") {
-		$(this).closest("tr.fields").find("select.depot_id").attr("disabled", true);
+		currentRow.find("select.depot_id").attr("disabled", true);
 	} else {
-		$(this).closest("tr.fields").find("select.depot_id > option").each(function(){
+		currentRow.find("select.depot_id > option").each(function(){
 			if ($(this).val() == data.item.best_depot_id) {
-				$(this).closest("tr.fields").find("select.depot_id").val(data.item.best_depot_id);
+				currentRow.find("select.depot_id").val(data.item.best_depot_id);
 			}
 		});
 	}
@@ -138,6 +114,25 @@ function fillInvoiceDetailInputs(data, currentRow) {
     trigger: "hover",
     content: data.item.name,
   });
+}
+
+function fillDetailDepots(currentField) {
+	setDetailRowVars($(currentField))
+	if (product_id.val()) {
+		fetch(`/products/${product_id.val()}/get_depots`)
+			.then((data) => data.json())
+			.then((data) => {
+				console.table(data)
+				depot_id.empty()
+				depot_id.append("<option value>Seleccione...</option>")
+				data.map((item) => {
+					depot_id.append($('<option>', {
+              value: item["depot_id"],
+              text : item["label"]
+          }))
+				})
+			})
+	}
 }
 
 function popoverIVA(element, monto_iva) {

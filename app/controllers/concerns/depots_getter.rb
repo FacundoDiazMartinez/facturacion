@@ -1,4 +1,4 @@
-module DeptosGetter
+module DepotsGetter
   extend ActiveSupport:Concern
 
   def get_company_depots

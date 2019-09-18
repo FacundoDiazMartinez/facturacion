@@ -120,5 +120,7 @@ function toggleAuthorized(){
     }, 500, function(){
     	$("#div_iauthorized").effect( "shake" );
     });
+	} else {
+		$("#div_iauthorized").hide('fast');
 	}
 }
