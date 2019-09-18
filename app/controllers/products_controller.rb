@@ -88,8 +88,8 @@ class ProductsController < ApplicationController
   def get_depots
     begin
       unless params[:id].blank?
-        stocks = current_company.products.unscoped.find(params[:id]).stocks
-        render :json => stocks.map{ |stock| { depot_id: stock.depot_id, label: "#{stock.depot.name} - #{stock.quantity}" } }
+        stocks = current_company.products.unscoped.find(params[:id]).stocks.disponibles
+        render :json => stocks.map{ |stock| { depot_id: stock.depot_id, label: "#{stock.depot.name} [Disponible #{stock.quantity}]" } }
       end
     rescue
       head :no_content

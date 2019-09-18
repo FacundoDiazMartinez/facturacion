@@ -7,6 +7,7 @@ class Stock < ApplicationRecord
   after_destroy :reduce_stock_in_depot
 
   default_scope {where(active: true)}
+  scope :disponibles, ->{where(state: "Disponible")}
   validate :check_company_of_depot
 
   validates_uniqueness_of :state, scope: [:active, :product_id, :depot_id], message: "No puede generar dos estados iguales para un mismo depósito."
