@@ -76,7 +76,15 @@ class ServicesController < ApplicationController
   def export
     @services = params[:empty] ? [] : current_user.company.services #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
     respond_to do |format|
-      format.xlsx {response.headers['Content-Disposition'] = 'attachment; filename="servicios.xlsx"'}
+      if params[:empty]
+        format.xlsx {
+          render xlsx: "export_for_import.xlsx.axlsx", disposition: "attachment", filename: "Lista-servicios.xlsx"
+        }
+      else
+        format.xlsx {
+          render xlsx: "export.xlsx.axlsx", disposition: "attachment", filename: "Lista-servicios.xlsx"
+        }
+      end
     end
   end
 

@@ -96,9 +96,15 @@ class ProductsController < ApplicationController
     #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
     @products = params[:empty] ? [] : current_user.company.products
     respond_to do |format|
-      format.xlsx {
-        render xlsx: "export.xlsx.axlsx", disposition: "attachment", filename: "Lista-productos.xlsx"
-      }
+      if params[:empty]
+        format.xlsx {
+          render xlsx: "export_for_import.xlsx.axlsx", disposition: "attachment", filename: "Lista-productos.xlsx"
+        }
+      else
+        format.xlsx {
+          render xlsx: "export.xlsx.axlsx", disposition: "attachment", filename: "Lista-productos.xlsx"
+        }
+      end
     end
   end
 
