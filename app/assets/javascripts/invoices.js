@@ -4,14 +4,14 @@ var COD_ND 			 = ["02", "07", "12"]
 var COD_NC 			 = ["03", "08", "13"]
 var COD_IVA			 = ["01", "11"]
 
-$(document).ready(function(){
+function initializeInvoice() {
 	runDetails()
 	runPayments()
 
   runInvoice();
 
 	checkNotaDebito()
-});
+}
 
 $(document).on("change", "#invoice_cbte_tipo", function() {
 	checkNotaDebito()

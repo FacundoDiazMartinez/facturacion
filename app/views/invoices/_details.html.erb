@@ -54,7 +54,7 @@
                 </td>
                 <% end %>
                 <td><%= f.number_field :quantity, class: 'form-control form-control-sm quantity', data: {toggle:"popover"}, step: :any, required: true, disabled: invoice.confirmado? %></td>
-                <td><%= f.select :depot_id, [], { prompt: "Seleccione..." }, {class: 'form-control form-control-sm depot_id', required: true, disabled: invoice.confirmado?, style: 'max-width: 100px;'} %></td>
+                <td><%= f.select :depot_id, current_company.depots.order(created_at: :asc).map{ |d| [d.name, d.id] }, { prompt: "Seleccione..." }, {class: 'form-control form-control-sm depot_id', required: true, disabled: invoice.confirmado?, style: 'max-width: 100px;'} %></td>
                 <td class="only-desktop"><%= f.select :measurement_unit, options_for_select(Product::MEASUREMENT_UNITS.map{|k,v| [v, k]}, 7),{}, {class: 'form-control form-control-sm measurement_unit', disabled: invoice.confirmado?, style: 'width: 100px;'} %></td>
                 <td><%= f.number_field :price_per_unit, class: 'form-control form-control-sm price', data: { toggle: "popover" }, step: :any, readonly: true %></td>
                 <td class="only-desktop">

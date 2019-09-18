@@ -39,10 +39,10 @@
 @import "text-format";
 
 @font-face {
-	font-family: 'Montserrat Regular';
-	src:url('/fonts/montserrat-font/Montserrat-Regular.ttf');
-	font-weight: normal;
-	font-style: normal;
+	font-family: 'Montserrat-Regular';
+	src:url('/assets/Montserrat-Regular.ttf');
+	font-family: 'Montserrat-Bold';
+	src:url('/assets/Montserrat-Bold.ttf');
 }
 
 .company_logo {
@@ -57,7 +57,7 @@
 }
 
 * {
-	font-family: "Montserrat";
+	font-family: "Montserrat-Regular";
 }
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
