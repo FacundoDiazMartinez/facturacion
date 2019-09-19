@@ -1,45 +1,38 @@
-<div class="form-group">
-  <div class="row">
-    <div class="col">
-      <%= f.label :state, "Estado" %>
-      <%= f.select :state, ChequePayment::STATES, {prompt: "Seleccione..."}, {class: 'form-control'} %>
-    </div>
-    <div class="col">
-      <%= f.label :origin, "Origen" %>
-      <%= f.select :origin, ChequePayment::ORIGINS, {include_blank: "Seleccione...", selected: 'Propio'}, {class: 'form-control'} %>
-    </div>
+<div class="row">
+  <div class="form-group col-md-6">
+    <%= f.label :state, "Estado" %>
+    <%= f.select :state, ChequePayment::STATES, {prompt: "Seleccione..."}, {class: 'form-control'} %>
   </div>
-</div>
-
-<div class="form-group">
-  <div class="row">
-    <div class="col">
-      <%= f.label :entity, "Banco" %>
-      <%= f.text_field :entity, class: 'form-control', required: true %>
-    </div>
-    <div class="col">
-      <%= f.label :number, "Numeración" %>
-      <%= f.text_field :number, class: 'form-control', required: true %>
-    </div>
+  <div class="form-group col-md-6">
+    <%= f.label :origin, "Origen" %>
+    <%= f.select :origin, ChequePayment::ORIGINS, {include_blank: "Seleccione...", selected: 'Propio'}, {class: 'form-control'} %>
   </div>
-</div>
 
-<div class="form-group">
-  <%= f.label :issuance_date, "Fecha de emisión" %><br>
-  <%= f.text_field :issuance_date, class: 'form-control datepicker', required: true, autocomplete: 'off' %>
-</div>
+  <div class="form-group col-md-6">
+    <%= f.label :entity, "Banco" %>
+    <%= f.text_field :entity, class: 'form-control', required: true %>
+  </div>
+  <div class="form-group col-md-6">
+    <%= f.label :number, "Numeración" %>
+    <%= f.text_field :number, class: 'form-control', required: true %>
+  </div>
 
-<div class="form-group">
-  <%= f.label :expiration, "Fecha de cobro" %><br>
-  <%= f.text_field :expiration, class: 'form-control datepicker', required: true, autocomplete: 'off' %>
-</div>
+  <div class="form-group col-md-6">
+    <%= f.label :issuance_date, "Fecha de emisión" %><br>
+    <%= f.text_field :issuance_date, class: 'form-control datepicker', required: true, autocomplete: 'off' %>
+  </div>
 
-<div class="form-group">
-  <%= f.label :observation, "Observación" %><br>
-  <%= f.text_area :observation, class: 'form-control form-control-sm', rows:2 %>
-</div>
+  <div class="form-group col-md-6">
+    <%= f.label :expiration, "Fecha de cobro" %><br>
+    <%= f.text_field :expiration, class: 'form-control datepicker', required: true, autocomplete: 'off' %>
+  </div>
 
-<div class="form-group">
-  <%= f.label :total, "Total ($)" %>
-  <%= f.number_field :total, step: :any, class: 'form-control subpayment_total', required: true %>
-</div>
+  <div class="form-group col-md-12">
+    <%= f.label :observation, "Observación" %><br>
+    <%= f.text_area :observation, class: 'form-control form-control-sm', rows:2 %>
+  </div>
+
+  <div class="form-group col-md-12">
+    <%= f.label :total, "Total ($)" %>
+    <%= f.number_field :total, step: :any, class: 'form-control subpayment_total', required: true %>
+  </div>

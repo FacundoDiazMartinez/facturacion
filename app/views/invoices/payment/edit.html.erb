@@ -1,7 +1,35 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'dolar-sign').html_safe %> Editar pago</h5>
+  <h5 class="modal-title"><%= icon('fas', 'dolar-sign').html_safe %> Editar pago</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<%= render "/invoices/payment/form" %>
+<%= form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+	<%= hidden_field_tag :invoice_id_for_payment, f.object.id %>
+	<div class="modal-body">
+		<div class="row">
+			<div class="form-group col-sm-12 col-md-6">
+				<%= label_tag :type_of_payment, "Tipo de pago" %>
+				<%= text_field_tag :type_of_payment, "", class: 'form-control', disabled: true %>
+			</div>
+
+			<div class="form-group col-sm-12 col-md-6" id="payment_date_div">
+				<%= f.label :payment_date, "Fecha de pago" %>
+				<%= f.text_field :payment_date, class: 'form-control datepicker', disabled: !@invoice.editable? %>
+			</div>
+
+			<div class="form-group col-md-12">
+				<p class="h3 text-bold text-right">Monto faltante: $ <span class="total_payments_left"><%= @invoice.total_left %></span></p>
+			</div>
+		</div>
+
+		<div class="payment_detail"></div>
+
+	</div>
+
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	  <%= save_button %>
+	</div>
+
+<% end %>

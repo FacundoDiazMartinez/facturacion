@@ -15,14 +15,14 @@ function getTotalPayments() {
   return totalPayments
 }
 
-function getPaymentRequest(url, data, action) {
+function getPaymentRequest(url, data) {
   $.ajax({
     url: url,
     data: data ,
     contentType: "application/html",
     dataType: "html"
   }).done(function(response) {
-    $("#" + action + "payment_detail").html(response)
+    $(".payment_detail").html(response)
 		initializeDatepicker()
   });
 }

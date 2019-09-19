@@ -2,30 +2,22 @@ class Payments::CardPaymentsController < Payments::PaymentsController
   before_action :set_card_payment, only: [:show, :edit, :update, :destroy]
   layout :false, except: [:index, :show]
 
-  # GET /card_payments
-  # GET /card_payments.json
   def index
     @card_payments = current_user.company.card_payments.joins(:payment, :credit_card).search_by_card(params[:card]).search_by_date(params[:date]).order("created_at DESC").paginate(page: params[:page], per_page: 10)
   end
 
-  # GET /card_payments/1
-  # GET /card_payments/1.json
   def show
     super
   end
 
-  # GET /card_payments/new
   def new
     @card_payment = CardPayment.new
     super
   end
 
-  # GET /card_payments/1/edit
   def edit
   end
 
-  # POST /card_payments
-  # POST /card_payments.json
   def create
     super
     @card_payment = CardPayment.new(card_payment_params)
@@ -69,7 +61,7 @@ class Payments::CardPaymentsController < Payments::PaymentsController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_card_payment
-      @card_payment = current_user.company.card_payments.find(params[:id])
+      @card_payment = current_company.card_payments.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

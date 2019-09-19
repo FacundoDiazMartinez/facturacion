@@ -4,12 +4,14 @@
 			<h1 class="h2">Comprobante</h1>
 		</div>
 		<div class="col-5 text-right">
-			<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-			    Ocultar | Ver
-			</button>
-			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-			    <button class="btn btn-primary dropdown-item" role="button" href="#" onclick="toggleHeader()" id="toggle_header"><%= icon('fas' ,'eye-slash') %> Encabezado</button>
-			    <button class="btn btn-primary dropdown-item" role="button" href="#" onclick="toggleAuthorized()" id="toggle_authorized"><%= icon('fas' ,'eye') %> Autorizados</button>
+			<div class="btn-group dropleft">
+			  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    Acciones
+			  </button>
+			  <div class="dropdown-menu">
+					<a class="dropdown-item" href="#" onclick="toggleHeader()" id="toggle_header"><%= icon('fas' ,'eye-slash') %> Encabezado</a>
+			    <a class="dropdown-item" href="#" onclick="toggleAuthorized()" id="toggle_authorized"><%= icon('fas' ,'eye') %> Autorizados</a>
+			  </div>
 			</div>
 		</div>
 	</div>
