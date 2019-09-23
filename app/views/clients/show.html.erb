@@ -1,22 +1,16 @@
 <div class="p-4">
-	<!-- TITULO -->
-	<%= title_helper "#{@client.name}" %>
-	<% if can? :update, Client %>
-		<%= button_edit_helper(edit_client_path(@client.id)) %>
-	<% end %>
-	<!-- TITULO -->
+	<%= title_helper "#{icon('fas', 'user')} Cliente: #{@client.name}"%>
+	<%= button_edit_helper(edit_client_path(@client.id)) if can? :update, Client %>
 	<div class="row">
 		<div class="col">
 			<%= render '/clients/basic_info' %>
 		</div>
 		<div class="col">
-			<div class="container-fluid">
-				<p class="text-muted">Últimos movimientos</p>
-	      		<div class="card card-fluid " id="amovements">
-	      			<% @account_movements = @client.account_movements.order("created_at ASC").paginate(page: params[:page], per_page: 10) %>
-	      			<%= render '/account_movements/account_movements_table' %>
-	      		</div>
-	      	</div>
+			<%# link_to "Últimos movimientos", client_account_movements_path(@client), class: 'text-muted' %>
+			<p class="text-muted">Últimos movimientos</p>
+  		<div class="card card-fluid " id="amovements">
+  			<%= render '/account_movements/account_movements_table' %>
+  		</div>
 		</div>
 	</div>
 </div>

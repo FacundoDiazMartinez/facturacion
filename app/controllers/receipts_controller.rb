@@ -1,6 +1,7 @@
 class ReceiptsController < ApplicationController
   include DailyCashChecker
   before_action :set_receipt, only: [:show, :edit, :update, :destroy]
+  before_action :check_daily_cash, only: [:new, :create]
 
   def index
     @receipts = current_company.receipts.no_devolution.find_by_period(params[:from], params[:to]).search_by_client(params[:client]).paginate(page: params[:page], per_page: 15).order("created_at DESC")
@@ -24,7 +25,6 @@ class ReceiptsController < ApplicationController
   end
 
   def new
-    check_daily_cash
     @receipt = current_company.receipts.new()
     @receipt.date = Date.today
     if !params[:client_id].blank?
@@ -43,8 +43,6 @@ class ReceiptsController < ApplicationController
     @client = @receipt.client
     AccountMovement.unscoped do
       build_account_movement
-      # @account_movement = @receipt.account_movement
-      # @account_movement_payments = @account_movement.account_movement_payments
     end
   end
 
@@ -113,7 +111,7 @@ class ReceiptsController < ApplicationController
   end
 
   def get_cr_card_fees
-    render json: current_company.credit_cards.find(params[:id]).fees.all.map{|a| [a.quantity, a.id]}
+    render json: current_company.credit_cards.find(params[:id]).fees.map{|fee| { id: fee.id, cuotas: fee.quantity }}
   end
 
   def get_fee_details
@@ -136,7 +134,6 @@ class ReceiptsController < ApplicationController
   def build_account_movement
     @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
     @account_movement_payments = @account_movement.account_movement_payments
-    # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
   end
 
   def receipt_params

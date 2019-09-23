@@ -66,12 +66,12 @@
         </table>
       </div>
     </div>
-		<div class="text-right">
-      <%= label_tag :total_pagado, "Total pagado: $ 0.00", id:'total_pagado' %>
-    </div>
 		<div class="m-2 text-center">
     	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id:'add_payment' if @receipt.editable? %>
 		</div>
+    <div class="resume text-right">
+      <h5 class="important-number">Total pagado: $<span class="final_total">0.00</span></h5>
+    </div>
 	</div>
 </div>
 

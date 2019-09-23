@@ -1,13 +1,17 @@
 <div class="p-4">
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-    <h1 class="h2">
+    <h2 class="h2">
       Cta. Cte. - <strong><%= @client.name %></strong>
-    </h1>
+    </h2>
     <div class="btn-toolbar mb-2 mb-md-0">
       <div class="btn-group">
         <%= button_tag "#{icon('fas', 'file-excel')} Exportar".html_safe, type: 'button', class: 'btn btn-sm btn-outline-secondary', data: {toggle: 'modal', target: '#exportModal'}  %>
       </div>
     </div>
+  </div>
+  <div class="form-group">
+    <h5><strong>Saldo:</strong> $<%= @client.saldo.round(2) %></h5>
+    <h6><strong>Disponible para asignar:</strong> $<%= AccountMovement.sum_available_amount_to_asign(@client.id).round(2) %></h6>
   </div>
   <%= button_new_helper(new_receipt_path(client_id: @client.id)) %>
   <div class="page-section">
@@ -38,12 +42,13 @@
             <% end %>
           </div>
           <div class="card-body">
-            <h5><strong>Saldo:</strong> $<%= @client.saldo.round(2) %></h5>
-            <h6><strong>Disponible para asignar:</strong> $<%= AccountMovement.sum_available_amount_to_asign(@client.id).round(2) %></h6>
             <div id="account_movements_table">
               <%= render 'account_movements_table' %>
             </div>
           </div>
+      </div>
+      <div class="form-group">
+        <h5 class="text-right"><strong><%= @account_movements.count %></strong> movimientos registrados</h5>
       </div>
   </div>
 </div>

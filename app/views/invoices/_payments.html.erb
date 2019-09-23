@@ -12,6 +12,7 @@
               <tr>
                 <th scope="col">Tipo de pago</th>
                 <th scope="col">Monto ($)</th>
+                <th scope="col">Fecha de confección</th>
                 <th scope="col">Fecha de cobro</th>
                 <th scope="col"></th>
               </tr>
@@ -50,6 +51,7 @@
                   <% end %>
                 </td>
                 <td class="payment_amount"><%= payment.total.round(2) %></td>
+                <td><%= payment.payment_date %></td>
                 <% if payment.type_of_payment == '4' %>
                   <td><%= payment.cheque_payment.expiration.nil? ? '' : payment.cheque_payment.expiration  %></td>
                 <% else %>

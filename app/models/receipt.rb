@@ -60,7 +60,7 @@ class Receipt < ApplicationRecord
     ## calcula la suma de los pagos del recibo después de guardar
     ## el touch lo provoca account movement
     def account_movement_updated
-      self.total                  = self.account_movement.total
+      self.total   = self.account_movement.total
       self.save
     end
 
@@ -161,9 +161,6 @@ class Receipt < ApplicationRecord
       number
     end
 
-    ## confirma el recibo
-    ## al confirmar el recibo se supone que ya están registrados los detalles (comprobantes asociados) del mismo
-    ## al confirmar el pago hay que activar el movimiento de cuenta generado, los movimientos de cuenta generados (y activos) deben estar en la cuenta corriente del cliente
     def confirmar!
       unless self.confirmado?
         AccountMovement.unscoped do
@@ -182,21 +179,19 @@ class Receipt < ApplicationRecord
   #ATRIBUTOS
 
   private
-  #FILTROS DE BUSQUEDA
-    def self.find_by_period from, to
-      if !from.blank? && !to.blank?
-        where(date: from..to)
-      else
-        all
-      end
+  def self.find_by_period from, to
+    if !from.blank? && !to.blank?
+      where(date: from..to)
+    else
+      all
     end
+  end
 
-    def self.search_by_client name
-      if not name.blank?
-        joins(:client).where("clients.name ILIKE ?", "%#{name}%")
-      else
-        all
-      end
+  def self.search_by_client name
+    if not name.blank?
+      joins(:client).where("clients.name ILIKE ?", "%#{name}%")
+    else
+      all
     end
-  #FILTROS DE BUSQUEDA
+  end
 end

@@ -3,7 +3,7 @@
 <div class="card ">
   <div class="card-body">
     <div class="row">
-      <!-- PRIMERA COLUMNA -->
+
       <div class="col-sm">
         <div class="form-group">
           <%= form.label :date, "Fecha" %>
@@ -14,9 +14,7 @@
           <%= form.select :sale_point_id, options_for_select(current_user.company.sale_points.map{|sp| [sp.name, sp.id]}, @receipt.sale_point_id), {}, {class: 'form-control', disabled: !@receipt.editable?} %>
         </div>
       </div>
-      <!-- FIN PRIMERA COLUMNA-->
 
-      <!-- SEGUNDA COLUMNA -->
       <div class="col-sm">
         <div id="client_form">
           <%= render 'client_column' %>
@@ -27,9 +25,7 @@
           <%= form.select :state, Receipt::STATES, {},{class: 'form-control', disabled: true} %>
         </div>
       </div>
-      <!-- SEGUNDA COLUMNA -->
 
-      <!-- TERCERA COLUMNA -->
       <div class="col-sm">
         <div class="form-group">
           <%= form.label :cbte_tipo, "Tipo de recibo" %>
@@ -40,88 +36,32 @@
           <%= form.number_field :total, class: 'form-control', required: true, disabled: true %>
         </div>
       </div>
-      <!-- TERCERA COLUMNA -->
     </div>
 
-    <!-- CONCEPTO -->
-    <div class="row">
-      <div class="col">
-        <div class="form-group">
-          <%= form.label :concept, "Recibo manual" %>
-          <%= form.text_area :concept, class: 'form-control', rows: 2 , disabled: !@receipt.editable?%>
-        </div>
-      </div>
-    </div>
-    <!-- CONCEPTO -->
-  </div>
-</div>
-
-<!-- FACTURAS ASOCIADAS -->
-
-<!-- numero fecha faltante pagado total a pagar -->
-<div class="p-2 d-flex">
-  <h3 class="mb-2 w-100">
-    Comprobantes asociados
-  </h3>
-  <%= autocomplete_field_tag :comp_number, nil, autocomplete_invoice_and_debit_note_receipts_path, :fields => {:client_id => '#receipt_client_id'}, class: 'receipt_associated-invoice-autocomplete_field form-control form-control-sm comp_number' , disabled: !@receipt.editable?, placeholder: "Ingrese nº de comprobante" %>
-</div>
-<div class="card ">
-  <div class="card-body">
-    <div class="row">
-      <div class="table-responsive">
-        <table class="table table-striped invoice-table" id="details">
-          <thead>
-            <tr>
-              <th scope="col">Tipo</th>
-              <th scope="col">Número</th>
-              <th scope="col">Fecha</th>
-              <th scope="col">Total</th>
-              <th scope="col">Pagado</th>
-              <th scope="col">Faltante</th>
-              <!-- <th scope="col">Total a pagar</th> -->
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- @receipt.receipt_details.build unless !@receipt.receipt_details.empty? -->
-            <% total_faltante = 0 %>
-              <%= render template: "/receipts/details/index.html.erb", locals:{form:form} %>
-            </tbody>
-          </table>
-      </div>
-    </div>
-    <div class="text-right">
-      <b>
-        <%= label_tag :total_faltante, "Total faltante: $ 0.00", id:'total_faltante' %>
-      </b>
-    </div>
-    <div class="m-2 text-center">
-      <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar factura</span>".html_safe, :receipt_details, class: 'btn btn-success', data: {target: '#details'}, hidden: true if @receipt.editable? %>
+    <div class="form-group">
+      <%= form.label :concept, "Recibo manual" %>
+      <%= form.text_area :concept, class: 'form-control', rows: 2 , disabled: !@receipt.editable? %>
     </div>
   </div>
 </div>
 
-  <!-- FACTURAS ASOCIADAS -->
+  <%= render 'details', form: form %>
 
-  <!-- PAGOS -->
   <div id="receipt_payments">
-    <%= render template: '/receipts/payments/index.html.erb', locals:{form: form} %>
+    <%= render template: '/receipts/payments/index.html.erb', locals: { form: form } %>
   </div>
-  <!-- PAGOS -->
 
-  <% if @receipt.state == "Pendiente" %>
+  <%= render 'resume', receipt: @receipt %>
+
+  <% if @receipt.editable? %>
   <div class="row">
     <div class="col">
     </div>
-    <div class="col">
-      <center>
-        <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_receipt', name: 'button', value: "save" %>
-      </center>
+    <div class="col text-center">
+      <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_receipt', name: 'button', value: "save" %>
     </div>
-    <div class="col" style="text-align: right !important;">
-      <% if @receipt.persisted? %>
-        <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger pull-right', id: 'confirm_btn', name: 'button', value: "confirm" %>
-      <% end %>
+    <div class="col text-right">
+      <%= button_tag "#{icon('fas', 'check')} Confirmar".html_safe, type: 'submit', class: 'btn btn-danger pull-right', id: 'confirm_btn', name: 'button', value: "confirm" if @receipt.persisted? %>
     </div>
   </div>
   <% end %>
@@ -147,15 +87,5 @@
 <%= render_modal_lg %>
 
 <script>
-  $(document).on("change", "select", function () {
-    $("#save_btn_receipt").attr("class", "btn btn-danger");
-  });
-
-  $(document).on("keyup", "input:visible", function () {
-    $("#save_btn_receipt").attr("class", "btn btn-danger");
-  });
-
-  $(document).on('nested:fieldRemoved', function () {
-    $("#save_btn_invoice").attr("class", "btn btn-danger");
-  })
+  initializeReceipt()
 </script>

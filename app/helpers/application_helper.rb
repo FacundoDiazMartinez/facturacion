@@ -62,15 +62,14 @@ module ApplicationHelper
 	end
 
 	def title_helper text
-		@text = text
 		content_tag :div, class: 'd-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3' do
-			concat(full_title)
+			concat(full_title(text))
 		end
 	end
 
-	def full_title
+	def full_title(titulo)
 		content_tag :h1, class: 'h2' do
-			concat(@text)
+			concat(titulo.html_safe)
 		end
 	end
 end
