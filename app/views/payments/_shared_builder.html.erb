@@ -1,0 +1,31 @@
+<% if @client %>
+  <% nested_form_for [@client, @account_movement] do |f| %>
+    <% f.fields_for :account_movement_payments, f.object.account_movement_payments.build do |pf| %>
+      <% @builder = pf %>
+    <% end %>
+  <% end %>
+<% elsif @receipt %>
+  <% nested_form_for @receipt do |f| %>
+    <% f.fields_for :account_movement, @account_movement do |amf| %>
+      <% amf.fields_for :account_movement_payments, f.object.account_movement_payments.build() do |amp| %>
+        <% @builder = amp %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% elsif @purchase_order %>
+  <% nested_form_for @purchase_order do |form| %>
+    <% form.fields_for :expense_payments, form.object.expense_payments.build do |f| %>
+      <% @builder = f %>
+    <% end %>
+  <% end %>
+<% elsif @payment %>
+  <% nested_form_for @payment, url: payments_payment_path(@payment.id) do |form| %>
+    <% @builder = form %>
+  <% end %>
+<% else %>
+  <% nested_form_for @invoice do |form| %>
+    <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+      <% @builder = f %>
+    <% end %>
+  <% end %>
+<% end %>
