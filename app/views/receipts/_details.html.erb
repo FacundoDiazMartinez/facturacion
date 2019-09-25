@@ -17,12 +17,10 @@
               <th scope="col">Total</th>
               <th scope="col">Pagado</th>
               <th scope="col">Faltante</th>
-              <!-- <th scope="col">Total a pagar</th> -->
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <!-- @receipt.receipt_details.build unless !@receipt.receipt_details.empty? -->
             <% total_faltante = 0 %>
             <%= form.fields_for :receipt_details, form.object.receipt_details.order(:id) , wrapper: false do |f| %>
               <tr class="fields" id="<%= f.index %>">
@@ -44,11 +42,8 @@
                   <%= hidden_field_tag :total_payed_invoice, f.object.total, style: "text-align: right;" , class: 'total_payed_invoice' %>
                 </td>
                 <td>
-                  <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + (f.object.invoice.is_credit_note? ? '0.0' : f.object.invoice.total_left.round(2).to_s), style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
+                  <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + (f.object.invoice.is_credit_note? ? '0.00' : number_with_precision(f.object.invoice.total_left, precision: 2, separator: '.', delimiter: ',')), style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
                 </td>
-                <!-- <td>
-                  <%# f.number_field :total, class: 'form-control form-control-sm total', data: {toggle:"tooltip"}, disabled: !@receipt.editable?, value: 0 %>
-                </td> -->
                 <td>
                 </td>
                 <% if @receipt.editable? %>

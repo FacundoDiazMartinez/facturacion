@@ -111,8 +111,7 @@ function fillDetails(data){
     tr.find('input.invoice_id').val(item.id);
     tr.find('input.invoice_total').val("$ " + item.total.toFixed(2));
     tr.find('input.associated_invoices_total').val("$ " + item.associated_invoices_total.toFixed(2));
-    faltante = item.total_left.toFixed(2) //- item.associated_invoices_total.toFixed(2)
-    tr.find('input.invoice_total_left').val("$ " + faltante);
+    tr.find('input.invoice_total_left').val("$ " + item.total_left.toFixed(2));
     tr.find('input.invoice_total_pay').val("$ " + item.total_pay.toFixed(2));
     tr.find('input.invoice_created_at').val(item.created_at);
   })
@@ -126,7 +125,6 @@ function totalPayments() {
     let montoPagado = $(currentField).text().replace("$ ", "");
     if (montoPagado) { monto += parseFloat(montoPagado) }
   });
-  $('#total_pagado').text(`Total pagado: $ ${monto.toFixed(2)}`)
   $('.final_total').text(monto.toFixed(2))
   $('#receipt_total').val(monto.toFixed(2))
   return monto
@@ -134,10 +132,11 @@ function totalPayments() {
 
 function totalInvoicesPayed() {
   let pagosEnFactura = 0
-  $('.total_payed_invoice').filter(':visible').each(function(){
+  $('.total_payed_invoice').each(function(){
     let montoPagado = $(this).val();
     if (montoPagado) { pagosEnFactura += parseFloat(montoPagado) }
   })
+  console.log(pagosEnFactura)
   return pagosEnFactura
 }
 
@@ -147,6 +146,6 @@ function setSaldoLabels(saldo) {
     $('.total_payments_left').text(saldo.toFixed(2))
   } else {
     $('.saldo_label').text("Saldo a favor futuras compras")
-    $('.total_payments_left').text(saldo.toFixed(2) * (-1))
+    $('.total_payments_left').text((saldo * (-1)).toFixed(2))
   }
 }

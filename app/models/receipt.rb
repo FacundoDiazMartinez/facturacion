@@ -162,15 +162,7 @@ class Receipt < ApplicationRecord
     end
 
     def confirmar!
-      unless self.confirmado?
-        AccountMovement.unscoped do
-          self.account_movement.confirmar!
-        end
-        self.reload
-        self.saved_amount_available = self.account_movement.amount_available ## el saldo para futuras compras se calcula con el movimiento de cuenta confirmado
-        self.state                  = "Finalizado"
-        self.save
-      end
+      ReceiptManager::Confirmator.call(self)
     end
 
     def update_daily_cash
