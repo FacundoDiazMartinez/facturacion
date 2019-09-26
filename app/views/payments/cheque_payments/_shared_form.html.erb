@@ -14,7 +14,7 @@
   </div>
   <div class="form-group col-md-6">
     <%= f.label :number, "Numeración" %>
-    <%= f.text_field :number, class: 'form-control', required: true %>
+    <%= f.text_field :number, class: 'form-control', minlength: 8, maxlength: 8, required: true %>
   </div>
 
   <div class="form-group col-md-6">
