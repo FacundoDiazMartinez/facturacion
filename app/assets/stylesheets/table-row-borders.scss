@@ -1,0 +1,42 @@
+.table-row-bordered {
+  tbody tr {
+    border-left: 7px solid;
+    border-bottom: 0px;
+
+    &.tr-green {
+      border-color: #28a745;
+    }
+
+    &.tr-yellow {
+      border-color: #ffc107;
+    }
+
+    &.tr-orange {
+      border-color: #ff5722;
+    }
+
+    &.tr-red {
+      border-color: #dc3545;
+    }
+  }
+}
+
+table {
+
+  .td-action-buttons {
+    text-align: right;
+    width:150px;
+
+    a {
+      display: none;
+    }
+  }
+
+  tr:hover {
+    .td-action-buttons {
+      a {
+        display: inline-block;
+      }
+    }
+  }
+}

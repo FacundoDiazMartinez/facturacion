@@ -8,7 +8,7 @@ class InvoicesController < ApplicationController
   before_action :get_company_sale_points, only: [:new, :edit, :create, :update]
 
   def index
-    @invoices = current_company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_number(params[:comp_number]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 9)
+    @invoices = current_company.invoices.joins(:client).search_by_client(params[:client_name]).search_by_number(params[:comp_number]).search_by_tipo(params[:cbte_tipo]).search_by_state(params[:state]).order("invoices.created_at DESC").paginate(page: params[:page], per_page: 15)
   end
 
   def show
@@ -26,7 +26,6 @@ class InvoicesController < ApplicationController
         render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
           layout: 'pdf.html',
           template: 'invoices/show',
-          #zoom: 3.4,
           #si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
