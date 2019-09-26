@@ -49,60 +49,52 @@
   <table class="width_100">
     <col>
     <col width="500">
-
-    <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
-      <tr>
-        <td rowspan="10" style="width: 1px;"></td>
-
-        <td rowspan="10">
-          <% if @invoice.tributes.where("importe > 0").count > 0 %>
-            Otros Tributos:
-          <table style="width:75%;">
-            <thead>
+    <tr>
+      <td rowspan="10" style="width: 1px;"></td>
+      <td rowspan="10">
+        <% if @invoice.tributes.where("importe > 0").count > 0 %>
+          Otros Tributos:
+        <table style="width:75%;">
+          <thead>
+            <tr>
+              <th class="description_header">Descripción</th>
+              <th class="description_header">Alícuota</th>
+              <th class="description_header">Importe</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @invoice.tributes.where("importe > 0").each do |t| %>
               <tr>
-                <th class="description_header">Descripción</th>
-                <th class="description_header">Alícuota</th>
-                <th class="description_header">Importe</th>
+                <td><b><%= t.desc %></b></td>
+                <td class="text_right"><%= t.alic %> %</td>
+                <td class="text_right">$ <%= sprintf('%.2f',t.importe) %></td>
               </tr>
-            </thead>
-            <tbody>
-              <% @invoice.tributes.where("importe > 0").each do |t| %>
-                <tr>
-                  <td><b><%= t.desc %></b></td>
-                  <td class="text_right"><%= t.alic %> %</td>
-                  <td class="text_right">$ <%= sprintf('%.2f',t.importe) %></td>
-                </tr>
-              <% end %>
-            </tbody>
-            <tfoot style="display: table-footer-group;" class="description_header">
-              <tr>
-                <td> <b>Total tributos</b> </td>
-                <td></td>
-                <td class="text_right"><b>$ <%= @invoice.total_tributos %></b> </td>
-              </tr>
-            </tfoot>
-          </table>
-          <% end %>
-        </td>
-
-        <td> <br> </td>
-        <td> <br> </td>
-        <td rowspan="10" style="width: 1px;"></td>
-      </tr>
-      <% end %>
-
-      <tr>
-        <td class="text_right">
-          <b>
-            <% if total_pages > 1 %>
-              Subtotal conceptos página:
-            <% else %>
-              Subtotal conceptos:
             <% end %>
-          </b>
-        </td>
-        <td class="text_right">$ <%= sprintf('%.2f',total_of_page_without_bonif)  %></td>
-      </tr>
+          </tbody>
+          <tfoot style="display: table-footer-group;" class="description_header">
+            <tr>
+              <td> <b>Total tributos</b> </td>
+              <td></td>
+              <td class="text_right"><b>$ <%= @invoice.total_tributos %></b> </td>
+            </tr>
+          </tfoot>
+        </table>
+        <% end %>
+      </td>
+      <td> <br> </td>
+      <td> <br> </td>
+      <td rowspan="10" style="width: 1px;"></td>
+    </tr>
+    <tr>
+      <td class="text_right"><b><%= total_pages > 1 ? "Subtotal conceptos página:" : "Subtotal conceptos:" %></b></td>
+      <td class="text_right">$
+      <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
+        <%= sprintf('%.2f',total_of_page_without_bonif) %>
+      <% else %>
+        <%= sprintf('%.2f',total_page_iva) %>
+      <% end %>
+      </td>
+    </tr>
 
     <% if @invoice.bonifications.any? %>
       <% descuentos_aplicados = 0 %>
