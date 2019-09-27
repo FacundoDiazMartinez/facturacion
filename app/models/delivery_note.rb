@@ -6,7 +6,6 @@ class DeliveryNote < ApplicationRecord
   belongs_to :client,optional: true
   belongs_to :sales_file, optional: true
 
-
   has_many :delivery_note_details, dependent: :destroy
   has_many :invoice_details, through: :invoice
 
@@ -15,7 +14,6 @@ class DeliveryNote < ApplicationRecord
   before_validation :set_number
   after_save :adjust_stocks_by_dn_cancelled, if: Proc.new{|dn| dn.state == "Anulado"}
   after_save :adjust_stocks_by_dn_finalized, if: Proc.new{|dn| dn.state == "Finalizado"}
-  after_create :create_seles_file, if: Proc.new{|dn| dn.sales_file.nil? && !dn.invoice.nil?}
 
   STATES = ["Pendiente", "Anulado", "Finalizado"]
 
@@ -30,9 +28,6 @@ class DeliveryNote < ApplicationRecord
   default_scope { where(active: true) }
   after_initialize :set_default_number, if: :new_record?
   after_initialize :set_date, if: :new_record?
-
-  default_scope { where(active: true ) }
-
 
   #FILTROS DE BUSQUEDA
   	def self.without_system
@@ -76,31 +71,9 @@ class DeliveryNote < ApplicationRecord
     def client
       Client.unscoped{ super }
     end
-
-    # def delivery_note_details_attributes=(attributes)
-    #   self.delivery_note_details.each do |dnd|
-    #     dnd.mark_for_destruction
-    #   end
-    #   super
-    # end
   #ATRIBUTOS
 
   #PROCESOS
-    def create_seles_file
-      if sales_file_id.nil?
-        if invoice_id.nil?
-          sf = SalesFile.create(
-            company_id: company_id,
-            client_id: client_id,
-            responsable_id: user_id
-          )
-          update_column(:sales_file_id, sf.id)
-        else
-          update_column(:sales_file_id, invoice.sales_file_id)
-        end
-      end
-    end
-
     def adjust_stocks_by_dn_cancelled
       self.delivery_note_details.each do |dnd|
         if self.invoice.state == "Confirmado"
@@ -119,10 +92,6 @@ class DeliveryNote < ApplicationRecord
           dnd.product.rollback_stock_from_delivered_to_available(quantity: (dnd.quantity - total_cn_details), depot_id: dnd.depot_id, delivery_note_id: self.id)
         end
       end
-      #COMENTE ESTO, VER SI HACE FALTA
-      # self.invoice.invoice_details.each do |id|
-      #   id.reserve_stock
-      # end
     end
 
     def adjust_stocks_by_dn_finalized
@@ -148,8 +117,5 @@ class DeliveryNote < ApplicationRecord
   		update_column(:active, false)
   		run_callbacks :destroy
   	end
-
   #PROCESOS
-
-
 end
