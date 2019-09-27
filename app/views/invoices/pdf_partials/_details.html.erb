@@ -111,17 +111,10 @@
           <% total_de_pagina_auxiliar -= descuentos_aplicados  %>
         </tr>
       <% end %>
-      <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
       <tr>
         <td class="text_right"><b>Subtotal:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f', total_of_page_without_bonif -=  descuentos_aplicados ) %></td>
+        <td class="text_right">$ <%= sprintf('%.2f', total_de_pagina_auxiliar ) %></td>
       </tr>
-      <% else %>
-        <tr>
-          <td class="text_right"><b>Subtotal:</b></td>
-          <td class="text_right">$ <%= sprintf('%.2f', total_page_iva -=  @invoice.bonification ) %></td>
-        </tr>
-      <% end %>
     <% end %>
 
     <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
