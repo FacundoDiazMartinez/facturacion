@@ -208,7 +208,11 @@ function setProduct(product, index, depot_id){
   $("#"+index).find("input.name").val(product["name"]);
   $("#"+index).find("input.name").prop('title', product["name"]);
   $("#"+index).find("input.price").val(product["net_price"]);
-  $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
+  if (product["measurement_unit"] !== ''){
+    $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
+  }else{
+    $("#"+index).find("select.measurement_unit").val(7);
+  };
   $("#"+index).find("input.subtotal").val(product["price"]);
   $("#"+index).find("input.supplier_code").val(product["supplier_code"]);
   $("#"+index).find("select.depot_id").val(depot_id);
