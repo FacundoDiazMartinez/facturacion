@@ -45,7 +45,7 @@ function initializeReceipt() {
 }
 
 function runReceipt(){
-  let total_payed = totalPayments()
+  let total_payed = totalReceiptPayments()
   let saldo       = total_payed * (-1)
 
   if (receiptConfirmed()) {
@@ -119,7 +119,7 @@ function fillDetails(data){
 
 function receiptConfirmed(){ return $('#receipt_state').val() == "Finalizado" }
 
-function totalPayments() {
+function totalReceiptPayments() {
   let monto = 0
   $('.pay').each((index, currentField) => {
     let montoPagado = $(currentField).text().replace("$ ", "")
