@@ -14,7 +14,9 @@ module InvoiceManager
               if invoice.real_total_left.to_f > 0
                 income_payment = nuevo_pago_a_cuenta_corriente(invoice, am)
                 if income_payment.save
-                  am.update_columns(amount_available: am.amount_available - income_payment.total)
+                  am.update_columns(
+                    amount_available: am.amount_available - income_payment.total
+                  )
                   rd.update_columns(
                     total: income_payment.total,
                     total_payed_boolean: (invoice.real_total_left - income_payment.total) == 0

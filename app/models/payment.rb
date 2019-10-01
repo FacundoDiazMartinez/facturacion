@@ -2,7 +2,7 @@ class Payment < ApplicationRecord
   include Deleteable
   belongs_to :user, optional: true
   belongs_to :company, optional: true
-  belongs_to :client, optional: true #TODO VINCULAR
+  belongs_to :client, optional: true
   belongs_to :purchase_order, optional: true
   belongs_to :invoice, optional: true
 

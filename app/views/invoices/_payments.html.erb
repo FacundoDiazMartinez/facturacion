@@ -26,12 +26,12 @@
                   <% when "4" %>
                   <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
                   <% when "1" %>
-                  <% @installment_id = payment.card_payment.installments %>
-                  <% if @installment_id != 0 %>
-                  <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
-                  <% else %>
-                  <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
-                  <% end %>
+                    <% @installment_id = payment.card_payment.installments %>
+                    <% if @installment_id != 0 %>
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(@installment_id).quantity %> cuotas
+                    <% else %>
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> pago único
+                    <% end %>
                   <% when "3" %>
                   <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
                   <% when "7" %>
@@ -50,7 +50,7 @@
                   <%= payment.payment_name %>
                   <% end %>
                 </td>
-                <td class="payment_amount"><%= payment.total.round(2) %></td>
+                <td class="payment_amount"><%= number_with_precision(payment.total, precision: 2, separator: '.') %></td>
                 <td><%= payment.payment_date %></td>
                 <% if payment.type_of_payment == '4' %>
                   <td><%= payment.cheque_payment.expiration.nil? ? '' : payment.cheque_payment.expiration  %></td>

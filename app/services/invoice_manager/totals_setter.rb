@@ -8,11 +8,11 @@ module InvoiceManager
     end
 
     def call
-      calcula_base_imponible
-      calcula_descuentos
-      calcula_tributos
-      calcula_pagos
-      calcula_total_final
+      calcula_base_imponible()
+      calcula_descuentos()
+      calcula_tributos()
+      calcula_pagos()
+      calcula_total_final()
 
       return @invoice
     end

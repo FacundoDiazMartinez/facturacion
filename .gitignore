@@ -28,3 +28,6 @@
 config/database.yml
 config/initializers/afip.rb
 #/afip/*
+
+# para eliminar archivos en el repositorio
+# find . -name NOMBREARCHIVO -print0 | xargs -0 git rm -f --ignore-unmatch

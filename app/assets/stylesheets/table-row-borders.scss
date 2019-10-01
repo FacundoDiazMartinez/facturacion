@@ -1,21 +1,21 @@
 .table-row-bordered {
   tbody tr {
-    border-left: 7px solid;
+    border-left: 10px solid;
     border-bottom: 0px;
 
-    &.tr-green {
+    &.border-green {
       border-color: #28a745;
     }
 
-    &.tr-yellow {
+    &.border-yellow {
       border-color: #ffc107;
     }
 
-    &.tr-orange {
+    &.border-orange {
       border-color: #ff5722;
     }
 
-    &.tr-red {
+    &.border-red {
       border-color: #dc3545;
     }
   }

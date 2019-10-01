@@ -19,13 +19,13 @@ module InvoicesHelper
 	def bordered_invoice_by_state(state)
 	  case state
 		when "Pendiente"
-			'tr-yellow'
+			'border-yellow'
 		when "Confirmado"
-			'tr-green'
+			'border-green'
 		when "Anulado parcialmente"
-			'tr-orange'
+			'border-orange'
 		when "Anulado"
-			'tr-red'
+			'border-red'
 		end
 	end
 end

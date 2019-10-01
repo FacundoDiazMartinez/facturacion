@@ -66,14 +66,20 @@ class InvoicesController < ApplicationController
   end
 
   def update
-    @client           = @invoice.client
-    @invoice.user_id  = current_user.id
-    @invoice          = InvoiceManager::TotalsSetter.call(@invoice)
+    ActiveRecord::Base.transaction do
+      @client        = @invoice.client
+      @invoice.user  = current_user
+      @invoice.update!(invoice_params)
+      @invoice      = InvoiceManager::TotalsSetter.call(@invoice)
 
-    if @invoice.update(invoice_params, params[:send_to_afip])
-      redirect_to edit_invoice_path(@invoice), notice: 'Comprobante actualizado con éxito.'
-    else
-      @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
+      if @invoice.custom_save(params[:send_to_afip])
+        redirect_to edit_invoice_path(@invoice), notice: 'Comprobante actualizado con éxito.'
+      else
+        @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
+        render :edit
+      end
+    rescue StandardError => error
+      pp error.inspect
       render :edit
     end
   end
@@ -251,7 +257,7 @@ class InvoicesController < ApplicationController
   end
 
   def invoice_params
-    params.require(:invoice).permit(:active, :budget_id, :client_id, :state, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification,
+    params.require(:invoice).permit(:active, :budget_id, :client_id, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification,
       income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
         cash_payment_attributes: [:id, :total],
         debit_payment_attributes: [:id, :total, :bank_id],

@@ -4,8 +4,6 @@ class IncomePayment < Payment
 	belongs_to :invoice
 	belongs_to :account_movement, optional: true, touch: true ##IMPORTANTE debe actualizar los montos del movimiento de cuenta
 
-	after_save 		:set_total_pay_to_invoice
-	after_save 		:set_notification
 	before_save 	:change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_save 	:check_company_id
 	before_save 	:check_client_id
@@ -73,10 +71,6 @@ class IncomePayment < Payment
 		end
 	end
 
-	def touch_invoice
-		invoice.touch
-	end
-
 	def destroy
   	update_column(:active, false)
   	set_total_pay_to_invoice
@@ -88,10 +82,6 @@ class IncomePayment < Payment
 		sum = invoice.sum_payments
 		invoice.update_column(:total_pay, sum)
 	end
-
-	def set_notification
-   	Notification.create_from_payment(self)
-  end
 
 	def change_credit_card_balance
 		CreditCard.find(credit_card_id).update_balance_from_payment(self)
@@ -105,5 +95,5 @@ class IncomePayment < Payment
 		resultado = invoice.sum_payments - self.total_was.to_f + self.total.to_f
 		resultado.round(2) > invoice.total
 	end
-	# default_scope { where(flow: "income", active: true, account_movement: nil) }
+
 end

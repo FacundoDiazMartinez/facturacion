@@ -35,7 +35,7 @@
     <div class="col">
       <%= f.label :valid_for_account, "¿Cta. Cte.?" %><br>
       <center>
-        <%= f.check_box :valid_for_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle',:style => "width: 50px; height: 50px;" %>
+        <%= f.check_box :valid_for_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle', style: "width: 50px; height: 50px;" %>
       </center>
     </div>
     <div class="col">
@@ -164,7 +164,7 @@
 
 <script type="text/javascript">
   function toggleClientChecked(){
-    if($("#client_enabled").is(':checked')) 
+    if($("#client_enabled").is(':checked'))
     {
       $('#enabled_observation').hide("slow");
       $('#enabled_observation').attr("disabled",true);
@@ -182,7 +182,7 @@
     //   off: 'No'
     // });
 
-    if($("#client_enabled").is(':checked')) 
+    if($("#client_enabled").is(':checked'))
     {
       $('#enabled_observation').hide("slow");
       $('#enabled_observation').attr("disabled",true);

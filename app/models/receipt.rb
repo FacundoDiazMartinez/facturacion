@@ -45,26 +45,21 @@ class Receipt < ApplicationRecord
       errors.add(:base, "Está intentando vincular dos o más veces los mismos comprobantes.") unless invoice_ids.uniq.length == invoice_ids.length
     end
 
-    ## al menos un pago para recibos confirmados
     def at_least_one_active_payment
       if self.confirmado?
         errors.add("Pagos", "Debe registrar al menos un pago.") unless self.payments_length_valid?
       end
     end
 
-    ##MAL PORQUE ESTO VALIDARÍA SOLAMENTE QUE TENGA PAGOS POR CUENTA CORRIENTE
     def payments_length_valid?
       account_movement.account_movement_payments.where(generated_by_system: false).reject(&:marked_for_destruction?).count > 0
     end
 
-    ## calcula la suma de los pagos del recibo después de guardar
-    ## el touch lo provoca account movement
     def account_movement_updated
       self.total   = self.account_movement.total
       self.save
     end
 
-    ## valida que las facturas asociadas pertenecen al cliente
     def validate_receipt_detail
       receipt_details.each{ |rd| rd.invoices_clients_validation }
     end

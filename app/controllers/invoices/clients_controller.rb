@@ -51,6 +51,6 @@ class Invoices::ClientsController < ApplicationController
 	end
 
 	def client_params
-		params.require(:client).permit(:name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :enabled, :enabled_observation)
+		params.require(:client).permit(:name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond)
 	end
 end

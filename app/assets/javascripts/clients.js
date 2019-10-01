@@ -1,32 +1,24 @@
-$(document).on("keyup click", ".client_name", function(){
-	if ($(this).val().length == 0) {
-		defaultClientData();
+$(document).on("click", "#client_name", (e) => {
+	if ($(e.target).val().length == 0) {
+		defaultClientData()
 	}
+	$(e.target).val("")
 })
 
-$(document).on("click","#client_name", function(){
-	//evita que se autcomplete con formularios del navegador
-	$(this).val("");
-	$(this).attr('autocomplete', 'none');
-});
-
 $(document).on('railsAutocomplete.select', '.client-autocomplete_field', function(event, data){
-	if (typeof data.item.nomatch !== 'undefined'){
+	if (typeof data.item.nomatch !== 'undefined') {
 		if (data.item.nomatch.length) {
-			$('input[name^="client["]').each(function(){ $(this).val("");	});
-			$("input.client-autocomplete_field").val(data.item.nomatch);
+			$('input[name^="client["]').each( () => $(this).val("") )
+			$("input.client-autocomplete_field").val(data.item.nomatch)
 		}
 	}
 	assignValuesToInputs(data)
-	bindEnabledInputHandler()
 });
 
 function assignValuesToInputs(data) {
-	let enabled_client_input = $('#client_enabled')
-	let client_observation	 = $('#client_enabled_observation')
-
-	$.each( data.item, function( key, value ) { $("#client_" + key ).val(value)	});
-	enabled_client_input.prop('checked', data.item['enabled']).trigger('change')
+	$.each( data.item, ( key, value ) =>  $("#client_" + key ).val(value)	)
+	toggleClientEnabled(data.item['enabled'])
+	toggleClientValidForAccount(data.item['valid_for_account'])
 }
 
 function defaultClientData() {
@@ -34,15 +26,19 @@ function defaultClientData() {
 	$(".client_document").val("80");
 }
 
-function bindEnabledInputHandler() {
-	$('#client_enabled').change(function() {
-		if (this.checked) {
-			$(this).val('true')
-			$('#client_enabled_observation').removeAttr('style')
-		} else {
-			$(this).val('false')
-			$('#client_enabled_observation').css('border-color', 'red')
-		}
-		alert($(this.val()))
-	})
+function toggleClientEnabled(flag) {
+	if (flag) {
+		$('.client-enabled-badge').removeClass('badge-danger').addClass('badge-success').text("Habilitado")
+	} else {
+		$('.client-enabled-badge').removeClass('badge-success').addClass('badge-danger').text("Inhabilitado")
+	}
+	$('#client_enabled_flag').val(flag)
+}
+
+function toggleClientValidForAccount(flag) {
+	if (flag) {
+		$('.client-account-badge').removeClass('badge-danger').addClass('badge-success').text("Cta. Cte.")
+	} else {
+		$('.client-account-badge').removeClass('badge-success').addClass('badge-danger').text("Cta. Cte.")
+	}
 }

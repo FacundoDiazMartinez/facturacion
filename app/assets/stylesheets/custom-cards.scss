@@ -1,0 +1,19 @@
+.card-bordered {
+  border-left: 10px solid !important;
+
+  &.border-green {
+    border-color: #28a745 !important;
+  }
+
+  &.border-yellow {
+    border-color: #ffc107 !important;
+  }
+
+  &.border-orange {
+    border-color: #ff5722 !important;
+  }
+
+  &.border-red {
+    border-color: #dc3545 !important;
+  }
+}

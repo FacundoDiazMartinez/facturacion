@@ -1,7 +1,7 @@
 <%= nested_form_for @invoice do |form| %>
 <%= error_explanation @invoice %>
   <%= form.hidden_field :budget_id %>
-  <div class="card invoice-header">
+  <div class="card invoice-header card-bordered <%= bordered_invoice_by_state(@invoice.state) %>">
     <div class="card-body">
       <div class="row">
         <div id="client_form" class="col-md-4">

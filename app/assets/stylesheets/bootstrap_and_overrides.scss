@@ -95,7 +95,7 @@ h6 small {
 
 .card {
   margin-bottom: 20px;
-  border: none;
+  border: none !important;
   box-shadow: 0px 3px 12px 1px rgba(0, 0, 0, 0.2);
 
   .card-header {
