@@ -19,7 +19,6 @@ module InvoiceManager
         else
   				display_confirmation_errors(comprobante)
         end
-
       rescue ActiveRecord::RecordInvalid => exception
         @invoice.errors.add("Comprobante no confirmado.1", exception.message)
         raise ActiveRecord::Rollback
@@ -63,6 +62,7 @@ module InvoiceManager
           end
         end
       end
+      raise ActiveRecord::Rollback
     end
 
     def verifica_cliente_con_cuenta_corriente

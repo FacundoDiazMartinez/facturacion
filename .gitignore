@@ -26,7 +26,7 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 config/database.yml
-config/initializers/afip.rb
+#config/initializers/afip.rb
 #/afip/*
 
 # para eliminar archivos en el repositorio
