@@ -220,19 +220,19 @@ class Payment < ApplicationRecord
       when 0
         "cash_payments"
   		when 1
-          "card_payments"
+        "card_payments"
   		when 3
           "bank_payments"
   		when 4
-          "cheque_payments"
+        "cheque_payments"
   		when 5
-          "retention_payments"
+        "retention_payments"
   		when 6
-          "account_payments"
+        "account_payments"
   		when 7
-          "debit_payments"
+        "debit_payments"
       when 8
-          "compensation_payments"
+        "compensation_payments"
       end
     end
   #FUNCIONES

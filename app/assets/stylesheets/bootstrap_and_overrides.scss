@@ -13,25 +13,25 @@ body {
 
 /// BOTONES /////
 .btn-floated {
-    position: fixed;
-    right: 1.25rem;
-    bottom: 1.25rem;
-    width: 3.5rem;
-    height: 3.5rem;
-    font-size: 1.25rem !important;
-    line-height: 2 !important;
-    border-radius: 3rem !important;
-    border: 0 !important;
-    z-index: 5;
-    box-shadow: 0 3px 5px -1px rgba(20,20,31,.2), 0 6px 10px 0 rgba(20,20,31,.14), 0 1px 18px 0 rgba(20,20,31,.12);
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 1.25rem !important;
+  line-height: 2 !important;
+  border-radius: 3rem !important;
+  border: 0 !important;
+  z-index: 5;
+  box-shadow: 0 3px 5px -1px rgba(20,20,31,.2), 0 6px 10px 0 rgba(20,20,31,.14), 0 1px 18px 0 rgba(20,20,31,.12);
 }
 
 .btn-icon {
-    padding: 0;
-    line-height: 1.75rem !important;
-    border-radius: 2.25rem !important;
-    width: 2.25rem;
-    height: 2.25rem;
+  padding: 0;
+  line-height: 1.75rem !important;
+  border-radius: 2.25rem !important;
+  width: 2.25rem;
+  height: 2.25rem;
 }
 
 .dropdown-menu {
@@ -52,12 +52,10 @@ body {
     }
   }
 }
-
 //// FIN BOTONES /////
 
 
 //// TABLAS //////
-
 .table {
   thead {
     th {
@@ -112,8 +110,6 @@ h6 small {
   .card-body {
 
     a {
-      --color: inherit;
-
       &:hover {
         text-decoration: none;
       }

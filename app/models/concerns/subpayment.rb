@@ -2,7 +2,6 @@ module Subpayment
 	extend ActiveSupport::Concern
 
   included do
-    #after_save :update_payment
     after_destroy :update_invoice
 		belongs_to :payment
 
@@ -23,9 +22,8 @@ module Subpayment
     end
   end
 
-
   def update_payment
-    payment.update_column(:total,self.total)
+    payment.update_column(:total, self.total)
   end
 
   def client

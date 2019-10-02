@@ -157,7 +157,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
   end
 
   create_table "budgets", force: :cascade do |t|
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "state", default: "Generado", null: false
     t.date "expiration_date"
     t.string "number", null: false
@@ -202,7 +202,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
 
   create_table "cheque_payments", force: :cascade do |t|
     t.string "state", default: "No cobrado", null: false
-    t.date "expiration", default: -> { "('now'::text)::date" }, null: false
+    t.date "expiration", default: -> { "CURRENT_DATE" }, null: false
     t.float "total", default: 0.0, null: false
     t.text "observation"
     t.boolean "active", default: true, null: false
@@ -212,7 +212,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.bigint "payment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "issuance_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "issuance_date", default: -> { "CURRENT_DATE" }, null: false
     t.index ["payment_id"], name: "index_cheque_payments_on_payment_id"
   end
 
@@ -238,7 +238,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "saldo", default: 0.0, null: false
+    t.decimal "saldo", precision: 8, scale: 2, default: "0.0", null: false
     t.float "recharge"
     t.string "payment_day"
     t.string "observation"
@@ -428,7 +428,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.string "state", default: "Pendiente", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
@@ -584,7 +584,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.boolean "active", default: true, null: false
     t.bigint "invoice_id"
     t.bigint "delayed_job_id"
-    t.date "payment_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "payment_date", default: -> { "CURRENT_DATE" }, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "flow", default: "income", null: false
@@ -831,7 +831,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.bigint "responsable_id", null: false
     t.string "observation"
     t.string "number", null: false
-    t.date "init_date", default: -> { "('now'::text)::date" }, null: false
+    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
     t.date "final_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -903,7 +903,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.string "number", null: false
     t.string "state", default: "Pendiente", null: false
     t.string "observation"
-    t.date "date", default: -> { "('now'::text)::date" }, null: false
+    t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.bigint "from_depot_id", null: false
     t.bigint "to_depot_id", null: false
     t.boolean "active", default: true, null: false

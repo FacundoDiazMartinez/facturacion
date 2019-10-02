@@ -73,8 +73,9 @@ function openConfirmationModal(){
 	$('#invoice_total_modal').text("$ " + invoiceTotal.toFixed(2))
 	$('#invoice_total_pay_modal').text("$ " + $('.total_payments').first().text())
 	$('#invoice_total_left_modal').text("$ " + invoiceLeft.toFixed(2))
+	iva = $('.detail_iva').first().text() - $('.total_details').first().text()
 	$('#confirmation_subtotal').text("$ " + $('.total_details').first().text())
-	$('#confirmation_subtotal_iva').text("$ " + $('.detail_iva').first().text())
+	$('#confirmation_subtotal_iva').text("$ " + iva.toFixed(2))
 	$('#confirmation_bonifications').text("-$ " + $('.total_bonifications').first().text())
 	$('#confirmation_taxes').text("$ " + $('.total_tributes').first().text())
 
