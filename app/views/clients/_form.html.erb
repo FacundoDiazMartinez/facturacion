@@ -21,7 +21,7 @@
   <div class="row">
     <div class="col">
       <%= f.label :iva_cond, "Condición I.V.A. *" %>
-      <%= f.select :iva_cond, options_for_select(Client::IVA_COND, "Responsable Inscripto"),{},{class: 'form-control form-control-sm client_iva_con'} %>
+      <%= f.select :iva_cond, options_for_select(Client::IVA_COND, @client.iva_cond),{},{class: 'form-control form-control-sm client_iva_con'} %>
     </div>
     <div class="col">
       <%= f.label :address, "Dirección" %>
