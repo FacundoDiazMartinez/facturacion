@@ -7,7 +7,7 @@ class DailyCash < ApplicationRecord
   after_touch :check_childrens, if: :persisted?
   before_validation :set_initial_state, on: :create
 
-  validates_uniqueness_of :date, scope:  [:company_id, :active], message: "La caja se encuentra abierta."
+  #validates_uniqueness_of :date, scope:  [:company_id, :active], message: "La caja se encuentra abierta."
   validates_presence_of :initial_amount, message: "Debe especificar un valor de inicio."
 
   default_scope { where(active: true ) }
