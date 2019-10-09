@@ -210,6 +210,7 @@ class AccountMovement < ApplicationRecord
   #PROCESOS
 
   private
+
   def self.search_by_cbte_tipo cbte_tipo
     if !cbte_tipo.blank?
       where(cbte_tipo: cbte_tipo)

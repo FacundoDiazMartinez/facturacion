@@ -77,8 +77,8 @@ class Company < ApplicationRecord
 
 	def set_code
 		begin
-	      	self.code = SecureRandom.hex(3).upcase
-	    end while !Company.select(:code).where(:code => code).empty?
+      	self.code = SecureRandom.hex(3).upcase
+    end while !Company.select(:code).where(:code => code).empty?
 	end
 
 	def clean_cuit
@@ -89,13 +89,6 @@ class Company < ApplicationRecord
 
 	def date_less_than_today
 		errors.add(:activity_init_date, "La fecha de inicio de actividad no puede ser mayor que hoy.") if activity_init_date && activity_init_date > Date.today
-	end
-
-	def set_admin_role user_id
-		if self.roles.blank?
-			admin_role = Role.where(company_id: self.id, name: "Administrador").first_or_create
-			UserRole.where(role_id: admin_role.id, user_id: user_id).first_or_create
-		end
 	end
 
 	def logo

@@ -10,14 +10,15 @@ module ReceiptManager
         confirma_movimiento_de_cuenta()
         @receipt.account_movement.reload
         @receipt.saved_amount_available = @receipt.account_movement.amount_available
-        pp @receipt.saved_amount_available
+
         @receipt.state                  = "Finalizado"
-        @receipt.save
+        @receipt.save!
+
       rescue ActiveRecord::RecordInvalid => exception
         @receipt.errors.add("Error al confirmar", exception)
         raise ActiveRecord::Rollback
       rescue StandardError => error
-        pp error.inspect
+        puts error.inspect
         raise ActiveRecord::Rollback
       end
     end

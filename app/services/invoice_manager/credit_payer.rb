@@ -34,6 +34,7 @@ module InvoiceManager
                   total: a_pagar
   							)
   							if income_payment.save
+                  income_payment.set_total_pay_to_invoice
   								am.update_columns(
   									amount_available: am.amount_available - a_pagar
   								)

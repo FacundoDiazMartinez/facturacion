@@ -12,7 +12,11 @@ module InvoiceManager
       detalle.save!
       genera_movimiento_de_cuenta(recibo, @invoice)
 
-      recibo.confirmar!
+      if @invoice.on_account?
+        ReceiptManager::Confirmator.call(recibo)
+      else
+        ReceiptManager::OutboundAccountConfirmator.call(recibo)
+      end
     end
 
     private
@@ -48,10 +52,12 @@ module InvoiceManager
       am.active      = false
       am.save!
 
-      @invoice.income_payments.where(generated_by_system: false, account_movement_id: nil).each do |income_payment|
-        income_payment.account_movement_id = am.id
-        income_payment.invoice_id          = nil
-        income_payment.save!
+      if invoice.on_account?
+        invoice.income_payments.where(generated_by_system: false, account_movement_id: nil).each do |income_payment|
+          income_payment.account_movement_id = am.id
+          income_payment.invoice_id          = nil
+          income_payment.save!
+        end
       end
     end
   end

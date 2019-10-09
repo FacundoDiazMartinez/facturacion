@@ -35,10 +35,14 @@ function toggleClientEnabled(flag) {
 	$('#client_enabled_flag').val(flag)
 }
 
-function toggleClientValidForAccount(flag) {
-	if (flag) {
+function toggleClientValidForAccount(onAccountFlag) {
+	if (onAccountFlag) {
+		$('#on_account input').removeAttr('disabled')
+		$('#on_account').show()
 		$('.client-account-badge').removeClass('badge-danger').addClass('badge-success').text("Cta. Cte.")
 	} else {
+		$('#on_account input').attr('disabled', 'disabled')
+		$('#on_account').hide()
 		$('.client-account-badge').removeClass('badge-success').addClass('badge-danger').text("Cta. Cte.")
 	}
 }

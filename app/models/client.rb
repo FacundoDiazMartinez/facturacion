@@ -15,7 +15,6 @@ class Client < ApplicationRecord
 	after_update 	:set_update_activity
 	after_touch		:update_debt
 
-	#IVA_COND = ["Responsable Inscripto", "Responsable Monotributo", "Consumidor Final", "Exento"]
 	IVA_COND = ["Iva Sujeto Exento", "Consumidor Final", "IVA No Alcanzado", "Proveedor del Exterior", "Cliente del Exterior", "Responsable Inscripto", "Responsable Monotributo", "IVA Liberado", "Monotributista Social"]
 
 	validates_numericality_of :document_number, message: 'Ingrese un numero de documento valido.'

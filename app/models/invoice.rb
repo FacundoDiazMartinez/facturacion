@@ -445,16 +445,26 @@ class Invoice < ApplicationRecord
   end
 
   def all_payments_string
-		array = []
-    if self.receipts.any?
-      self.receipts.each do |receipt|
-        receipt.account_movement.account_movement_payments.user_payments.each do |payment|
-          array << payment.payment_name
-        end
-      end
-      return array.uniq.compact.join(', ')
-    else
-      return "Cta. Cte."
-    end
+		if self.receipts.any?
+			if self.on_account?
+				array = []
+				self.receipts.each do |receipt|
+					receipt.account_movement.account_movement_payments.user_payments.each do |payment|
+						array << payment.payment_name
+					end
+				end
+				return array.uniq.compact.join(', ')
+			else
+				array = []
+				AccountMovement.unscoped do
+					self.income_payments.each do |payment|
+						array << payment.payment_name
+					end
+					return array.uniq.compact.join(', ')
+				end
+			end
+		else
+			return "Cta. Cte."
+		end
   end
 end
