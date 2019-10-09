@@ -72,12 +72,10 @@ class Product < ApplicationRecord
     presence: { message: "El nombre del producto no puede estar en blanco." },
     uniqueness: { scope: [:company_id, :active], message: "Ya existe un producto/servicio con el mismo nombre.", if: :active }
 	validates :price,
-    presence: { message: "Debe ingresar el precio del producto." },
-    numericality: { greater_than: 0, message: "El precio debe ser mayor a 0." }
-  validates :cost_price,
-    presence: { message: "Debe ingresar el precio de costo del producto." }
+    presence: { message: "Debe ingresar el precio final del producto." },
+    numericality: { greater_than: 0, message: "El precio final debe ser mayor a 0." }
 	validates_presence_of :created_by, :updated_by, :company_id
-	validates_presence_of :iva_aliquot, message: "Ingrese un valor para el IVA."
+	validates_presence_of :iva_aliquot, message: "Ingrese un número válido para el IVA, por ejemplo '21'."
   validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}, allow_blank: true
   validate :validate_unique_state
 
@@ -362,93 +360,7 @@ class Product < ApplicationRecord
 		available_stock.save
 	end
 
-  def self.save_excel file, supplier_id, current_user, depot_id, type_of_movement
-  	spreadsheet = open_spreadsheet(file)
-  	excel = []
-  	(2..spreadsheet.last_row).each do |r|
-  		excel << spreadsheet.row(r)
-  	end
-  	header = self.permited_params
-  	categories = {}
-  	current_user.company.product_categories.map{|pc| categories[pc.name] = pc.id}
-  	delay.load_products(excel, header, categories, current_user, supplier_id, depot_id, type_of_movement)
-  end
-
-	def self.load_products spreadsheet, header, categories, current_user, supplier_id, depot_id, type_of_movement
-		products 	= []
-  	invalid 	= []
-		(0..spreadsheet.size - 1).each do |i|
-  		row = Hash[[header, spreadsheet[i]].transpose]
-  		product = where(code: row[:code], company_id: current_user.company_id ).first_or_initialize
-  		if categories["#{row[:product_category_name]}"].nil?
-  			pc = ProductCategory.where(name: row[:product_category_name], company_id: current_user.company_id).first_or_initialize
-  			if pc.save
-  				product_category_id = pc.id
-  				categories["#{row[:product_category_name]}"] = product_category_id
-  			end
-  		end
-  		product.supplier_id 		  	= supplier_id
-  		product.product_category_id = categories["#{row[:product_category_name]}"]
-  		product.code 				      	= row[:code]
-  		product.supplier_code 			= row[:supplier_code]
-  		product.name 				      	= row[:name]
-  		product.cost_price 			  	= row[:cost_price].round(2) unless row[:cost_price].nil?
-  		product.net_price 			  	= row[:net_price].round(2) unless row[:net_price].nil?
-  		product.price 				    	= row[:price].round(2) unless row[:price].nil?
-  		product.measurement_unit 		= Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
-  		product.iva_aliquot 		  	= Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
-  		product.company_id 			  	= current_user.company_id
-  		product.created_by 			  	= current_user.id
-  		product.updated_by 			  	= current_user.id
-  		if !product.save
-  			invalid << [i, product.errors.messages.values]
-  		else
-  			unless depot_id.blank?
-    			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
-          if type_of_movement == "0"
-            stock.quantity = row[:stock]
-          else
-            stock.quantity += row[:stock]
-          end
-    			stock.save
-    		end
-  		end
-  	end
-		return_process_result(invalid, current_user)
-	end
-
-  def self.return_process_result invalid, user
-    if invalid.any?
-      {
-        'result' => false,
-        'message' => 'Uno o mas productos no pudieron importarse.',
-        'product_with_errors' => invalid
-      }
-      Notification.create_for_failed_import invalid, user
-    else
-      {
-        'result' => true,
-        'message' => 'Todos los productos fueron correctamente importados a la base de datos.',
-        'product_with_errors' => []
-      }
-      Notification.create_for_success_import user
-    end
-  end
-
-
-	def self.open_spreadsheet(file)
-    case File.extname(file.original_filename)
-	    when ".csv" then Roo::Csv.new(file.path)
-	    when ".xls" then Roo::Spreadsheet.open(file.path, extension: :xlsx)
-	    when ".xlsx" then Roo::Excelx.new(file.path)
-	    else raise "Tipo de archivo desconocido: #{file.original_filename}"
-    end
-	end
-
 	private
-	def self.permited_params
-		[:product_category_name, :code, :name, :supplier_code, :cost_price, :iva_aliquot, :net_price, :price, :measurement, :measurement_unit, :stock]
-	end
 
 	def self.default_scope
 	 	where(active: true, tipo: "Producto")
