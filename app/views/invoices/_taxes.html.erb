@@ -1,43 +1,45 @@
-<div class="form-group">
-  <a class="h3 toggle-card" data-target="#div_itributes" data-label-info="#tributes_resume"><%= icon('fas', 'angle-double-down') %> Tributos</a>
-  <span id="tributes_resume" class="total_tributos float-right important-number"> Total tributos: $<span class="total_tributes">0.00</span></span>
-</div>
-<div id="div_itributes" class="card" style="display: none;" >
-  <div class="card-body">
-    <div class="row">
-      <div class="table-responsive">
-        <table class="table table-striped invoice-table" id="tributes">
-          <thead>
-            <tr>
-              <th scope="col">Descripción</th>
-              <th scope="col">Base imponible</th>
-              <th scope="col">Alícuota(%)</th>
-              <th scope="col">Importe($)</th>
-              <th scope="col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <%= form.fields_for :tributes, (CompanyManager::DefaultTaxesGetter.call(current_company) unless (!form.object.tributes.empty? || form.object.persisted?)), wrapper: false do |f| %>
-            <tr class="fields">
-              <td>
-                <%= f.hidden_field :desc, class: 'desc' %>
-                <%= f.select :afip_id, CompanyManager::DefaultTaxesGetter::TRIBUTOS, { prompt: "Seleccione..." }, { class: 'form-control afip_id', style: 'min-width: 100px;', disabled: invoice.confirmado?} %>
-              </td>
-              <td><%= f.number_field :base_imp, class: 'form-control base_imp', readonly: true, min: 0.0 %></td>
-              <td><%= f.number_field :alic, class: 'form-control alic', disabled: invoice.confirmado?, min: 0.0 %></td>
-              <td><%= f.number_field :importe, class: 'form-control importe', readonly: true, min: 0.0 %></td>
-              <td><%= f.link_to_remove icon('fas', 'trash') if invoice.editable? %></td>
-            </tr>
-            <% end %>
-          </tbody>
-        </table>
+<div id="tributes_wrapper">
+  <div class="form-group">
+    <a class="h3 toggle-card" data-target="#div_itributes" data-label-info="#tributes_resume"><%= icon('fas', 'angle-double-down') %> Tributos</a>
+    <span id="tributes_resume" class="total_tributos float-right important-number"> Total tributos: $<span class="total_tributes">0.00</span></span>
+  </div>
+  <div id="div_itributes" class="card" style="display: none;" >
+    <div class="card-body">
+      <div class="row">
+        <div class="table-responsive">
+          <table class="table table-striped invoice-table" id="tributes">
+            <thead>
+              <tr>
+                <th scope="col">Descripción</th>
+                <th scope="col">Base imponible</th>
+                <th scope="col">Alícuota(%)</th>
+                <th scope="col">Importe($)</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= form.fields_for :tributes, (CompanyManager::DefaultTaxesGetter.call(current_company) unless (!form.object.tributes.empty? || form.object.persisted?)), wrapper: false do |f| %>
+              <tr class="fields">
+                <td>
+                  <%= f.hidden_field :desc, class: 'desc' %>
+                  <%= f.select :afip_id, CompanyManager::DefaultTaxesGetter::TRIBUTOS, { prompt: "Seleccione..." }, { class: 'form-control afip_id', style: 'min-width: 100px;', disabled: invoice.confirmado?} %>
+                </td>
+                <td><%= f.number_field :base_imp, class: 'form-control base_imp', readonly: true, min: 0.0 %></td>
+                <td><%= f.number_field :alic, class: 'form-control alic', disabled: invoice.confirmado?, min: 0.0 %></td>
+                <td><%= f.number_field :importe, class: 'form-control importe', readonly: true, min: 0.0 %></td>
+                <td><%= f.link_to_remove icon('fas', 'trash') if invoice.editable? %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-    <div class="m-2 text-center">
-      <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-secondary', data: {target: '#tributes'} if invoice.editable? %>
-    </div>
-    <div class="resume text-right">
-      <h5 class="important-number">Total tributos: $<span class="total_tributes">0.00</span></h5>
+      <div class="m-2 text-center">
+        <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar tributo</span>".html_safe, :tributes, class: 'btn btn-secondary', data: {target: '#tributes'} if invoice.editable? %>
+      </div>
+      <div class="resume text-right">
+        <h5 class="important-number">Total tributos: $<span class="total_tributes">0.00</span></h5>
+      </div>
     </div>
   </div>
 </div>
