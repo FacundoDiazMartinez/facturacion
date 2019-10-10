@@ -26,7 +26,7 @@ class InvoicesController < ApplicationController
         render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
           layout: 'pdf.html',
           template: 'invoices/show',
-          # zoom: 3.4,
+          zoom: 3.4,
           # si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
@@ -61,6 +61,7 @@ class InvoicesController < ApplicationController
     if @invoice.custom_save(params[:send_to_afip])
       redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."
     else
+      pp @invoice
       render :new, alert: "Error al registrar el comprobante."
     end
   end
@@ -257,7 +258,7 @@ class InvoicesController < ApplicationController
   end
 
   def invoice_params
-    params.require(:invoice).permit(:active, :budget_id, :client_id, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification,
+    params.require(:invoice).permit(:active, :budget_id, :client_id, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification, :on_account,
       income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
         cash_payment_attributes: [:id, :total],
         debit_payment_attributes: [:id, :total, :bank_id],

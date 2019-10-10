@@ -30,10 +30,7 @@ class User < ApplicationRecord
   after_create :send_admin_mail, if: Proc.new{ |u| u.has_company?}
   after_save :set_approved_activity, if: Proc.new{ |u| u.saved_change_to_approved? && u.has_company?}
 
-
-
   #FILTROS DE BUSQUEDA
-
     def self.search_by_name name
       if !name.nil?
         where("LOWER(first_name ||' ' || last_name) LIKE LOWER(?)", "%#{name}%")
@@ -67,11 +64,6 @@ class User < ApplicationRecord
 
     def cant_disapprove_if_has_management_role
       #errors.add(:approve, "No puedes eliminar a un usuario con rol de Gerente.") unless not has_management_role?
-    end
-
-
-  	def set_company company_id
-  		update_columns(company_id: company_id, admin: true)
     end
 
   	def has_company?

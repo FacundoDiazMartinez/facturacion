@@ -3,6 +3,16 @@
   <%= form.hidden_field :budget_id %>
   <div class="card invoice-header card-bordered <%= bordered_invoice_by_state(@invoice.state) %>">
     <div class="card-body">
+      <div id="on_account" class="row" style="display: none">
+        <div class="col-md-4">
+          <div class="form-group row">
+            <%= form.label :on_account, "A Cta. Cte.", class:'col-4 col-form-label col-form-label-sm' %>
+            <div class="col-8">
+              <%= form.check_box :on_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle', disabled: true %>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row">
         <div id="client_form" class="col-md-4">
           <%= render '/invoices/client_column' %>

@@ -8,7 +8,8 @@ module InvoiceManager
     def call
       ActiveRecord::Base.transaction do
         verifica_cliente_con_cuenta_corriente()
-        AccountMovementGenerator.call(@invoice)
+
+        AccountMovementGenerator.call(@invoice) if @invoice.on_account?
         ReceiptGenerator.call(@invoice) if @invoice.total_pay > 0
 
         comprobante = AfipGateway.call(@invoice)
@@ -66,8 +67,12 @@ module InvoiceManager
     end
 
     def verifica_cliente_con_cuenta_corriente
-      if @invoice.is_invoice? && (@invoice.total_left > 0)  && !@invoice.client.valid_for_account?
-        raise StandardError, "Cliente inhabilitado para Cuenta Corriente. Ingrese pagos por la totalidad de la factura."
+      if @invoice.is_invoice?  && (@invoice.total_left > 0)
+        if !@invoice.client.valid_for_account?
+          raise StandardError, "Cliente inhabilitado para Cuenta Corriente. Ingrese pagos por la totalidad de la factura."
+        elsif !@invoice.on_account?
+          raise StandardError, "Comprobante no confirmado. Ingrese pagos por la totalidad de la factura."
+        end
       end
     end
   end

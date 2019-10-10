@@ -23,14 +23,12 @@ class CompaniesController < ApplicationController
   # POST /companies
   # POST /companies.json
   def create
-    @company = Company.new(company_params)
-
+    @company      = Company.new(company_params)
     respond_to do |format|
       if @company.save
-        current_user.set_company(@company.id)
-        @company.set_admin_role current_user.id
+        CompanyManager::Creator.call(@company, current_user)
         format.html { redirect_to @company, notice: 'Compañía creada con éxito.' }
-        format.json { render :show, status: :created, location: @compaset_admin_roleny }
+        format.json { render :show, status: :created, location: @company }
       else
         format.html { render :new }
         format.json { render json: @company.errors, status: :unprocessable_entity }

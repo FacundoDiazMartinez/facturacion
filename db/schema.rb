@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_30_152537) do
+ActiveRecord::Schema.define(version: 2019_10_08_125324) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -242,10 +242,10 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.float "recharge"
     t.string "payment_day"
     t.string "observation"
-    t.boolean "valid_for_account", default: true, null: false
+    t.boolean "valid_for_account", default: false, null: false
     t.string "contact_1"
     t.string "contact_2"
-    t.boolean "enabled", default: true
+    t.boolean "enabled", default: true, null: false
     t.string "enabled_observation"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
@@ -532,6 +532,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_152537) do
     t.float "bonification", default: 0.0, null: false
     t.decimal "base_imponible", precision: 8, scale: 2, default: "0.0"
     t.decimal "total_tributos", precision: 8, scale: 2, default: "0.0"
+    t.boolean "on_account", default: false, null: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
