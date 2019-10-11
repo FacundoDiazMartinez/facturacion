@@ -7,9 +7,10 @@ module InvoiceManager
 
     def call
       establece_constantes
+      pp invoice_client_document
       comprobante = Afip::Bill.new(
         net:            suma_montos_netos_con_descuento,
-        doc_num:        @invoice.client.document_number,
+        doc_num:        0,
         sale_point:     @invoice.sale_point.name,
         documento:      Afip::DOCUMENTOS.key(@invoice.client.document_type),
         moneda:         @invoice.company.moneda.parameterize.underscore.gsub(" ", "_").to_sym,
@@ -26,7 +27,7 @@ module InvoiceManager
         exento:         exento,
         otros_imp:      otros_imp
       )
-      comprobante.doc_num = @invoice.client.document_number
+      comprobante.doc_num = invoice_client_document
 
       return comprobante
     end
@@ -99,6 +100,14 @@ module InvoiceManager
         importe -= importe * (bonification.percentage / 100)
       end
       return importe
+    end
+
+    def invoice_client_document
+      if @invoice.client.document_type == '99'
+        0
+      else
+        @invoice.client.document_number
+      end
     end
   end
 end
