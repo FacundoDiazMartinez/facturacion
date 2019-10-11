@@ -118,6 +118,7 @@ class DailyCash < ApplicationRecord
           flow: diferencia > 0 ? "income" : "expense",
           current_balance: final_amount,
           observation:  "Ajuste generado automaticamente por el sistema. Al momento de realizarse se observa monto de cierre igual a $#{final_amount}, monto de caja al momento de cierre igual a $#{current_amount}."
+
         )
       end
       self.daily_cash_movements.create(

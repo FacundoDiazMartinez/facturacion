@@ -19,11 +19,38 @@ function assignValuesToInputs(data) {
 	$.each( data.item, ( key, value ) =>  $("#client_" + key ).val(value)	)
 	toggleClientEnabled(data.item['enabled'])
 	toggleClientValidForAccount(data.item['valid_for_account'])
+	if (data.item['iva_cond'] == 'Consumidor Final') {
+		cleanTributes();
+	};
 }
+
+$( document ).ready(function() {
+	if ($('#invoice_client_iva_cond').val() == 'Consumidor Final') {
+		cleanTributes();
+	}
+	else{
+		getTotalTaxes();
+	}
+})
 
 function defaultClientData() {
 	$(".client_iva_con").val("Responsable Inscripto");
 	$(".client_document").val("80");
+}
+
+function cleanTributes() {
+	$('#tributes tr').each( (index, current_row) => {
+		$(current_row).find('[id*="_destroy"]').val(true);
+		$(current_row).css('display', 'none');
+	})
+	$('#tributes_wrapper').css('display', 'none');
+}
+function showTributes() {
+	$('#tributes tr').each( (index, current_row) => {
+		$(current_row).find('[id*="_destroy"]').val(true);
+		$(current_row).css('display', 'none');
+	})
+	$('#tributes_wrapper').css('display', 'none');
 }
 
 function toggleClientEnabled(flag) {

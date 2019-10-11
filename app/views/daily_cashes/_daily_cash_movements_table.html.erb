@@ -18,7 +18,7 @@
         <td><%= image_tag movement.user_avatar, alt: movement.user_name, class: 'avatar' %> <%= user_with_link(movement) %></td>
         <td><%= movement.date ? l(movement.date, format: :short ) : "-" %></td>
         <td><%= comprobante_con_link_dcm(movement) %></td>
-        <td>$<%= movement.amount %></td>
+        <td>$<%= movement.amount.round(2) %></td>
         <td><%= movement.movement_type %></td>
         <td><%= flow_type(movement.flow) %></td>
         <td>$<%= movement.current_balance %></td>
