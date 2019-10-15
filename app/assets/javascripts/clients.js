@@ -33,6 +33,16 @@ $( document ).ready(function() {
 	}
 })
 
+$(document).on('pjax:complete', function() {
+	if ($('#invoice_client_iva_cond').val() == 'Consumidor Final') {
+		cleanTributes();
+	}
+	else{
+		getTotalTaxes();
+	}
+})
+
+
 function defaultClientData() {
 	$(".client_iva_con").val("Responsable Inscripto");
 	$(".client_document").val("80");
