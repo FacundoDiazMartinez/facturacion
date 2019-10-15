@@ -1,4 +1,3 @@
-<div id="ipayments">
   <div class="form-group">
     <a id="payment_title" class="h3 toggle-card" data-target="#div_ipayments" data-label-info="#payments_resume"><%= invoice.is_credit_note? ? "Devoluciones de dinero" : "#{icon('fas', 'angle-double-down')} Pagos".html_safe %></a>
     <span id="payments_resume" class="total_pagos float-right important-number">Total pagos: $<span class="total_payments">0.00</span></span>
@@ -97,5 +96,3 @@
   <script type="text/javascript">
     initializePaymentsLimit()
   </script>
-
-</div>

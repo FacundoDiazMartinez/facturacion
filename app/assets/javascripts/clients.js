@@ -1,7 +1,5 @@
 $(document).on("click", "#client_name", (e) => {
-	if ($(e.target).val().length == 0) {
-		defaultClientData()
-	}
+	if ($(e.target).val().length == 0) { defaultClientData() }
 	$(e.target).val("")
 })
 
@@ -15,52 +13,42 @@ $(document).on('railsAutocomplete.select', '.client-autocomplete_field', functio
 	assignValuesToInputs(data)
 });
 
+
+$(document).ready(() =>	checkTaxes() )
+
+$(document).on('pjax:complete', () =>	checkTaxes() )
+
 function assignValuesToInputs(data) {
 	$.each( data.item, ( key, value ) =>  $("#client_" + key ).val(value)	)
 	toggleClientEnabled(data.item['enabled'])
 	toggleClientValidForAccount(data.item['valid_for_account'])
-	if (data.item['iva_cond'] == 'Consumidor Final') {
-		cleanTributes();
-	};
+	$('#invoice_client_iva_cond').val(data.item['iva_cond'])
+	checkTaxes()
 }
-
-$( document ).ready(function() {
-	if ($('#invoice_client_iva_cond').val() == 'Consumidor Final') {
-		cleanTributes();
-	}
-	else{
-		getTotalTaxes();
-	}
-})
-
-$(document).on('pjax:complete', function() {
-	if ($('#invoice_client_iva_cond').val() == 'Consumidor Final') {
-		cleanTributes();
-	}
-	else{
-		getTotalTaxes();
-	}
-})
-
 
 function defaultClientData() {
 	$(".client_iva_con").val("Responsable Inscripto");
 	$(".client_document").val("80");
 }
 
-function cleanTributes() {
-	$('#tributes tr').each( (index, current_row) => {
-		$(current_row).find('[id*="_destroy"]').val(true);
-		$(current_row).css('display', 'none');
-	})
-	$('#tributes_wrapper').css('display', 'none');
+function checkTaxes() {
+	if ($('#invoice_client_iva_cond').val() == 'Consumidor Final') {
+		cleanTaxes();
+	}	else {
+		showTaxes();
+	}
 }
-function showTributes() {
+
+function cleanTaxes() {
 	$('#tributes tr').each( (index, current_row) => {
 		$(current_row).find('[id*="_destroy"]').val(true);
 		$(current_row).css('display', 'none');
 	})
-	$('#tributes_wrapper').css('display', 'none');
+	$('#itaxes').css('display', 'none');
+}
+
+function showTaxes() {
+	$('#itaxes').css('display', 'block');
 }
 
 function toggleClientEnabled(flag) {

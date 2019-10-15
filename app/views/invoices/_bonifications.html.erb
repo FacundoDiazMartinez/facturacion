@@ -1,63 +1,62 @@
-<div id="ibonifications">
-  <div class="form-group">
-    <a class="h3 toggle-card" data-target="#div_ibonifications" data-label-info="#bonification_resume"><%= icon('fas', 'angle-double-down') %> Descuentos</a>
-    <span id="bonification_resume" class="total_descuentos float-right important-number">Total descuentos: -$<span class="total_bonifications">0.00</span></span>
-  </div>
-  <div id="div_ibonifications" class="card" style="display: none;">
-    <div class="card-body">
-      <div class="row">
-        <div class="table-responsive">
-          <table class="table table-striped invoice-table" id="bonifications" style="width: 100%;">
-            <thead>
-              <tr>
-                <th style="width: 30%">Descripción</th>
-                <th>Alícuota</th>
-                <th>Descuento</th>
-                <th>Subtotal</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <%= form.fields_for :bonifications, wrapper: false do |f| %>
-              <tr class="fields">
-                <td><%= f.text_field :observation, class: 'form-control bonif_observation', disabled: invoice.confirmado? %></td>
-                <td>
-                  <div class="input-group">
-                    <%= f.number_field :percentage, class: 'form-control bonif_percentage text-right', disabled: invoice.confirmado?, step: :any, min: 0, max: 50 %>
-                    <div class="input-group-append">
-                      <span class="input-group-text">%</span>
-                    </div>
+<div class="form-group">
+  <a class="h3 toggle-card" data-target="#div_ibonifications" data-label-info="#bonification_resume"><%= icon('fas', 'angle-double-down') %>
+    Descuentos</a>
+  <span id="bonification_resume" class="total_descuentos float-right important-number">Total descuentos: -$<span class="total_bonifications">0.00</span></span>
+</div>
+<div id="div_ibonifications" class="card" style="display: none;">
+  <div class="card-body">
+    <div class="row">
+      <div class="table-responsive">
+        <table class="table table-striped invoice-table" id="bonifications" style="width: 100%;">
+          <thead>
+            <tr>
+              <th style="width: 30%">Descripción</th>
+              <th>Alícuota</th>
+              <th>Descuento</th>
+              <th>Subtotal</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= form.fields_for :bonifications, wrapper: false do |f| %>
+            <tr class="fields">
+              <td><%= f.text_field :observation, class: 'form-control bonif_observation', disabled: invoice.confirmado? %></td>
+              <td>
+                <div class="input-group">
+                  <%= f.number_field :percentage, class: 'form-control bonif_percentage text-right', disabled: invoice.confirmado?, step: :any, min: 0, max: 50 %>
+                  <div class="input-group-append">
+                    <span class="input-group-text">%</span>
                   </div>
-                </td>
-                <td>
-                  <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">$</span>
-                    </div>
-                    <%= f.number_field :amount, class: 'form-control bonif_amount text-right', readonly: true, step: :any %>
+                </div>
+              </td>
+              <td>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
                   </div>
-                </td>
-                <td>
-                  <div class="input-group ">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">$</span>
-                    </div>
-                    <%= f.number_field :subtotal,class: 'form-control bonif_subtotal text-right', readonly: true, step: :any %>
+                  <%= f.number_field :amount, class: 'form-control bonif_amount text-right', readonly: true, step: :any %>
+                </div>
+              </td>
+              <td>
+                <div class="input-group ">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
                   </div>
-                </td>
-                <td><%= f.link_to_remove icon('fas', 'trash') if invoice.editable? %></td>
-              </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="m-2 text-center">
-        <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar descuento</span>".html_safe, :bonifications, class: 'btn btn-secondary', data: {target: '#bonifications'}, id: 'bonifications_add_button' if invoice.editable? %>
-      </div>
-      <div class="resume text-right">
-        <h5 class="important-number">Total descuentos: -$<span class="total_bonifications">0.00</span></h5>
-      </div>
+                  <%= f.number_field :subtotal,class: 'form-control bonif_subtotal text-right', readonly: true, step: :any %>
+                </div>
+              </td>
+              <td><%= f.link_to_remove icon('fas', 'trash') if invoice.editable? %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
+  <div class="m-2 text-center">
+    <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar descuento</span>".html_safe, :bonifications, class: 'btn btn-secondary', data: {target: '#bonifications'}, id: 'bonifications_add_button' if invoice.editable? %>
+  </div>
+  <div class="resume text-right">
+    <h5 class="important-number">Total descuentos: -$<span class="total_bonifications">0.00</span></h5>
+  </div>
+</div>
 </div>
