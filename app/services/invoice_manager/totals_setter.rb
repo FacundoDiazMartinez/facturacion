@@ -81,7 +81,7 @@ module InvoiceManager
 
     def aplica_descuentos(subtotal_a_bonificar)
       @invoice.bonifications.reject(&:marked_for_destruction?).each do |bonification|
-        subtotal_a_bonificar -= (subtotal_a_bonificar * (bonification.percentage.to_f / 100))
+        subtotal_a_bonificar -= (subtotal_a_bonificar * (bonification.percentage.to_f / 100)).round(2)
       end
       return subtotal_a_bonificar
     end
