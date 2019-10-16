@@ -27,6 +27,7 @@ class Client < ApplicationRecord
 	validates_inclusion_of :iva_cond, in: IVA_COND, message: "Condición frente a I.V.A. inválida."
 	validates_numericality_of :saldo, message: "Saldo inválido. Revise por favor."
 	validates_presence_of :saldo, message: "Saldo inválido. Revise por favor."
+	validates_presence_of :enabled, message: "Debe seleccionar si el cliente se encuentra habilitado o no."
 
 	accepts_nested_attributes_for :client_contacts, reject_if: :all_blank, allow_destroy: true
 	accepts_nested_attributes_for :invoices, reject_if: :all_blank, allow_destroy: true
