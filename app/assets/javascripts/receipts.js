@@ -122,7 +122,7 @@ function receiptConfirmed(){ return $('#receipt_state').val() == "Finalizado" }
 function totalReceiptPayments() {
   let monto = 0
   $('.pay').each((index, currentField) => {
-    let montoPagado = $(currentField).text().replace("$ ", "")
+    let montoPagado = $(currentField).text().replace("$ ", "").replace(",", "")
     if (montoPagado) {
       monto += parseFloat(montoPagado)
     }
