@@ -22,7 +22,9 @@ function assignValuesToInputs(data) {
 	$.each( data.item, ( key, value ) =>  $("#client_" + key ).val(value)	)
 	toggleClientEnabled(data.item['enabled'])
 	toggleClientValidForAccount(data.item['valid_for_account'])
-	$('#invoice_client_iva_cond').val(data.item['iva_cond'])
+	if (data.item['enabled'] == true) {
+		$('#invoice_client_iva_cond').val(data.item['iva_cond'])
+	}
 	checkTaxes()
 }
 

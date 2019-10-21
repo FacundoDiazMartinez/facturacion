@@ -1,4 +1,9 @@
 class ChangeClientDefaults < ActiveRecord::Migration[5.2]
-  change_column :clients, :valid_for_account, :boolean, default: false, null: false
-  change_column :clients, :enabled, :boolean, default: true, null: false
+  def up
+    change_column :clients, :valid_for_account, :boolean, default: false, null: false
+    remove_column :clients, :enabled, :boolean
+    add_column :clients, :enabled, :boolean, null: false, default: true
+  end
+  def down
+  end
 end

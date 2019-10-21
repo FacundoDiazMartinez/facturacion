@@ -245,8 +245,8 @@ ActiveRecord::Schema.define(version: 2019_10_08_125324) do
     t.boolean "valid_for_account", default: false, null: false
     t.string "contact_1"
     t.string "contact_2"
-    t.boolean "enabled", default: true, null: false
     t.string "enabled_observation"
+    t.boolean "enabled", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end

@@ -32,10 +32,10 @@ function runBonifications() {
       descuento         = (alicuota.val() / parseFloat(100)) * totalConceptos
       descuentoIVA      = (alicuota.val() / parseFloat(100)) * totalConceptosConIva
 
-      totalConceptos        -= descuento
-      totalConceptosConIva  -= descuentoIVA
-      totalDescuentos       += descuento
-      totalDescuentosIVA    += descuentoIVA
+      totalConceptos        -= parseFloat(descuento)
+      totalConceptosConIva  -= parseFloat(descuentoIVA)
+      totalDescuentos       += parseFloat(descuento)
+      totalDescuentosIVA    += parseFloat(descuentoIVA)
 
       if (discriminaIVA) {
         monto.val(descuento.toFixed(2))
