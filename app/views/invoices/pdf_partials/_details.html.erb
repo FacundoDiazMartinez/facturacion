@@ -107,7 +107,7 @@
         <tr>
           <td class="text_right"><b>Desc. <%= bon.percentage.round(0) %>%</b></td>
           <% descuentos_aplicados     += total_de_pagina_auxiliar * (bon.percentage / 100) %>
-          <td class="text_right">$ <%= sprintf('%.2f', total_de_pagina_auxiliar * (bon.percentage / 100)) %></td>
+          <td class="text_right">- $ <%= sprintf('%.2f', total_de_pagina_auxiliar * (bon.percentage / 100)) %></td>
           <% total_de_pagina_auxiliar -= descuentos_aplicados  %>
         </tr>
       <% end %>

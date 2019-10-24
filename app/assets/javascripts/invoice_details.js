@@ -43,11 +43,11 @@ function runDetails() {
       detalle 	       = parseFloat(price.val() * quantity.val())
       bonificado       = detalle * (parseFloat(bonus_percentage.val()) / 100)
       subtotal_bruto   = detalle - bonificado
-      monto_iva        = subtotal_bruto * getIvaAliquot(iva_aliquot)
+      monto_iva        = parseFloat((subtotal_bruto * getIvaAliquot(iva_aliquot)).toFixed(2))
       subtotal_neto    = subtotal_bruto + monto_iva
 
       totalDetalles    += subtotal_bruto
-      totalDetallesIVA += subtotal_neto
+      totalDetallesIVA += parseFloat(subtotal_neto.toFixed(2))
 
       bonus_amount.val(bonificado.toFixed(2))
       iva_amount.val(monto_iva.toFixed(2))
@@ -57,7 +57,7 @@ function runDetails() {
     }
   })
   $('.total_details').text(totalDetalles.toFixed(2))
-  $('.detail_iva').text(totalDetallesIVA.toFixed(2))
+  $('.detail_iva').text(totalDetallesIVA)
   runBonifications()
 }
 

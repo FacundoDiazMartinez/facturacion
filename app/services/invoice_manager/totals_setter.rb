@@ -62,7 +62,7 @@ module InvoiceManager
     end
 
     def calcula_total_final
-      @invoice.total 	= (subtotal_conceptos_con_iva() - @invoice.bonification + @invoice.total_tributos).round(2)
+      @invoice.total 	= subtotal_conceptos_con_iva().round(2) - @invoice.bonification + @invoice.total_tributos
     end
 
     def subotal_conceptos_sin_iva
