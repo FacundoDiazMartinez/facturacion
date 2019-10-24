@@ -40,8 +40,8 @@ function runDetails() {
   $("#details > tbody > tr.fields").each((index, currentField) => {
     setDetailRowVars($(currentField));
     if (activo) {
-      detalle 	       = parseFloat(price.val() * quantity.val())
-      bonificado       = detalle * (parseFloat(bonus_percentage.val()) / 100)
+      detalle 	       = parseFloat((price.val() * quantity.val()).toFixed(2))
+      bonificado       = parseFloat((detalle * (parseFloat(bonus_percentage.val()) / 100)).toFixed(2))
       subtotal_bruto   = detalle - bonificado
       monto_iva        = parseFloat((subtotal_bruto * getIvaAliquot(iva_aliquot)).toFixed(2))
       subtotal_neto    = subtotal_bruto + monto_iva
