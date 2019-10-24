@@ -57,7 +57,7 @@ function runDetails() {
     }
   })
   $('.total_details').text(totalDetalles.toFixed(2))
-  $('.detail_iva').text(totalDetallesIVA)
+  $('.detail_iva').text(totalDetallesIVA.toFixed(2))
   runBonifications()
 }
 

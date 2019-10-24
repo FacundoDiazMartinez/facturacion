@@ -19,7 +19,7 @@ function runTaxes() {
   $('#tributes > tbody > tr').each((index, currentField) => {
     setTaxesRowVars($(currentField))
     if (activo) {
-      importe       = baseImponible * ( alicuotaTax.val() / 100 )
+      importe       = parseFloat((baseImponible * ( alicuotaTax.val() / 100 )).toFixed(2))
       totalTributos += parseFloat(importe)
 
       baseImpTax.val(baseImponible.toFixed(2))
