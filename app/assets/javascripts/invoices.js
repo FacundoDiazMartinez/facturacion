@@ -50,10 +50,10 @@ function runInvoice(){
 	invoiceTotal = parseFloat((conceptos - descuentos + impuestos).toFixed(2))
 	invoiceLeft  = parseFloat((invoiceTotal - pagos).toFixed(2))
 
-	$(".final_total").text(invoiceTotal)
-	$("#invoice_total").val(invoiceTotal)
-	$(".total_payments_left").text(invoiceLeft)
-	$("#total_left").val(invoiceLeft)
+	$(".final_total").text(invoiceTotal.toFixed(2))
+	$("#invoice_total").val(invoiceTotal.toFixed(2))
+	$(".total_payments_left").text(invoiceLeft.toFixed(2))
+	$("#total_left").val(invoiceLeft.toFixed(2))
 }
 
 function setConfirmParam(){

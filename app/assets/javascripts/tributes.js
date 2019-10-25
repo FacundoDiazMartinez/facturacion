@@ -20,7 +20,7 @@ function runTaxes() {
     setTaxesRowVars($(currentField))
     if (activo) {
       importe       = parseFloat((baseImponible * ( alicuotaTax.val() / 100 )).toFixed(2))
-      totalTributos += parseFloat(importe)
+      totalTributos += parseFloat(importe.toFixed(2))
 
       baseImpTax.val(baseImponible.toFixed(2))
       importeTax.val(importe.toFixed(2))
