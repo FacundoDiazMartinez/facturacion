@@ -112,8 +112,13 @@
         </tr>
       <% end %>
       <tr>
-        <td class="text_right"><b>Subtotal:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f', total_de_pagina_auxiliar ) %></td>
+        <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
+          <td class="text_right"><b>Subtotal:</b></td>
+          <td class="text_right">$ <%= sprintf('%.2f', total_page_iva - iva_of_page - @invoice.bonification ) %></td>
+        <% else %>
+          <td class="text_right"><b>Subtotal:</b></td>
+          <td class="text_right">$ <%= sprintf('%.2f', total_page_iva - @invoice.bonification) %></td>
+        <% end %>
       </tr>
     <% end %>
 
