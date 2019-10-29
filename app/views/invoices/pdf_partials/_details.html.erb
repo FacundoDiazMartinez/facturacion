@@ -112,11 +112,11 @@
         </tr>
       <% end %>
       <tr>
-        <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
-          <td class="text_right"><b>Subtotal:</b></td>
-          <td class="text_right">$ <%= sprintf('%.2f', total_page_iva - iva_of_page - @invoice.bonification ) %></td>
-        <% else %>
-          <% if total_pages > 1 %>
+        <% if total_pages > 1 %>
+          <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
+            <td class="text_right"><b>Subtotal:</b></td>
+            <td class="text_right">$ <%= sprintf('%.2f', total_page_iva - iva_of_page - @invoice.bonification ) %></td>
+          <% else %>
             <td class="text_right"><b>Subtotal:</b></td>
             <td class="text_right">$ <%= sprintf('%.2f', total_page_iva.round(2) - descuentos_aplicados.round(2)) %></td>
           <% end %>
@@ -129,7 +129,9 @@
         <td class="text_right"><b>I.V.A.:</b></td>
         <td class="text_right">$ <%= sprintf('%.2f', @invoice.imp_iva )%> </td>
       </tr>
-      <% if page_number == 1 %>
+    <% end %>
+
+    <% if page_number == 1 || @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" || @invoice.client.iva_cond != "Consumidor Final" %>
       <tr>
         <td class="text_right"><b>Otros Tributos:</b></td>
         <td class="text_right">$ <%= sprintf('%.2f',@invoice.total_tributos) %></td>
@@ -137,7 +139,6 @@
       <tr>
         <td colspan="2"> <hr> </td>
       </tr>
-      <% end %>
     <% end %>
 
     <tr>
