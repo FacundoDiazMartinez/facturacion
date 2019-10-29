@@ -24,11 +24,11 @@
             <td class="text_right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
             <td class="text_right"><%= (det.subtotal - det.iva_amount).round(2) %>
             <td class="text_right"><%= det.iva_amount %></td>
-            <td class="text_right"><%= det.subtotal %></td>
+            <td class="text_right"><%= sprintf('%.2f',det.subtotal) %></td>
           <% else %>
             <td class="text_right"><%= (det.price_per_unit.round(2) * ( 1 + det.iva )).round(2) %></td>
             <td class="text_right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
-            <td class="text_right"><%= det.subtotal %></td>
+            <td class="text_right"><%= sprintf('%.2f',det.subtotal) %></td>
           <% end %>
         </tr>
       <% end %>
@@ -116,8 +116,10 @@
           <td class="text_right"><b>Subtotal:</b></td>
           <td class="text_right">$ <%= sprintf('%.2f', total_page_iva - iva_of_page - @invoice.bonification ) %></td>
         <% else %>
-          <td class="text_right"><b>Subtotal:</b></td>
-          <td class="text_right">$ <%= sprintf('%.2f', total_page_iva - @invoice.bonification) %></td>
+          <% if total_pages > 1 %>
+            <td class="text_right"><b>Subtotal:</b></td>
+            <td class="text_right">$ <%= sprintf('%.2f', total_page_iva.round(2) - descuentos_aplicados.round(2)) %></td>
+          <% end %>
         <% end %>
       </tr>
     <% end %>
