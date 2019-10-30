@@ -10,5 +10,8 @@
 
 <div class="form-group">
   <%= cpf.label :ticket, "Ticket" %><br>
-  <%= cpf.file_field :ticket, requried: true %>
+  <%= cpf.file_field :ticket, requried: true, onchange:'readURL(this)' %>
+  <div>
+    <img src="" alt="" id="image" style="max-height:60px; margin-top:10px;" class="nav-avatar">
+  </div>
 </div>
