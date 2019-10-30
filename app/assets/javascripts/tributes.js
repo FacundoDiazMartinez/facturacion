@@ -2,10 +2,6 @@ var totalTributos = 0
 
 $(document).ready(runTaxes())
 
-$(document).on("change", "select.afip_id", () => {
-	$(this).closest("tr.fields").find("input.desc").val($(this).find('option:selected').text());
-})
-
 $(document).on("change", "input.alic", () => runTaxes())
 
 $(document).on("nested:fieldAdded:tributes", () => runTaxes())

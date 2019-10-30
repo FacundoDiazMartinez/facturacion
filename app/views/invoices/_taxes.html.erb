@@ -20,7 +20,6 @@
             <%= form.fields_for :tributes, (CompanyManager::DefaultTaxesGetter.call(current_company) unless (!form.object.tributes.empty? || form.object.persisted?)), wrapper: false do |f| %>
             <tr class="fields">
               <td>
-                <%= f.hidden_field :desc, class: 'desc' %>
                 <%= f.select :afip_id, CompanyManager::DefaultTaxesGetter::TRIBUTOS, { prompt: "Seleccione..." }, { class: 'form-control afip_id', style: 'min-width: 100px;', disabled: invoice.confirmado?} %>
               </td>
               <td><%= f.number_field :base_imp, class: 'form-control base_imp', readonly: true, min: 0.0 %></td>
