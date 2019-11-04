@@ -83,7 +83,7 @@
                   <%= form.fields_for :fees, wrapper: false do |f| %>
                     <tr class="fields" id="<%= f.index %>">
                       <td>
-                        <%= f.number_field :quantity,value: f.object.quantity.nil? ? 2 : f.object.quantity,  class: 'form-control form-control-sm quantity' , required: true, min: 2 %>
+                        <%= f.number_field :quantity, value: f.object.quantity.nil? ? 2 : f.object.quantity,  class: 'form-control form-control-sm quantity' , required: true, min: 1 %>
                         <%= f.hidden_field :credit_card_id, class: 'credit_card_id' %>
                       </td>
                       <td>

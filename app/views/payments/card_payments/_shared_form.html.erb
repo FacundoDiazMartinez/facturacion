@@ -1,63 +1,64 @@
-<div class="form-group">
-  <%= cpf.label :credit_card_id, "Tarjeta" %>
-  <%= cpf.select :credit_card_id, current_user.company.credit_cards.map{|cc| [cc.name, cc.id]}, {prompt: "Seleccione..."}, {class: 'form-control credit-card-select', id: 'credit_card_id'} %>
-</div>
-
-<div class="form-group">
-  <table>
-    <tr>
-      <th></th>
-      <th>Cuotas</th>
-      <th>Interés (%)</th>
-    </tr>
-  <% current_user.company.credit_cards.first.fees.each do |cc| %>
-    <tr>
-      <td><%= radio_button :installments, false, id: '1' %></td>
-      <td><%= cc.quantity %></td>
-      <td><%= cc.percentage %></td>
-    </tr>
-  <% end %>
-  </table>
-</div>
-
-<div class="form-group">
-  <div class="row">
-    <div class="col">
-      <%= cpf.label :subtotal, "Subtotal ($)" %>
-      <%= cpf.number_field :subtotal, class: 'form-control credit-card-subtotal', required: true, step: :any  %>
-    </div>
-
-    <div class="col">
-      <%= cpf.label :installments, "Cuotas" %>
-      <%= cpf.select :installments,options_for_select(@payment.nil? ? [[1,0]] : @payment.card_payment.intallments_by_credit_card, @payment.nil? ? 0 : @payment.card_payment.installments), {}, class: 'form-control credit-card-installments', required: true %>
-    </div>
-
-    <div class="col">
-      <%= cpf.label :interest_rate_percentage, "Intereses (%)" %>
-      <%= cpf.number_field :interest_rate_percentage, step: :any, class: 'form-control credit-card-interest-percentage', required: true, placeholder: "%", readonly: true %>
-    </div>
+<div class="row">
+  <div class="form-group col-6">
+    <%= cpf.label :subtotal, "Monto a pagar" %>
+    <%= cpf.number_field :subtotal, class: 'form-control credit-card-amount fee-changer', required: true %>
+  </div>
+  <div class="form-group col-6">
+    <%= cpf.label :credit_card_id, "Tarjeta" %>
+    <%= cpf.select :credit_card_id, current_user.company.credit_cards.map{ |cc| [cc.name, cc.id] }, { prompt: "Seleccione..." }, {class: 'form-control credit-card-select fee-changer', required: true} %>
   </div>
 </div>
 
+
 <div class="form-group">
-  <div class="row">
-    <div class="col" style="display:none;">
-      <%= cpf.label :interest_rate_amount, "Intereses ($)" %>
-      <%= cpf.number_field :interest_rate_amount, step: :any, class: 'form-control credit-card-interest-amount', required: true, placeholder: "$", disabled: true%>
-    </div>
+  <%= label_tag :cuotas, "¿En cuántas cuotas?" %>
+  <div class="card">
+    <ul class="list-group list-group-flush">
+      <% current_user.company.credit_cards.second.fees.order(:quantity).each do |cc| %>
+      <li class="list-group-item fees">
+        <%= cpf.radio_button :fee_id, cc.id %>
+        <span class="text-bold m-1 h6">
+          <%= cpf.label :fee_id, "#{cc.quantity}x ", class: 'm-0' %>
+        </span>
+        <span class=" m1 h6">$
+          <span class="fee-subtotal">
+          </span>
+        </span>
+        <span class="m1 text-muted">
+          (Interés <%= cc.percentage %>%)
+        </span>
+        <span class="float-right h6 text-muted">
+          $<span class="fee-total"></span>
+        </span>
+        <%= hidden_field_tag :percentage, cc.percentage, class: 'percentage' %>
+        <%= hidden_field_tag :quantity, cc.quantity, class: 'fee-quantity' %>
+        <%= cpf.hidden_field :total, class: 'form-total' %>
+      </li>
+      <% end %>
+    </ul>
   </div>
 </div>
 
-<div class="form-group">
-  <div class="row">
-    <div class="col">
-      <%= label_tag :fee_total, "Valor de cada cuota ($)" %>
-      <%= text_field_tag :fee_total, "0.0", class: "form-control fee-total", readonly: true %>
-    </div>
+<script type="text/javascript">
+  $(document).ready(() => { changeFee() })
 
-    <div class="col">
-      <%= cpf.label :total, "Total ($)" %>
-      <%= cpf.number_field :total, class: 'form-control subpayment_total credit-card-total', required: true, readonly: true %>
-    </div>
-  </div>
-</div>
+  $('.fee-changer').change(() => { changeFee() })
+
+  function changeFee() {
+    var total = parseFloat($('.credit-card-amount').first().val())
+
+    $('.percentage').each((index, currentField) => {
+      let porcentaje = parseFloat($(currentField).val())
+      let auxTotal = parseFloat(total * ((porcentaje / 100) + 1))
+      let cuotas = parseInt($(currentField).closest('li').find('.fee-quantity').val())
+      console.log(cuotas)
+      let feeSubtotal = parseFloat((auxTotal / cuotas).toFixed(2))
+      let feeTotal = feeSubtotal * cuotas
+      console.log(feeTotal)
+      console.log(feeSubtotal)
+      $(currentField).closest('li').find('.fee-total').text(feeTotal.toFixed(2))
+      $(currentField).closest('li').find('.fee-subtotal').text(feeSubtotal.toFixed(2))
+      $(currentField).closest('li').find('.form-total').val(feeTotal.toFixed(2))
+    })
+  }
+</script>

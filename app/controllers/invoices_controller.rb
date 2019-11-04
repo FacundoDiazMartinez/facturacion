@@ -262,7 +262,7 @@ class InvoicesController < ApplicationController
       income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
         cash_payment_attributes: [:id, :total],
         debit_payment_attributes: [:id, :total, :bank_id],
-        card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+        card_payment_attributes: [:id, :credit_card_id, :subtotal, :fee_id, :total],
         bank_payment_attributes: [:id, :bank_id, :ticket, :total],
         cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
         retention_payment_attributes: [:id, :number, :total, :observation, :tribute],
