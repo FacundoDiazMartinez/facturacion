@@ -23,7 +23,7 @@
         <div id="credit_card_<%= credit_card.id %>" class="fee-wrapper" style="display: none">
           <% credit_card.fees.order(:quantity).each do |cc| %>
           <li class="list-group-item fees">
-            <%= cpf.radio_button :fee_id, cc.id %>
+            <%= cpf.radio_button :fee_id, cc.id, class: 'fee-changer fee-radio' %>
             <span class="text-bold m-1 h6">
               <%= cpf.label :fee_id, "#{cc.quantity}x ", class: 'm-0' %>
             </span>
@@ -39,19 +39,19 @@
             </span>
             <%= hidden_field_tag :percentage, cc.percentage, class: 'percentage' %>
             <%= hidden_field_tag :quantity, cc.quantity, class: 'fee-quantity' %>
-            <%= cpf.hidden_field :total, class: 'form-total' %>
           </li>
           <% end %>
         </div>
       <% end %>
     </ul>
+    <%= cpf.hidden_field :total, class: 'form-total' %>
   </div>
 </div>
 
 <script type="text/javascript">
   $(document).ready(() => { changeFee() })
 
-  $('.fee-changer').keyup(() => { changeFee() })
+  $('.fee-changer').on('keyup change', () => { changeFee() })
 
   function changeFee() {
     var total = parseFloat($('.credit-card-amount').first().val())
@@ -67,15 +67,18 @@
 
       $(currentField).closest('li').find('.fee-total').text(feeTotal.toFixed(2))
       $(currentField).closest('li').find('.fee-subtotal').text(feeSubtotal.toFixed(2))
-      $(currentField).closest('li').find('.form-total').val(feeTotal.toFixed(2))
+
+      if ($(currentField).closest('li').find('.fee-radio').is(':checked')) {
+        $('.form-total').val(feeTotal.toFixed(2))
+      }
     })
+
   }
 
   $('.credit-card-select').change((e) => {
-    console.log($(e.target).val())
     $('.fee-wrapper').css('display', 'none')
     $('input:radio').prop('checked', false)
-    // console.log("TARJETA", $(this).val())
+
     if ($(e.target).val()) {
       $(`#credit_card_${$(e.target).val()}`).css('display', 'block')
     }

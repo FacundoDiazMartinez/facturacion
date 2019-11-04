@@ -142,7 +142,7 @@ class ReceiptsController < ApplicationController
         account_movement_attributes: [:id, :total, :debe, :haber, :active,
         account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
         cash_payment_attributes: [:id, :total],
-        card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total, :fee_id],
+        card_payment_attributes: [:id, :credit_card_id, :subtotal, :fee_id, :total],
         bank_payment_attributes: [:id, :bank_id, :total],
         debit_payment_attributes: [:id, :bank_id, :total],
         cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
