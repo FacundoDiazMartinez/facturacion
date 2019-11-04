@@ -1,18 +1,35 @@
 <div class="form-group">
   <%= cpf.label :credit_card_id, "Tarjeta" %>
-  <%= cpf.select :credit_card_id, current_user.company.credit_cards.map{|cc| [cc.name, cc.id]}, {prompt: "Seleccione..."}, {class: 'form-control credit-card-select'} %>
+  <%= cpf.select :credit_card_id, current_user.company.credit_cards.map{|cc| [cc.name, cc.id]}, {prompt: "Seleccione..."}, {class: 'form-control credit-card-select', id: 'credit_card_id'} %>
+</div>
+
+<div class="form-group">
+  <table>
+    <tr>
+      <th></th>
+      <th>Cuotas</th>
+      <th>Interés (%)</th>
+    </tr>
+  <% current_user.company.credit_cards.first.fees.each do |cc| %>
+    <tr>
+      <td><%= radio_button :installments, false, id: '1' %></td>
+      <td><%= cc.quantity %></td>
+      <td><%= cc.percentage %></td>
+    </tr>
+  <% end %>
+  </table>
 </div>
 
 <div class="form-group">
   <div class="row">
     <div class="col">
       <%= cpf.label :subtotal, "Subtotal ($)" %>
-      <%= cpf.number_field :subtotal, class: 'form-control credit-card-subtotal', requried: true, step: :any  %>
+      <%= cpf.number_field :subtotal, class: 'form-control credit-card-subtotal', required: true, step: :any  %>
     </div>
 
     <div class="col">
       <%= cpf.label :installments, "Cuotas" %>
-      <%= cpf.select :installments,options_for_select(@payment.nil? ? [[1,0]] : @payment.card_payment.intallments_by_credit_card, @payment.nil? ? 0 : @payment.card_payment.installments), {}, class: 'form-control credit-card-installments', requried: true %>
+      <%= cpf.select :installments,options_for_select(@payment.nil? ? [[1,0]] : @payment.card_payment.intallments_by_credit_card, @payment.nil? ? 0 : @payment.card_payment.installments), {}, class: 'form-control credit-card-installments', required: true %>
     </div>
 
     <div class="col">
@@ -40,7 +57,7 @@
 
     <div class="col">
       <%= cpf.label :total, "Total ($)" %>
-      <%= cpf.number_field :total, class: 'form-control subpayment_total credit-card-total', requried: true, readonly: true %>
+      <%= cpf.number_field :total, class: 'form-control subpayment_total credit-card-total', required: true, readonly: true %>
     </div>
   </div>
 </div>

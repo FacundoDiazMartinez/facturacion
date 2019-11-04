@@ -131,7 +131,7 @@
       </tr>
     <% end %>
 
-    <% if page_number == 1 || @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" || @invoice.client.iva_cond != "Consumidor Final" %>
+    <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" || @invoice.client.iva_cond != "Consumidor Final" %>
       <tr>
         <td class="text_right"><b>Otros Tributos:</b></td>
         <td class="text_right">$ <%= sprintf('%.2f',@invoice.total_tributos) %></td>
