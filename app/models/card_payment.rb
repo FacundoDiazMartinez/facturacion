@@ -22,11 +22,7 @@ class CardPayment < ApplicationRecord
 
 			self.fee_subtotal = valor_cuota
 			self.total 	= aux_total.round(2)
-			pp fee_subtotal
-			pp total
 		end
-
-		# :interest_rate_amount, :total
 
   	#FILTROS DE BUSQEUDA
 	  	def self.search_by_card card
