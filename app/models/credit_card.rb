@@ -8,7 +8,7 @@ class CreditCard < ApplicationRecord
 
   accepts_nested_attributes_for :fees, reject_if: :all_blank, allow_destroy: true
 
-  TYPES_OF_FEE = ["Porcentaje", "Coeficiente"]
+  TYPES_OF_FEE = ["Porcentaje"]
 
   DEFAULT_NAMES = [["VISA", "cc-visa"],[ "American Express", "cc-amex"], ["Mastercard", "cc-mastercard"], ["PayPal", "cc-paypal"], ["Diners Club", "cc-diners-club"], ["Otra", "credit-card"]]
 

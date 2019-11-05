@@ -4,13 +4,6 @@
   <div class="card ">
     <div class="card-body">
       <div class="row">
-        <div class="col-md-12">
-          Si trabaja con coeficientes de interés brindados por la tarjeta en cuestión, seleccione tipo de interés "coeficiente".
-          <br>
-          <br>
-        </div>
-      </div>
-      <div class="row">
         <div class="col-md-3">
           <div class="form-group">
             <%= form.label :fav_logo, "Seleccione tarjeta" %>
@@ -72,9 +65,6 @@
                   <tr>
 
                     <th scope="col">Cantidad de cuotas</th>
-                    <th scope="col">T.N.A. (%)</th>
-                    <th scope="col">T.E.M. (%)</th>
-                    <th scope="col">Coeficiente</th>
                     <th scope="col">Porcentaje interés (%)</th>
                     <th scope="col"></th>
                   </tr>
@@ -85,15 +75,6 @@
                       <td>
                         <%= f.number_field :quantity, value: f.object.quantity.nil? ? 2 : f.object.quantity,  class: 'form-control form-control-sm quantity' , required: true, min: 1 %>
                         <%= f.hidden_field :credit_card_id, class: 'credit_card_id' %>
-                      </td>
-                      <td>
-                        <%= f.number_field :tna,value: f.object.tna.nil? ? 0 : f.object.tna, class: 'form-control form-control-sm tna', readonly:  @credit_card.type_of_fee != "Coeficiente" %>
-                      </td>
-                      <td>
-                        <%= f.number_field :tem,value: f.object.tem.nil? ? 0 : f.object.tem, class: 'form-control form-control-sm tem', readonly:  @credit_card.type_of_fee != "Coeficiente" %>
-                      </td>
-                      <td>
-                        <%= f.number_field :coefficient,value: f.object.coefficient.nil? ? 1 : f.object.coefficient, class: 'form-control form-control-sm coefficient',  required: true, min: 1, readonly:  @credit_card.type_of_fee != "Coeficiente" %>
                       </td>
                       <td>
                         <%= f.number_field :percentage,value: f.object.percentage.nil? ? 0 : f.object.percentage, class: 'form-control form-control-sm percentage',  required: true, min: 0, readonly:  @credit_card.type_of_fee != "Porcentaje" %>
