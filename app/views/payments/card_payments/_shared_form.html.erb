@@ -49,7 +49,9 @@
 </div>
 
 <script type="text/javascript">
-  $(document).ready(() => { changeFee() })
+  $(document).ready(() => {
+    changeFee()
+  })
 
   $('.fee-changer').on('keyup change', () => { changeFee() })
 
@@ -68,9 +70,7 @@
       $(currentField).closest('li').find('.fee-total').text(feeTotal.toFixed(2))
       $(currentField).closest('li').find('.fee-subtotal').text(feeSubtotal.toFixed(2))
 
-      if ($(currentField).closest('li').find('.fee-radio').is(':checked')) {
-        $('.form-total').val(feeTotal.toFixed(2))
-      }
+      if ($(currentField).closest('li').find('.fee-radio').is(':checked')) { $('.form-total').val(feeTotal.toFixed(2)) }
     })
 
   }
@@ -79,8 +79,6 @@
     $('.fee-wrapper').css('display', 'none')
     $('input:radio').prop('checked', false)
 
-    if ($(e.target).val()) {
-      $(`#credit_card_${$(e.target).val()}`).css('display', 'block')
-    }
+    if ($(e.target).val()) { $(`#credit_card_${$(e.target).val()}`).css('display', 'block') }
   })
 </script>
