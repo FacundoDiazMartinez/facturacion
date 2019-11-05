@@ -56,15 +56,21 @@
   $('.fee-changer').on('keyup change', () => { changeFee() })
 
   function changeFee() {
-    var total = parseFloat($('.credit-card-amount').first().val())
+    let total = parseFloat($('.credit-card-amount').first().val())
 
     $('.percentage').each((index, currentField) => {
-      let porcentaje = parseFloat($(currentField).val())
-      let auxTotal = parseFloat(total * ((porcentaje / 100) + 1))
-      let cuotas = parseInt($(currentField).closest('li').find('.fee-quantity').val())
+      let porcentaje  = parseFloat($(currentField).val())
+      let auxTotal    = parseFloat((total * ((porcentaje / 100) + 1)).toFixed(2))
+      let interes     = auxTotal - total
+      let cantidadCuotas      = parseInt($(currentField).closest('li').find('.fee-quantity').val())
 
-      let feeSubtotal = parseFloat((auxTotal / cuotas).toFixed(2))
-      let feeTotal = feeSubtotal * cuotas
+      $('#tributes > tbody > tr').each((index, currentField) => {
+        setTaxesRowVars($(currentField))
+        if (activo) { auxTotal += parseFloat((interes * ( alicuotaTax.val() / 100 )).toFixed(2))  }
+      })
+
+      let feeSubtotal = parseFloat((auxTotal / cantidadCuotas).toFixed(2))
+      let feeTotal = feeSubtotal * cantidadCuotas
 
 
       $(currentField).closest('li').find('.fee-total').text(feeTotal.toFixed(2))
@@ -72,13 +78,11 @@
 
       if ($(currentField).closest('li').find('.fee-radio').is(':checked')) { $('.form-total').val(feeTotal.toFixed(2)) }
     })
-
   }
 
   $('.credit-card-select').change((e) => {
     $('.fee-wrapper').css('display', 'none')
     $('input:radio').prop('checked', false)
-
     if ($(e.target).val()) { $(`#credit_card_${$(e.target).val()}`).css('display', 'block') }
   })
 </script>
