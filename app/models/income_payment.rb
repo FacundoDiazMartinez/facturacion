@@ -7,7 +7,7 @@ class IncomePayment < Payment
 	before_save 	:change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_save 	:check_company_id
 	before_save 	:check_client_id
-	after_create 	:set_new_detail_if_credit_card
+	# after_create 	:set_new_detail_if_credit_card
 	after_destroy 	:set_amount_available_to_account_movement
 
 	validate 		:check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
@@ -49,14 +49,14 @@ class IncomePayment < Payment
 	#PROCESOS
 
 	def set_new_detail_if_credit_card
-		unless invoice.nil? || !invoice.editable?
-			if type_of_payment == "1"
-				detail_total = card_payment.total - card_payment.subtotal
-				if detail_total > 0
-		      invoice.invoice_details.build_for_credit_card(detail_total.round(2), self.invoice.user_id, company, invoice_id)
-				end
-			end
-		end
+		# unless invoice.nil? || !invoice.editable?
+		# 	if type_of_payment == "1"
+		# 		detail_total = card_payment.total - card_payment.subtotal
+		# 		if detail_total > 0
+		#       invoice.invoice_details.build_for_credit_card(detail_total.round(2), self.invoice.user_id, company, invoice_id)
+		# 		end
+		# 	end
+		# end
 	end
 
 	def payment_name_with_receipt

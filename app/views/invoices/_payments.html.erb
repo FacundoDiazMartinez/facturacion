@@ -25,7 +25,7 @@
                   <% when "4" %>
                   <%= payment.payment_name %> - <%= payment.cheque_payment.entity %> - N°: <%= payment.cheque_payment.number %>
                   <% when "1" %>
-                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %> <%= payment.card_payment.credit_card.fees.find(payment.card_payment.fee_id).quantity %> cuotas
+                    <%= payment.payment_name %> - <%= payment.card_payment.credit_card.name %>
                   <% when "3" %>
                   <%= payment.payment_name %> - Banco <%= payment.bank_payment.bank.name %>
                   <% when "7" %>

@@ -46,7 +46,7 @@ class Invoice < ApplicationRecord
 	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
 	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{ |i| i.state == "Pendiente" }
-	validate 									:verifica_confirmado, :cliente_habilitado, :al_menos_un_detalle, :tipo_de_comprobante_habilitado, :fecha_de_servicio
+	validate 									:verifica_confirmado, :cliente_habilitado, :al_menos_un_detalle, :tipo_de_comprobante_habilitado, :fecha_de_servicio, :total_pagado
 
 	after_save 		:touch_commissioners, :touch_payments
   after_save 		:set_invoice_activity, if: Proc.new{ |i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?) }
@@ -90,6 +90,10 @@ class Invoice < ApplicationRecord
 	#FILTROS DE BUSQUEDA
 
   #VALIDACIONES
+	def total_pagado
+	  errors.add("Pagos", "El monto pagado no puede ser mayor al total de la factura") if self.total_pay > self.total
+	end
+
 	def verifica_confirmado
 		errors.add("Factura confirmada", "No puede modificar una factura confirmada.") if state_was == "Confirmado" && changed?
 	end
