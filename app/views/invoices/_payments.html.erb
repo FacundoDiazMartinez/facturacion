@@ -58,7 +58,7 @@
                   <% if payment.type_of_payment != "1" %>
                     <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{ confirm: "¿Está seguro?", label: "Aceptar", cancel: "Cancelar" }, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                   <% else %>
-                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "Si elimina este pago, debe eliminar manualmente el interés corespondiente. ¿Proceder?"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
+                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?", label: "Aceptar", cancel: "Cancelar"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                   <% end %>
                 <% end -%>
                 </td>
