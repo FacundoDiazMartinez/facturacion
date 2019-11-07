@@ -7,7 +7,6 @@ module InvoiceManager
 
     def call
       establece_constantes
-      pp invoice_client_document
       comprobante = Afip::Bill.new(
         net:            suma_montos_netos_con_descuento,
         doc_num:        0,
@@ -21,11 +20,13 @@ module InvoiceManager
         fch_serv_desde: @invoice.fch_serv_desde,
         fch_serv_hasta: @invoice.fch_serv_hasta,
         due_date:       @invoice.fch_vto_pago,
-        tributos:       @invoice.tributes.map{|t| [t.afip_id, t.desc, t.base_imp, t.alic, t.importe]},
+        # tributos:       @invoice.tributes.map{|t| [t.afip_id, t.desc, t.base_imp, t.alic, t.importe]},
+        tributos:       [],
         cant_reg:       1,
         no_gravado:     no_gravado,
         exento:         exento,
-        otros_imp:      otros_imp
+        # otros_imp:      otros_imp
+        otros_imp:      0
       )
       comprobante.doc_num = invoice_client_document
 

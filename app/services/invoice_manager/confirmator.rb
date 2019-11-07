@@ -24,6 +24,8 @@ module InvoiceManager
         @invoice.errors.add("Comprobante no confirmado.1", exception.message)
         raise ActiveRecord::Rollback
       rescue StandardError => error
+        pp "ERROR2"
+        pp error.inspect
         @invoice.errors.add("Comprobante no confirmado.2", error.message)
         raise ActiveRecord::Rollback
       rescue NoMethodError => error
@@ -53,7 +55,7 @@ module InvoiceManager
     end
 
     def display_confirmation_errors(bill)
-      raise ActiveRecord::Rollback, "Servidor AFIP: #{bill.response.errores[:msg]}." unless bill.response.errores.nil?
+      raise ActiveRecord::Rollback, "Servidor AFIP: #{bill.response.errores[:err][:msg]}." unless bill.response.errores.nil?
       unless bill.response.observaciones.nil?
         if bill.response.observaciones.any?
           if bill.response.observaciones[:obs].class == Hash
