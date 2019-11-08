@@ -63,7 +63,7 @@ gem 'alertifyjs-rails'
 gem 'font-awesome-sass', '~> 5.3.1'
 
 #Carrierwave
-gem 'aws-sdk', '~> 3'
+gem 'aws-sdk', '~> 2'
 
 #Librerias de AFIP - wsfe - wspsr - wsctg
 gem 'Afip'
