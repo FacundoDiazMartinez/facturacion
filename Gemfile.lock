@@ -79,15 +79,6 @@ GEM
     autoprefixer-rails (9.7.1)
       execjs
     aws-eventstream (1.0.3)
-<<<<<<< HEAD
-    aws-sdk (2.11.393)
-      aws-sdk-resources (= 2.11.393)
-    aws-sdk-core (2.11.393)
-      aws-sigv4 (~> 1.0)
-      jmespath (~> 1.0)
-    aws-sdk-resources (2.11.393)
-      aws-sdk-core (= 2.11.393)
-=======
     aws-sdk (2.11.255)
       aws-sdk-resources (= 2.11.255)
     aws-sdk-core (2.11.255)
@@ -95,7 +86,6 @@ GEM
       jmespath (~> 1.0)
     aws-sdk-resources (2.11.255)
       aws-sdk-core (= 2.11.255)
->>>>>>> 6191a362ba293c776ed48a20c21be980f5aada52
     aws-sigv4 (1.1.0)
       aws-eventstream (~> 1.0, >= 1.0.2)
     axlsx_rails (0.6.0)
