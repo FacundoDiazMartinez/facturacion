@@ -1,7 +1,40 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'users').html_safe %> Registrar pago</h5>
+  <h5 class="modal-title"><%= icon('fas', 'dollar-sign').html_safe %> Registro de pago</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<%= render "/receipts/payments/form", form: form %>
+<%= form.fields_for :account_movement, @account_movement do |f| %>
+<div class="modal-body">
+  <div class="row">
+    <%= f.hidden_field :haber, value: true %>
+    <%= f.hidden_field :debe, value: false %>
+    <%= f.hidden_field :active, value: false %>
+    <%= hidden_field_tag :receipt_id_for_payment, @receipt.id %>
+
+    <%= f.fields_for :account_movement_payments, @account_movement.account_movement_payments.build(), wrapper: false do |amp| %>
+
+    <div class="form-group col-md-6">
+      <%= amp.label :type_of_payment, "Tipo de pago" %>
+      <%= amp.select :type_of_payment, Payment::TYPES.reject {|k,v| v == "Cuenta Corriente"}.map{|k,v| [v,k]}, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', style: 'min-width: 100px;'} %>
+    </div>
+    <div class="form-group col-md-6" id="payment_date_div">
+      <%= amp.label :payment_date, "Fecha" %>
+      <%= amp.text_field :payment_date, class: 'form-control datepicker acc_movement_payment_date' %>
+    </div>
+
+    <div class="form-group col-md-12">
+      <p class="h3 text-bold text-right">Monto faltante: $ <span class="total_payments_left">0.00</span></p>
+    </div>
+  </div>
+
+  <div class="payment_detail"></div>
+  <% end -%>
+
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+  <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'confirm_btn', name: 'button', value: "save_payments" %>
+</div>
+<% end -%>

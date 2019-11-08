@@ -5,7 +5,7 @@
   </button>
 </div>
 <%= nested_form_for @client, remote: true, format: :js  do |f| %>
-	<div class="modal-body">
+	<div class="modal-body" style="background-color: #f0f0f0 !important">
 	  <%= render 'form', f: f %>
 	</div>
 <% end %>

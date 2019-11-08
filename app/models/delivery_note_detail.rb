@@ -4,19 +4,14 @@ class DeliveryNoteDetail < ApplicationRecord
   belongs_to :product, optional: true, class_name: "ProductUnscoped"
   belongs_to :depot
   belongs_to :invoice_detail, optional: true
-  has_many :invoice_details, through: :delivery_note
 
+  has_many :invoice_details, through: :delivery_note
 
   validates_presence_of :delivery_note, message:  "El concepto debe tener asociado un remito."
   validates_presence_of :product, message:  "El concepto debe tener asociado un producto."
   validates_presence_of :depot, message:  "El concepto debe tener asociado un depósito."
   validate :same_or_less_quantity
-
-  #validate :same_or_less_quantity
-
   validate :depot_has_stock?
-
-  #after_validation :adjust_product_stock, if: Proc.new{|detail| detail.delivery_note.state == "Finalizado"}
 
   default_scope { where(active: true ) }
 
@@ -96,10 +91,4 @@ class DeliveryNoteDetail < ApplicationRecord
       errors.add(:quantity, "Se esta intentando entregar mayor cantidad que la que se reservo cuando se realizo la factura. Si desea proceeder modifique la cantidad")
     end
   end
-
-  # def destroy
-	# 	update_column(:active, false)
-	# 	run_callbacks :destroy
-	# end
-
 end

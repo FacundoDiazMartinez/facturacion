@@ -1,8 +1,35 @@
 <div class="modal-header">
-  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'users').html_safe %> Registrar pago</h5>
+  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'dollar-sign').html_safe %> Registro de pago</h5>
   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<% DailyCash.current_daily_cash current_user.company_id %>
-<%= render "/invoices/payment/form", form: form %>
+<%= form.fields_for :income_payments, form.object.income_payments.build do |f| %>
+	<%= hidden_field_tag :invoice_id_for_payment, f.object.id %>
+	<div class="modal-body">
+		<div class="row">
+			<div class="form-group col-sm-12 col-md-6">
+				<%= f.label :type_of_payment, "Tipo de pago" %>
+				<%= f.select :type_of_payment, Payment::TYPES.map{|k,v| [v,k] unless k == "6"}.compact, {prompt: "Seleccione..."}, {class: 'form-control new_type_of_payment', disabled: @invoice.confirmado?} %>
+			</div>
+
+			<div class="form-group col-sm-12 col-md-6" id="payment_date_div">
+				<%= f.label :payment_date, "Fecha de pago" %>
+				<%= f.text_field :payment_date, class: 'form-control datepicker acc_movement_payment_date', disabled: !@invoice.editable? %>
+			</div>
+
+			<div class="form-group col-md-12">
+				<p class="h3 text-bold text-right">Monto faltante: $ <span class="total_payments_left"><%= @invoice.total_left %></span></p>
+			</div>
+		</div>
+
+		<div class="payment_detail"></div>
+
+	</div>
+
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	  <%= save_button %>
+	</div>
+
+<% end %>

@@ -1,10 +1,10 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		<center>
-			<h4>Cantidad de ventas <%= I18n.t("date.month_names")[Date.today.month] %></h4>
+			<h4>Cantidad de ventas <%= I18n.t("date.month_names")[params[:month].to_i] %></h4>
 		</center>
 	</div>
 	<div class="panel-body">
-	  <%= area_chart sales_per_month_invoices_path %>
+	  <%= area_chart sales_per_month_invoices_path(month: params[:month]), messages: {empty: "Sin datos"} %>
 	</div>
 </div>

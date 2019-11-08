@@ -2,14 +2,14 @@ class Stock < ApplicationRecord
   belongs_to :product, class_name: "ProductUnscoped"
   belongs_to :depot
 
-
   after_save :set_stock_to_product
   after_save :set_stock_to_depot
   after_destroy :reduce_stock_in_depot
 
   default_scope {where(active: true)}
+  scope :disponibles, ->{where(state: "Disponible")}
   validate :check_company_of_depot
-  
+
   validates_uniqueness_of :state, scope: [:active, :product_id, :depot_id], message: "No puede generar dos estados iguales para un mismo depósito."
   #validates_uniqueness_of :state, scope: [:product_id, :depot_id], message: "Esta intentando generar estados duplicados para un mismo depósito."
 

@@ -3,24 +3,19 @@ class ProductsController < ApplicationController
   before_action :set_product, only: [:show, :edit, :update, :destroy]
   before_action :set_s3_direct_post, only: [:new, :edit, :create, :update, :index]
   before_action :set_date_for_graphs, only: [:top_ten_products_per_month, :top_ten_sales_per_month]
-  # GET /products
-  # GET /products.json
+
   def index
     @products = current_user.company.products.where(tipo: "Producto").search_by_name(params[:name]).search_by_code(params[:code]).search_by_category(params[:category]).search_with_stock(params[:stock]).order(name: :asc).paginate(page: params[:page], per_page: 15)
   end
 
-  # GET /products/1
-  # GET /products/1.json
   def show
     #@stocks = @product.stocks.where(active: true).paginate(page: params[:page], per_page: 5)
   end
 
-  # GET /products/new
   def new
     @product = Product.new
   end
 
-  # GET /products/1/edit
   def edit
   end
 
@@ -47,8 +42,6 @@ class ProductsController < ApplicationController
     end
   end
 
-  # POST /products
-  # POST /products.json
   def create
     @product = current_user.company.products.new(product_params)
     @product.updated_by = current_user.id
@@ -64,11 +57,9 @@ class ProductsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /products/1
-  # PATCH/PUT /products/1.json
   def update
+    @product.updated_by = current_user.id
     respond_to do |format|
-      @product.updated_by = current_user.id
       if @product.update(product_params)
         format.html { render :show, notice: 'El producto fue actualizado con éxito.' }
         format.json { render :show, status: :ok, location: @product }
@@ -79,24 +70,35 @@ class ProductsController < ApplicationController
     end
   end
 
-  # DELETE /products/1
-  # DELETE /products/1.json
   def destroy
+    @product.updated_by = current_user.id
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_url, notice: 'Se elimino correctamente el producto.' }
+      format.html { redirect_to products_url, notice: 'Se eliminó correctamente el producto.' }
       format.json { head :no_content }
     end
   end
 
   def autocomplete_product_code
     term = params[:term]
-    products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
+    products = Product.unscoped.where(active: true, company_id: current_company.id).where('code ILIKE ?', "%#{term}%").order(:code).all
     render :json => products.map { |product| {:id => product.id, :label => product.full_name, :value => product.code, name: product.name, price: product.price} }
   end
 
+  def get_depots
+    begin
+      unless params[:id].blank?
+        stocks = current_company.products.unscoped.find(params[:id]).stocks.disponibles
+        render :json => stocks.map{ |stock| { depot_id: stock.depot_id, label: "#{stock.depot.name} [Disponible #{stock.quantity}]" } }
+      end
+    rescue
+      head :no_content
+    end
+  end
+
   def import
-    result = Product.save_excel(params[:file], params[:supplier_id], current_user, params[:depot_id], params[:type_of_movement])
+    #result = Product.save_excel(params[:file], params[:supplier_id], current_user, params[:depot_id], params[:type_of_movement])
+    result = ProductManager::Importer.call(params[:file], params[:supplier_id], current_user, params[:depot_id], params[:type_of_movement])
     respond_to do |format|
       format.html { redirect_to products_path, notice: 'Los productos están siendo cargados. Le avisaremos cuando termine el proceso.' }
     end
@@ -106,7 +108,15 @@ class ProductsController < ApplicationController
     #Se utiliza el parametro empty en true cuando se quiere descargar el formato del excel solamente.
     @products = params[:empty] ? [] : current_user.company.products
     respond_to do |format|
-      format.xlsx
+      if params[:empty]
+        format.xlsx {
+          render xlsx: "export_for_import.xlsx.axlsx", disposition: "attachment", filename: "Lista-productos.xlsx"
+        }
+      else
+        format.xlsx {
+          render xlsx: "export.xlsx.axlsx", disposition: "attachment", filename: "Lista-productos.xlsx"
+        }
+      end
     end
   end
 
@@ -115,14 +125,23 @@ class ProductsController < ApplicationController
     render :json => [{iva: category.iva_aliquot}]
   end
 
-  #ESTADISTICAS
   def top_ten_products_per_month
-    pp @first_date
-    pp @last_date
     company = current_user.company_id
     invoices = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date)
     unless invoices.blank?
       chart_data = invoices.map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.quantity}.reduce(:+).to_f]}
+      chart_data = chart_data.sort_by{|a| a.last}.last(10)
+      render json: chart_data
+    else
+      render json: {}
+    end
+  end
+
+  def top_ten_sales_per_month
+    company = current_user.company_id
+    invoices = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date)
+    unless invoices.blank?
+      chart_data = invoices.map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.subtotal.to_i}.reduce(:+).to_f]}
       chart_data = chart_data.sort_by{|a| a.last}.last(10)
       render json: chart_data
     else
@@ -137,16 +156,8 @@ class ProductsController < ApplicationController
     render json: chart_data
   end
 
-  def top_ten_sales_per_month
-    company = current_user.company_id
-    chart_data = Invoice.joins(invoice_details: :product).where(company_id: company, state: "Confirmado", cbte_fch: @first_date.to_s .. @last_date.to_s).map{|inv| inv.invoice_details}.reduce(:+).group_by{|det| det.product}.map{|product, registros| [product.name, registros.map{|reg| reg.subtotal.to_i}.reduce(:+).to_f]}
-    chart_data = chart_data.sort_by{|a| a.last}.last(10)
-    render json: chart_data
-  end
-
-  #ESTADISTICAS
-
   private
+
     def set_date_for_graphs
       month = params[:month].blank? ? Date.today.month : params[:month]
       @first_date = "01/#{month}/#{Date.today.year}".to_date

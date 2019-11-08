@@ -4,13 +4,11 @@ module InvoiceManager
       @invoice = invoice
     end
 
-    ##debe registrar detalles para los recibos que posean saldo disponible en sus movimientos de cuenta
-    ##los detalles de los recibos son los encargados de vincular el recibo con la factura
     def call
       begin
       ActiveRecord::Base.transaction do
         if @invoice.real_total_left.round(2) > 0 && !@invoice.is_credit_note?
-          monto_faltante = @invoice.real_total_left
+          pp monto_faltante = @invoice.real_total_left
           vector_documentos = []
           account_movements_records  = @invoice.client.account_movements.saldo_por_notas_de_credito
           account_movements_records += @invoice.client.account_movements.saldo_disponible_para_pagar
@@ -36,6 +34,7 @@ module InvoiceManager
                   total: a_pagar
   							)
   							if income_payment.save
+                  income_payment.set_total_pay_to_invoice
   								am.update_columns(
   									amount_available: am.amount_available - a_pagar
   								)

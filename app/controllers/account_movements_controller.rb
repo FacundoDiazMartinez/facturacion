@@ -2,8 +2,6 @@ class AccountMovementsController < ApplicationController
   before_action :set_client
   before_action :set_account_movement, only: [:show, :edit, :update, :destroy]
 
-  # GET /account_movements
-  # GET /account_movements.json
   def index
     cantidad_por_pagina = 25
     account_movements   = @client.account_movements
@@ -19,30 +17,13 @@ class AccountMovementsController < ApplicationController
     @account_movements  = account_movements.search_by_cbte_tipo(params[:cbte_tipo]).search_by_date(params[:from], params[:to]).order(tiempo_de_confirmacion: :asc).order(created_at: :asc).paginate(page: pagina, per_page: cantidad_por_pagina)
   end
 
-  # GET /account_movements/1
-  # GET /account_movements/1.json
   def show
   end
 
-  # GET /account_movements/new
-  def new
-    @account_movement = AccountMovement.new
-    #@account_movement.build_receipt(client_id: @client.id)
-    #@account_movement.account_movement_payments.build
-    DailyCash.current_daily_cash current_user.company_id
-  end
-
-  # GET /account_movements/1/edit
-  # def edit
-  # end
-
-  # POST /account_movements
-  # POST /account_movements.json
   def create
-
-    @account_movement = @client.account_movements.new(account_movement_params)
-    @account_movement.user_id = current_user.id
-    @account_movement.company_id = current_user.company_id
+    @account_movement             = @client.account_movements.new(account_movement_params)
+    @account_movement.user_id     = current_user.id
+    @account_movement.company_id  = current_company.id
     @account_movement.amount_available = @account_movement.total
     respond_to do |format|
       if @account_movement.save
@@ -56,24 +37,6 @@ class AccountMovementsController < ApplicationController
     end
   end
 
-
-
-  # PATCH/PUT /account_movements/1
-  # PATCH/PUT /account_movements/1.json
-  # def update
-  #   respond_to do |format|
-  #     if @account_movement.update(account_movement_params)
-  #       format.html { redirect_to client_account_movements_path(@client.id), notice: 'Movimiento actualizado correctamente.' }
-  #       format.json { render :show, status: :ok, location: @account_movement }
-  #     else
-  #       format.html { render :edit }
-  #       format.json { render json: @account_movement.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
-
-  # DELETE /account_movements/1
-  # DELETE /account_movements/1.json
   def destroy
     @account_movement.destroy
     respond_to do |format|
@@ -91,25 +54,24 @@ class AccountMovementsController < ApplicationController
 
   private
 
-    def set_client
-      @client = current_user.company.clients.find(params[:client_id])
-    end
-    # Use callbacks to share common setup or constraints between actions.
-    def set_account_movement
-      @account_movement = @client.account_movements.find(params[:id])
-    end
+  def set_client
+    @client = current_user.company.clients.find(params[:client_id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def account_movement_params
-      params.require(:account_movement).permit(:total, :debe, :haber, :cbte_tipo, receipt_attributes:
-        [:id, :sale_point_id, :client_id, :company_id, :total],
-        account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
-          cash_payment_attributes: [:id, :total],
-          card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
-          bank_payment_attributes: [:id, :bank_id, :total],
-          cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
-          retention_payment_attributes: [:id, :number, :total, :observation]
-        ]
-      )
-    end
+  def set_account_movement
+    @account_movement = @client.account_movements.find(params[:id])
+  end
+
+  def account_movement_params
+    params.require(:account_movement).permit(:total, :debe, :haber, :cbte_tipo, receipt_attributes:
+      [:id, :sale_point_id, :client_id, :company_id, :total],
+      account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
+        cash_payment_attributes: [:id, :total],
+        card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
+        bank_payment_attributes: [:id, :bank_id, :total],
+        cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
+        retention_payment_attributes: [:id, :number, :total, :observation]
+      ]
+    )
+  end
 end

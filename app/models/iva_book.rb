@@ -18,7 +18,6 @@ class IvaBook < ApplicationRecord
     "13"=>"NCC"
   }
 
-
   #FILTROS DE BUSQUEDA
   	def self.find_by_period from, to
   		if !from.blank? && !to.blank?
@@ -57,7 +56,7 @@ class IvaBook < ApplicationRecord
     end
 
     def iva
-      if is_debit? 
+      if is_debit?
         self.invoice.imp_iva
       else
         self.purchase_invoice.iva_amount
@@ -66,34 +65,14 @@ class IvaBook < ApplicationRecord
 
     def full_invoice
       if is_debit?
-        Invoice.unscoped do
-          "#{CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
-        end
+        "#{CBTE_TIPO[invoice.cbte_tipo]} - #{invoice.sale_point.name}-#{invoice.comp_number}"
       else
-        PurchaseInvoice.unscoped do
-          "#{CBTE_TIPO[purchase_invoice.cbte_tipo]} - #{purchase_invoice.number}"
-        end
+        "#{CBTE_TIPO[purchase_invoice.cbte_tipo]} - #{purchase_invoice.number}"
       end
     end
   #ATRIBUTOS
 
   #PROCESOS
-    def self.add_from_invoice invoice
-      ib            = where(invoice_id: invoice.id).first_or_initialize
-      ib.tipo       = ib.clase
-      ib.company_id = invoice.company_id
-      ib.date       = invoice.cbte_fch
-      if ["03", "08", "13"].include?(invoice.cbte_tipo.to_s)
-        ib.net_amount = -invoice.net_amount_sum
-        ib.iva_amount = -invoice.iva_amount_sum
-      else
-        ib.net_amount = invoice.net_amount_sum
-        ib.iva_amount = invoice.iva_amount_sum
-      end
-      ib.total      = ib.net_amount + ib.iva_amount
-      ib.save unless !ib.changed?
-    end
-
     def self.add_from_purchase invoice
       ib            = where(purchase_invoice_id: invoice.id).first_or_initialize
       ib.tipo       = ib.clase
@@ -102,17 +81,13 @@ class IvaBook < ApplicationRecord
       if ["03", "08", "13"].include?(invoice.cbte_tipo.to_s)
         ib.net_amount = -invoice.net_amount
         ib.iva_amount = -invoice.iva_amount
+        ib.total      = ib.net_amount + ib.iva_amount
       else
         ib.net_amount = invoice.net_amount
         ib.iva_amount = invoice.iva_amount
+        ib.total      = ib.net_amount + invoice.iva_amount
       end
-      ib.total      = ib.net_amount + ib.iva_amount
       ib.save
     end
-
-    # def destroy
-  	# 	update_column(:active, false)
-  	# 	run_callbacks :destroy
-  	# end
   #PROCESOS
 end

@@ -6,43 +6,76 @@
 </div>
 
 <div class="modal-body">
-  Está a punto de enviar el comprobante a AFIP para su validación. ¿Está seguro?
-  <br>
-  <br>
-  <div class="form-group row">
-    <%= label_tag :name, "Cliente", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-    <div class="col-md-8">
-      <%= text_field_tag :client_name_modal, @invoice.client.name , class: 'form-control form-control-sm client_name_modal', autocomplete: false, disabled: true %>
-    </div>
-  </div>
+	<div class="alert alert-info">
+		<strong>¡Atención!</strong> Está a punto de enviar el comprobante a AFIP para su validación. ¿Está seguro?
+	</div>
 
-  <div class="form-group row">
-    <%= label_tag :type, "Tipo", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-    <div class="col-md-8">
-      <%= text_field_tag :doc_type_modal, @invoice.cbte_tipo , class: 'form-control form-control-sm cbte_tipo_modal', autocomplete: false, disabled: true %>
-    </div>
-  </div>
+	<div class="form-group">
+		<ul class="list-group">
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					Cliente
+				</div>
+				<span id="client_name_modal" class="text-bold"><%= @invoice.client.name %></span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					Tipo de comprobante
+				</div>
+				<span id="doc_type_modal" class="text-bold"></span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					Subtotal
+				</div>
+				<span id="confirmation_subtotal"></span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					Descuentos
+				</div>
+				<span id="confirmation_bonifications"></span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					Tributos
+				</div>
+				<span id="confirmation_taxes"></span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					I.V.A.
+				</div>
+				<span id="confirmation_subtotal_iva"></span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div class="font-weight-bold h5">
+					TOTAL
+				</div>
+				<span id="invoice_total_modal" class="font-weight-bold h5"></span>
+			</li>
+		</ul>
+	</div>
 
-  <div class="form-group row">
-    <%= label_tag :total, "Total", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-    <div class="col-md-8">
-      <%= text_field_tag :invoice_total_modal, @invoice.total , class: 'form-control form-control-sm invoice_total_modal', autocomplete: false, disabled: true %>
-    </div>
-  </div>
-
-  <div class="form-group row">
-    <%= label_tag :total_pay, "Total pagado", class: 'col-sm-3 col-form-label col-form-label-sm' %>
-    <div class="col-md-8">
-      <%= text_field_tag :invoice_total_pay_modal, @invoice.total_pay , class: 'form-control form-control-sm invoice_total_pay_modal', autocomplete: false, disabled: true %>
-    </div>
-  </div>
-
-  <br>
-  Futuros pagos deberán realizarse por medio de recibos.
-
+	<div class="form-group">
+		<ul class="list-group">
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					Pagos
+				</div>
+				<span id="invoice_total_pay_modal"></span>
+			</li>
+			<li class="list-group-item d-flex justify-content-between lh-condensed">
+				<div>
+					Faltante
+				</div>
+				<span id="invoice_total_left_modal"></span>
+			</li>
+		</ul>
+	</div>
 </div>
 
 <div class="modal-footer">
-  	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-  	<%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, id:'confirm_invoice_button', onclick: 'setConfirmParam()', class: 'btn btn-primary',type:'submit',  data: {disable_with: "#{icon('fas', 'sync')} Cargando..."} %>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+	<%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, id:'confirm_invoice_button', onclick: 'setConfirmParam()', class: 'btn btn-success',type:'submit',  data: {disable_with: "#{icon('fas', 'sync')} Cargando..."} %>
 </div>

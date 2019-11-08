@@ -2,7 +2,7 @@ class Payment < ApplicationRecord
   include Deleteable
   belongs_to :user, optional: true
   belongs_to :company, optional: true
-  belongs_to :client, optional: true #TODO VINCULAR
+  belongs_to :client, optional: true
   belongs_to :purchase_order, optional: true
   belongs_to :invoice, optional: true
 
@@ -18,6 +18,7 @@ class Payment < ApplicationRecord
   has_one :compensation_payment
 
   after_initialize  :set_payment_date
+  after_validation :check_cheque_digits
 
   default_scope { where(active: true) }
 
@@ -189,6 +190,13 @@ class Payment < ApplicationRecord
   #PROCESOS
 
   #FUNCIONES
+    def check_cheque_digits
+      if type_of_payment == "4"
+        if self.cheque_payment.number.size < 8
+          errors.add(:base, "Ingrese 8 digitos para el número de cheque")
+        end
+      end
+    end
 
     def subpayment_show invoice_id
       if type_of_payment.to_i == 6
@@ -212,19 +220,19 @@ class Payment < ApplicationRecord
       when 0
         "cash_payments"
   		when 1
-          "card_payments"
+        "card_payments"
   		when 3
           "bank_payments"
   		when 4
-          "cheque_payments"
+        "cheque_payments"
   		when 5
-          "retention_payments"
+        "retention_payments"
   		when 6
-          "account_payments"
+        "account_payments"
   		when 7
-          "debit_payments"
+        "debit_payments"
       when 8
-          "compensation_payments"
+        "compensation_payments"
       end
     end
   #FUNCIONES

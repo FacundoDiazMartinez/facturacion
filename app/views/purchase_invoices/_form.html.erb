@@ -19,22 +19,25 @@
           <%= autocomplete_field_tag :purchase_order_id, purchase_invoice.purchase_order_number, autocomplete_purchase_order_purchase_invoices_path, class: 'form-control purchase-order-autocomplete_field', id_element: "#purchase_invoice_purchase_order_id", placeholder: "Número de Orden de compra" %>
           <%= form.hidden_field :purchase_order_id %>
         </div>
+        <div class="form-group col-md-6">
+          <%= form.label :arrival_note_id %>
+          <%= autocomplete_field_tag :arrival_note_id, '', autocomplete_arrival_note_id_purchase_invoices_path, class: 'form-control', id_element: "#purchase_invoice_arrival_note_id", placeholder: "Número de remito" %>
+          <%= form.hidden_field :arrival_note_id %>
+        </div>
       </div>
       <div class="form-row">
         <div class="form-group col-md-6">
           <%= form.label :supplier_id %>
           <div class="input-group">
-            <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', aria:{label: "Proveedor", describedby: "add-supplier"}} %>
+            <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', required: true, aria:{label: "Proveedor", describedby: "add-supplier"}} %>
             <div class="input-group-append">
               <%= link_to icon('fas', 'plus'), new_supplier_path(), data:{remote: true, toggle: 'modal', target: '#supplierModal'}, class: 'btn btn-success' %>
             </div>
           </div>
         </div>
-
         <div class="form-group col-md-6">
-          <%= form.label :arrival_note_id %>
-          <%= autocomplete_field_tag :arrival_note_id, '', autocomplete_arrival_note_id_purchase_invoices_path, class: 'form-control', id_element: "#purchase_invoice_arrival_note_id", placeholder: "Número de remito" %>
-          <%= form.hidden_field :arrival_note_id %>
+          <%= form.label :date %>
+          <%= form.text_field :date, class: 'form-control datepicker' %>
         </div>
       </div>
 
@@ -50,37 +53,37 @@
         </div>
 
         <div class="form-group col-md-6">
-          <%= form.label :date %>
-          <%= form.text_field :date, class: 'form-control datepicker' %>
+          <%= form.label :cae %>
+          <%= form.text_field :cae, class: 'form-control' %>
         </div>
       </div>
 
       <div class="form-row" id="invoice_a_div">
         <div class="form-group col-md-6">
-          <%= label_tag :net_amount, "Monto bruto" %>
+          <%= label_tag :net_amount, "Monto neto" %>
           <%= form.number_field :net_amount, class: 'form-control invoice_amount', min: 0, required: true %>
         </div>
 
         <div class="form-group col-md-6">
-          <%= form.label :iva_amount %>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <%= form.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {prompt: "Personalizado"}, {class: 'form-control', required: true} %>
-            </div>
-            <%= form.number_field :iva_amount, class: 'form-control invoice_amount', min: 0, disabled:true %>
-          </div>
+          <%= form.label :imp_op_ex %>
+          <%= form.number_field :imp_op_ex, class: 'form-control' %>
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group col-md-6">
-          <%= form.label :imp_op_ex %>
-          <%= form.number_field :imp_op_ex, class: 'form-control' %>
+          <%= form.label :iva_amount %>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <%= form.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {prompt: "Seleccione..."}, {class: 'form-control', required: true} %>
+            </div>
+            <%= form.number_field :iva_amount, class: 'form-control invoice_amount', min: 0, readonly:true %>
+          </div>
         </div>
 
         <div class="form-group col-md-6">
           <%= form.label :total %>
-          <%= form.number_field :total, class: 'form-control' %>
+          <%= form.number_field :total, class: 'form-control', readonly: true %>
         </div>
       </div>
     </div>

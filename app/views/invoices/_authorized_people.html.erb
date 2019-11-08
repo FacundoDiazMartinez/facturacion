@@ -1,0 +1,31 @@
+<div class="authorized" style="display: none;">
+	<h3 class="mb-2">
+		Autorizados
+	</h3>
+	<div class="card">
+	  <div class="card-body">
+			<div class="row">
+				<div class="table-responsive">
+	      <table class="table table-striped invoice-table" id="authorized" style="width: 100%;">
+	        <thead>
+	          <tr>
+	            <th scope="col">Nombre</th>
+	            <th scope="col">Dni</th>
+	            <th scope="col">¿Necesita Orden de Compra?</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <% client.authorized_personals.each do |ap| %>
+	            <tr class="fields">
+	              <td><%= ap.first_name %></td>
+	              <td><%= ap.dni %></td>
+	              <td><%= ap.need_purchase_order? ? "Si" : "No" %></td>
+	            </tr>
+	          <% end %>
+	        </tbody>
+	      </table>
+	    </div>
+			</div>
+	  </div>
+	</div>
+</div>

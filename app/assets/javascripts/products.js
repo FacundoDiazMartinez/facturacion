@@ -33,7 +33,12 @@ function setPrecioNeto(){
 
 function setPrecioFinal(){
 	var neto 		= parseFloat($("#product_net_price").val());
-	var iva 		= parseFloat($("#product_iva_aliquot :selected").text());
+	if (($("#product_iva_aliquot :selected").text() == "Exento") || ($("#product_iva_aliquot :selected").text() == "No gravado") || ($("#product_iva_aliquot :selected").text() == "")) {
+		var iva = 0
+	}
+	else {
+		var iva 		= parseFloat($("#product_iva_aliquot :selected").text());
+	}
 	var final 		= $("#product_price");
 
 	final.val((neto * (1 + iva)).toFixed(2));

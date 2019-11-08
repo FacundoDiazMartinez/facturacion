@@ -23,7 +23,8 @@
             </div>
             <%= text_field_tag :to, params[:to], class: 'form-control datepicker', placeholder: 'Fecha hasta', onchange: 'remoteSubmit("#search_form")' %>
           </div>
-          <div class="input-group mb-2 mr-sm-2" id="pdf_file"></div>
+          <div class="input-group mb-2 mr-sm-2" id="pdf_file">
+          </div>
           <!-- BUSCAR POR RANGO DE FECHAS -->
 
           <!-- BUSCADOR POR TIPO -->
@@ -36,7 +37,9 @@
               <%= label_tag :iva_compras_false, "I.V.A. ventas", class: 'custom-control-label' %>
             </div>
           <!-- BUSCADOR POR TIPO -->
-
+          <div id="excel_file">
+          </div>
+          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
         <% end %>
 
       </div>

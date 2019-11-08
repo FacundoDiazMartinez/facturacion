@@ -1,5 +1,10 @@
-table.invoice-table > tbody > tr > td{
-	padding: 5px 0.75rem;
+.invoice-table {
+	th {
+		padding: 5px 0.1rem;
+	}
+	td {
+		padding: 5px 0.25rem;
+	}
 }
 
 .rounded-state{

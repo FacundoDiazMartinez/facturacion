@@ -42,10 +42,11 @@
               <%= select_tag :valid_for_account, options_for_select([['Habilitado', true], ['No habilitado',false]]),{class: 'form-control', include_blank: "Seleccionar (Cta.Cte.)" , onchange: 'remoteSubmit("#search_form")'} %>
             </div>
           <!-- BUSCAR POR CTA. CTE. -->
+          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>          
         <% end %>
       </div>
       <div class="card-body">
-        <h5><strong>Saldo total:</strong> $<%= current_user.company.clients.sum(:saldo) %></h5>
+        <h5><strong>Saldo total:</strong> $<%= current_user.company.clients.sum(:saldo).round(2) %></h5>
         <div id="clients_table">
           <%= render 'clients_table' %>
         </div>

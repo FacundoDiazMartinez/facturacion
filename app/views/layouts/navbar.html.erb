@@ -12,12 +12,12 @@
     </span>
     <a class="navbar-brand-two  " href="/">
       <% if !user_signed_in? %>
-        <%= image_tag '/images/default_company.png', alt: "desideral.com - Sistema de facturación online", width: '90px;', class: 'company_logo' %>
+        <%= image_tag '/images/default_company.png', alt: "Sistema de facturación online", width: '90px;', class: 'company_logo' %>
       <% else %>
         <% if !current_user.company.blank? %>
-          <%= image_tag current_user.company.logo, alt: "desideral.com - Sistema de facturación online", width: '90px;', class: 'company_logo' %>
+          <%= image_tag current_user.company.logo, alt: "Sistema de facturación online", width: '90px;', class: 'company_logo' %>
         <% else %>
-          <%= image_tag '/images/default_company.png', alt: "desideral.com - Sistema de facturación online", width: '90px;', class: 'company_logo' %>
+          <%= image_tag '/images/default_company.png', alt: "Sistema de facturación online", width: '90px;', class: 'company_logo' %>
         <% end %>
       <% end -%>
     </a>

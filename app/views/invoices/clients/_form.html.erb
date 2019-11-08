@@ -2,14 +2,14 @@
 <%= hidden_field_tag :invoice_id , params[:invoice_id] %>
 
 <div class="form-group row">
-  <%= label_tag :name, "Nombre *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+  <%= label_tag :name, "Nombre", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
-    <%= f.autocomplete_field :name, autocomplete_name_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field client_name', placeholder: "Ingrese nombre del cliente", required: true, autocomplete: false %>
+    <%= f.autocomplete_field :name, autocomplete_name_invoices_clients_path, class: 'form-control form-control-sm client-autocomplete_field client_name', placeholder: "Ingrese nombre del cliente", required: true, autocomplete: "none" %>
   </div>
 </div>
 
 <div class="form-group row">
-  <%= label_tag :document_number, "Documento *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+  <%= label_tag :document_number, "Documento", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
     <div class="input-group mb-3">
       <div class="input-group-prepend">
@@ -21,17 +21,33 @@
 </div>
 
 <div class="form-group row">
-  <%= label_tag :iva_cond, "Condición I.V.A. *", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+  <%= label_tag :iva_cond, "Condición I.V.A.", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
     <%= f.select :iva_cond, Client::IVA_COND , {} , { class: 'form-control form-control-sm client_iva_con' } %>
   </div>
 </div>
 
 <div class="form-group row">
-  <%= label_tag :address, "Dirección", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+  <%= label_tag :address, "Dirección (opcional)", class: 'col-sm-3 col-form-label col-form-label-sm' %>
   <div class="col-md-9">
     <%= f.text_field :address, class: 'form-control form-control-sm address' %>
   </div>
 </div>
 
-<center><i>* Campos obligatorios</i></center>
+<div class="form-group row">
+  <%= label_tag :enabled, "Estado", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+  <div class="col-md-9">
+    <%= client_enabled_badge(@client.enabled) %>
+    <%= client_valid_for_account_badge(@client.valid_for_account) %>
+    <%= hidden_field_tag 'client_enabled_flag', @client.enabled %>
+  </div>
+</div>
+
+<% unless @client.enabled %>
+  <div class="form-group row">
+    <%= label_tag :enabled_observation, "¿Por que fue deshabilitado?", class: 'col-sm-3 col-form-label col-form-label-sm' %>
+    <div class="col-md-9">
+      <%= text_area_tag :enabled_observation, @client.enabled_observation, class: 'form-control form-control-sm address', rows:4, disabled: true %>
+    </div>
+  </div>
+<% end %>

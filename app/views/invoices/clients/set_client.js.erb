@@ -1,4 +1,4 @@
 <% if @client.errors.any? %>
-	$("#client_modal").html("<%= j render template: '/invoices/clients/edit.html.erb' %>");
+	$("#myModalContent").html("<%= j render template: '/invoices/clients/edit.html.erb' %>");
 	addRechargeToDetails()
 <% end %>

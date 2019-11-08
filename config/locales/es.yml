@@ -151,6 +151,7 @@ es:
         imp_op_ex:  "Monto exento"
         total: "Total"
         date: "Fecha"
+        cae: "Nº Autorización"
         purchase_order_id: "Orden de compra vinculada"
       purchase_order:
         state: "Estado"

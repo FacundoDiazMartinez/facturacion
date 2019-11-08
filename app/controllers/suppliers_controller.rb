@@ -25,9 +25,12 @@ class SuppliersController < ApplicationController
   # POST /suppliers.json
   def create
     @supplier = current_user.company.suppliers.new(supplier_params)
-    @supplier.current_user = current_user
+    @supplier.created_by = current_user.id
+    @supplier.updated_by = current_user.id
+    @supplier.company = current_user.company
     respond_to do |format|
       if @supplier.save
+        UserActivityManager::NewSupplierGenerator.call(@supplier)
         set_suppliers
         format.html { redirect_to @supplier, notice: 'Supplier was successfully created.' }
         format.json { render :show, status: :created, location: @supplier }
@@ -35,16 +38,18 @@ class SuppliersController < ApplicationController
         format.html { render :new }
         format.json { render json: @supplier.errors, status: :unprocessable_entity }
       end
-      format.js     { render :set_supplier}
+      format.js     { render :set_supplier }
     end
   end
 
   # PATCH/PUT /suppliers/1
   # PATCH/PUT /suppliers/1.json
   def update
-    @supplier.current_user = current_user
+    @supplier.updated_by = current_user.id
+    @supplier.company = current_user.company
     respond_to do |format|
       if @supplier.update(supplier_params)
+        UserActivityManager::UpdatedSupplierGenerator.call(@supplier)
         set_suppliers
         format.html { redirect_to @supplier, notice: 'Supplier was successfully updated.' }
         format.json { render :show, status: :ok, location: @supplier }

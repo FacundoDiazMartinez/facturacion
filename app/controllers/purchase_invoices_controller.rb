@@ -4,7 +4,7 @@ class PurchaseInvoicesController < ApplicationController
   # GET /purchase_invoices
   # GET /purchase_invoices.json
   def index
-    @purchase_invoices = current_user.company.purchase_invoices.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("purchase_invoices.created_at DESC").paginate(page: params[:page])
+    @purchase_invoices = current_company.purchase_invoices.joins(:supplier, :user).search_by_supplier(params[:supplier_name]).search_by_user(params[:user_name]).order("purchase_invoices.created_at DESC").paginate(page: params[:page], per_page: 10)
   end
 
   # GET /purchase_invoices/1
@@ -83,6 +83,6 @@ class PurchaseInvoicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def purchase_invoice_params
-      params.require(:purchase_invoice).permit(:company_id, :user_id, :date, :arrival_note_id, :number, :supplier_id, :cbte_tipo, :net_amount, :iva_amount, :iva_aliquot, :imp_op_ex, :total, :purchase_order_id)
+      params.require(:purchase_invoice).permit(:company_id, :user_id, :date, :arrival_note_id, :number, :supplier_id, :cbte_tipo, :net_amount, :iva_amount, :iva_aliquot, :imp_op_ex, :total, :purchase_order_id, :cae)
     end
 end

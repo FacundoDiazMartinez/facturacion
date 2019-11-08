@@ -1,50 +1,39 @@
-<div class="col-md-4">
-	<div class="form-group row">
-	  	<%= form.label :state, class:'col-4 col-form-label col-form-label-sm' %>
-	  	<div class="col-8">
-	  		<%= form.text_field :state, class: 'form-control',style: "font-weight: bold;", readonly: true %>
-	  	</div>
-	</div>
-</div>
-<div class="col-md-4">
-	<div class="form-group row" style="display: none;">
-		<%= form.label :bonification, "Bonif. Gral. (%)", class:'col-4 col-form-label col-form-label-sm' %>
-		<div class="col-8">
-			<%= form.number_field :bonification, class: 'form-control', step: :any, disabled: !@invoice.editable? %>
-		</div>
-	</div>
-	<% if @invoice.concepto != "Productos" && !@invoice.concepto.nil? %>
-		<div class="form-group row">
+<% if @invoice.concepto != "Productos" && !@invoice.concepto.nil? %>
+	<div class="form-group col-4">
+		<div class="row">
 			<%= label_tag :fecha, "Fecha", class:'col-4 col-form-label col-form-label-sm' %>
-		    <div class="col-4">
-		      	<%= form.text_field :fch_serv_desde, class: 'form-control datepicker', placeholder: "Desde", disabled: !@invoice.editable? %>
-		    </div>
-		    <div class="col-4">
-		      	<%= form.text_field :fch_serv_hasta, class: 'form-control datepicker', placeholder: "Hasta", disabled: !@invoice.editable? %>
-		    </div>
-		    <div class="col-8 offset-4">
-		      	<%= form.text_field :fch_vto_pago, class: 'form-control datepicker', placeholder: "Vencimiento", disabled: !@invoice.editable? %>
-		    </div>
-	    </div>
-	<% else %>
-		<div class="form-group row">
-	      	<%= form.label :cbte_fch, "Fecha", class:'col-4 col-form-label col-form-label-sm' %>
-	      	<div class="col-8">
-	      		<%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
-	      	</div>
-	    </div>
-	<% end %>
-</div>
-
-<div class="col-md-4">
-	<div class="form-group row">
+			<div class="col-4">
+				<%= form.text_field :fch_serv_desde, class: 'form-control datepicker', placeholder: "Desde", disabled: @invoice.confirmado? %>
+			</div>
+			<div class="col-4">
+				<%= form.text_field :fch_serv_hasta, class: 'form-control datepicker', placeholder: "Hasta", disabled: @invoice.confirmado? %>
+			</div>
+			<div class="col-8 offset-4">
+				<%= form.text_field :fch_vto_pago, class: 'form-control datepicker', placeholder: "Vencimiento", disabled: @invoice.confirmado? %>
+			</div>
+		</div>
+  </div>
+<% else %>
+	<div class="form-group col-4">
+		<div class="row">
+			<%= form.label :cbte_fch, "Fecha", class:'col-4 col-form-label col-form-label-sm' %>
+			<div class="col-8">
+				<%= form.text_field :cbte_fch, class: 'form-control', readonly: true %>
+			</div>
+		</div>
+  </div>
+<% end %>
+<div class="form-group col-4">
+	<div class="row">
 		<%= form.label :observation, "Observación", class:'col-4 col-form-label col-form-label-sm' %>
 		<div class="col-8">
-			<%= form.text_field :observation, class: 'form-control', disabled: !@invoice.editable? %>
+			<%= form.text_field :observation, class: 'form-control', disabled: @invoice.confirmado? %>
 		</div>
 	</div>
-	<div class="form-group row">
-		<%= form.label :associated_invoice, "Factura asociada", class:'col-4 col-form-label col-form-label-sm' %>
+</div>
+<div class="form-group col-4">
+	<div class="row">
+		<%= label_tag :associated_invoice, "Factura asoc.", class:'col-4 col-form-label col-form-label-sm' %>
 		<div class="col-8">
 			<%= autocomplete_field_tag :associated_invoice, form.object.invoice_comp_number, autocomplete_associated_invoice_invoices_path, :fields => {:client_id => '#invoice_client_id'} , class: 'form-control associated-invoice-autocomplete_field', placeholder: "Ingrese Nº de factura", required: false, disabled: @invoice.is_invoice?, autofocus: true, id_element: "#invoice_associated_invoice" %>
 			<%= form.hidden_field :associated_invoice %>
@@ -52,14 +41,6 @@
 	</div>
 </div>
 
-
 <script type="text/javascript">
-	$('.datepicker').datepicker({
-	      	language: "es",
-	      	dateFormat: "dd/mm/yyyy",
-	      	todayHighlight: true,
-	      	autoclose: true,
-	      	sideBySide: true,
-        	orientation: "auto"
-	});
+	$(document).ready(() => initializeDatepicker())
 </script>

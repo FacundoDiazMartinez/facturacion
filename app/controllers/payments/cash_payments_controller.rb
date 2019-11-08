@@ -3,26 +3,17 @@ class Payments::CashPaymentsController < Payments::PaymentsController
   before_action :set_s3_direct_post, only: [:new]
   layout :false
 
-  # GET /cash_payments
-  # GET /cash_payments.json
-
-  # GET /cash_payments/1
-  # GET /cash_payments/1.json
   def show
   end
 
-  # GET /cash_payments/new
   def new
     @cash_payment = CashPayment.new
     super
   end
 
-  # GET /cash_payments/1/edit
   def edit
   end
 
-  # POST /cash_payments
-  # POST /cash_payments.json
   def create
     @cash_payment = CashPayment.new(cash_payment_params)
 
@@ -37,8 +28,6 @@ class Payments::CashPaymentsController < Payments::PaymentsController
     end
   end
 
-  # PATCH/PUT /cash_payments/1
-  # PATCH/PUT /cash_payments/1.json
   def update
     respond_to do |format|
       if @cash_payment.update(cash_payment_params)
@@ -51,8 +40,6 @@ class Payments::CashPaymentsController < Payments::PaymentsController
     end
   end
 
-  # DELETE /cash_payments/1
-  # DELETE /cash_payments/1.json
   def destroy
     @cash_payment.destroy
     respond_to do |format|
@@ -62,12 +49,10 @@ class Payments::CashPaymentsController < Payments::PaymentsController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_cash_payment
       @cash_payment = CashPayment.find(params[:id])
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def cash_payment_params
       params.fetch(:cash_payment, {})
     end

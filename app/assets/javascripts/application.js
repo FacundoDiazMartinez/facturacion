@@ -22,6 +22,8 @@
 //= require invoices
 //= require users
 //= require litecode-alert
+//= require alertify
+//= require alertify/confirm-modal
 //= require popper
 //= require bootstrap
 //= require bootstrap-toggle
@@ -35,6 +37,19 @@
 
 //= require_tree .
 //= require autocomplete-rails
+
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      $('#image')
+        .attr('src', e.target.result)
+        .width('auto')
+        .height(100);
+    };
+    reader.readAsDataURL(input.files[0]);
+  };
+};
 
 $(document).ready(function() {
 
@@ -56,8 +71,6 @@ $(document).ready(function() {
     $('#file_input').click();
   })
 
-
-
   $(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
 
 
@@ -71,14 +84,6 @@ $(document).ready(function() {
       startView: 2
   });
 });
-
-$(document).on("click", "button[type=submit]", function(){
-  // if ($(document).find("form").valid()) {
-  //   $(this).attr("readonly", true);
-  //   //$(this).closest("form").submit();
-  // }
-});
-
 
 $(document).on("keyup", "input.ui-autocomplete-input", function(e){
   target = $($(this).data("id-element"))
@@ -100,11 +105,6 @@ $(document).on('pjax:complete', function() {
       startView: 2
   });
 })
-
-function remoteSubmit(form_id){
-  form = $(form_id);
-  $.get(form.attr("action"), form.serialize(), null , "script");
-};
 
 function reloadLocality(province, dropdown){
   $.ajax({
@@ -221,7 +221,11 @@ function setProduct(product, index, depot_id){
   $("#"+index).find("input.name").val(product["name"]);
   $("#"+index).find("input.name").prop('title', product["name"]);
   $("#"+index).find("input.price").val(product["net_price"]);
-  $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
+  if (product["measurement_unit"] !== ''){
+    $("#"+index).find("select.measurement_unit").val(product["measurement_unit"]);
+  }else{
+    $("#"+index).find("select.measurement_unit").val(7);
+  };
   $("#"+index).find("input.subtotal").val(product["price"]);
   $("#"+index).find("input.supplier_code").val(product["supplier_code"]);
   $("#"+index).find("select.depot_id").val(depot_id);

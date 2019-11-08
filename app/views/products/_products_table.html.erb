@@ -33,7 +33,7 @@
 						<td><%= link_to product.name, product_path(product.id) %></td>
 						<td class="only-desktop"><%= product.product_category.nil? ? "-" : product.product_category.name %></td>
 						<td>$ <%= product.price %></td>
-						<td class="only-desktop"><%= supplier_with_link(product) %></td>
+						<td class="only-desktop"><%= product.supplier_name %></td>
 						<td><%= product.stock_html %></td>
 						<!-- <td><%# product.stocks.where(state: "Reservado").map{|s| s.quantity}.sum() %></td> -->
 						<td><%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>

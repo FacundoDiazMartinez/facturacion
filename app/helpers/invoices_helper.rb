@@ -15,4 +15,17 @@ module InvoicesHelper
 
 		return "<div class='rounded-state #{color} text-center'></div> #{state}".html_safe
 	end
+
+	def bordered_invoice_by_state(state)
+	  case state
+		when "Pendiente"
+			'border-yellow'
+		when "Confirmado"
+			'border-green'
+		when "Anulado parcialmente"
+			'border-orange'
+		when "Anulado"
+			'border-red'
+		end
+	end
 end

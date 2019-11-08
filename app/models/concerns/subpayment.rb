@@ -2,7 +2,6 @@ module Subpayment
 	extend ActiveSupport::Concern
 
   included do
-    #after_save :update_payment
     after_destroy :update_invoice
 		belongs_to :payment
 
@@ -23,9 +22,8 @@ module Subpayment
     end
   end
 
-
   def update_payment
-    payment.update_column(:total,self.total)
+    payment.update_column(:total, self.total)
   end
 
   def client
@@ -39,16 +37,6 @@ module Subpayment
   def account_movement_payment
     AccountMovementPayment.find_by_id(self.payment_id)
   end
-
-  # def update_account_movement
-  #   unless self.account_movement_payment.nil?
-  #     pp self.account_movement_payment
-  #     pp saved_change_to_total
-  #     difference = saved_change_to_total.last - saved_change_to_total.first
-  #     new_total  = self.account_movement_payment.total + difference
-  #     self.account_movement_payment.update_column(:total, new_total)
-  #   end
-  # end
 
   def update_invoice
 		unless payment.nil?

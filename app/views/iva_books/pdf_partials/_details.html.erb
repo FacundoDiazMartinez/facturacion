@@ -1,6 +1,6 @@
 <!-- DETALLE -->
 <div class="row">
-  <div class="container" style="height: 990px;">
+  <div class="container" style="height: 537px;">
     <table class="TFtable" style="font-size: 13px;">
     <tr>
       <th class="description_header">Fecha</th>
@@ -15,10 +15,13 @@
       <th class="description_header">Documento</th>
       <th class="description_header">Condición I.V.A.</th>
       <th class="description_header">Comprobante N°</th>
-      <th class="description_header">Imp. Total</th>
+      <th class="description_header">N° Autorización</th>
+      <th class="description_header">Neto</th>
       <th class="description_header">Imp. Ex.</th>
-      <th class="description_header">Imp. Gravados</th>
       <th class="description_header">I.V.A.</th>
+      <th class="description_header">Otros Trib.</th>
+      <th class="description_header">Desc.</th>
+      <th class="description_header">Total</th>
     </tr>
 
 
@@ -28,13 +31,16 @@
             <tr style="height: 30px;">
               <td class="text_left"><%= det.date %></td>
               <td class="text_left"><%= det.purchase_invoice.supplier.name %></td>
-              <td class="text_left"><%= det.purchase_invoice.supplier.full_document %></td>
+              <td class="text_left"><%= det.purchase_invoice.supplier.document_number %></td>
               <td class="text_left"><%= det.purchase_invoice.supplier.iva_cond %></td>
               <td class="text_left"><%= det.full_invoice %></td>
-              <td class="text_left"><%="$ " + det.purchase_invoice.total.to_s %></td>
-              <td class="text_left"><%="$ " + det.purchase_invoice.imp_op_ex.to_s %></td>
-              <td class="text_left"><%="$ " + det.purchase_invoice.net_amount.to_s %></td>
-              <td class="text_left"> <b> <%="$ " + det.purchase_invoice.iva_amount.to_s %> </b></td>
+              <td class="text_left"><%= det.purchase_invoice.cae %></td>
+              <td class="text_right"><%= det.purchase_invoice.net_amount.round(2) %></td>
+              <td class="text_right"><%= det.purchase_invoice.imp_op_ex.round(2) %></td>
+              <td class="text_right"><%= det.purchase_invoice.iva_amount.round(2) %></td>
+              <td class="text_right"> - </td>
+              <td class="text_right"> - </td>
+              <td class="text_right"><%= det.purchase_invoice.total.round(2) %></td>
             </tr>
         <% end
       when "Débito Fiscal"
@@ -42,26 +48,19 @@
           <tr style="height: 30px;">
             <td class="text_left"><%= det.date %></td>
             <td class="text_left"><%= det.invoice.client.name %></td>
-            <td class="text_left"><%= det.invoice.client.full_document %></td>
+            <td class="text_left"><%= det.invoice.client.document_number %></td>
             <td class="text_left"><%= det.invoice.client.iva_cond %></td>
             <td class="text_left"><%= det.full_invoice %></td>
-            <td class="text_left"><%="$ " + det.invoice.total.to_s %></td>
-            <td class="text_left"><%="$ " + det.invoice.imp_op_ex.to_s %></td>
-            <td class="text_left"><%="$ " + det.invoice.imp_neto.to_s %></td>
-            <!-- Factura, deb o cred "A" ? -->
-            <% if ((det.invoice.cbte_tipo == "01") || (det.invoice.cbte_tipo == "02") || (det.invoice.cbte_tipo == "03")) %>
-              <td class="text_left"> <b> <%="$ " +  det.invoice.imp_iva.to_s %> </b> </td>
-            <% else %>
-              <td class="text_left"> <b> <%="$ " +  det.invoice.iva_amount_sum.to_s %> </b> </td>
-            <% end %>
-
+            <td class="text_left"><%= det.invoice.cae %></td>
+            <td class="text_right"><%= det.invoice.imp_neto.round(2) %></td>
+            <td class="text_right"><%= det.invoice.imp_op_ex.round(2) %></td>
+            <td class="text_right"><%= det.invoice.imp_iva.round(2) %></td>
+            <td class="text_right"><%= det.invoice.imp_trib.round(2) %></td>
+            <td class="text_right"><%= det.invoice.bonifications.pluck(:amount).inject(0) { |suma, amount| suma + amount } %></td>
+            <td class="text_right"><%= det.invoice.total.round(2) %></td>
           </tr>
         <% end
       end %>
-
-
-
-
   </table>
   </div>
 </div>
@@ -86,11 +85,16 @@
             </td>
           </b>
         </tr>
+      <% else %>
+      <tr>
+          <td></td>
+          <td></td>
+      </tr>
       <% end %>
 
       <tr>
         <td class="text_right"><b>TOTAL IVA:</b></td>
-        <td class="text_right"><b>$ <%= total_iva %> </b></td>
+        <td class="text_right"><b>$ <%= total_iva.round(2) %> </b></td>
       </tr>
 
   </table>

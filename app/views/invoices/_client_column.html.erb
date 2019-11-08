@@ -1,12 +1,12 @@
 <div class="form-group row">
   <%= label_tag :invoice_client_name, "Cliente", class:'col-4 col-form-label col-form-label-sm' %>
   <div class="col-8 input-group">
-    <%= text_field_tag :invoice_client_name, @client.name, class: 'form-control', readonly: true %>
+    <%= text_field_tag :invoice_client_name, @client.name, class: 'form-control', readonly: true, autocomplete: 'none' %>
     <div class="input-group-append">
       <% if @invoice.persisted? %>
-        <%= link_to icon('far', 'eye').html_safe, invoices_client_path(@client.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+        <%= link_to icon('far', 'eye').html_safe, invoices_client_path(@client.id), data: {toggle: 'modal', target: '#mainModalLg', remote: true}, class: 'input-group-text' %>
       <% else %>
-        <%= link_to icon('far', 'edit').html_safe, edit_invoices_client_path(@client.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#clientModal', remote: true}, class: 'input-group-text' %>
+        <%= link_to icon('far', 'edit').html_safe, edit_invoices_client_path(@client.id, invoice_id: @invoice.id), data: {toggle: 'modal', target: '#mainModalLg', remote: true}, class: 'input-group-text' %>
       <% end %>
     </div>
   </div>
@@ -22,7 +22,7 @@
 <div class="form-group row">
   <%= label_tag :invoice_client_iva_cond, "Condicion I.V.A.", class:'col-4 col-form-label col-form-label-sm' %>
   <div class="col-8">
-    <%= text_field_tag :invoice_client_iva_cond, @client.iva_cond, class: 'form-control', readonly: true, data_toggle:"tooltip", title:@client.iva_cond %>
+    <%= text_field_tag :invoice_client_iva_cond, @client.iva_cond, class: 'form-control', readonly: true, data_toggle:"tooltip", title: @client.iva_cond %>
   </div>
 </div>
 <%= hidden_field_tag :client_recharge, @client.recharge %>

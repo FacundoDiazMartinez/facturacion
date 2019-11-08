@@ -2,8 +2,8 @@
 <% page_number_if = 1 %>
 <% for i in 1..3 do %>
   <% total_page = 0 %>
-   <!--  @group_details lo cree en el controlador de invoices (en el show) con un include de productos. Son los detalles de la factura en grupos de a 20 -->
-  <% @group_details.each_with_index do |details_page, index| %>
+   <!--  @group_details lo cree en el controlador de invoices (en el show) con un include de productos. Son los detalles de la factura en grupos de a 15 -->
+  <% @group_details.each_with_index do |details_per_page, index| %>
     <% if page_number_if < real_total_page %>
       <% page_number_if += 1 %>
       <div class="alwaysbreak">
@@ -30,28 +30,22 @@
         </div>
        <!-- FIN HEADER ORIGINAL/DUPLICADO -->
 
-
        <!-- INICIO Calculo de subtotal e iva por pagina -->
+          <% details_per_page = details_per_page.compact %>
+          <% total_page               = details_per_page.map {|a| a.subtotal.to_f - a.iva_amount.to_f}.inject(0) { |sum, importe| sum + importe }.to_f %>
+          <% total_page_without_bonif = details_per_page.map {|a| a.subtotal.to_f - a.iva_amount.to_f}.inject(0) { |sum, importe| sum + importe }.to_f %>
+          <% total_page_iva           = details_per_page.pluck(:subtotal).inject(0) { |sum, importe| sum + importe }.to_f %>
+          <% iva_page                 = details_per_page.pluck(:iva_amount).inject(0) { |sum, importe| sum + importe }.to_f %>
 
-          <% total_page = details_page.map {|a| (a.subtotal.to_f - a.iva_amount.to_f) unless a.nil?}.compact.reduce(:+).to_f %>
-          <% total_page_without_bonif = details_page.map {|a| (a.subtotal.to_f - a.iva_amount.to_f) unless a.nil?}.compact.reduce(:+).to_f %>
-          <% iva_page = details_page.map {|a| (a.iva_amount.to_f) unless a.nil?}.compact.reduce(:+).to_f %>
-
-          <% if @invoice.bonification != 0 %>
-            <% total_page -= total_page * (@invoice.bonification / 100) %>
-            <% iva_page -= iva_page * (@invoice.bonification / 100) %>
-          <% end %>
           <% @invoice.bonifications.each do |bon| %>
             <% total_page -= total_page * (bon.percentage / 100) %>
-            <% iva_page -= iva_page * (bon.percentage / 100) %>
+            <% iva_page   -= iva_page * (bon.percentage / 100) %>
           <% end %>
-
         <!-- FIN Calculo de subtotal e iva por pagina -->
-
 
         <div class="invoice_pdf">
           <%= render template: '/invoices/pdf_partials/_header.html.erb' %>
-          <%= render template: '/invoices/pdf_partials/_details.html.erb', :locals => { :details => details_page, :total_of_page => total_page, :iva_of_page => iva_page, :total_of_page_without_bonif => total_page_without_bonif, :total_pages => @group_details.count, :page_number => (index + 1)} %>
+          <%= render template: '/invoices/pdf_partials/_details.html.erb', :locals => { :details => details_per_page, :total_of_page => total_page, :iva_of_page => iva_page, :total_of_page_without_bonif => total_page_without_bonif, :total_page_iva => total_page_iva, :total_pages => @group_details.count, :page_number => (index + 1)} %>
           <%= render template: '/invoices/pdf_partials/_footer.html.erb', :locals => { :page_number => (index + 1), :total_pages => @group_details.count } %>
         </div>
       </div>

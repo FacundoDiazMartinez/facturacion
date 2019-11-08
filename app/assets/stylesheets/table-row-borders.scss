@@ -1,0 +1,42 @@
+.table-row-bordered {
+  tbody tr {
+    border-left: 10px solid;
+    border-bottom: 0px;
+
+    &.border-green {
+      border-color: #28a745;
+    }
+
+    &.border-yellow {
+      border-color: #ffc107;
+    }
+
+    &.border-orange {
+      border-color: #ff5722;
+    }
+
+    &.border-red {
+      border-color: #dc3545;
+    }
+  }
+}
+
+table {
+
+  .td-action-buttons {
+    text-align: right;
+    width:150px;
+
+    a {
+      display: none;
+    }
+  }
+
+  tr:hover {
+    .td-action-buttons {
+      a {
+        display: inline-block;
+      }
+    }
+  }
+}

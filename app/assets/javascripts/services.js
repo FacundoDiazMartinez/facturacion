@@ -23,7 +23,6 @@
 		$.get('/products/product_category', {category_id: $(this).val()}, function(data){fillProductIvaForService(data)}, "script")
 	})
 
-	
 function setPrecioNetoForService(){
 	var costo 		= parseFloat($("#service_cost_price").val());
 	var ganancia 	= parseFloat($("#service_gain_margin").val());
@@ -35,7 +34,12 @@ function setPrecioNetoForService(){
 
 function setPrecioFinalForService(){
 	var neto 		= parseFloat($("#service_net_price").val());
-	var iva 		= parseFloat($("#service_iva_aliquot :selected").text());
+	if (($("#service_iva_aliquot :selected").text() == "Exento") || ($("#service_iva_aliquot :selected").text() == "No gravado") || ($("#service_iva_aliquot :selected").text() == "")) {
+		var iva = 0
+	}
+	else {
+		var iva 		= parseFloat($("#service_iva_aliquot :selected").text());
+	}
 	var final 		= $("#service_price");
 
 	final.val((neto * (1 + iva)).toFixed(2));

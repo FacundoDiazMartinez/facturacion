@@ -1,7 +1,9 @@
 class UserActivity < ApplicationRecord
   belongs_to :user
 
-  def self.create_for_confirmed_invoice invoice  #Se ejecuta cuando una factura se confirma
+  validates_presence_of :title, :body
+
+  def self.create_for_confirmed_invoice invoice
   	UserActivity.create(
         user_id: invoice.user.id,
         photo: "/images/invoice.png",
@@ -37,24 +39,6 @@ class UserActivity < ApplicationRecord
     )
   end
 
-  def self.create_for_new_supplier supplier, user #Se ejecuta cuando se crea un proveedor
-    UserActivity.create(
-        user_id: user.id,
-        photo: "/images/supplier.png",
-        title: "El usuario #{user.name} registró un nuevo proveedor",
-        body: "El día #{I18n.l(Date.today)} el usuario #{user.name} registró al proveedor #{supplier.name}."
-    )
-  end
-
-  def self.create_for_updated_supplier supplier, user #Se ejecuta cuando se actualiza un proveedor
-    UserActivity.create(
-        user_id: user.id,
-        photo: "/images/edit.png",
-        title: "El usuario #{user.name} editó un proveedor",
-        body: "El día #{I18n.l(Date.today)} el usuario #{user.name} editó al proveedor #{supplier.name}."
-    )
-  end
-
   def self.create_for_sended_purchase_order purchase_order #Se ejecuta cuando se envia una ord. de compra al proveedor
     UserActivity.create(
         user_id: purchase_order.user.id,
@@ -79,16 +63,6 @@ class UserActivity < ApplicationRecord
           photo: "/images/product.png",
           title: "El usuario #{product.user_who_creates.name} creo un producto",
           body: "El día #{I18n.l(Date.today)} el usuario #{product.user_who_creates.name} creo el producto #{product.name} con un precio neto de $#{product.net_price.round(2)}.",
-          link: "/products/#{product.id}"
-      )
-  end
-
-  def self.create_for_minimum_stock_reached product
-      UserActivity.create(
-          user_id: product.created_by,
-          photo: "/images/product.png",
-          title: "El producto #{product.name} posee stock bajo",
-          body: "El día #{I18n.l(Date.today)} el producto #{product.name} alcanzó su stock mínimo, con una cantidad de #{product.available_stock} #{product.measurement_unit_name}.",
           link: "/products/#{product.id}"
       )
   end

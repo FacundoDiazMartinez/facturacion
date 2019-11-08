@@ -1,14 +1,12 @@
 class ReceiptsController < ApplicationController
+  include DailyCashChecker
   before_action :set_receipt, only: [:show, :edit, :update, :destroy]
+  before_action :check_daily_cash, only: [:new, :create]
 
-  # GET /receipts
-  # GET /receipts.json
   def index
-    @receipts = current_user.company.receipts.no_devolution.find_by_period(params[:from], params[:to]).search_by_client(params[:client]).paginate(page: params[:page], per_page: 15).order("created_at DESC")
+    @receipts = current_company.receipts.no_devolution.find_by_period(params[:from], params[:to]).search_by_client(params[:client]).paginate(page: params[:page], per_page: 15).order("created_at DESC")
   end
 
-  # GET /receipts/1
-  # GET /receipts/1.json
   def show
     @parent_receipt_details = @receipt.receipt_details.joins(:invoice).where(invoices: {associated_invoice: nil})
     # la siguiene variable la cree para el pdf:
@@ -26,15 +24,13 @@ class ReceiptsController < ApplicationController
     end
   end
 
-  # GET /receipts/new
   def new
-    DailyCash.current_daily_cash current_user.company_id
-    @receipt = current_user.company.receipts.new()
+    @receipt = current_company.receipts.new()
     @receipt.date = Date.today
     if !params[:client_id].blank?
-      @client = current_user.company.clients.find(params[:client_id])
+      @client = current_company.clients.find(params[:client_id])
     else
-      @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+      @client = current_company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
     end
     AccountMovement.unscoped do
       @account_movement = AccountMovement.new()
@@ -43,20 +39,15 @@ class ReceiptsController < ApplicationController
     build_account_movement
   end
 
-  # GET /receipts/1/edit
   def edit
     @client = @receipt.client
     AccountMovement.unscoped do
       build_account_movement
-      # @account_movement = @receipt.account_movement
-      # @account_movement_payments = @account_movement.account_movement_payments
     end
   end
 
-  # POST /receipts
-  # POST /receipts.json
   def create
-    @receipt = current_user.company.receipts.new(receipt_params)
+    @receipt = current_company.receipts.new(receipt_params)
     @client = @receipt.client
     @receipt.user_id = current_user.id   #Se agregó el 22/5 para que los recibos tengan un usuario y no quede el campo en nil
     respond_to do |format|
@@ -71,8 +62,6 @@ class ReceiptsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /receipts/1
-  # PATCH/PUT /receipts/1.json
   def update
     bandera_confirmado = params[:button] == "confirm"
     @receipt.user_id = current_user.id   #Se agregó el 22/5 para que los recibos tengan un usuario y no quede el campo en nil
@@ -92,8 +81,6 @@ class ReceiptsController < ApplicationController
     end
   end
 
-  # DELETE /receipts/1
-  # DELETE /receipts/1.json
   def destroy
     @receipt.destroy
     respond_to do |format|
@@ -124,47 +111,45 @@ class ReceiptsController < ApplicationController
   end
 
   def get_cr_card_fees
-    render json: current_user.company.credit_cards.find(params[:id]).fees.all.map{|a| [a.quantity, a.id]}
+    render json: current_company.credit_cards.find(params[:id]).fees.map{|fee| { id: fee.id, cuotas: fee.quantity }}
   end
 
   def get_fee_details
-    render json: {fee_data: current_user.company.credit_cards.find(params[:cr_card_id]).fees.find(params[:fee_id]), fee_type: current_user.company.credit_cards.find(params[:cr_card_id]).type_of_fee }
+    render json: {fee_data: current_company.credit_cards.find(params[:cr_card_id]).fees.find(params[:fee_id]), fee_type: current_company.credit_cards.find(params[:cr_card_id]).type_of_fee }
   end
 
   def associate_invoice
-    invoices = [current_user.company.invoices.find(params[:invoice_id])]
+    invoices = [current_company.invoices.find(params[:invoice_id])]
     invoices.first.notes.where(state: 'Confirmado').each{|n| invoices << n}
     render :json => invoices.map { |invoice| {:id => invoice.id,:label => invoice.comp_number, tipo: invoice.nombre_comprobante, associated_invoices_total: invoice.confirmed_notes.sum(:total).round(2), :total_left => invoice.total_left.round(2), :total => invoice.total.round(2), :total_pay => invoice.total_pay.round(2) , :created_at => I18n.l(invoice.created_at, format: :only_date) } }
     # el atributo label fue cambiado, original  > :label => invoice.full_number_with_debt
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_receipt
-      @receipt = current_user.company.receipts.find(params[:id])
-    end
 
-    def build_account_movement
-      @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
-      @account_movement_payments = @account_movement.account_movement_payments
-      # @account_movement = @receipt.account_movement.nil? ? @receipt.build_account_movement : @receipt.account_movement
-    end
+  def set_receipt
+    @receipt = current_company.receipts.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def receipt_params
-      params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :saved_amount_available,
-       receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
-          account_movement_attributes: [:id, :total, :debe, :haber, :active,
-          account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
-          cash_payment_attributes: [:id, :total],
-          card_payment_attributes: [:id, :credit_card_id, :subtotal, :installments, :interest_rate_percentage, :interest_rate_amount, :total],
-          bank_payment_attributes: [:id, :bank_id, :total],
-          debit_payment_attributes: [:id, :bank_id, :total],
-          cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
-          retention_payment_attributes: [:id, :number, :total, :observation, :tribute],
-          compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
-          ]
+  def build_account_movement
+    @account_movement = @receipt.account_movement.nil? ? AccountMovement.new(receipt_id: @receipt.id) : @receipt.account_movement
+    @account_movement_payments = @account_movement.account_movement_payments
+  end
+
+  def receipt_params
+    params.require(:receipt).permit(:client_id, :sale_point_id, :cbte_tipo, :total, :date, :concept, :saved_amount_available,
+     receipt_details_attributes: [:id, :invoice_id, :total, :_destroy],
+        account_movement_attributes: [:id, :total, :debe, :haber, :active,
+        account_movement_payments_attributes: [:id, :payment_date, :type_of_payment,
+        cash_payment_attributes: [:id, :total],
+        card_payment_attributes: [:id, :credit_card_id, :subtotal, :fee_id, :total],
+        bank_payment_attributes: [:id, :bank_id, :total],
+        debit_payment_attributes: [:id, :bank_id, :total],
+        cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
+        retention_payment_attributes: [:id, :number, :total, :observation, :tribute],
+        compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
         ]
-      )
-    end
+      ]
+    )
+  end
 end

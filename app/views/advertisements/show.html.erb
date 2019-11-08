@@ -10,7 +10,7 @@
       <% @advertisement.sended_advertisement.order(created_at: :desc).each do |s| %>
         <div class="col-md-4">
           <%= link_to s, data: {toggle: 'modal', target: '#sendedAdvertisementModal', remote: true}, class: 'link-to-text-color-black'  do %>
-            <div class="card mb-4 card-shadow", style="height: 90%;">
+            <div class="card mb-4 ", style="height: 90%;">
               <div class="card-body">
                 <b>Enviado el:</b> <%= s.created_at %>
                 <br>

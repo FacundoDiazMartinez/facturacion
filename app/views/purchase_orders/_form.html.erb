@@ -1,19 +1,17 @@
-<% DailyCash.current_daily_cash current_user.company_id %>
-
 <%= nested_form_for @purchase_order do |form| %>
 
 <%= error_explanation @purchase_order %>
 
   <!-- HEADER -->
   <p class="text-muted">Datos del comprobante</p>
-    <div class="card card-shadow">
+    <div class="card ">
       <div class="card-body">
         <div class="row">
           <!-- PRIMERA COLUMNA -->
           <div class="col-sm">
             <div class="form-group">
               <%= form.label :supplier_id, "Proveedor" %>
-              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier', disabled: !@purchase_order.editable?} %>
+              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier' } %>
               <%= form.hidden_field :supplier_id, class: 'pu-supplier-id' %>
             </div>
             <div id="supplier_form">
@@ -104,7 +102,7 @@
   <!-- HEADER -->
 
   <!-- DETALLE -->
-  <div class="card card-shadow">
+  <div class="card ">
     <div class="card-body">
       <%= render template: '/purchase_orders/details/index.html.erb', locals:{form: form} %>
     </div>
@@ -112,7 +110,7 @@
   <!-- DETALLE -->
 
   <!-- PAGOS -->
-   <div class="card card-shadow">
+   <div class="card ">
     <div class="card-body">
       <%= render template: '/purchase_orders/payments/index.html.erb', locals:{form: form} %>
     </div>
@@ -120,15 +118,15 @@
   <!-- PAGOS -->
 
   <%= render '/purchase_orders/details/search_product' %>
-  <% if @purchase_order.persisted? %>
-    <%= render template: '/purchase_orders/send_mail.html.erb' %>
-  <% end %>
 
+  <%= render template: '/purchase_orders/send_mail.html.erb' if @purchase_order.persisted? %>
 
   <center>
     <% if @purchase_order.editable? %>
       <%= save_button_danger %>
     <% end %>
   </center>
+
+  <%= render_modal_lg %>
 
 <% end %>

@@ -1,5 +1,7 @@
 '<% if !params[:from].blank? && !params[:to].blank? %>'
 	$("#pdf_file").html("<%= j link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, generate_pdf_iva_books_path(from: params[:from], to: params[:to], iva_compras: params[:iva_compras], format: :pdf),target: '_blank', class: 'btn btn-primary ' %>");
+	$("#excel_file").html("");
+	$("#excel_file").html("<%= j link_to "#{icon('fas','download')} Exportar".html_safe, export_iva_books_path(format: :xlsx, from: params[:from] ,to: params[:to], iva_compras: params[:iva_compras]), data:{"skip-pjax": true}, class: 'btn btn-sm btn-outline-secondary', title: 'Exportar libro iva a una hoja de cálculo' if can? :export, IvaBook %>");
 '<% end %>'
 
 $("#iva_books_table").html("<%= j render 'iva_books_table' %>");

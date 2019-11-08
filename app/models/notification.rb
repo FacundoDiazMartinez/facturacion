@@ -4,7 +4,6 @@ class Notification < ApplicationRecord
 
 	after_create :send_notification
 
-
 	#PROCESOS
 		def send_notification #TODO - UNA VEZ QUE SE AGREGUEN LOS ROLES MODIFICAR ESTO
 			PrivatePub.publish_to(
@@ -48,18 +47,6 @@ class Notification < ApplicationRecord
 		        sender_id: 	  0,
 		        receiver_id:  user.id
 		    )
-		end
-
-		def self.create_for_low_stock product
-			product.company.users.each do |user|
-		    Notification.create(
-		        title:        "¡Se debe reponer stock!",
-		        body:         "El producto #{product.name} posee stock bajo y debe reponerse cuanto antes.",
-		        link: 				"/products/#{product.id}",
-		        sender_id: 	  0,
-		        receiver_id:  user.id
-		    )
-			end
 		end
 	#PROCESOS
 

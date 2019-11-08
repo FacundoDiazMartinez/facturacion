@@ -4,9 +4,14 @@ class CardPayment < ApplicationRecord
   	belongs_to :credit_card
 		belongs_to :fee, foreign_key: :installments, optional: true
 
-  	after_save :update_credit_card_balance
+		before_save :set_totals
+		after_save :update_credit_card_balance
 
   	default_scope { where(active: true) }
+
+		def set_totals
+			self.subtotal 	= self.total
+		end
 
   	#FILTROS DE BUSQEUDA
 	  	def self.search_by_card card

@@ -51,8 +51,10 @@
 		    	<td>
 		    		<%= link_to icon('fas', 'file-pdf').html_safe, receipt_path(am.receipt_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.receipt_id.blank? || am.cbte_tipo == "Devolución" %>
 		    		<%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(am.invoice_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.invoice_id.blank? %>
-		    		<%= link_to icon('fas', 'trash'), client_account_movement_path(@client.id, am.id), method: :delete, data: {confirm: "Se eliminaran los pagos asociados a este recibo ¿desea continuar?"}, class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.receipt_id.nil? %>
-		    	</td>
+						<% if !am.receipt_id.nil? && !am.receipt.state == "Finalizado" %>
+							<%= link_to icon('fas', 'trash'), client_account_movement_path(@client.id, am.id), method: :delete, data: {confirm: "Se eliminaran los pagos asociados a este recibo ¿desea continuar?"}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+						<% end %>
+					</td>
 		    </tr>
 		<% end %>
 		</tbody>

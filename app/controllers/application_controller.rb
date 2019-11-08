@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
+  require 'exceptions.rb'
+
   before_action :configure_permitted_parameters, :authenticate_user!, if: :devise_controller?
   before_action :authenticate_user!, except: [:get_localities]
   before_action :redirect_to_company, except: [:get_localities]
-  require 'exceptions.rb'
   after_action :flash_to_headers
 
   def flash_to_headers
@@ -13,18 +14,18 @@ class ApplicationController < ActionController::Base
     response.headers['X-Flash'] = flash_header.to_json
   end
 
-
 	def get_localities
 		render json: Locality.where(province_id: params[:city_id]).order(:name).map{|l| [l.id, l.name]}
 	end
 
   def redirect_to_company
-    if user_signed_in?
-      if not current_user.has_company?
-        redirect_to root_path
-      end
-    end
+    redirect_to root_path if current_user && !current_user.has_company?
   end
+
+  def current_company
+    return current_user.company
+  end
+  helper_method :current_company
 
   rescue_from ::Exceptions::EmptySalePoint do |exception|
     session[:return_to] ||= request.path
@@ -46,15 +47,12 @@ class ApplicationController < ActionController::Base
 
   protected
 
-
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :dni, :birthday, :address, :phone, :mobile_phone, :province_id, :locality_id, :postal_code])
   end
 
-
-
   rescue_from CanCan::AccessDenied do |exception|
-    flash[:danger] = "Acceso denegado. No posee los permisos para realizar esta acción."
+    flash[:danger] = "No posee los permisos para realizar esta acción."
     redirect_to user_path(current_user)
   end
 

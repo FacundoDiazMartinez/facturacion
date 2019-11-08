@@ -4,12 +4,10 @@ class IncomePayment < Payment
 	belongs_to :invoice
 	belongs_to :account_movement, optional: true, touch: true ##IMPORTANTE debe actualizar los montos del movimiento de cuenta
 
-	after_save 		:set_total_pay_to_invoice
-	after_save 		:set_notification
 	before_save 	:change_credit_card_balance, if: Proc.new{|ip| ip.type_of_payment == "1" && ip.total_changed?}
 	before_save 	:check_company_id
 	before_save 	:check_client_id
-	after_create 	:set_new_detail_if_credit_card
+	# after_create 	:set_new_detail_if_credit_card
 	after_destroy 	:set_amount_available_to_account_movement
 
 	validate 		:check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
@@ -38,28 +36,27 @@ class IncomePayment < Payment
  	#VALIDACIONES
 
  	#ATRIBUTOS
+	def credit_card_id
+		@credit_card_id
+	end
 
- 		def credit_card_id
- 			@credit_card_id
- 		end
-
-		def card_payment_attributes=(attributes)
-				@credit_card_id = attributes[:credit_card_id]
-				super
-		end
+	def card_payment_attributes=(attributes)
+		@credit_card_id = attributes[:credit_card_id]
+		super
+	end
  	#ATRIBUTOS
 
 	#PROCESOS
 
 	def set_new_detail_if_credit_card
-		unless invoice.nil? || !invoice.editable?
-			if type_of_payment == "1"
-				detail_total = card_payment.total - card_payment.subtotal
-				if detail_total > 0
-		      invoice.invoice_details.build_for_credit_card(detail_total.round(2), self.invoice.user_id, company, invoice_id)
-				end
-			end
-		end
+		# unless invoice.nil? || !invoice.editable?
+		# 	if type_of_payment == "1"
+		# 		detail_total = card_payment.total - card_payment.subtotal
+		# 		if detail_total > 0
+		#       invoice.invoice_details.build_for_credit_card(detail_total.round(2), self.invoice.user_id, company, invoice_id)
+		# 		end
+		# 	end
+		# end
 	end
 
 	def payment_name_with_receipt
@@ -74,10 +71,6 @@ class IncomePayment < Payment
 		end
 	end
 
-	def touch_invoice
-		invoice.touch
-	end
-
 	def destroy
   	update_column(:active, false)
   	set_total_pay_to_invoice
@@ -87,12 +80,8 @@ class IncomePayment < Payment
 
 	def set_total_pay_to_invoice
 		sum = invoice.sum_payments
-		invoice.update_column(:total_pay, sum) #unless sum == invoice.total_pay
+		invoice.update_column(:total_pay, sum)
 	end
-
-	def set_notification
-   	Notification.create_from_payment(self)
-  end
 
 	def change_credit_card_balance
 		CreditCard.find(credit_card_id).update_balance_from_payment(self)
@@ -106,5 +95,5 @@ class IncomePayment < Payment
 		resultado = invoice.sum_payments - self.total_was.to_f + self.total.to_f
 		resultado.round(2) > invoice.total
 	end
-	# default_scope { where(flow: "income", active: true, account_movement: nil) }
+
 end

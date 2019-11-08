@@ -11,10 +11,8 @@ class InvoiceDetail < ApplicationRecord
 
   before_validation :check_product
   before_validation :calculate_iva_amount
-  after_save :set_total_to_invoice
   after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
   after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
-  #after_validation :impact_stock_cn, if: Proc.new{|detail| detail.invoice.is_credit_note? && quantity_changed? && detail.product.tipo == "Producto" && detail.invoice.state == "Confirmado"}
 
   default_scope {where(active: true)}
 
@@ -36,29 +34,6 @@ class InvoiceDetail < ApplicationRecord
   validates_numericality_of :iva_amount, greater_than_or_equal_to: 0.0, message: "El monto I.V.A. debe ser mayor o igual a 0."
   validates_presence_of :iva_amount, message: "Debe especificar una alicuota de I.V.A." #Se pone asi pq el monto se calcula en base a la alicuota
 
-
-  # TABLA
-  #   create_table "invoice_details", force: :cascade do |t|
-  #     t.bigint "invoice_id"
-  #     t.bigint "product_id"
-  #     t.float "quantity", default: 1.0, null: false
-  #     t.string "measurement_unit", null: false
-  #     t.float "price_per_unit", default: 0.0, null: false
-  #     t.float "bonus_percentage", default: 0.0, null: false
-  #     t.float "bonus_amount", default: 0.0, null: false
-  #     t.float "subtotal", default: 0.0, null: false
-  #     t.string "iva_aliquot"
-  #     t.float "iva_amount"
-  #     t.boolean "active", default: true, null: false
-  #     t.datetime "created_at", null: false
-  #     t.datetime "updated_at", null: false
-  #     t.bigint "user_id"
-  #     t.index ["invoice_id"], name: "index_invoice_details_on_invoice_id"
-  #     t.index ["product_id"], name: "index_invoice_details_on_product_id"
-  #     t.index ["user_id"], name: "index_invoice_details_on_user_id"
-  #   end
-  # TABLA
-
   #PROCESOS
     def check_product
       product.company_id          = invoice.company_id
@@ -75,36 +50,22 @@ class InvoiceDetail < ApplicationRecord
         iva_percentage = 0
       end
       product.price             ||= price_per_unit * (1 + iva_percentage)
-      product.save
-    end
-
-    def set_total_to_invoice
-      invoice.update_attribute(:total, invoice.sum_details)
+      product.save unless product.persisted?
     end
 
     def product_attributes=(attributes)
-      prod = Product.unscoped.where(code: attributes[:code], company_id: attributes[:company_id], active: true).first_or_initialize
+      prod = Product.unscoped.where(
+        name: attributes[:name],
+        code: attributes[:code],
+        company_id: attributes[:company_id],
+        active: true,
+        ).first_or_initialize
+      prod.cost_price  = 0
       prod.iva_aliquot = self.iva_aliquot
       self.product = prod
-
       attributes["id"] = product.id
       super
     end
-
-    # def commissioners_attributes=(attributes)
-    #   attributes.each do |num,c|
-    #     if c["_destroy"] == "false"
-    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first_or_initialize
-    #       com.percentage = c["percentage"]
-    #       com.total_commission = 0
-    #     else
-    #       com = self.commissioners.where(invoice_detail_id: self.id, user_id: c["user_id"]).first
-    #       if !com.nil?
-    #         com.destroy
-    #       end
-    #     end
-    #   end
-    # end
 
     def product
       Product.unscoped{super}
@@ -129,24 +90,13 @@ class InvoiceDetail < ApplicationRecord
 
     def impact_stock_cn
       if self.product.tipo == "Producto"
-        # if quantity_change.nil? || new_record?
         self.product.impact_stock_by_cred_note(quantity: self.quantity, depot_id: depot_id, associated_invoice: self.invoice.associated_invoice)
-        # else
-        #   dif = quantity_change.first.to_f - quantity_change.second.to_f
-        #   self.product.rollback_stock_by_cred_note(quantity: dif, depot_id: depot_id)
-        # end
       end
     end
 
     def calculate_iva_amount
       self.iva_amount =  (subtotal.to_f / (1 + iva.to_f) * iva.to_f).round(2)
     end
-
-    # def destroy
-  	# 	update_column(:active, false)
-  	# 	run_callbacks :destroy
-  	# end
-
   #PROCESOS
 
   #ATRIBUTOS
@@ -169,22 +119,21 @@ class InvoiceDetail < ApplicationRecord
       Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f
     end
 
-    def self.build_for_credit_card total, user_id, company, invoice_id
-        detail = new(
-          quantity: 1,
-          iva_aliquot: "03",
-          measurement_unit: "7",
-          price_per_unit: total,
-          subtotal: total,
-          user_id: user_id,
-          depot_id: company.depots.first.id,
-          invoice_id: invoice_id
-        )
-        pro = company.products.where(code: "-", name: "Intereses tarjeta de crédito", tipo: "Servicio", iva_aliquot: "03").first_or_initialize
-        detail.product = pro
-        detail.check_product
-        detail.save
-    end
+    # def self.build_for_credit_card total, user_id, company, invoice_id
+    #     detail = new(
+    #       quantity: 1,
+    #       iva_aliquot: "03",
+    #       measurement_unit: "7",
+    #       price_per_unit: total,
+    #       subtotal: total,
+    #       user_id: user_id,
+    #       depot_id: company.depots.first.id,
+    #       invoice_id: invoice_id
+    #     )
+    #     pro = company.products.where(code: "-", name: "Intereses tarjeta de crédito", tipo: "Servicio", iva_aliquot: "03").first_or_initialize
+    #     detail.product = pro
+    #     detail.check_product
+    #     detail.save
+    # end
   #FUNCIONES
-
 end

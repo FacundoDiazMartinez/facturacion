@@ -4,7 +4,6 @@ class CashPayment < ApplicationRecord
 
 	default_scope { where(active: true ) }
 
-
 	def destroy
 		update_column(:active, false)
 		run_callbacks :destroy

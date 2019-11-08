@@ -1,0 +1,65 @@
+<div class="p-2 d-flex">
+  <h3 class="mb-2 w-100">
+    Comprobantes asociados
+  </h3>
+  <%= autocomplete_field_tag :comp_number, nil, autocomplete_invoice_and_debit_note_receipts_path, :fields => {:client_id => '#receipt_client_id'}, class: 'receipt_associated-invoice-autocomplete_field form-control form-control-sm comp_number', placeholder: "Ingrese nº de comprobante" if @receipt.editable? %>
+</div>
+<div class="card ">
+  <div class="card-body">
+    <div class="row">
+      <div class="table-responsive">
+        <table class="table table-striped invoice-table" id="details">
+          <thead>
+            <tr>
+              <th scope="col">Tipo</th>
+              <th scope="col">Número</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Total</th>
+              <th scope="col">Pagado</th>
+              <th scope="col">Faltante</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% total_faltante = 0 %>
+            <%= form.fields_for :receipt_details, form.object.receipt_details.order(:id) , wrapper: false do |f| %>
+              <tr class="fields" id="<%= f.index %>">
+                <td>
+                  <%= text_field_tag :invoice_tipo, f.object.invoice.nil? ? nil : f.object.invoice.nombre_comprobante, style: "text-align: right;" , class: 'form-control form-control-sm tipo', data: {toggle:"tooltip"}, disabled: true %>
+                </td>
+                <td>
+                  <%= text_field_tag :comp_number, f.object.invoice.nil? ? nil : f.object.invoice.comp_number, style: "text-align: right;" , class: 'form-control form-control-sm invoice_comp_number', data: {toggle:"tooltip"}, disabled: true %>
+                  <%= f.hidden_field :invoice_id, class: 'invoice_id' %>
+                </td>
+                <td>
+                  <%= text_field_tag :invoice_created_at, f.object.invoice.nil? ? nil : I18n.l(f.object.invoice.updated_at, format: :only_date), style: "text-align: right;" , class: 'form-control form-control-sm invoice_created_at', data: {toggle:"tooltip"}, disabled: true %>
+                </td>
+                <td>
+                  <%= text_field_tag :invoice_total, f.object.invoice.nil? ? nil : "$ " + number_with_precision(f.object.invoice.total, precision: 2, separator: '.', delimiter: ','), style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total', data: {toggle:"tooltip"}, disabled: true %>
+                </td>
+                <td>
+                  <%= text_field_tag :invoice_total_pay, f.object.invoice.nil? ? nil : "$ " + number_with_precision(f.object.invoice.total_pay, precision: 2, separator: '.', delimiter: ','), style: "text-align: right;" , class: 'form-control form-control-sm invoice_total_pay', data: {toggle:"tooltip"}, disabled: true %>
+                  <%= hidden_field_tag :total_payed_invoice, f.object.total, style: "text-align: right;" , class: 'total_payed_invoice' %>
+                </td>
+                <td>
+                  <%= text_field_tag :invoice_total_left, f.object.invoice.nil? ? nil : "$ " + (f.object.invoice.is_credit_note? ? '0.00' : number_with_precision(f.object.invoice.total_left, precision: 2, separator: '.', delimiter: ',')), style: "text-align: right;" ,  class: 'form-control form-control-sm invoice_total_left', data: {toggle:"tooltip"}, disabled: true %>
+                </td>
+                <td>
+                </td>
+                <% if @receipt.editable? %>
+                  <td class="verical-align trash_icon"><%= f.link_to_remove icon('fas', 'trash') %></td>
+                <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="m-2 text-center">
+      <%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar factura</span>".html_safe, :receipt_details, class: 'btn btn-success', data: {target: '#details'}, hidden: true if @receipt.editable? %>
+    </div>
+    <div class="resume text-right">
+      <h5 class="important-number"><span class="saldo_label">Monto faltante</span>: $<span class="total_payments_left">0.00</span></h5>
+    </div>
+  </div>
+</div>

@@ -27,4 +27,7 @@
 /config/master.key
 config/database.yml
 config/initializers/afip.rb
-#/afip/*
+/afip/*
+
+# para eliminar archivos en el repositorio
+# find . -name NOMBREARCHIVO -print0 | xargs -0 git rm -f --ignore-unmatch

@@ -1,0 +1,209 @@
+<p id="notice"><%= notice %></p>
+<div class="container">
+  <div class="row invoice-border">
+      <div class="col-12">
+        <center>
+          <h2 class="invoice_text_size">ORIGINAL</h2>
+        </center>
+      </div>
+  </div>
+  <!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
+  <div class="row">
+    <div class="container invoice-border">
+      <table class="invoice-width">
+      <tr>
+        <th class="invoice_text_size invoice_text_left invoice_header_width">
+          <%= @invoice.company.society_name %></th>
+        <th class="invoice_text_size invoice_c"><%= InvoiceManager::CbteTypesGetter.call(@invoice.company, @invoice.client).first.first.last %></th>
+        <th class="invoice_text_size invoice_header_width">FACTURA</th>
+      </tr>
+        <br>
+
+      <tr>
+        <td class="invoice_header_width"><b>Razon Social: </b><%= @invoice.company.society_name %></td>
+        <td></td>
+        <td class="invoice_header_width">
+          <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
+            Comp.Nro: <%= @invoice.fill_comp_number %></b></td>
+      </tr>
+
+      <tr>
+        <td class="invoice_header_width"><b>Domicilio Comercial:</b> <%= @invoice.company.address %></td>
+        <td></td>
+        <td class="invoice_header_width"><b>Fecha de Emision: <%= Date.today.strftime("%d/%m/%Y") %></b></td>
+      </tr>
+
+      <tr>
+        <td class="invoice_header_width"><b>Condicion frente al IVA: <%= @invoice.company.iva_cond %></b></td>
+        <td></td>
+        <td  class="invoice_header_width"><b>CUIT: </b><%= @invoice.company.cuit %></td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="invoice_header_width"><b>Ingresos Brutos: </b><%= @invoice.company.cuit %></td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td class="invoice_header_width"><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date %></td>
+      </tr>
+    </table>
+    </div>
+  </div>
+  <!-- FIN DEL ENCABEZADO -->
+</div>
+<br>
+<!-- ABAJO DEL ENCABEZADO -->
+<div class="row">
+  <div class="container invoice-border">
+    <table class="invoice-width">
+    <tr>
+      <td><b>CUIT: <%= @invoice.client.document_number %></b></td>
+      <td><b>Apellido y Nombre / Razon Social: </b> <%= @invoice.client.name %></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td><b>Condicion frente al IVA: </b><%= @invoice.client.iva_cond %></td>
+      <td><b>Domicilio: </b> <%= @invoice.company.iva_cond %></td>
+      <td></td>
+    </tr>
+
+    <tr>
+      <td><b>Condicion de venta: </b><%= @invoice.payment_array %></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+  </div>
+</div>
+<!-- FIN DEL UNDER-ENCABEZADO -->
+<!-- DETALLE -->
+<div class="row">
+  <div class="container">
+    <table class="invoice-width">
+    <tr>
+      <th class="invoice_description_header">Codigo</th>
+      <th class="invoice_description_header">Producto/Servicio</th>
+      <th class="invoice_description_header">Cantidad</th>
+      <th class="invoice_description_header">U.Medida</th>
+      <th class="invoice_description_header">Precio Unit.</th>
+      <th class="invoice_description_header">%Bonif</th>
+      <th class="invoice_description_header">Imp.Bonif</th>
+      <th class="invoice_description_header">Subtotal</th>
+    </tr>
+    <tr>
+    <% @invoice.invoice_details.each do |det| %>
+      <td><%= det.product.supplier_code %></td>
+      <td><%= det.product.name %></td>
+      <td class="invoice_text_right"><%= det.quantity %></td>
+      <td class="invoice_text_right">unidades</td>
+      <td class="invoice_text_right"><%= det.product.price %></td>
+      <td class="invoice_text_right"><%= det.bonus_percentage %></td>
+      <td class="invoice_text_right"><%= det.bonus_amount %></td>
+      <td class="invoice_text_right"><%= det.subtotal %></td>
+    </tr>
+    <% end %>
+  </table>
+  </div>
+</div>
+<!-- FIN DEL DETALLE -->
+<div class="row footer_top">
+  <div class="container invoice-border">
+    <table class="invoice-width">
+    <tr>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="invoice_text_right"><b>Subtotal: $ <%= det.subtotal %></b></td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="invoice_text_right"><b>Importe Otros Tributos: $ 0,00</b></td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="invoice_text_right"><b>Importe Total: $ <%= det.subtotal %></b></td>
+    </tr>
+  </table>
+  </div>
+</div>
+<div class="row footer_bottom">
+  <div class="container">
+    <table class="invoice-width">
+    <tr>
+      <td>AFIP</td>
+      <td><b>Comprobante Autorizado</b></td>
+      <td>Pag. 1/1</td>
+      <td class="invoice_text_right"><b>CAE Num.:</b> NUMERO DE CAE</td>
+    </tr>
+
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td class="invoice_text_right"><b>Fecha de Vto. de CAE: </b>VTO DE CAE</td>
+    </tr>
+  </table>
+  </div>
+</div>
+
+<style>
+  .invoice-width {
+    width:100%;
+  }
+  .invoice_text_size {
+    font-size: 25px;
+  }
+  .invoice-border {
+    border: 1px solid black;
+  }
+
+  .invoice_text_right {
+    text-align: right;
+  }
+
+  .invoice_text_left {
+    text-align: left;
+  }
+
+  .invoice_description_header {
+    background: lightgray;
+    border: 1px solid black;
+  }
+  .invoice_header_width {
+    width: 47%;
+  }
+  .invoice_c {
+    border: 1px solid;
+    padding:5px;
+  }
+  .footer_top {
+    position: absolute !important;
+    bottom:20px !important;
+  }
+  .footer_bottom {
+    position: absolute !important;
+    bottom:10px !important;
+  }
+</style>

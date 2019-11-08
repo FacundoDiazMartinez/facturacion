@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_25_051754) do
+ActiveRecord::Schema.define(version: 2019_11_04_151935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -187,7 +187,10 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "fee_id"
+    t.decimal "fee_subtotal", precision: 8, scale: 2
     t.index ["credit_card_id"], name: "index_card_payments_on_credit_card_id"
+    t.index ["fee_id"], name: "index_card_payments_on_fee_id"
     t.index ["payment_id"], name: "index_card_payments_on_payment_id"
   end
 
@@ -242,9 +245,11 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
     t.float "recharge"
     t.string "payment_day"
     t.string "observation"
-    t.boolean "valid_for_account", default: true, null: false
+    t.boolean "valid_for_account", default: false, null: false
     t.string "contact_1"
     t.string "contact_2"
+    t.string "enabled_observation"
+    t.boolean "enabled", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end
@@ -525,15 +530,16 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
     t.date "fch_serv_hasta"
     t.date "fch_vto_pago"
     t.text "observation"
-    t.bigint "sales_file_id"
     t.bigint "budget_id"
     t.boolean "expired", default: false
     t.float "bonification", default: 0.0, null: false
+    t.decimal "base_imponible", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_tributos", precision: 8, scale: 2, default: "0.0"
+    t.boolean "on_account", default: false, null: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"
     t.index ["sale_point_id"], name: "index_invoices_on_sale_point_id"
-    t.index ["sales_file_id"], name: "index_invoices_on_sales_file_id"
     t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
@@ -662,7 +668,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
     t.float "gain_margin"
     t.float "net_price"
     t.float "price"
-    t.string "iva_aliquot"
+    t.string "iva_aliquot", default: "05", null: false
     t.string "photo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -702,13 +708,14 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
     t.date "date"
     t.float "net_amount", default: 0.0, null: false
     t.float "iva_amount", default: 0.0, null: false
-    t.float "imp_op_ex", default: 0.0, null: false
+    t.float "imp_op_ex", default: 0.0
     t.float "total", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "purchase_order_id"
     t.boolean "active", default: true
     t.string "iva_aliquot"
+    t.string "cae"
     t.index ["arrival_note_id"], name: "index_purchase_invoices_on_arrival_note_id"
     t.index ["company_id"], name: "index_purchase_invoices_on_company_id"
     t.index ["purchase_order_id"], name: "index_purchase_invoices_on_purchase_order_id"
@@ -875,6 +882,8 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
     t.string "account_number"
     t.string "bank_name"
     t.string "iva_cond", null: false
+    t.bigint "created_by"
+    t.bigint "updated_by"
     t.index ["company_id"], name: "index_suppliers_on_company_id"
   end
 
@@ -1017,6 +1026,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
   add_foreign_key "budgets", "sales_files"
   add_foreign_key "budgets", "users"
   add_foreign_key "card_payments", "credit_cards"
+  add_foreign_key "card_payments", "fees"
   add_foreign_key "card_payments", "payments"
   add_foreign_key "cash_payments", "payments"
   add_foreign_key "cheque_payments", "payments"
@@ -1056,7 +1066,6 @@ ActiveRecord::Schema.define(version: 2019_06_25_051754) do
   add_foreign_key "invoices", "clients"
   add_foreign_key "invoices", "companies"
   add_foreign_key "invoices", "sale_points"
-  add_foreign_key "invoices", "sales_files"
   add_foreign_key "invoices", "users"
   add_foreign_key "iva_books", "companies"
   add_foreign_key "iva_books", "invoices"

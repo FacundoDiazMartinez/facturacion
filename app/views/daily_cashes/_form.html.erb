@@ -1,3 +1,4 @@
+<%= error_explanation @daily_cash %>
 <%= form_for @daily_cash do |form| %>
 	<div class="modal-body">
 		<div class="form-group">
@@ -7,10 +8,10 @@
 		<div class="form-group">
 			<% if action == "open" %>
 				<%= form.label :initial_amount %>
-				<%= form.number_field :initial_amount, value: DailyCash.last_value(current_user.company_id), class: 'form-control', required: true %>
+				<%= form.number_field :initial_amount, value: DailyCash.last_value(current_user.company_id), step: :any, class: 'form-control', required: true %>
 			<% elsif action == "close" %>
 				<%= form.label :final_amount %>
-				<%= form.number_field :final_amount, value: @daily_cash.current_amount, class: 'form-control', required: true %>
+				<%= form.number_field :final_amount, value: @daily_cash.current_amount, class: 'form-control', step: :any, required: true %>
 				<i>En caso que el monto especificado sea distinto al calculado por el sistema se generará un ajuste de caja. Revise cuidadosamente por favor.</i>
 				<%= form.hidden_field :state, value: "Cerrada" %>
 			<% end -%>

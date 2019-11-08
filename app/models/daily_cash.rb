@@ -1,16 +1,17 @@
 class DailyCash < ApplicationRecord
   belongs_to :company
-  has_many   :daily_cash_movements
+  has_many   :daily_cash_movements, dependent: :destroy
 
   after_save :create_initial_movement, if: Proc.new{|dc| dc.state != "Cerrada"}
   after_save :close_daily_cash, if: Proc.new{|dc| dc.state == "Cerrada"}
   after_touch :check_childrens, if: :persisted?
   before_validation :set_initial_state, on: :create
 
-  validates_uniqueness_of :date, scope:  :company_id, message: "No se puede abrir dos veces caja en el mismo día."
+  validates_uniqueness_of :date, scope:  [:company_id, :active], message: "La caja se puede abrir una sola vez por día."
   validates_presence_of :initial_amount, message: "Debe especificar un valor de inicio."
 
   default_scope { where(active: true ) }
+  scope :abierta, -> { where(state: "Abierta") }
 
   STATES = ["Abierta", "Cerrada"]
 
@@ -28,24 +29,6 @@ class DailyCash < ApplicationRecord
       @current_user = user
     end
   #ATRIBUTOS
-
-  #FILTROS DE BUSQUEDA
-  	def self.search_by_flow flow
-  		if !flow.blank?
-  			joins(:daily_cash_movements).where("daily_cash_movement.flow = ?", flow)
-  		else
-        all
-      end
-  	end
-
-  	def self.search_by_user user
-  		if !user.blank?
-  			joins(:daily_cash_movements).where("daily_cash_movements.user_id = ?", user)
-  		else
-  			all
-  		end
-  	end
-  #FILTROS DE BUSQUEDA
 
   #FUNCIONES
   	def self.last_value company_id
@@ -135,6 +118,7 @@ class DailyCash < ApplicationRecord
           flow: diferencia > 0 ? "income" : "expense",
           current_balance: final_amount,
           observation:  "Ajuste generado automaticamente por el sistema. Al momento de realizarse se observa monto de cierre igual a $#{final_amount}, monto de caja al momento de cierre igual a $#{current_amount}."
+
         )
       end
       self.daily_cash_movements.create(
@@ -152,4 +136,22 @@ class DailyCash < ApplicationRecord
     	run_callbacks :destroy
     end
   #PROCESOS
+
+  private
+	def self.search_by_flow flow
+		if !flow.blank?
+			joins(:daily_cash_movements).where("daily_cash_movement.flow = ?", flow)
+		else
+      all
+    end
+	end
+
+	def self.search_by_user user
+		if !user.blank?
+			joins(:daily_cash_movements).where("daily_cash_movements.user_id = ?", user)
+		else
+			all
+		end
+	end
+
 end
