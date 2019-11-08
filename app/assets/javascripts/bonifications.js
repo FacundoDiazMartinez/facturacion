@@ -30,7 +30,13 @@ function runBonifications() {
     setBonificationRowVars($(element))
     if (activo && alicuota.val() && totalConceptos) {
       descuento         = parseFloat(((alicuota.val() / parseFloat(100)) * totalConceptos).toFixed(2))
-      descuentoIVA      = parseFloat(((alicuota.val() / parseFloat(100)) * totalConceptosConIva).toFixed(2))
+      subtotalIVA       = parseFloat((totalConceptosConIva * ((100 - alicuota.val()) / 100)))
+      // descuentoIVA      = parseFloat(((alicuota.val() / parseFloat(100)) * totalConceptosConIva).toFixed(2))
+      descuentoIVA      = totalConceptosConIva - subtotalIVA
+
+      console.log(totalConceptosConIva)
+      console.log(subtotalIVA)
+      console.log(descuentoIVA)
 
       totalConceptos        -= parseFloat(descuento)
       totalConceptosConIva  -= parseFloat(descuentoIVA)

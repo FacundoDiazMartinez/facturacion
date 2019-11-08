@@ -30,7 +30,7 @@ module InvoiceManager
       conceptos_con_iva = subtotal_conceptos_con_iva()
       descuento_total = 0
       @invoice.bonifications.each do |bonification|
-        bonification.subtotal = (conceptos_con_iva * ((100 - bonification.percentage).to_f / 100)).round(2)
+        bonification.subtotal = (conceptos_con_iva * ((100 - bonification.percentage).to_f / 100.to_f)).round(2)
         bonification.amount   = (conceptos_con_iva - bonification.subtotal).round(2)
         descuento_total       += bonification.amount
         conceptos_con_iva     -= bonification.amount
@@ -63,6 +63,8 @@ module InvoiceManager
 
     def calcula_total_final
       @invoice.total 	= subtotal_conceptos_con_iva().round(2) - @invoice.bonification + @invoice.total_tributos
+
+      @invoice.total  = @invoice.total_pay if (@invoice.total_pay == @invoice.total_pay + 0.01) || (@invoice.total_pay = @invoice.total - 0.01)
     end
 
     def subotal_conceptos_sin_iva
