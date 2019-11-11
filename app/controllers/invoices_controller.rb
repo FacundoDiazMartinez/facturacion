@@ -1,5 +1,6 @@
 class InvoicesController < ApplicationController
-  load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product]
+  skip_before_action :verify_authenticity_token, only: [:calculate_invoice_totals]
+  load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product, :calculate_invoice_details]
   include DailyCashChecker
   include SalePointsGetter
   before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver, :paid_invoice_with_debt]
@@ -243,6 +244,16 @@ class InvoicesController < ApplicationController
   def sales_per_year
     invoices = Invoice.where(state:"Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_month("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
     render json: invoices
+  end
+
+  def calculate_invoice_totals
+    safe_params = params.require(:invoice).permit(
+      invoice_details_attributes: [:precio, :cantidad, :bonificacion, :iva, :subtotal],
+      bonifications_attributes: [:alicuota],
+      tributes_attributes: [:alicuota]
+    )
+    calculator = InvoiceManager::InvoiceDetailsCalculator.call(safe_params.to_h)
+    render json: { detalles: calculator }
   end
 
   private

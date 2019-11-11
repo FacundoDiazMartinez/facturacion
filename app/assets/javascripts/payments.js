@@ -8,7 +8,7 @@ function runPayments() {
     }
   })
   $(".total_payments").text(totalPayments.toFixed(2))
-  runInvoice()
+  // runInvoice()
 }
 
 function getTotalPayments() {
