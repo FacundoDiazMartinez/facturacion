@@ -23,7 +23,7 @@ class IncomePayment < Payment
  		end
 
  		def check_available_saldo
- 			errors.add(:total, "Inc Pay - 37 - No posee el saldo suficiente en su cuenta corriente.") unless (total.to_f <= invoice.client.account_movements.where('account_movements.amount_available > 0').sum(:amount_available).to_f || invoice.is_credit_note?)
+ 			errors.add(:total, "No posee el saldo suficiente en su cuenta corriente.") unless (total.to_f <= invoice.client.account_movements.where('account_movements.amount_available > 0').sum(:amount_available).to_f || invoice.is_credit_note?)
  		end
 
  		def check_company_id
