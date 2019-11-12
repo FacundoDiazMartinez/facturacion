@@ -1,15 +1,15 @@
 <div class="p-4">
   <ul class="nav justify-content-center">
     <li class="nav-item bg-light rounded-left border">
-      <%= link_to "Caja diaria #{icon('fas', 'money-bill-alt')}".html_safe, daily_cashes_path, class: 'text-white nav-link bg-secondary', title: 'caja diaria' %>
+      <%= link_to "Caja diaria #{icon('fas', 'money-bill-alt')}".html_safe, daily_cashes_path, data: { "skip-pjax": true }, class: 'text-white nav-link bg-secondary', title: 'caja diaria' %>
     <li class="nav-item bg-light border">
-      <%= link_to "Tarjetas #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
+      <%= link_to "Tarjetas #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
     </li>
     <li class="nav-item bg-light border">
-      <%= link_to "Cheques #{icon('fas', 'file-signature')}".html_safe, payments_cheque_payments_path(), class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
+      <%= link_to "Cheques #{icon('fas', 'file-signature')}".html_safe, payments_cheque_payments_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
     </li>
     <li class="nav-item bg-light rounded-right border">
-      <%= link_to "Banco #{icon('fas', 'university')}".html_safe, payments_bank_payments_path(), class: 'text-dark nav-link', title: "Información de movimientos bancarios" %>
+      <%= link_to "Banco #{icon('fas', 'university')}".html_safe, payments_bank_payments_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información de movimientos bancarios" %>
     </li>
   </ul>
   <hr>
