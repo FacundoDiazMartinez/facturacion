@@ -15,7 +15,6 @@ class BankPayment < ApplicationRecord
 		end
 
 		def update_bank_balance
-			pp payment
 			self.bank.update_balance_from_payment(self.payment)
 		end
 
