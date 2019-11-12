@@ -52,10 +52,20 @@
 
       <div class="card-body">
         <div class="row">
-          <% current_user.company.credit_cards.each do |cc| %>
+          <% current_company.credit_cards.each do |cc| %>
             <div class="col">
-              <h6>A cobrar <strong><%= cc.name %></strong>: $ <%= cc.current_amount %></h6>
-              <%= link_to "Registrar cobro", new_charge_credit_card_path(cc.id), class: 'btn btn-secondary', data: {target: '#chargeModal', toggle: 'modal', remote: true} %>
+              <div class="card">
+                <div class="card-body">
+                  <h6>Acumulado <strong><%= cc.name %></strong>
+                    <span class="float-right h4">
+                      $ <%= cc.payments.where(payments: { confirmed: true }).pluck(:total).inject(0) { |sum, n| sum + n } %>
+                    </span>
+                  </h6>
+                  <div class="text-center">
+                    <%= link_to "Registrar cobro", new_charge_credit_card_path(cc.id), class: 'btn btn-secondary', data: { target: '#chargeModal', toggle: 'modal', remote: true } %>
+                  </div>
+                </div>
+              </div>
             </div>
           <% end -%>
         </div>

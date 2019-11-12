@@ -26,7 +26,10 @@ module ReceiptManager
 
     def confirma_movimiento_de_cuenta(recibo)
       AccountMovement.unscoped do
-        recibo.account_movement.account_movement_payments.each{ |payment| payment.confirmar }
+        recibo.account_movement.account_movement_payments.each do |payment|
+          payment.update(confirmed: true)
+          payment.confirmar
+        end
         recibo.account_movement.total             = recibo.total
         recibo.account_movement.amount_available  = 0
         recibo.account_movement.saldo             = 0

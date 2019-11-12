@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_04_151935) do
+ActiveRecord::Schema.define(version: 2019_11_12_134844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -241,15 +241,15 @@ ActiveRecord::Schema.define(version: 2019_11_04_151935) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "saldo", default: 0.0, null: false
+    t.decimal "saldo", precision: 8, scale: 2, default: "0.0", null: false
     t.float "recharge"
     t.string "payment_day"
     t.string "observation"
     t.boolean "valid_for_account", default: false, null: false
     t.string "contact_1"
     t.string "contact_2"
-    t.string "enabled_observation"
     t.boolean "enabled", default: true, null: false
+    t.string "enabled_observation"
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end
@@ -598,6 +598,7 @@ ActiveRecord::Schema.define(version: 2019_11_04_151935) do
     t.bigint "company_id"
     t.bigint "user_id"
     t.bigint "client_id"
+    t.boolean "confirmed", default: false, null: false
     t.index ["account_movement_id"], name: "index_payments_on_account_movement_id"
     t.index ["client_id"], name: "index_payments_on_client_id"
     t.index ["company_id"], name: "index_payments_on_company_id"

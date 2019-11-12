@@ -86,14 +86,14 @@ function runInvoice(){
 		.then((details) => {
 			invoiceTotal = details['detalles']['total_venta']
 
-			$('.total_details').text(details['detalles']['importe_neto'])
-			$('.detail_iva').text(details['detalles']['importe_iva'])
+			$('.total_details').text(details['detalles']['importe_neto'].toFixed(2))
+			$('.detail_iva').text(details['detalles']['importe_iva'].toFixed(2))
 
 			totalDetalles    = details['detalles']['importe_neto']
 			totalDetallesIVA = details['detalles']['importe_iva']
 
-			$(".final_total").text(invoiceTotal)
-			$("#invoice_total").val(invoiceTotal)
+			$(".final_total").text(invoiceTotal.toFixed(2))
+			$("#invoice_total").val(invoiceTotal.toFixed(2))
 
 			pagos				= parseFloat(getTotalPayments().toFixed(2))
 			invoiceLeft = parseFloat(details['detalles']['total_venta']) - pagos

@@ -10,7 +10,10 @@ module InvoiceManager
         verifica_cliente_con_cuenta_corriente()
 
         AccountMovementGenerator.call(@invoice) if @invoice.on_account?
-        ReceiptGenerator.call(@invoice) if @invoice.total_pay > 0
+        if @invoice.total_pay > 0
+          ReceiptGenerator.call(@invoice)
+          PaymentConfirmator.call(@invoice)
+        end
 
         comprobante = AfipGateway.call(@invoice)
         comprobante.authorize

@@ -3,7 +3,7 @@ class Payments::CardPaymentsController < Payments::PaymentsController
   layout :false, except: [:index, :show]
 
   def index
-    @card_payments = current_user.company.card_payments.joins(:payment, :credit_card).search_by_card(params[:card]).search_by_date(params[:date]).order("created_at DESC").paginate(page: params[:page], per_page: 10)
+    @card_payments = current_company.card_payments.joins(:payment, :credit_card).where(payments: {confirmed: true}).search_by_card(params[:card]).search_by_date(params[:date]).order("created_at DESC").paginate(page: params[:page], per_page: 10)
   end
 
   def show
