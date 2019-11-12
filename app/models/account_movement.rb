@@ -133,7 +133,10 @@ class AccountMovement < ApplicationRecord
     ##actualiza el total del movimiento, el saldo disponible y el saldo correspondiente
     def confirmar!
       unless confirmado?
-        self.account_movement_payments.map{ |payment| payment.confirmar }
+        self.account_movement_payments.each do |payment|
+          payment.update(confirmed: true)
+          payment.confirmar
+        end
         set_total_and_amount_available ##redundante?
         set_saldo
         self.active                  = true
