@@ -1,6 +1,7 @@
 class Bank < ApplicationRecord
   belongs_to :company
   has_many :bank_payments
+  has_many :payments, through: :bank_payments
 
   validates_presence_of :name,           message: "El nombre no puede estar en blanco."
   validates_presence_of :account_number, message: "El número de cuenta no puede estar en blanco."

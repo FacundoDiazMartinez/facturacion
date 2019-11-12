@@ -30,15 +30,6 @@
           </div>
           <!-- BUSCAR POR Banco-->
 
-          <!-- BUSCAR POR CLIENTE -->
-          <div class="input-group col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
-            </div>
-            <%= text_field_tag :client, params[:client], class: 'form-control datepicker', placeholder: 'Buscar por cliente...', onkeyup: 'remoteSubmit("#search_form")' %>
-          </div>
-          <!-- BUSCAR POR CLIENTE -->
-
           <!-- BUSCAR POR FECHA -->
           <div class="input-group col">
             <div class="input-group-prepend">
@@ -52,21 +43,16 @@
 
       <div class="card-body">
         <div class="row">
-          <% current_company.banks.each do |cc| %>
+          <% current_company.banks.each do |bank| %>
             <div class="col-6">
               <div class="card">
                 <div class="card-body">
                   <div>
-                    <h6>Saldo <strong><%= cc.name %></strong>:
+                    <h6>Saldo <strong><%= bank.name %></strong>:
                       <span class="float-right h4">
-                        $ <%= cc.current_amount %>
+                        $ <%= bank.payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n } %>
                       </span>
                     </h6>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <div class="text-center">
-                    <%= link_to "Registrar extracción", new_extraction_bank_path(cc.id), class: 'btn btn-secondary', data: {target: '#extractionModal', toggle: 'modal', remote: true} %>
                   </div>
                 </div>
               </div>
