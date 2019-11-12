@@ -47,13 +47,22 @@
             <div class="col-6">
               <div class="card">
                 <div class="card-body">
+                  <h4><strong><%= bank.name %></strong></h4>
                   <div>
-                    <h6>Saldo <strong><%= bank.name %></strong>:
-                      <span class="float-right h4">
-                        $ <%= bank.payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n } %>
+                    <h6>Transferencias:
+                      <span class="float-right">
+                        $ <%= transfer = bank.b_payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }.round(2) %>
                       </span>
                     </h6>
                   </div>
+                  <div>
+                    <h6>Débito <strong><%= bank.name %></strong>:
+                      <span class="float-right">
+                        $ <%= debito = bank.d_payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }.round(2) %>
+                      </span>
+                    </h6>
+                  </div>
+                  <span class="float-right text-bold">$ <%= (transfer + debito).round(2) %> </span>
                 </div>
               </div>
             </div>
