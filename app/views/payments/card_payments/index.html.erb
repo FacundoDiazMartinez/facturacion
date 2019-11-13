@@ -30,15 +30,6 @@
           </div>
           <!-- BUSCAR POR TARJETA-->
 
-          <!-- BUSCAR POR CLIENTE -->
-          <div class="input-group col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
-            </div>
-            <%= text_field_tag :client, params[:client], class: 'form-control datepicker', placeholder: 'Buscar por cliente...', onkeyup: 'remoteSubmit("#search_form")' %>
-          </div>
-          <!-- BUSCAR POR CLIENTE -->
-
           <!-- BUSCAR POR FECHA -->
           <div class="input-group col">
             <div class="input-group-prepend">
@@ -61,11 +52,6 @@
                       $ <%= cc.payments.where(payments: { confirmed: true }).pluck(:total).inject(0) { |sum, n| sum + n } %>
                     </span>
                   </h6>
-                </div>
-                <div class="card-footer">
-                  <div class="text-center">
-                    <%= link_to "Registrar cobro", new_charge_credit_card_path(cc.id), class: 'btn btn-secondary', data: { target: '#chargeModal', toggle: 'modal', remote: true } %>
-                  </div>
                 </div>
               </div>
             </div>
