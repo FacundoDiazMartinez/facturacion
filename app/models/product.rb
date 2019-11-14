@@ -230,7 +230,7 @@ class Product < ApplicationRecord
 		s = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
 		s.quantity = s.quantity.to_f - attrs[:quantity].to_f
 		s.save
-    self.set_available_stock
+		self.set_available_stock
 	end
 
 	def deliver_product attrs={}
