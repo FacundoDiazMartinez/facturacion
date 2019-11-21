@@ -43,6 +43,14 @@ class Payment < ApplicationRecord
     "8" => "Compensación"
   }
 
+  GENERALPAYMENTS = {
+  	"0" => "Contado",
+  	"1" => "Tarjeta de crédito",
+  	"3" => "Transferencia bancaria",
+  	"4" => "Cheque",
+    "7" => "Tarjeta de débito"
+  }
+
   #ATRIBUTOS
   def valid_nested_payment?
     return self["total"].to_f == 0
@@ -236,4 +244,14 @@ class Payment < ApplicationRecord
       end
     end
   #FUNCIONES
+
+  #FILTROS
+    def self.search_by_type type_of_payment
+      if !type_of_payment.blank?
+        where("type_of_payment = ?", type_of_payment)
+      else
+        all
+      end
+    end
+  #FILTROS
 end

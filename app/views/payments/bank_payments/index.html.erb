@@ -2,7 +2,10 @@
   <ul class="nav justify-content-center">
     <li class="nav-item bg-light rounded-left border">
       <%= link_to "Caja diaria #{icon('fas', 'money-bill-alt')}".html_safe, daily_cashes_path, class: 'text-dark nav-link', title: 'caja diaria' %>
+    </li>
     <li class="nav-item bg-light border">
+      <%= link_to "Caja General #{icon('fas', 'credit-card')}".html_safe, general_payments_daily_cashes_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información caja general" %>
+    </li><li class="nav-item bg-light border">
       <%= link_to "Tarjetas #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
     </li>
     <li class="nav-item bg-light border">
