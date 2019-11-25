@@ -59,6 +59,17 @@ module InvoiceManager
         .inject(0) { |sum, n| sum + n }
 
       @invoice.total_pay = monto_pagado.round(2)
+
+      pp @invoice.income_payments
+
+      @invoice.income_payments
+        .reject(&:marked_for_destruction?)
+        .each do |payment|
+          pp payment
+          if payment.type_of_payment = "1"
+            payment.total = payment.card_payment.total
+          end
+        end
     end
 
     def calcula_total_final

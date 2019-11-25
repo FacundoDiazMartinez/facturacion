@@ -328,11 +328,11 @@ class Product < ApplicationRecord
     end
   end
 
-  def destroy
-  	update_columns(active: false)
-  	run_callbacks :destroy
-  	freeze
-  end
+  # def destroy
+  # 	update_columns(active: false)
+  # 	run_callbacks :destroy
+  # 	freeze
+  # end
 
   def rollback_stock_from_delivered_to_reserved attrs={}
   	#Se buscan los depositos con stock entregado y reservado
