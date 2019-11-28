@@ -48,6 +48,7 @@ class Payment < ApplicationRecord
   	"1" => "Tarjeta de crédito",
   	"3" => "Transferencia bancaria",
   	"4" => "Cheque",
+    "5" => "Retenciones",
     "7" => "Tarjeta de débito"
   }
 
@@ -249,6 +250,14 @@ class Payment < ApplicationRecord
     def self.search_by_type type_of_payment
       if !type_of_payment.blank?
         where("type_of_payment = ?", type_of_payment)
+      else
+        all
+      end
+    end
+
+    def self.search_by_date payment_date
+      if !payment_date.blank?
+        where("payment_date = ?", payment_date.to_date.strftime("%Y-%m-%d"))
       else
         all
       end
