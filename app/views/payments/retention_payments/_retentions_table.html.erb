@@ -1,0 +1,23 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Tributo</th>
+      <th scope="col">Número</th>
+      <th scope="col">Total</th>
+      <th scope="col">Fecha</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @retention_payments.each do |retention_payment| %>
+      <tr>
+        <td><%= retention_payment.tribute %></td>
+        <td><%= retention_payment.number %></td>
+        <td><%= number_to_currency(retention_payment.total, unit: '$', separator: '.', format: "%u %n") %></td>
+        <td><%= retention_payment.payment.payment_date %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @retention_payments %>

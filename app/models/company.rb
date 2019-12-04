@@ -33,6 +33,7 @@ class Company < ApplicationRecord
 	has_many :card_payments, through: :credit_cards
 	has_many :bank_payments, through: :banks
 	has_many :cheque_payments, through: :payments
+	has_many :retention_payments, through: :payments
 	has_many :account_movements, through: :clients
 	has_many :account_movement_payments, through: :account_movements
 	has_many :transfer_requests
