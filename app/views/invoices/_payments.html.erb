@@ -54,12 +54,7 @@
                 <td>
                 <%= link_to icon('fas', 'eye'), eval(payment.subpayment_show(invoice.id)), data: { toggle: 'modal', target: '#mainModalLg', remote: true }, class: "btn btn-sm btn-icon btn-outline-secondary" if payment.persisted? && invoice.confirmado? && payment.account_movement_id.nil? %>
                 <% unless (payment.errors.any? || payment.id.blank?) || invoice.confirmado? %>
-                  <%= link_to icon('fas', 'edit'), edit_payments_payment_path(payment.id, invoice_id: invoice.id), data: {toggle: 'modal', target: '#mainModalLg', remote: true}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-                  <% if payment.type_of_payment != "1" %>
-                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{ confirm: "¿Está seguro?", label: "Aceptar", cancel: "Cancelar" }, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
-                  <% else %>
-                    <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{confirm: "¿Está seguro?", label: "Aceptar", cancel: "Cancelar"}, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
-                  <% end %>
+                  <%= link_to icon('fas', 'trash'), payment_path(payment.id), method: :delete, data:{ confirm: "¿Está seguro?", label: "Aceptar", cancel: "Cancelar" }, class: "btn btn-sm btn-icon btn-outline-secondary remove-invoice-payment" %>
                 <% end -%>
                 </td>
               </tr>
@@ -70,7 +65,7 @@
         </div>
       </div>
       <div class="text-center m-2">
-        <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: { toggle: 'modal', target: '#paymentModal' }, class: 'btn btn-secondary new_payment', type: 'button' if invoice.editable? %>
+        <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, id: 'agregar_pago', class: 'btn btn-secondary', type: 'button' if invoice.editable? %>
       </div>
       <div class="resume text-right">
         <h5 class="important-number">Total pagos: $<span class="total_payments">0.00</span></h5>
@@ -78,16 +73,10 @@
     </div>
   </div>
 
-  <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div id="payment_modal">
-        	<%= render( template: '/invoices/payment/new.html.erb', locals: { form: form }) %>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script type="text/javascript">
     initializePaymentsLimit()
+
+    $('#agregar_pago').click(() => {
+      $('#agregar_pago_modal').click()
+    })
   </script>

@@ -4,7 +4,7 @@ class CardPayment < ApplicationRecord
   	belongs_to :credit_card
 		belongs_to :fee, foreign_key: :installments, optional: true
 
-		before_save :set_totals
+		# before_save :set_totals
 		after_save :update_credit_card_balance
 
 		validates_presence_of :fee_id, message: 'Seleccione la cantidad de cuotas.'
@@ -17,13 +17,11 @@ class CardPayment < ApplicationRecord
 			self.interest_rate_percentage = fee.percentage
 
 			aux_total 	= self.subtotal * (self.interest_rate_percentage / 100.to_f + 1)
-			valor_cuota = aux_total.to_f / self.installments
+			valor_cuota = aux_total.round(2).to_f / self.installments
 			aux_total 	= valor_cuota.round(2).to_f * self.installments.to_f
 
 			self.fee_subtotal = valor_cuota
 			self.total 				= aux_total.round(2)
-			pp fee_subtotal
-			pp total
 		end
 
   	#FILTROS DE BUSQEUDA

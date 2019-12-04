@@ -4,7 +4,9 @@
 
 $("#idetails").html("<%= j render( partial: '/invoices/details', locals: { form: @builder, invoice: @invoice }) %>");
 $("#ibonifications").html("<%= j render( partial: '/invoices/bonifications', locals: { form: @builder, invoice: @invoice }) %>");
+<% unless @invoice.new_record? %>
 $("#ipayments").html("<%= j render( partial: '/invoices/payments', locals: { form: @builder, invoice: @invoice }) %>");
+<% end %>
 $("#itaxes").html("<%= j render( partial: '/invoices/taxes', locals: { form: @builder, invoice: @invoice }) %>");
 $("#dynamic_attributes").html("<%= j render( partial: '/invoices/dynamic_attributes', locals: { form: @builder }) %>");
 checkNotaDebito();

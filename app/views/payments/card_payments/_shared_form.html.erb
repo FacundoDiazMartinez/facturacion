@@ -77,9 +77,7 @@
   })
 
   $('.fee-radio-button').change((e) => {
-    console.log($(e.target))
     $('.form-total').attr('disabled', true)
-    console.log($(e.target).closest('.fees').find('.form-total').first().val())
     $(e.target).closest('.fees').find('.form-total').first().removeAttr('disabled')
   })
 

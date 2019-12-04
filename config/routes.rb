@@ -198,7 +198,6 @@ Rails.application.routes.draw do
   devise_for :users, :path_prefix => 'sessions', controllers: { registrations: 'users/registrations' }
 
   resources :invoices do
-    resources :income_payments, module: :invoices
     resources :invoice_details
     get :autocomplete_product_code, :on => :collection
     get :confirm, on: :member
@@ -221,6 +220,8 @@ Rails.application.routes.draw do
     get :commissioner_per_month, on: :collection
     post :calculate_invoice_totals, on: :collection
   end
+
+  resources :income_payments
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root "companies#new"

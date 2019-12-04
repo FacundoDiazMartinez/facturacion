@@ -23,9 +23,7 @@
     <% @builder = form %>
   <% end %>
 <% else %>
-  <% nested_form_for @invoice do |form| %>
-    <% form.fields_for :income_payments, form.object.income_payments.build do |f| %>
-      <% @builder = f %>
-    <% end %>
+  <% nested_form_for @invoice.income_payments.new, wrapper: false do |f| %>
+    <% @builder = f %>
   <% end %>
 <% end %>

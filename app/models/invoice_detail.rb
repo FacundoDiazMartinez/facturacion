@@ -1,5 +1,4 @@
 class InvoiceDetail < ApplicationRecord
-  include Deleteable
   belongs_to :invoice
   belongs_to :product, optional: true
   belongs_to :depot, optional: true
@@ -12,7 +11,7 @@ class InvoiceDetail < ApplicationRecord
   before_validation :check_product
   before_validation :calculate_iva_amount
   after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
-  after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
+  before_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
 
   default_scope {where(active: true)}
 

@@ -5,7 +5,6 @@ class IncomePayment < Payment
 	belongs_to :account_movement, optional: true, touch: true ##IMPORTANTE debe actualizar los montos del movimiento de cuenta
 
 	before_save 	:check_company_id
-	after_create 	:set_new_detail_if_credit_card
 	after_destroy 	:set_amount_available_to_account_movement
 
 	validate 		:check_max_total, if: Proc.new{|ip| !ip.invoice.nil? && ip.account_movement.try(:receipt_id).nil?}
@@ -42,12 +41,6 @@ class IncomePayment < Payment
  	#ATRIBUTOS
 
 	#PROCESOS
-	def set_new_detail_if_credit_card
-		unless self.invoice.nil? || !self.invoice.editable?
-			PaymentManager::InterestGenerator.call(self) if type_of_payment == "1"
-		end
-	end
-
 	def payment_name_with_receipt
 		if type_of_payment == "06"
 			"Cuenta Corriente - RX:  #{self.account_movement.receipt.number}"
@@ -71,7 +64,6 @@ class IncomePayment < Payment
 		sum = invoice.sum_payments
 		invoice.update_column(:total_pay, sum)
 	end
-
 	#PROCESOS
 
 	private

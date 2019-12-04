@@ -8,6 +8,8 @@ module InvoiceManager
     end
 
     def call
+      pp @invoice.invoice_details
+
       calcula_base_imponible()
       calcula_descuentos()
       calcula_tributos()
@@ -60,13 +62,10 @@ module InvoiceManager
 
       @invoice.total_pay = monto_pagado.round(2)
 
-      pp @invoice.income_payments
-
       @invoice.income_payments
         .reject(&:marked_for_destruction?)
         .each do |payment|
-          pp payment
-          if payment.type_of_payment = "1"
+          if payment.type_of_payment == "1"
             payment.total = payment.card_payment.total
           end
         end

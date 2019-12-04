@@ -1,12 +1,14 @@
 module PaymentManager
   class InterestGenerator < ApplicationService
 
-    def initialize(income_payment)
+    def initialize(income_payment, card_payment)
       @invoice        = income_payment.invoice
-      @card_payment   = income_payment.card_payment
+      @card_payment   = card_payment
     end
 
     def call
+      pp @invoice
+      pp @card_payment
       incrementar_precio_detalles_por_intereses()
     end
 
@@ -18,5 +20,6 @@ module PaymentManager
         invoice_detail.save
       end
     end
+
   end
 end

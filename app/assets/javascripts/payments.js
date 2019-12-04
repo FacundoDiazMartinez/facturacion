@@ -8,7 +8,6 @@ function runPayments() {
     }
   })
   $(".total_payments").text(totalPayments.toFixed(2))
-  // runInvoice()
 }
 
 function getTotalPayments() {
@@ -36,7 +35,7 @@ function initializePaymentsLimit() {
         $(select).focus()
         $([document.documentElement, document.body]).animate({
           scrollTop: $(select).offset().top - 600,
-        }, 300 );
+        }, 100 );
         return false
       }
     })
