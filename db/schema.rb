@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_12_134844) do
+ActiveRecord::Schema.define(version: 2019_12_11_184257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -241,15 +241,15 @@ ActiveRecord::Schema.define(version: 2019_11_12_134844) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "saldo", precision: 8, scale: 2, default: "0.0", null: false
+    t.float "saldo", default: 0.0, null: false
     t.float "recharge"
     t.string "payment_day"
     t.string "observation"
     t.boolean "valid_for_account", default: false, null: false
     t.string "contact_1"
     t.string "contact_2"
-    t.boolean "enabled", default: true, null: false
     t.string "enabled_observation"
+    t.boolean "enabled", default: true, null: false
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["user_id"], name: "index_clients_on_user_id"
   end
@@ -456,7 +456,7 @@ ActiveRecord::Schema.define(version: 2019_11_12_134844) do
   create_table "fees", force: :cascade do |t|
     t.bigint "credit_card_id"
     t.integer "quantity", null: false
-    t.float "coefficient", null: false
+    t.float "coefficient", default: 0.0, null: false
     t.float "tna"
     t.float "tem"
     t.boolean "active", default: true, null: false

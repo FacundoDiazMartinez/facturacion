@@ -39,7 +39,7 @@
                   <% end %>
                 </td>
                 <td>
-                  <%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code' , required: true, disabled: invoice.confirmado? %>
+                  <%= pf.autocomplete_field :code, autocomplete_product_code_invoices_path, class: 'invoice-autocomplete_field form-control form-control-sm code', :fields => {:client_id => '#invoice_client_id'}  , required: true, disabled: invoice.confirmado? %>
                   <%= pf.hidden_field :id, class: 'product_id' %>
                 </td>
                 <td>

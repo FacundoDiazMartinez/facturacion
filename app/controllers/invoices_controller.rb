@@ -146,8 +146,9 @@ class InvoicesController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
+    client_id = params[:client_id]
     products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03" } }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: (Client.find(params[:client_id]).recharge.nil? ? product.net_price : product.net_price.to_f * ((100 + Client.find(client_id).recharge.to_f) / 100)), measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03" } }
   end
 
   def autocomplete_invoice_number
@@ -250,7 +251,8 @@ class InvoicesController < ApplicationController
     safe_params = params.require(:invoice).permit(
       invoice_details_attributes: [:precio, :cantidad, :bonificacion, :iva, :subtotal],
       bonifications_attributes: [:alicuota],
-      tributes_attributes: [:alicuota]
+      tributes_attributes: [:alicuota],
+      client_attributes: [:recharge]
     )
     calculator = InvoiceManager::InvoiceDetailsCalculator.call(safe_params.to_h)
     render json: { detalles: calculator }
@@ -273,7 +275,7 @@ class InvoicesController < ApplicationController
       invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :depot_id, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
         product_attributes: [:id, :code, :company_id, :name, :tipo],
         commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
-      client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
+      client_attributes: [:id, :name, :document_type, :document_number, :recharge, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
       tributes_attributes: [:id, :afip_id, :base_imp, :importe, :desc, :alic, :_destroy],
       bonifications_attributes: [:id, :observation, :percentage, :amount, :subtotal, :_destroy]
     )
