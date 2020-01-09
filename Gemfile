@@ -150,6 +150,7 @@ group :development do
   gem 'capistrano-ssh-doctor', git: 'https://github.com/capistrano-plugins/capistrano-ssh-doctor.git'
   gem 'capistrano-linked-files'
   gem 'capistrano-rails-console', require: false
+  gem 'capistrano-logger'
   gem 'ed25519', '>= 1.2', '< 2.0'
 end
 

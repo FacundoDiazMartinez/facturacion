@@ -12,5 +12,6 @@ require 'capistrano/postgresql'
 require 'capistrano/safe_deploy_to'
 require 'capistrano/delayed_job'
 require 'capistrano/rails/console'
+require 'capistrano/logger'
 
 Dir.glob("lib/capistrano/tasks/*.rake").each { |r| import r }
