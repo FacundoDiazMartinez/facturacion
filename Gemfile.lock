@@ -18,11 +18,11 @@ GIT
 
 GIT
   remote: https://github.com/stympy/faker.git
-  revision: f1c19a6a1a1d18682de5d358d3d8dea9e075cfff
+  revision: 31c0605dd778f2a6eedd74c9e385d136548c09d6
   branch: master
   specs:
     faker (2.10.0)
-      i18n (>= 1.6, < 1.8)
+      i18n (>= 1.6, < 1.9)
 
 GEM
   remote: https://rubygems.org/
@@ -88,13 +88,13 @@ GEM
     autoprefixer-rails (9.7.3)
       execjs
     aws-eventstream (1.0.3)
-    aws-sdk (2.11.424)
-      aws-sdk-resources (= 2.11.424)
-    aws-sdk-core (2.11.424)
+    aws-sdk (2.11.425)
+      aws-sdk-resources (= 2.11.425)
+    aws-sdk-core (2.11.425)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.11.424)
-      aws-sdk-core (= 2.11.424)
+    aws-sdk-resources (2.11.425)
+      aws-sdk-core (= 2.11.425)
     aws-sigv4 (1.1.0)
       aws-eventstream (~> 1.0, >= 1.0.2)
     axlsx_rails (0.6.1)
@@ -120,13 +120,13 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
-    capistrano-bundler (1.1.4)
+    capistrano-bundler (1.6.0)
       capistrano (~> 3.1)
-      sshkit (~> 1.2)
     capistrano-linked-files (1.2.0)
       capistrano (~> 3.1)
-    capistrano-postgresql (3.0.1)
+    capistrano-postgresql (6.2.0)
       capistrano (>= 3.0)
+      sshkit (>= 1.17.0)
     capistrano-rails (1.4.0)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
@@ -141,7 +141,7 @@ GEM
       capistrano-rbenv (>= 2.0)
     capistrano-safe-deploy-to (1.1.1)
       capistrano (>= 3.0)
-    capistrano-unicorn-nginx (2.1.0)
+    capistrano-unicorn-nginx (5.2.0)
       capistrano (>= 3.1)
       sshkit (>= 1.2.0)
     capistrano3-delayed-job (1.7.6)
@@ -263,7 +263,7 @@ GEM
     httpi (2.4.4)
       rack
       socksify
-    i18n (1.7.1)
+    i18n (1.8.1)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
     jbuilder (2.9.1)
@@ -325,7 +325,7 @@ GEM
     numbers_and_words (0.11.6)
       i18n
     orm_adapter (0.5.0)
-    pg (1.2.1)
+    pg (1.2.2)
     pjax_rails (0.5.1)
       jquery-rails
       railties (>= 4.0)
@@ -449,7 +449,7 @@ GEM
       rubyzip (>= 1.2.2)
     sexp_processor (4.13.0)
     shellany (0.0.1)
-    shoulda-matchers (4.1.2)
+    shoulda-matchers (4.2.0)
       activesupport (>= 4.2.0)
     socksify (1.7.1)
     spreadsheet (1.2.5)
@@ -530,24 +530,25 @@ DEPENDENCIES
   bootstrap-toggle-rails
   byebug
   cancancan (~> 2.0)
-  capistrano (>= 3.2.1)
-  capistrano-bundler (~> 1.1.2)
+  capistrano
+  capistrano-bundler
   capistrano-linked-files
-  capistrano-postgresql (~> 3.0)
-  capistrano-rails (~> 1.0)
+  capistrano-postgresql
+  capistrano-rails
   capistrano-rails-console
-  capistrano-rbenv (~> 2.0)
+  capistrano-rbenv
   capistrano-rbenv-install
-  capistrano-safe-deploy-to (~> 1.1)
+  capistrano-safe-deploy-to
   capistrano-ssh-doctor!
-  capistrano-unicorn-nginx (~> 2.0)
-  capistrano3-delayed-job (~> 1.0)
+  capistrano-unicorn-nginx
+  capistrano3-delayed-job
   capybara (>= 2.15)
   chartkick
   chromedriver-helper
   chunky_png
   churn
   coffee-rails (~> 4.2)
+  daemons
   delayed_job_active_record
   devise
   devise-i18n-views
@@ -589,7 +590,7 @@ DEPENDENCIES
   thin
   tzinfo-data
   uglifier (>= 1.3.0)
-  unicorn (~> 5.5)
+  unicorn
   web-console (>= 3.3.0)
   wicked_pdf
   will_paginate (~> 3.1.1)
