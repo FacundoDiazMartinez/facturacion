@@ -6,6 +6,7 @@ set :deploy_to, -> { "/home/facundo/#{fetch(:application)}_#{fetch(:stage)}" }
 
 set :rbenv_ruby, '2.6.3'
 
+set :rbenv_custom_path, '/home/facundo/.rbenv'
 
 set :linked_files, %w{config/master.key}
 
