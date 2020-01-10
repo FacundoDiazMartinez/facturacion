@@ -15,3 +15,5 @@ set :unicorn_workers, 2
 set :keep_releases, 1
 
 set :master_key_local_path, "config/master.key"
+
+
