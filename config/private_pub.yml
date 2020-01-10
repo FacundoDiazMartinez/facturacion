@@ -3,8 +3,8 @@ development:
   secret_token: batkaro
 test:
   server: "https://faye-conquerup.herokuapp.com/faye/test"
-  secret_token: <%= ENV['FAYE'] %>
+  secret_token: <%= Rails.application.credentials.faye %>
 production:
   server: "https://faye-conquerup.herokuapp.com/faye"
-  secret_token: <%= ENV['FAYE'] %>
+  secret_token: <%= Rails.application.credentials.faye %>
   signature_expiration: 3600 # one hour

@@ -152,6 +152,7 @@ group :development do
   gem 'capistrano-rails-console', require: false
   gem 'capistrano-logger'
   gem 'ed25519', '>= 1.2', '< 2.0'
+  gem 'bcrypt_pbkdf'
 end
 
 group :production do
