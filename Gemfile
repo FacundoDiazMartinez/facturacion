@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.1'
+ruby '2.6.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '5.2.1'
@@ -138,6 +138,21 @@ group :development do
   gem 'thin'
   gem "letter_opener"
   gem "churn"
+  gem 'capistrano3-delayed-job'
+  gem 'capistrano'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-rbenv-install'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-unicorn-nginx'
+  gem 'capistrano-postgresql'
+  gem 'capistrano-safe-deploy-to'
+  gem 'capistrano-ssh-doctor', git: 'https://github.com/capistrano-plugins/capistrano-ssh-doctor.git'
+  gem 'capistrano-linked-files'
+  gem 'capistrano-rails-console', require: false
+  gem 'capistrano-logger'
+  gem 'ed25519', '>= 1.2', '< 2.0'
+  gem 'bcrypt_pbkdf'
 end
 
 group :production do
@@ -156,3 +171,5 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "unicorn"
+gem 'daemons'

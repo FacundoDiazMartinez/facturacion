@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/capistrano-plugins/capistrano-ssh-doctor.git
+  revision: 0e5de7c1c4d987c16adeaea296f0e863b9cbec6f
+  specs:
+    capistrano-ssh-doctor (1.0.0)
+      capistrano (>= 3.1)
+
+GIT
   remote: https://github.com/randym/axlsx.git
   revision: c8ac844572b25fda358cc01d2104720c4c42f450
   ref: c8ac844
@@ -11,11 +18,11 @@ GIT
 
 GIT
   remote: https://github.com/stympy/faker.git
-  revision: 65a252f36eb445de79bae16a550762d32ffe0d30
+  revision: 31c0605dd778f2a6eedd74c9e385d136548c09d6
   branch: master
   specs:
-    faker (2.7.0)
-      i18n (>= 1.6, < 1.8)
+    faker (2.10.0)
+      i18n (>= 1.6, < 1.9)
 
 GEM
   remote: https://rubygems.org/
@@ -55,7 +62,7 @@ GEM
       activemodel (= 5.2.1)
       activesupport (= 5.2.1)
       arel (>= 9.0)
-    activerecord-import (1.0.3)
+    activerecord-import (1.0.4)
       activerecord (>= 3.2)
     activestorage (5.2.1)
       actionpack (= 5.2.1)
@@ -68,6 +75,8 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    airbrussh (1.4.0)
+      sshkit (>= 1.6.1, != 1.7.0)
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
@@ -76,23 +85,24 @@ GEM
       io-like (~> 0.3.0)
     arel (9.0.0)
     arrayfields (4.9.2)
-    autoprefixer-rails (9.7.1)
+    autoprefixer-rails (9.7.3)
       execjs
     aws-eventstream (1.0.3)
-    aws-sdk (2.11.255)
-      aws-sdk-resources (= 2.11.255)
-    aws-sdk-core (2.11.255)
+    aws-sdk (2.11.425)
+      aws-sdk-resources (= 2.11.425)
+    aws-sdk-core (2.11.425)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.11.255)
-      aws-sdk-core (= 2.11.255)
+    aws-sdk-resources (2.11.425)
+      aws-sdk-core (= 2.11.425)
     aws-sigv4 (1.1.0)
       aws-eventstream (~> 1.0, >= 1.0.2)
-    axlsx_rails (0.6.0)
+    axlsx_rails (0.6.1)
       actionpack (>= 3.1)
       caxlsx (>= 3.0)
     barby (0.6.8)
     bcrypt (3.1.13)
+    bcrypt_pbkdf (1.0.1)
     bindex (0.8.1)
     bootsnap (1.4.5)
       msgpack (~> 1.0)
@@ -106,7 +116,41 @@ GEM
     builder (3.2.4)
     byebug (11.0.1)
     cancancan (2.3.0)
-    capybara (3.29.0)
+    capistrano (3.11.2)
+      airbrussh (>= 1.0.0)
+      i18n
+      rake (>= 10.0.0)
+      sshkit (>= 1.9.0)
+    capistrano-bundler (1.6.0)
+      capistrano (~> 3.1)
+    capistrano-linked-files (1.2.0)
+      capistrano (~> 3.1)
+    capistrano-logger (0.1.1)
+      capistrano (>= 3.0.0, < 4.0.0)
+    capistrano-postgresql (6.2.0)
+      capistrano (>= 3.0)
+      sshkit (>= 1.17.0)
+    capistrano-rails (1.4.0)
+      capistrano (~> 3.1)
+      capistrano-bundler (~> 1.1)
+    capistrano-rails-console (2.3.0)
+      capistrano (>= 3.5.0, < 4.0.0)
+      sshkit-interactive (~> 0.3.0)
+    capistrano-rbenv (2.1.4)
+      capistrano (~> 3.1)
+      sshkit (~> 1.3)
+    capistrano-rbenv-install (1.2.0)
+      capistrano (>= 3.0)
+      capistrano-rbenv (>= 2.0)
+    capistrano-safe-deploy-to (1.1.1)
+      capistrano (>= 3.0)
+    capistrano-unicorn-nginx (5.2.0)
+      capistrano (>= 3.1)
+      sshkit (>= 1.2.0)
+    capistrano3-delayed-job (1.7.6)
+      capistrano (~> 3.0, >= 3.0.0)
+      daemons (~> 1.3)
+    capybara (3.30.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -119,17 +163,16 @@ GEM
       mimemagic (~> 0.3)
       nokogiri (~> 1.10, >= 1.10.4)
       rubyzip (>= 1.3.0, < 3)
-    chartkick (3.2.2)
+    chartkick (3.3.1)
     childprocess (3.0.0)
     chromedriver-helper (2.1.1)
       archive-zip (~> 0.10)
       nokogiri (~> 1.8)
     chronic (0.10.2)
     chunky_png (1.3.11)
-    churn (1.0.4)
+    churn (1.0.5)
       chronic (>= 0.2.3)
       hirb
-      json_pure
       main
       rest-client (>= 1.6.0)
       ruby_parser (~> 3.0)
@@ -161,6 +204,7 @@ GEM
     diff-lcs (1.3)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    ed25519 (1.2.4)
     em-http-request (1.1.5)
       addressable (>= 2.3.4)
       cookiejar (!= 0.3.1)
@@ -189,13 +233,13 @@ GEM
     faye-websocket (0.10.9)
       eventmachine (>= 0.12.0)
       websocket-driver (>= 0.5.1)
-    ffi (1.11.1)
+    ffi (1.11.3)
     font-awesome-sass (5.3.1)
       sassc (>= 1.11)
     formatador (0.2.5)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
-    groupdate (4.2.0)
+    groupdate (4.3.0)
       activesupport (>= 5)
     guard (2.16.1)
       formatador (>= 0.2.4)
@@ -222,7 +266,7 @@ GEM
     httpi (2.4.4)
       rack
       socksify
-    i18n (1.7.0)
+    i18n (1.8.1)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
     jbuilder (2.9.1)
@@ -235,7 +279,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     jquery-validation-rails (1.19.0)
-    json_pure (2.2.0)
+    kgio (2.11.3)
     launchy (2.4.3)
       addressable (~> 2.3)
     letter_opener (1.7.0)
@@ -244,10 +288,10 @@ GEM
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
       ruby_dep (~> 1.2)
-    loofah (2.3.1)
+    loofah (2.4.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
-    lumberjack (1.0.13)
+    lumberjack (1.1.0)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
     main (6.2.3)
@@ -259,7 +303,7 @@ GEM
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
     method_source (0.9.2)
-    mime-types (3.3)
+    mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2019.1009)
     mimemagic (0.3.3)
@@ -270,6 +314,9 @@ GEM
     multi_json (1.14.1)
     nenv (0.3.0)
     nested_form (0.3.2)
+    net-scp (2.0.0)
+      net-ssh (>= 2.6.5, < 6.0.0)
+    net-ssh (5.2.0)
     netrc (0.11.0)
     nio4r (2.5.2)
     nokogiri (1.10.7)
@@ -281,10 +328,10 @@ GEM
     numbers_and_words (0.11.6)
       i18n
     orm_adapter (0.5.0)
-    pg (1.1.4)
-    pjax_rails (0.5.0)
+    pg (1.2.2)
+    pjax_rails (0.5.1)
       jquery-rails
-      railties (>= 3.2)
+      railties (>= 4.0)
     popper_js (1.14.5)
     private_pub (1.0.3)
       faye
@@ -293,9 +340,9 @@ GEM
       method_source (~> 0.9.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    public_suffix (4.0.1)
-    puma (3.12.1)
-    rack (2.0.7)
+    public_suffix (4.0.3)
+    puma (3.12.2)
+    rack (2.0.8)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.1)
@@ -329,9 +376,10 @@ GEM
       method_source
       rake (>= 0.8.7)
       thor (>= 0.19.0, < 2.0)
-    rake (13.0.0)
+    raindrops (0.19.1)
+    rake (13.0.1)
     rb-fsevent (0.10.3)
-    rb-inotify (0.10.0)
+    rb-inotify (0.10.1)
       ffi (~> 1.0)
     rb-readline (0.5.5)
     regexp_parser (1.6.0)
@@ -343,7 +391,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rollbar (2.22.1)
+    rollbar (2.23.1)
     roo (2.8.2)
       nokogiri (~> 1)
       rubyzip (>= 1.2.1, < 2.0.0)
@@ -355,12 +403,12 @@ GEM
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
       rspec-mocks (~> 3.9.0)
-    rspec-core (3.9.0)
-      rspec-support (~> 3.9.0)
+    rspec-core (3.9.1)
+      rspec-support (~> 3.9.1)
     rspec-expectations (3.9.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
-    rspec-mocks (3.9.0)
+    rspec-mocks (3.9.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.9.0)
     rspec-rails (3.9.0)
@@ -371,9 +419,9 @@ GEM
       rspec-expectations (~> 3.9.0)
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
-    rspec-support (3.9.0)
+    rspec-support (3.9.2)
     ruby-ole (1.2.12.2)
-    ruby-prof (1.0.0)
+    ruby-prof (1.1.0)
     ruby_dep (1.5.0)
     ruby_parser (3.14.1)
       sexp_processor (~> 4.9)
@@ -399,12 +447,12 @@ GEM
       nokogiri (>= 1.8.1)
       nori (~> 2.4)
       wasabi (~> 3.4)
-    selenium-webdriver (3.142.6)
+    selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
     sexp_processor (4.13.0)
     shellany (0.0.1)
-    shoulda-matchers (4.1.2)
+    shoulda-matchers (4.2.0)
       activesupport (>= 4.2.0)
     socksify (1.7.1)
     spreadsheet (1.2.5)
@@ -420,22 +468,30 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    sshkit (1.20.0)
+      net-scp (>= 1.1.2)
+      net-ssh (>= 2.8.0)
+    sshkit-interactive (0.3.0)
+      sshkit (~> 1.12)
     summernote-rails (0.8.10.0)
       railties (>= 3.1)
     thin (1.7.2)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
       rack (>= 1, < 3)
-    thor (0.20.3)
+    thor (1.0.1)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    tzinfo (1.2.5)
+    tzinfo (1.2.6)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
+    unicorn (5.5.2)
+      kgio (~> 2.6)
+      raindrops (~> 0.7)
     warden (1.2.8)
       rack (>= 2.0.6)
     wasabi (3.5.0)
@@ -471,21 +527,37 @@ DEPENDENCIES
   axlsx!
   axlsx_rails
   barby (~> 0.6.6)
+  bcrypt_pbkdf
   bootsnap (>= 1.1.0)
   bootstrap (~> 4.1.3)
   bootstrap-datepicker-rails
   bootstrap-toggle-rails
   byebug
   cancancan (~> 2.0)
+  capistrano
+  capistrano-bundler
+  capistrano-linked-files
+  capistrano-logger
+  capistrano-postgresql
+  capistrano-rails
+  capistrano-rails-console
+  capistrano-rbenv
+  capistrano-rbenv-install
+  capistrano-safe-deploy-to
+  capistrano-ssh-doctor!
+  capistrano-unicorn-nginx
+  capistrano3-delayed-job
   capybara (>= 2.15)
   chartkick
   chromedriver-helper
   chunky_png
   churn
   coffee-rails (~> 4.2)
+  daemons
   delayed_job_active_record
   devise
   devise-i18n-views
+  ed25519 (>= 1.2, < 2.0)
   factory_bot_rails
   faker!
   font-awesome-sass (~> 5.3.1)
@@ -523,6 +595,7 @@ DEPENDENCIES
   thin
   tzinfo-data
   uglifier (>= 1.3.0)
+  unicorn
   web-console (>= 3.3.0)
   wicked_pdf
   will_paginate (~> 3.1.1)
@@ -531,7 +604,7 @@ DEPENDENCIES
   zip-zip
 
 RUBY VERSION
-   ruby 2.5.1p57
+   ruby 2.6.3p62
 
 BUNDLED WITH
-   2.0.2
+   2.1.3
