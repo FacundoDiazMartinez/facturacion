@@ -16,7 +16,8 @@ module PaymentManager
 
         @income_payment.invoice.invoice_details.each do |invoice_detail|
           invoice_detail.price_per_unit += ((invoice_detail.price_per_unit * porcentaje_sobre_total) * ( @income_payment.card_payment.interest_rate_percentage / 100.to_f)).round(2)
-          invoice_detail.subtotal       = (invoice_detail.price_per_unit * invoice_detail.quantity * (1 + Float(Afip::ALIC_IVA.map{|k,v| v if k == invoice_detail.iva_aliquot}.compact[0]))).round(2)
+          invoice_detail.bonus_amount    = (invoice_detail.price_per_unit * invoice_detail.quantity * (invoice_detail.bonus_percentage / 100.to_f)).round(2)
+          invoice_detail.subtotal        = (invoice_detail.price_per_unit * invoice_detail.quantity * (1 - (invoice_detail.bonus_percentage / 100.to_f)) * (1 + Float(Afip::ALIC_IVA.map{|k,v| v if k == invoice_detail.iva_aliquot}.compact[0]))).round(2)
           invoice_detail.save
         end
 
