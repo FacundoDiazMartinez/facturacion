@@ -142,13 +142,6 @@ function changeView(tipo){
 	$("#view").val(tipo).trigger("change");
 };
 
-function addRechargeToDetails(){
-	var recharge = parseFloat($("#client_recharge").val() * -1);
-	$("input.bonus_percentage").each(function() {
-		$(this).val(recharge).trigger("change");
-	})
-}
-
 function toggleHeader(){
 	var display = $(".invoice-header").css('display');
 	if (display == 'flex'){
