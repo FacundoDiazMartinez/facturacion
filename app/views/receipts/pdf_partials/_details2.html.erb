@@ -1,0 +1,166 @@
+<!-- DETALLE -->
+<div class="row">
+  <br>
+  <div class="container" style="height: 800px; overflow-y: hidden;">
+    <hr>
+    <br>
+
+    <% if !@receipt.invoices.blank? %>
+      <table class="width_100 TFtable">
+        <tr>
+          <th class="text_left">
+            Concepto:
+          </th>
+          <th></th>
+        </tr>
+
+        <% @parent_receipt_details.each do |rd| %>
+          <% if rd.invoice.is_invoice? %>
+            <tr class="bg-white">
+              <td>
+                <% if rd.total_payed_boolean? %>
+                  Cancelación <%= rd.invoice.name_with_comp %>
+                <% else %>
+                  Pago parcial <%= rd.invoice.name_with_comp %>
+                <% end %>
+              </td>
+              <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+            </tr>
+            <% rd.invoice.notes.each do |note| %>
+              <tr class="bg-white child-note">
+                <td>
+                  <% if note.is_debit_note? %>
+                    <% rd_note = @receipt.receipt_details.find_by_invoice_id(note.id) %>
+                    <% if rd_note.total_payed_boolean? %> <!-- esta pregunta está mal, real_total_left varía Rta: ahi le puse rtl_invoice, creo que quedo bien -->
+                      Cancelación <%= note.name_with_comp %>
+                    <% else %>
+                      Pago parcial <%= note.name_with_comp %>
+                    <% end %>
+                  <% else %>
+                    <%= note.name_with_comp %> <!-- leyenda de la nota de crédito, sólo el nombre -->
+                  <% end %>
+                </td>
+                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? rd_note.total : 0)%></td>
+              </tr>
+            <% end %>
+          <% elsif rd.invoice.is_debit_note? %>
+            <tr class="bg-white">
+              <td>
+              <% if rd.total_payed_boolean? %> <!-- el rtl de la factura no es siempre mayor a 0? Rta: no, puede ser 0.0 o mayor-->
+                Cancelación <%= rd.invoice.name_with_comp %>
+              <% else %>
+                Pago parcial <%= rd.invoice.name_with_comp %>
+              <% end %>
+              </td>
+              <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+            </tr>
+          <% elsif rd.invoice.is_credit_note? %>
+            <tr class="bg-white">
+              <td>
+                <%= rd.invoice.name_with_comp %>
+              </td>
+              <td class="text_right">$ 0.00</td>
+            </tr>
+          <% end %>
+        <% end %>
+
+        <!-- ESTE IF NO VA PARA EL RECIBO DE MAGNUS -->
+        <% if @receipt.saved_amount_available > 0 %>
+        <tr>
+          <td class="bg-white">
+            Saldo a favor futuras compras
+          </td>
+          <td class="text_right bg-white">
+            $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
+          </td>
+        </tr>
+        <% end %>
+        <!-- HASTA ACA -->
+
+      </table>
+    <!-- ESTE ELSE NO VA PARA EL RECIBO DE MAGNUS -->
+    <% else %>
+      <p class="mb-0">
+         Saldo a favor futuras compras $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
+      </p>
+    <!-- HASTA ACA -->
+    <% end %>
+
+    <br>
+    <br>
+
+      <table class="width_100 TFtable">
+        <tr>
+          <th class="text_left">Forma de pago</th>
+          <th></th>
+        </tr>
+
+        <% (@receipt.account_movement_payments.empty? ? @receipt.invoices.map{|i| i.income_payments}.first : @receipt.account_movement_payments).each do |ip| %>
+          <tr class="bg-white">
+            <td>
+              <% case ip.type_of_payment %>
+                <% when "4" %>
+                  <%= ip.payment_name %> - <%= ip.cheque_payment.entity %> N° <%= ip.cheque_payment.number %> - Cobro: <%= ip.cheque_payment.expiration.to_formatted_s(:default) %>
+                <% when "1" %>
+                  <% @installment_id = ip.card_payment.installments %>
+                  <% if @installment_id != 0 %>
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> <%= ip.card_payment.credit_card.fees.unscoped.find(@installment_id).quantity %> cuotas - Fecha <%= ip.payment_date %>
+                  <% else %>
+                    <%= ip.payment_name %> - <%= ip.card_payment.credit_card.name %> pago único - Fecha <%= ip.payment_date %>
+                  <% end %>
+                <% when "3" %>
+                  <%= ip.payment_name %> - Banco <%= ip.bank_payment.bank.name %> - Fecha <%= ip.payment_date %>
+                <% when "7" %>
+                  <%= ip.payment_name %> - Banco <%= ip.debit_payment.bank.name %> - Fecha <%= ip.payment_date %>
+                <% when "5" %>
+                  <%= ip.payment_name %>: <%= ip.retention_payment.tribute %> - N° <%= ip.retention_payment.number %> - Fecha <%= ip.payment_date %>
+                <% when "8" %>
+                  <%= ip.payment_name %> - Factura asociada: <%= ip.compensation_payment.asociatedClientInvoice %> - Fecha <%= ip.payment_date %>  </b>
+                <% else %>
+                  <%= ip.payment_name %> - Fecha <%= ip.payment_date %>
+              <% end %>
+
+            </td>
+            <td class="text_right"> <b> $ <%=  sprintf('%.2f', ip.total )%> </b> </td>
+          </tr>
+        <% end %>
+      </table>
+      <br>
+      <div>No se aceptarán devoluciones de mercadería o reintegro de dinero transcurrido 5 días desde la fecha de entrega.</div>
+      <br>
+  </div>
+</div>
+<!-- FIN DEL DETALLE -->
+
+<div class="row footer_top">
+  <div class="container border" style="padding:10px;">
+    <table class="width_100">
+      <col width="600">
+      <col width="100">
+      <tr>
+        <td class="text_right"><b>Importe Total:</b></td>
+        <td class="text_right"><b>$ <%= sprintf('%.2f', @receipt.total ) %></b></td>
+      </tr>
+    </table>
+
+    <table>
+      <col width="200">
+      <col width="200">
+      <tr>
+        <td style="text-align: center;">-----------------------</td>
+        <td style="text-align: center;">-----------------------</td>
+      </tr>
+      <tr>
+        <td style="text-align: center;">Firma autorizada</td>
+        <td style="text-align: center;">Aclaración</td>
+      </tr>
+    </table>
+  </div>
+</div>
+<p><b>Recibi la suma de:  </b> <%= I18n.with_locale(:es) { @receipt.total.to_i.to_words }.capitalize %> pesos con <%= I18n.with_locale(:es) { (@receipt.total.to_s.split(".")[1]).to_i.to_words } %> centavos.</p>
+
+<style type="text/css">
+  .child-note td {
+    padding-left:25px;
+  }
+</style>

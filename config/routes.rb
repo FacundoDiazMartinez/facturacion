@@ -35,7 +35,9 @@ Rails.application.routes.draw do
 
   get 'daily_cash_movements/show'
 
-  resources :daily_cashes
+  resources :daily_cashes do
+    get :general_payments, on: :collection
+  end
   resources :daily_cash_movements
   resources :roles do
     resources :role_permissions do
@@ -195,26 +197,7 @@ Rails.application.routes.draw do
 
   devise_for :users, :path_prefix => 'sessions', controllers: { registrations: 'users/registrations' }
 
-  #CLIENTES
-  # get   '/invoices/:invoice_id/client/', to: 'invoices/clients#show', as: 'invoice_client'
-  # get   '/invoices/:invoice_id/client/edit', to: 'invoices/clients#edit', as: 'edit_invoice_client'
-  # get   '/invoices/:invoice_id/client/edit', to: 'invoices/clients#edit', as: 'edit_invoice_client'
-  # patch '/invoices/:invoice_id/client', to: 'invoices/clients#update'
-  # post  '/invoices/:invoice_id/client/edit', to: 'invoices/clients#create'
-  # get   '/invoices/:invoice_id/clients/autocomplete_document', to: 'invoices/clients#autocomplete_document', as: 'autocomplete_document_clients'
-  #CLIENTES
-
-  #ACCOUNT MOVEMENTS
-  # get '/clients/:id/account_movements', to: 'clients/account_movements#index', as: 'client_account_movements'
-  # get '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#add_payment', as: 'client_account_movements_add_payment'
-  # patch '/clients/:id/account_movements/add_payment', to: 'clients/account_movements#create_payment', as: 'client_account_movements_create_payment'
-  #ACCOUNT MOVEMENTS
-
-
-
-
   resources :invoices do
-    resources :income_payments, module: :invoices
     resources :invoice_details
     get :autocomplete_product_code, :on => :collection
     get :confirm, on: :member
@@ -235,7 +218,10 @@ Rails.application.routes.draw do
     get :states_per_month, on: :collection
     get :amount_per_month, on: :collection
     get :commissioner_per_month, on: :collection
+    post :calculate_invoice_totals, on: :collection
   end
+
+  resources :income_payments
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root "companies#new"

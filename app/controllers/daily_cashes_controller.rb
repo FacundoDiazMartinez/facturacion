@@ -40,6 +40,15 @@ class DailyCashesController < ApplicationController
     end
   end
 
+  def general_payments
+    @general_daily_cash_movements = current_company.payments.where(confirmed: true).search_by_date(params[:date]).search_by_type(params[:type_of_payment]).order("created_at DESC").paginate(page: params[:page], per_page: 20)
+    @contado = current_company.payments.where(payment_date: Date.today,type_of_payment: 0, confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }
+    @transferencias = current_company.payments.where(payment_date: Date.today, type_of_payment: 3, confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }
+    @cheques = current_company.payments.where(payment_date: Date.today, type_of_payment: 4, confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }
+    @tarjetas = current_company.payments.where(payment_date: Date.today, type_of_payment: [1,7], confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }
+    @retention_payment_total = current_company.payments.where(payment_date: Date.today, type_of_payment: 5, confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }
+  end
+
   private
 
   def set_daily_cash

@@ -16,7 +16,11 @@
       <tr>
         <td><%= delivery_note.number %></td>
         <td><%= l(delivery_note.date) %></td>
-        <td><%= link_to delivery_note.invoice.account_movement.comprobante, edit_invoice_path(delivery_note.invoice_id) %></td>
+        <% if delivery_note.invoice.account_movement.nil? %>
+          <td><%= link_to delivery_note.invoice.name_with_comp, edit_invoice_path(delivery_note.invoice_id) %></td>
+        <% else %>
+          <td><%= link_to delivery_note.invoice.account_movement.comprobante, edit_invoice_path(delivery_note.invoice_id) %></td>
+        <% end %>
         <td><%= link_to delivery_note.user.name, user_path(delivery_note.user_id) %></td>
         <td><%= dn_state_label_helper(delivery_note) %></td>
         <td>

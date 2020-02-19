@@ -69,7 +69,7 @@ class CreditCardsController < ApplicationController
 
     def credit_card_params
       params.require(:credit_card).permit(:name, :enabled, :type_of_fee, :fav_logo,
-        fees_attributes: [:id, :credit_card_id, :quantity, :coefficient, :tna, :tem, :percentage, :_destroy]
+        fees_attributes: [:id, :credit_card_id, :quantity, :tna, :tem, :percentage, :_destroy]
       )
     end
 

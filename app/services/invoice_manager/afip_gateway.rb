@@ -20,16 +20,15 @@ module InvoiceManager
         fch_serv_desde: @invoice.fch_serv_desde,
         fch_serv_hasta: @invoice.fch_serv_hasta,
         due_date:       @invoice.fch_vto_pago,
-        # tributos:       @invoice.tributes.map{|t| [t.afip_id, t.desc, t.base_imp, t.alic, t.importe]},
-        tributos:       [],
+        tributos:       @invoice.tributes.map{|t| [t.afip_id, t.desc, t.base_imp, t.alic, t.importe]},
+        # tributos:       [],
         cant_reg:       1,
         no_gravado:     no_gravado,
         exento:         exento,
-        # otros_imp:      otros_imp
-        otros_imp:      0
+        otros_imp:      otros_imp
+        # otros_imp:      0
       )
       comprobante.doc_num = invoice_client_document
-
       return comprobante
     end
 

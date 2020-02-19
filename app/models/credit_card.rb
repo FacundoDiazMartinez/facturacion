@@ -2,6 +2,7 @@ class CreditCard < ApplicationRecord
   include Deleteable
   belongs_to :company
   has_many 	 :card_payments
+  has_many   :payments, through: :card_payments
   has_many   :fees
 
   default_scope { where(active: true ) }

@@ -70,21 +70,26 @@ class TransferRequestsController < ApplicationController
   end
 
   def send_transfer
-    @transfer_request.update(sended_at: Time.now, sended_by: current_user.id, state: "Enviado")
-    @transfer_request.register_sended_transfer
-    redirect_to edit_transfer_request_path(@transfer_request.id), notice: "Se registro el envio del remito"
+    resultado = ProductManager::DepotsExchangeSender.call(@transfer_request, current_user)
+    if resultado
+      redirect_to edit_transfer_request_path(@transfer_request.id), notice: "Se registro el envio del remito"
+    else
+      redirect_to edit_transfer_request_path(@transfer_request.id), alert: "No dispone de stock suficiente en el depósito de origen"
+    end
   end
 
   def receive_transfer
-    @transfer_request.update(received_at: Time.now, received_by: current_user.id, state: "Recibido")
-    @transfer_request.register_received_transfer
-    redirect_to edit_transfer_request_path(@transfer_request.id), notice: "Se registro la recepción del remito"
+    ProductManager::DepotsExchangeReceiver.call(@transfer_request, current_user)
+    redirect_to edit_transfer_request_path(@transfer_request.id), notice: "Se registro la recepción con exito"
+    # @transfer_request.update(received_at: Time.now, received_by: current_user.id, state: "Recibido")
+    # @transfer_request.register_received_transfer
+    # redirect_to edit_transfer_request_path(@transfer_request.id), notice: "Se registro la recepción del remito"
   end
 
   private
     def transfer_request_params
-      params.require(:transfer_request).permit(:number, :date, :from_depot_id, :to_depot_id, :observation, :state, :transporter_id,
-        transfer_request_details_attributes: [:id, :product_id, :product_code, :quantity, :observatiom, :_destroy])
+      params.require(:transfer_request).permit(:number, :date, :from_depot_id, :to_depot_id, :state, :transporter_id,
+        transfer_request_details_attributes: [:id, :product_id, :product_code, :quantity, :observation, :_destroy])
     end
 
     def set_transfer_request

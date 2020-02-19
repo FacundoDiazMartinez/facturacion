@@ -4,13 +4,24 @@ class CardPayment < ApplicationRecord
   	belongs_to :credit_card
 		belongs_to :fee, foreign_key: :installments, optional: true
 
-		before_save :set_totals
+		# before_save :set_totals
 		after_save :update_credit_card_balance
+
+		validates_presence_of :fee_id, message: 'Seleccione la cantidad de cuotas.'
 
   	default_scope { where(active: true) }
 
 		def set_totals
-			self.subtotal 	= self.total
+			fee = Fee.find(self.fee_id)
+			self.installments 						= fee.quantity
+			self.interest_rate_percentage = fee.percentage
+
+			aux_total 	= self.subtotal * (self.interest_rate_percentage / 100.to_f + 1)
+			valor_cuota = aux_total.round(2).to_f / self.installments
+			aux_total 	= valor_cuota.round(2).to_f * self.installments.to_f
+
+			self.fee_subtotal = valor_cuota
+			self.total 				= aux_total.round(2)
 		end
 
   	#FILTROS DE BUSQEUDA

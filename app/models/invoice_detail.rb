@@ -1,5 +1,4 @@
 class InvoiceDetail < ApplicationRecord
-  include Deleteable
   belongs_to :invoice
   belongs_to :product, optional: true
   belongs_to :depot, optional: true
@@ -12,7 +11,7 @@ class InvoiceDetail < ApplicationRecord
   before_validation :check_product
   before_validation :calculate_iva_amount
   after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
-  after_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
+  before_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
 
   default_scope {where(active: true)}
 
@@ -118,22 +117,5 @@ class InvoiceDetail < ApplicationRecord
     def iva
       Afip::ALIC_IVA.map{|ai| ai.last unless ai.first != iva_aliquot.to_s}.compact.join().to_f
     end
-
-    # def self.build_for_credit_card total, user_id, company, invoice_id
-    #     detail = new(
-    #       quantity: 1,
-    #       iva_aliquot: "03",
-    #       measurement_unit: "7",
-    #       price_per_unit: total,
-    #       subtotal: total,
-    #       user_id: user_id,
-    #       depot_id: company.depots.first.id,
-    #       invoice_id: invoice_id
-    #     )
-    #     pro = company.products.where(code: "-", name: "Intereses tarjeta de crédito", tipo: "Servicio", iva_aliquot: "03").first_or_initialize
-    #     detail.product = pro
-    #     detail.check_product
-    #     detail.save
-    # end
   #FUNCIONES
 end

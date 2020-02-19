@@ -1,5 +1,6 @@
 class InvoicesController < ApplicationController
-  load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product]
+  skip_before_action :verify_authenticity_token, only: [:calculate_invoice_totals]
+  load_and_authorize_resource  except: [:autocomplete_product_code, :deliver, :autocomplete_invoice_number, :autocomplete_associated_invoice, :search_product, :calculate_invoice_details]
   include DailyCashChecker
   include SalePointsGetter
   before_action :set_invoice, only: [:show, :edit, :update, :destroy, :deliver, :paid_invoice_with_debt]
@@ -96,10 +97,6 @@ class InvoicesController < ApplicationController
     end
   end
 
-  def confirm
-    ##hay que hacer que la confirmación sea por separado
-  end
-
   def cancel
     associated_invoice  = current_company.invoices.find(params[:id])
     @invoice            = InvoiceManager::Canceller.new(associated_invoice).call
@@ -117,6 +114,10 @@ class InvoicesController < ApplicationController
     InvoiceMailer.send_to_client(@invoice, params[:email], @barcode_path).deliver
     redirect_to edit_invoice_path(@invoice.id), notice: "Correo electrónico enviado."
     @invoice.delete_barcode(@barcode_path)
+  end
+
+  def get_data_for_credit_card
+    # code
   end
 
   def paid_invoice_with_debt
@@ -145,8 +146,9 @@ class InvoicesController < ApplicationController
 
   def autocomplete_product_code
     term = params[:term]
+    client_id = params[:client_id]
     products = Product.unscoped.where(active: true, company_id: current_user.company_id).where('code ILIKE ?', "%#{term}%").order(:code).all
-    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: product.net_price, measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03" } }
+    render :json => products.map { |product| {:id => product.id, :label => product.full_name, tipo: product.tipo, :value => product.code, name: product.name, price: (Client.find(params[:client_id]).recharge.nil? ? product.net_price : product.net_price.to_f * ((100 + Client.find(client_id).recharge.to_f) / 100)), measurement_unit: product.measurement_unit, iva_aliquot: product.iva_aliquot || "03" } }
   end
 
   def autocomplete_invoice_number
@@ -245,6 +247,17 @@ class InvoicesController < ApplicationController
     render json: invoices
   end
 
+  def calculate_invoice_totals
+    safe_params = params.require(:invoice).permit(
+      invoice_details_attributes: [:precio, :cantidad, :bonificacion, :iva, :subtotal],
+      bonifications_attributes: [:alicuota],
+      tributes_attributes: [:alicuota],
+      client_attributes: [:recharge]
+    )
+    calculator = InvoiceManager::InvoiceDetailsCalculator.call(safe_params.to_h)
+    render json: { detalles: calculator }
+  end
+
   private
 
   def set_date_for_graphs
@@ -259,19 +272,10 @@ class InvoicesController < ApplicationController
 
   def invoice_params
     params.require(:invoice).permit(:active, :budget_id, :client_id, :total_pay, :header_result, :associated_invoice, :authorized_on, :cae_due_date, :cae, :cbte_tipo, :sale_point_id, :concepto, :cbte_fch, :imp_tot_conc, :imp_op_ex, :imp_trib, :imp_neto, :imp_iva, :imp_total, :cbte_hasta, :cbte_desde, :iva_cond, :comp_number, :company_id, :user_id, :fch_serv_desde, :fch_serv_hasta, :fch_vto_pago, :observation, :expired, :total, :bonification, :on_account,
-      income_payments_attributes: [:id, :type_of_payment, :total, :payment_date, :credit_card_id, :_destroy,
-        cash_payment_attributes: [:id, :total],
-        debit_payment_attributes: [:id, :total, :bank_id],
-        card_payment_attributes: [:id, :credit_card_id, :subtotal, :fee_id, :total],
-        bank_payment_attributes: [:id, :bank_id, :ticket, :total],
-        cheque_payment_attributes: [:id, :state, :expiration, :issuance_date, :total, :observation, :origin, :entity, :number],
-        retention_payment_attributes: [:id, :number, :total, :observation, :tribute],
-        compensation_payment_attributes: [:id, :concept, :total, :asociatedClientInvoice, :observation, :client_id]
-      ],
       invoice_details_attributes: [:id, :quantity, :measurement_unit, :iva_aliquot, :depot_id, :iva_amount, :price_per_unit, :bonus_percentage, :bonus_amount, :subtotal, :user_id, :depot_id, :_destroy,
         product_attributes: [:id, :code, :company_id, :name, :tipo],
         commissioners_attributes: [:id, :user_id, :percentage, :_destroy]],
-      client_attributes: [:id, :name, :document_type, :document_number, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
+      client_attributes: [:id, :name, :document_type, :document_number, :recharge, :birthday, :phone, :mobile_phone, :email, :address, :iva_cond, :_destroy],
       tributes_attributes: [:id, :afip_id, :base_imp, :importe, :desc, :alic, :_destroy],
       bonifications_attributes: [:id, :observation, :percentage, :amount, :subtotal, :_destroy]
     )

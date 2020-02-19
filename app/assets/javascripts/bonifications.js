@@ -26,10 +26,12 @@ function runBonifications() {
   totalConceptos        = getOnlyDetails()
   totalConceptosConIva  = getTotalDetails()
   discriminaIVA         = getTipoIVA()
+
   $("#bonifications > tbody > tr").each((index, element) => {
     setBonificationRowVars($(element))
     if (activo && alicuota.val() && totalConceptos) {
       descuento         = parseFloat(((alicuota.val() / parseFloat(100)) * totalConceptos).toFixed(2))
+      subtotalIVA       = parseFloat((totalConceptosConIva * ((100 - alicuota.val()) / 100)))
       descuentoIVA      = parseFloat(((alicuota.val() / parseFloat(100)) * totalConceptosConIva).toFixed(2))
 
       totalConceptos        -= parseFloat(descuento)

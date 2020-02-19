@@ -1,11 +1,12 @@
 class Payments::RetentionPaymentsController < Payments::PaymentsController
   before_action :set_retention_payment, only: [:show, :edit, :update, :destroy]
-  layout :false
+  layout :false, except: [:index, :show]
 
   # GET /retention_payments
   # GET /retention_payments.json
   def index
-    @retention_payments = RetentionPayment.all
+    @retention_payments = current_company.retention_payments.joins(:payment).where(payments: { confirmed: true }).includes(:payment).search_by_date(params[:date]).order("retention_payments.created_at DESC").paginate(page: params[:page], per_page: 10)
+    @retention_payment = current_company.retention_payments.joins(:payment).where(payments: { payment_date: Date.today, confirmed: true }).pluck(:total).inject(0) { |sum, n| sum + n }
   end
 
   # GET /retention_payments/1

@@ -8,6 +8,8 @@ module InvoiceManager
     end
 
     def call
+      pp @invoice.invoice_details
+
       calcula_base_imponible()
       calcula_descuentos()
       calcula_tributos()
@@ -30,7 +32,7 @@ module InvoiceManager
       conceptos_con_iva = subtotal_conceptos_con_iva()
       descuento_total = 0
       @invoice.bonifications.each do |bonification|
-        bonification.subtotal = (conceptos_con_iva * ((100 - bonification.percentage).to_f / 100)).round(2)
+        bonification.subtotal = (conceptos_con_iva * ((100 - bonification.percentage).to_f / 100.to_f)).round(2)
         bonification.amount   = (conceptos_con_iva - bonification.subtotal).round(2)
         descuento_total       += bonification.amount
         conceptos_con_iva     -= bonification.amount
@@ -59,6 +61,14 @@ module InvoiceManager
         .inject(0) { |sum, n| sum + n }
 
       @invoice.total_pay = monto_pagado.round(2)
+
+      @invoice.income_payments
+        .reject(&:marked_for_destruction?)
+        .each do |payment|
+          if payment.type_of_payment == "1"
+            payment.total = payment.card_payment.total
+          end
+        end
     end
 
     def calcula_total_final

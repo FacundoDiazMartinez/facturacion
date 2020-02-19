@@ -8,8 +8,6 @@ function initializeInvoice() {
 	runDetails()
 	runPayments()
 
-  runInvoice();
-
 	checkNotaDebito()
 }
 
@@ -42,18 +40,71 @@ $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_fie
 });
 
 function runInvoice(){
-	conceptos 	= parseFloat(getTotalDetails().toFixed(2))
-	descuentos	= parseFloat(getTotalBonificationsIVA().toFixed(2))
-	impuestos		= parseFloat(getTotalTaxes().toFixed(2))
-	pagos				= parseFloat(getTotalPayments().toFixed(2))
+	var data = {
+		invoice_details_attributes: [],
+		bonifications_attributes: [],
+		tributes_attributes: []
+	}
 
-	invoiceTotal = parseFloat((conceptos - descuentos + impuestos).toFixed(2))
-	invoiceLeft  = parseFloat((invoiceTotal - pagos).toFixed(2))
+	$("#details > tbody > tr.fields").each((index, currentField) => {
+    setDetailRowVars($(currentField));
+    if (activo) {
+			let invoice_detail_data = {
+				precio: price.val(),
+				cantidad: quantity.val(),
+				bonificacion: bonus_percentage.val(),
+				iva: iva_aliquot.val(),
+				subtotal: subtotal.val()
+			}
+			data['invoice_details_attributes'].push(invoice_detail_data)
+    }
+  })
+	$("#bonifications > tbody > tr").each((index, element) => {
+    setBonificationRowVars($(element))
+    if (activo && alicuota.val()) {
+			let bonifications_data = { alicuota: alicuota.val() }
+      data['bonifications_attributes'].push(bonifications_data)
+    }
+  })
+	$('#tributes > tbody > tr').each((index, currentField) => {
+    setTaxesRowVars($(currentField))
+    if (activo) {
+			let tributes_data = { alicuota: alicuotaTax.val() }
+			data['tributes_attributes'].push(tributes_data)
+    }
+  })
 
-	$(".final_total").text(invoiceTotal.toFixed(2))
-	$("#invoice_total").val(invoiceTotal.toFixed(2))
-	$(".total_payments_left").text(invoiceLeft.toFixed(2))
-	$("#total_left").val(invoiceLeft.toFixed(2))
+	if (data['invoice_details_attributes'].length > 0) {
+		fetch('/invoices/calculate_invoice_totals', {
+			method: 'POST',
+			body: JSON.stringify(data),
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		})
+		.then(response => response.json())
+		.then((details) => {
+			invoiceTotal = details['detalles']['total_venta']
+
+			$('.total_details').text(details['detalles']['importe_neto'].toFixed(2))
+			$('.detail_iva').text(details['detalles']['importe_iva'].toFixed(2))
+
+			totalDetalles    = details['detalles']['importe_neto']
+			totalDetallesIVA = details['detalles']['importe_iva']
+
+			$(".final_total").text(invoiceTotal.toFixed(2))
+			$("#invoice_total").val(invoiceTotal.toFixed(2))
+
+			pagos				= parseFloat(getTotalPayments().toFixed(2))
+			invoiceLeft = parseFloat(details['detalles']['total_venta']) - pagos
+
+			$(".total_payments_left").text(invoiceLeft.toFixed(2))
+			$("#total_left").val(invoiceLeft.toFixed(2))
+		})
+		.catch(function(err) {
+			console.log(err);
+		});
+	}
 }
 
 function setConfirmParam(){
@@ -90,13 +141,6 @@ function getTipoIVA() {	return COD_IVA.indexOf($("#invoice_cbte_tipo").val()) !=
 function changeView(tipo){
 	$("#view").val(tipo).trigger("change");
 };
-
-function addRechargeToDetails(){
-	var recharge = parseFloat($("#client_recharge").val() * -1);
-	$("input.bonus_percentage").each(function() {
-		$(this).val(recharge).trigger("change");
-	})
-}
 
 function toggleHeader(){
 	var display = $(".invoice-header").css('display');
