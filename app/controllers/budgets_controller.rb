@@ -5,7 +5,7 @@ class BudgetsController < ApplicationController
     @budgets = current_company.budgets.includes(:user, :client).search_by_state(params[:budget_state]).search_by_number(params[:number]).search_by_client(params[:client_name]).search_by_stock(params[:reserv_stock]).order(number: :desc).paginate(per_page: 15, page: params[:page])
   end
 
-  def show
+  def show 
     Product.unscoped do
       @group_details = @budget.budget_details.includes(:product).in_groups_of(20, fill_with= nil)
     end
