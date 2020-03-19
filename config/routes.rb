@@ -30,7 +30,6 @@ Rails.application.routes.draw do
     get :autocomplete_client, on: :collection
     get :autocomplete_product_code, on: :collection
     get :search_product, on: :collection
-    post :make_sale, on: :member
   end
 
   get 'daily_cash_movements/show'

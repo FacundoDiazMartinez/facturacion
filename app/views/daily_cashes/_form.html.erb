@@ -1,20 +1,22 @@
 <%= error_explanation @daily_cash %>
 <%= form_for @daily_cash do |form| %>
 	<div class="modal-body">
-		<div class="form-group">
-			<%= label_tag :date, "Fecha" %>
-			<%= text_field_tag :date, l(Date.today), class: 'form-control', required: true, disabled: true %>
-		</div>
-		<div class="form-group">
-			<% if action == "open" %>
-				<%= form.label :initial_amount %>
-				<%= form.number_field :initial_amount, value: DailyCash.last_value(current_user.company_id), step: :any, class: 'form-control', required: true %>
-			<% elsif action == "close" %>
-				<%= form.label :final_amount %>
-				<%= form.number_field :final_amount, value: @daily_cash.current_amount, class: 'form-control', step: :any, required: true %>
-				<i>En caso que el monto especificado sea distinto al calculado por el sistema se generará un ajuste de caja. Revise cuidadosamente por favor.</i>
-				<%= form.hidden_field :state, value: "Cerrada" %>
-			<% end -%>
+		<div class="row">
+			<div class="form-group col-6">
+				<%= label_tag :date, "Fecha" %>
+				<%= text_field_tag :date, l(Date.today), class: 'form-control', required: true, disabled: true %>
+			</div>
+			<div class="form-group col-6">
+				<% if action == "open" %>
+					<%= form.label :initial_amount %>
+					<%= form.number_field :initial_amount, value: DailyCash.last_value(current_user.company_id), step: :any, class: 'form-control', required: true %>
+				<% elsif action == "close" %>
+					<%= form.label :final_amount %>
+					<%= form.number_field :final_amount, value: @daily_cash.current_amount, class: 'form-control', step: :any, required: true %>
+					<i>En caso que el monto especificado sea distinto al calculado por el sistema se generará un ajuste de caja. Revise cuidadosamente por favor.</i>
+					<%= form.hidden_field :state, value: "Cerrada" %>
+				<% end -%>
+			</div>
 		</div>
 	</div>
 	<div class="modal-footer">

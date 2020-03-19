@@ -20,7 +20,21 @@
     </li>
   </ul>
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-    <h1 class="h2">Retenciones</h1>
+    <h2>Retenciones</h2>
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          <h6><strong>Total hoy</strong>
+            <span class="float-right h4">
+              $ <%= @retention_payment %>
+            </span>
+          </h6>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="page-section">
@@ -40,20 +54,6 @@
       </div>
 
       <div class="card-body">
-        <div class="row">
-          <div class="col-6">
-            <div class="card">
-              <div class="card-body">
-                <h6><strong>Total hoy</strong>
-                  <span class="float-right h4">
-                    $ <%= @retention_payment %>
-                  </span>
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>
-        <hr>
         <!-- MOVIMIENTOS ASOCIADOS -->
         <div id="retentions_table">
           <%= render 'retentions_table' %>

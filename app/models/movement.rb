@@ -2,11 +2,7 @@ class Movement < Payment
   #include Subpayment
   self.table_name = "payments"
 
-  default_scope { where(active: true ) }
-
-  def self.filter
-    where(type_of_payment: "3").or(where(type_of_payment: "7")).where(active: true)
-  end
+  default_scope { where(active: true, type_of_payment: ["3", "7"] ) }
 
   def self.search_by_bank bank
     if !bank.blank?

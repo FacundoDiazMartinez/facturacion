@@ -1,96 +1,72 @@
 <%= error_explanation @budget %>
-<%= error_explanation @invoice %>
 
-<%= nested_form_for(@budget, html: { class: "form-horizontal" }) do |f| %>
-  <div class="card ">
+<%= nested_form_for(@budget) do |f| %>
+  <div class="card">
     <div class="card-body">
       <div class="row">
-
-        <!--Columna izquierda -->
-        <div class="col-6">
-          <div id="client_form">
-            <%= render 'client_column' %>
-          </div>
-          <%= f.hidden_field :client_id, value: @client.id %>
-          <% if @budget.persisted? %>
-            <div class="row">
-              <div class="col-6">
-                <div class="form-group">
-                  <%= f.label :total, "Total" %>
-                  <%= f.number_field :total, class: "form-control", disabled: true %>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-group">
-                  <%= f.label :state, "Estado" %>
-                  <%= f.text_field :state, class: "form-control", disabled: true %>
-                </div>
-              </div>
-            </div>
-          <% else %>
-            <div class="form-group">
-              <%= f.label :total, "Total ($)" %>
-              <%= f.number_field :total, class: "form-control", disabled: true %>
-            </div>
-          <% end %>
+        <div class="form-group col-4">
+          <%= label_tag :number, "Número" %>
+          <%= text_field_tag :number, f.object.number || "GENERADO AUTOMATICAMENTE", class: 'form-control', disabled: true %>
         </div>
-        <!--Columna izquierda -->
-
-
-        <!--Columna derecha -->
-        <div class="col-6">
-          <div class="row">
-            <div class="col-6">
-              <div class="form-group">
-                <%= f.label :expiration_date, "Fecha de vencimiento" %>
-                <%= f.text_field :expiration_date, class: "form-control datepicker", autocomplete: "off", disabled: !@budget.editable? %>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-group">
-                <%= f.label :reserv_stock, "¿Reservar stock?" %> <br>
-                <%= f.check_box :reserv_stock, data:{toggle: 'toggle', on: "Si", off: "No"}, disabled: !@budget.editable? %>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <%= f.label :number, "Número" %>
-            <%= f.text_field :number, class: 'form-control', disabled: !@budget.editable? %>
+        <div id="client_form" class="col-4">
+          <%= render 'client_column' %>
+        </div>
+        <%= f.hidden_field :client_id, value: @client.id %>
+        <div class="form-group col-4">
+          <%= f.label :expiration_date, "Vencimiento" %>
+          <%= f.text_field :expiration_date, class: "form-control datepicker", autocomplete: "off", disabled: !@budget.editable?, value: f.object.expiration_date %>
+        </div>
+        <div class="form-group col-4">
+          <%= f.label :reserv_stock, "¿Reservar stock?" %>
+          <div>
+            <%= f.check_box :reserv_stock, class: "toggle", data:{ toggle: 'toggle', on: "Si", off: "No" }, disabled: !@budget.editable? %>
           </div>
         </div>
-        <!--Columna derecha -->
-
+        <% if @budget.facturado? %>
+          <div class="form-group col-2">
+            <%= f.label :state, "Estado" %>
+            <div class="h4">
+              <%= state_label_helper_budget @budget %>
+            </div>
+          </div>
+          <div class="form-group col-2">
+            <%= label_tag :state, "Factura" %>
+            <%= link_to "#{icon('fas', 'arrow-right')} Ir".html_safe, edit_invoice_path(@budget.invoice), class: 'btn btn-primary w-100' %>
+          </div>
+        <% else %>
+          <div class="form-group col-4">
+            <%= f.label :state, "Estado" %>
+            <%= f.select :state, options_for_select([["Válido", "Válido"], ["Confirmado", "Confirmado"], ["Anulado", "Anulado"]], f.object.state), {}, { class: 'form-control', disabled: !@budget.editable? } %>
+          </div>
+        <% end %>
+        <div class="form-group col-4">
+          <%= f.label :total, "Total ($)" %>
+          <%= f.number_field :total, class: "form-control", disabled: true %>
+        </div>
+        <div class="form-group col-12">
+          <%= f.label :observation, "Observaciones" %>
+          <%= f.text_area :observation, class: "form-control", disabled: !@budget.editable? %>
+        </div>
       </div>
 
-      <% if @budget.persisted? && (@budget.state == "Válido" || @budget.state == "Vencido") %>
-        <hr>
-
-        <div class="row text-center">
-          <div class="col-4"></div>
-          <div class="col-4">
-            <%= link_to "#{icon('fas', 'check-square')} Confirmar venta".html_safe, make_sale_budget_path(@budget.id), method: :post, class: 'btn btn-danger' %>
-          </div>
-          <div class="col-4"></div>
+      <% if @budget.persisted? && @budget.confirmado? %>
+        <div class="d-flex justify-content-center m-2">
+          <%= link_to "#{icon('fas', 'check-square')} Confirmar venta".html_safe, new_invoice_path(budget_id: @budget.id), class: 'btn btn-success mx-2' %>
+          <%= link_to "#{icon('fas', 'file-pdf')} Imprimir".html_safe, budget_path(@budget.id, format: :pdf), class: 'btn btn-primary mx-2' %>
         </div>
       <% end -%>
-
     </div>
   </div>
 
-  <hr>
-  <!-- PRODUCTOS -->
-  <div class="card " id="idetails">
+
+  <p class="h4 text-muted">Conceptos</p>
+  <div class="card" id="idetails">
     <%= render template: '/budgets/detail/index.html.erb', locals:{form: f} %>
   </div>
-  <!-- PRODUCTOS -->
 
-  <hr>
-  <center>
-    <% if @budget.editable? %>
-      <%= save_button_danger %>
-    <% end %>
-  </center>
+  <div class="text-center">
+    <%= save_button if @budget.editable? %>
+  </div>
 <% end %>
 
 <%= render '/budgets/detail/search_product' %>
@@ -102,8 +78,9 @@
     </div>
   </div>
 </div>
+
 <script>
 $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="tooltip"]').tooltip();
 });
 </script>

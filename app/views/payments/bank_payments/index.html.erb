@@ -20,12 +20,38 @@
     </li>
   </ul>
   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-    <h1 class="h2">Movimientos bancarios</h1>
+    <h2>Movimientos bancarios</h2>
+  </div>
+
+  <div class="row">
+    <% current_company.banks.each do |bank| %>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-body">
+            <h4><strong><%= bank.name %></strong></h4>
+            <div>
+              <h6>Transferencias:
+                <span class="float-right">
+                  $ <%= transfer = bank.b_payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }.round(2) %>
+                </span>
+              </h6>
+            </div>
+            <div>
+              <h6>Débito:
+                <span class="float-right">
+                  $ <%= debito = bank.d_payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }.round(2) %>
+                </span>
+              </h6>
+            </div>
+            <span class="float-right text-bold">$ <%= (transfer + debito).round(2) %> </span>
+          </div>
+        </div>
+      </div>
+    <% end -%>
   </div>
 
   <div class="page-section">
     <div class="card card-fluid">
-
       <div class="card-header">
         <%= form_tag payments_bank_payments_path(), {class: 'form-inline', id: 'search_form'} do %>
           <!-- BUSCAR POR Banco-->
@@ -49,33 +75,6 @@
       </div>
 
       <div class="card-body">
-        <div class="row">
-          <% current_company.banks.each do |bank| %>
-            <div class="col-6">
-              <div class="card">
-                <div class="card-body">
-                  <h4><strong><%= bank.name %></strong></h4>
-                  <div>
-                    <h6>Transferencias:
-                      <span class="float-right">
-                        $ <%= transfer = bank.b_payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }.round(2) %>
-                      </span>
-                    </h6>
-                  </div>
-                  <div>
-                    <h6>Débito:
-                      <span class="float-right">
-                        $ <%= debito = bank.d_payments.where(confirmed: true).pluck(:total).inject(0) { |sum, n| sum + n }.round(2) %>
-                      </span>
-                    </h6>
-                  </div>
-                  <span class="float-right text-bold">$ <%= (transfer + debito).round(2) %> </span>
-                </div>
-              </div>
-            </div>
-          <% end -%>
-        </div>
-        <hr>
         <!-- MOVIMIENTOS ASOCIADOS -->
         <div id="banks_table">
           <%= render 'banks_table' %>

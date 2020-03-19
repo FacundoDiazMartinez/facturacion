@@ -13,7 +13,6 @@ class InvoicesController < ApplicationController
   end
 
   def show
-    # la siguiene variable la cree para el pdf:
     Product.unscoped do
       @group_details = @invoice.invoice_details.includes(:product).in_groups_of(15, fill_with= nil)
     end
@@ -39,10 +38,16 @@ class InvoicesController < ApplicationController
 
   def new
     begin
-      if !session[:new_invoice].blank?
-        restore_invoice_from_session
+      if session[:new_invoice].blank?
+        if params[:budget_id]
+          budget = current_company.budgets.find(params[:budget_id])
+          @client = budget.client
+          @invoice = BudgetManager::InvoiceGenerator.call(budget)
+        else
+          set_new_invoice
+        end
       else
-        set_new_invoice
+        restore_invoice_from_session
       end
     rescue StandardError => error
       redirect_to invoices_path, alert: error.message
@@ -60,10 +65,15 @@ class InvoicesController < ApplicationController
     @invoice      = InvoiceManager::TotalsSetter.call(@invoice)
 
     if @invoice.custom_save(params[:send_to_afip])
+      BudgetManager::InvoicedStateSetter.call(@invoice.budget) if @invoice.budget
       redirect_to edit_invoice_path(@invoice.id), notice: "Comprobante registrado."
     else
-      pp @invoice
-      render :new, alert: "Error al registrar el comprobante."
+      pp @invoice.errors
+      if @invoice.persisted?
+        render :edit, notice: "El comprobante fue registrado."
+      else
+        render :new, alert: "Error al registrar el comprobante."
+      end
     end
   end
 
@@ -289,7 +299,7 @@ class InvoicesController < ApplicationController
     @invoice            = Invoice.new(session[:new_invoice]["invoice"])
     @invoice.company_id = current_company.id
     @client             = current_company.clients.find(@invoice.client_id)
-    session[:new_invoice]["invoice_details"].map { |detail| @invoice.invoice_details.build(detail) }
+    session[:new_invoice]["invoice_details"].each { |detail| @invoice.invoice_details.build(detail) }
     session.delete(:new_invoice)
   end
 

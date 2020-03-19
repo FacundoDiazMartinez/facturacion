@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_11_184257) do
+ActiveRecord::Schema.define(version: 2020_03_13_184149) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,9 +158,9 @@ ActiveRecord::Schema.define(version: 2019_12_11_184257) do
 
   create_table "budgets", force: :cascade do |t|
     t.date "date", default: -> { "CURRENT_DATE" }, null: false
-    t.string "state", default: "Generado", null: false
+    t.string "state", null: false
     t.date "expiration_date"
-    t.string "number", null: false
+    t.string "number"
     t.float "total", default: 0.0, null: false
     t.boolean "active", default: true, null: false
     t.bigint "company_id"
@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(version: 2019_12_11_184257) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "sales_file_id"
+    t.text "observation"
     t.index ["client_id"], name: "index_budgets_on_client_id"
     t.index ["company_id"], name: "index_budgets_on_company_id"
     t.index ["sales_file_id"], name: "index_budgets_on_sales_file_id"

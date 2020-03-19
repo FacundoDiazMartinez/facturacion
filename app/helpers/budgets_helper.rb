@@ -2,13 +2,13 @@ module BudgetsHelper
 	def state_label_helper_budget budget
 	    case budget.state
 	    when 'Vencido'
-	      	label_span('badge badge-pill badge-danger', 'Vencido')
-	    when 'Generado'
-	      	label_span('badge badge-pill badge-secondary', 'Generado')
+	      	label_span('badge badge-pill badge-warning', 'Vencido')
+	    when 'Confirmado'
+	      	label_span('badge badge-pill badge-info', 'Confirmado')
 	    when 'Válido'
-	     	label_span('badge badge-pill badge-info', 'Válido')
-	    when 'Concretado'
-	     	label_span('badge badge-pill badge-success', 'Concretado')
+	     	label_span('badge badge-pill badge-secondary', 'Válido')
+	    when 'Facturado'
+	     	label_span('badge badge-pill badge-success', 'Facturado')
 	    end
 	end
 

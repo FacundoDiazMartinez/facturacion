@@ -1,60 +1,49 @@
-<!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
-    <div class=" border">
-      <table class="width_100">
-        <col width="2%">
-        <col width="48%">
-        <col>
-        <col width="2%">
-        <col width="48%">
+<div class="border">
+  <table class="width_100">
+    <col width="2%">
+    <col width="48%">
+    <col>
+    <col width="2%">
+    <col width="48%">
+    <tr>
+      <td></td>
+      <td class="text_size_25 header_word_break" style="text-align: center;">
+        <b>
+          <%= @budget.company.name %>
+        </b>
+      </td>
+      <td rowspan="5" class="right_border"></td>
+      <td></td>
+      <td class="text_size_25 header_word_break" style="text-align: center;">
+        <b>
+          PRESUPUESTO Nº
+        </b>
+        <b>
+          <%= @budget.number %>
+        </b>
+      </td>
+    </tr>
+    <tr>
+      <td rowspan="4"></td>
+      <td> <br> </td>
+      <td rowspan="4"></td>
+      <td> <br> </td>
+    </tr>
+    <tr>
+      <td> <b>Razon Social: </b> <%= @budget.company.society_name %></td>
+      <td><b>Fecha de Emisión:</b> <%= @budget.created_at.strftime("%d/%m/%Y") %></td>
+    </tr>
+    <tr>
+      <td><b>Domicilio Comercial:</b> <%= @budget.company.address %></td>
+      <td><b>Fecha de Vencimiento:</b> <%= @budget.expiration_date.strftime("%d/%m/%Y") %></td>
+    </tr>
+    <tr>
+      <td><b>Condicion I.V.A.:</b> <%= @budget.company.iva_cond %></td>
+      <td><b>CUIT: </b><%= @budget.company.cuit %></td>
+    </tr>
+  </table>
+</div>
 
-        <tr>
-          <td> <br> </td>
-        </tr>
-
-        <tr>
-          <th></th>
-          <th class="text_size_25 header_word_break" style="text-align: center;"><%= @budget.company.name %></th>
-          <th rowspan="5" class="right_border"></th>
-          <th></th>
-          <th class="text_size_25 header_word_break" style="text-align: center;">PRESUPUESTO</th>
-        </tr>
-
-        <tr>
-          <td rowspan="4"></td>
-          <td> <br> </td>
-
-          <td rowspan="4"></td>
-          <td> <br> </td>
-        </tr>
-
-        <tr>
-
-          <td> <b>Razon Social: </b> <%= @budget.company.society_name %></td>
-
-          <td><b>Fecha de Emisión:</b> <%= @budget.created_at.strftime("%d/%m/%Y") %></td>
-
-        </tr>
-
-        <tr>
-          <td><b>Domicilio Comercial:</b> <%= @budget.company.address %></td>
-
-          <td><b>Fecha de Vencimiento:</b> <%= @budget.expiration_date.strftime("%d/%m/%Y") %></td>
-
-        </tr>
-
-        <tr>
-
-          <td><b>Condicion frente al IVA:</b> <%= @budget.company.iva_cond %></td>
-
-          <td ><b>CUIT: </b><%= @budget.company.cuit %></td>
-
-        </tr>
-
-      </table>
-    </div>
-  <!-- FIN DEL ENCABEZADO -->
-
-<!-- DATOS CLIENTE -->
 <div>
   <div class="container border">
     <table class="width_100">
@@ -71,10 +60,9 @@
       </tr>
 
       <tr>
-        <td><b>Condicion frente al IVA: </b><%= @budget.client.iva_cond %></td>
+        <td><b>Condicion I.V.A.: </b><%= @budget.client.iva_cond %></td>
         <td><b>Domicilio: </b> <%= @budget.client.address %></td>
       </tr>
     </table>
   </div>
 </div>
-<!-- FIN DATOS CLIENTE -->

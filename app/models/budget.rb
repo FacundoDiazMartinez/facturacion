@@ -1,137 +1,133 @@
 class Budget < ApplicationRecord
-  belongs_to :company, optional: true
-  belongs_to :user, optional: true
-  belongs_to :client, optional: true
-  belongs_to :sales_file, optional: true
+  belongs_to :company
+  belongs_to :user
+  belongs_to :client
 
+  has_one :invoice
   has_many :budget_details, dependent: :destroy
   has_many :products, through: :budget_details
 
   accepts_nested_attributes_for :budget_details, reject_if: :all_blank, allow_destroy: true
 
+  STATES = ["Válido", "Confirmado", "Vencido", "Anulado", "Facturado"]
+
+  before_validation :check_depots, :set_state, :set_number
   validate :expiration_date_cannot_be_in_the_past
+  validates_inclusion_of :state, { in: STATES, message: "Estado inválido." }
+  validates_presence_of :user_id, :number
+  validates_uniqueness_of :number, scope: :company_id, message: "Número de presupuesto repetido. Intente guardar nuevamente el presupuesto."
   validates_presence_of :company_id, message: "El presupuesto debe estar asociado a una compañía."
-  validates_presence_of :user_id, message: "El presupuesto debe estar asociado a un usuario."
   validates_presence_of :client_id, message: "El presupuesto debe estar asociado a un cliente."
   validates_presence_of :expiration_date, message: "Debe seleccionar una fecha de vencimiento."
   validates_presence_of :budget_details, message: "Debe ingresar al menos un detalle."
+  after_validation :set_total
 
-  # before_validation :set_number
-  after_initialize :set_number, if: :new_record?
-  before_validation :check_depots, if: :reserv_stock
-  before_validation :set_total_to_budget
-  after_save :change_state_to_expirated
-  after_create :create_seles_file, if: Proc.new{|b| b.sales_file.nil?}
+  after_save :schedule_expiration_date, :handle_stock_reservation
 
-  STATES = ["Generado", "Válido", "Vencido", "Concretado"]
+  default_scope { where(active: true) }
 
-  default_scope { where(active: true ) }
+  scope :pendientes, -> { where(state: "Válido") }
+  scope :confirmados, -> { where(state: "Confirmado") }
+  scope :expirados, -> { where(state: "Vencido") }
+  scope :anulados, -> { where(state: "Anulado") }
+  scope :facturados, -> { where(state: "Facturado") }
 
+  def self.search_by_number number
+    return where("number ILIKE ?", "%#{number}%") unless number.blank?
+    all
+  end
 
-  #VALIDACIONES
-    def expiration_date_cannot_be_in_the_past
-      if expiration_date.present? && expiration_date < Date.today
-        errors.add(:expiration_date, "La fecha de vencimiento no puede ser menor a hoy.")
-      end
+  def self.search_by_state state
+    return where("state = ?", state) unless state.blank?
+    all
+  end
+
+  def self.search_by_client name
+    return joins(:client).where("LOWER(clients.name) LIKE LOWER(?)", "%#{name}%") unless name.blank?
+    all
+  end
+
+  def self.search_by_stock reservado
+    return where("reserv_stock = ?", "#{reservado}") unless reservado.blank?
+    all
+  end
+
+  def destroy
+    update_column(:active, false) if editable?
+	end
+
+	def editable?
+		valido? || vencido?
+	end
+
+  def valido?
+    state == "Válido"
+  end
+
+  def confirmado?
+    state == "Confirmado"
+  end
+
+  def facturado?
+    state == "Facturado"
+  end
+
+  def vencido?
+    state == "Vencido"
+  end
+
+  def facturado!
+    update_columns(state: "Facturado")
+  end
+
+  def vencido!
+    update_columns(state: "Vencido")
+  end
+
+  def client
+    Client.unscoped{ super }
+  end
+
+  def client_name
+    client.nil? ? nil : client.name
+  end
+
+  private
+
+  def schedule_expiration_date
+    vencido! if self.expiration_date <= Date.today
+  end
+  handle_asynchronously :schedule_expiration_date, :run_at => Proc.new { |budget| budget.expiration_date + 1.days }
+
+  def handle_stock_reservation
+    if self.reserv_stock && self.confirmado? && self.saved_change_to_state?
+      BudgetManager::StockSaver.call(self)
     end
+  end
 
-    # def expiration_date_cannot_be_in_the_past
-    #   if expiration_date.present?
-    #     if expiration_date < Date.today
-    #       errors.add(:expiration_date, "La fecha de vencimiento no puede ser menor a hoy.")
-    #     end
-    #   else
-    #     errors.add(:expiration_date, "Debe seleccionar una fecha de vencimiento.")
-    #   end
-    # end
-  #VALIDACIONES
+  def set_total
+    self.total = budget_details.reject(&:marked_for_destruction?).pluck(:subtotal).inject(0, :+)
+  end
 
-  #FILTROS DE BUSQUEDA
-    def self.search_by_number number
-      if not number.blank?
-        where("number ILIKE ?", "%#{number}%")
-      else
-        all
-      end
+  def set_state
+    self.state = "Válido" if state.blank?
+  end
+
+  def check_depots
+    if reserv_stock
+      errors.add(:base, "Si quiere reservar stock debe especificar el depósito en cada detalle.") unless !budget_details.reject(:marked_for_destruction?).each{ |detail| detail.depot_id.blank? }.include?(true)
     end
+  end
 
-    def self.search_by_user name
-      if not name.blank?
-        joins(:user).where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
-      else
-        all
-      end
+  def set_number
+    if number.blank?
+      ultimo_presupuesto = Budget.where(company_id: self.company_id).last
+      return self.number = (ultimo_presupuesto.number.to_i + 1).to_s.rjust(8, '0') unless ultimo_presupuesto.nil?
+      self.number = "00000001"
     end
+  end
 
-    def self.search_by_client name
-      if not name.blank?
-        joins(:client).where("LOWER(clients.name) LIKE LOWER(?)", "%#{name}%")
-      else
-        all
-      end
-    end
-
-    def self.search_by_stock reserv_stock
-      if not reserv_stock.blank?
-        where("reserv_stock = ?", "#{reserv_stock}")
-      else
-        all
-      end
-    end
-
-  #FILTROS DE BUSQUEDA
-
-  #PROCESOS
-    def set_number
-      last_budget = Budget.where(company_id: company_id).last
-      self.number ||= last_budget.nil? ? "00000001" : (last_budget.number.to_i + 1).to_s.rjust(8,padstr= '0')
-    end
-
-    def check_depots
-      errors.add(:base, "Si quiere reservar stock debe especificar el depósito en cada detalle.") unless !budget_details.map{|detail| detail.depot_id.blank?}.include?(true)
-    end
-
-    def create_seles_file
-      sf = SalesFile.create(
-        company_id: company_id,
-        client_id: client_id,
-        responsable_id: user_id
-      )
-      update_column(:sales_file_id, sf.id)
-    end
-
-    def set_total_to_budget
-      suma = Float(0)
-      budget_details.each do |b|
-        suma = suma + b.subtotal.to_f
-      end
-      self.total = suma
-    end
-
-    def change_state_to_expirated
-      if self.expiration_date <= Date.today
-        self.state = "Vencido"
-      end
-    end
-    handle_asynchronously :change_state_to_expirated, :run_at => Proc.new { |budget| budget.expiration_date + 1.days }
-
-    def destroy
-  		update_column(:active, false)
-  		run_callbacks :destroy
-  	end
-  #PROCESOS
-
-  #ATRIBUTOS
-  	def editable?
-  		!persisted?
-  	end
-
-    def client
-      Client.unscoped{ super }
-    end
-
-    def client_name
-      client.nil? ? nil : client.name
-    end
-  #ATRIBUTOS
+  def expiration_date_cannot_be_in_the_past
+    errors.add(:expiration_date, "La fecha de vencimiento no puede ser menor a hoy.") if expiration_date && expiration_date < Date.today
+  end
 end

@@ -92,15 +92,7 @@ div#navpills > ul > li > div.dropdown-menu.show{
   border: none;
 }
 
-div#navpills > ul > li > div.dropdown-menu > .dropdown-item{
-  font-family: verdana, arial, helvetica, sans-serif;
-  font-size: 14px;
-  line-height: 18px;
-  padding: 10px 15px;
-}
-
-.nav-link{
-  font-family: verdana, arial, helvetica, sans-serif;
+div#navpills > ul > li > div.dropdown-menu > .dropdown-item, .nav-link {
   font-size: 14px;
   line-height: 18px;
   padding: 10px 15px;

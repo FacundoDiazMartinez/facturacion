@@ -1,5 +1,11 @@
 <!-- PIE DE PAGINA -->
 <br>
+<% if @budget.observation %>
+  <div class="border" style="padding: 20px; margin-bottom: 5px;">
+    <b>Observaciones: </b>
+    <%= @budget.observation %>
+  </div>
+<% end %>
 <div class="text_center">
   Página <%= page_number %> de <%= total_pages%>
 </div>

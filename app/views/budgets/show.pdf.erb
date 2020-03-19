@@ -1,23 +1,6 @@
 <% total_page = 0 %>
- <!--  @group_details lo cree en el controlador de budgets (en el show) con un include de productos. Son los detalles de la factura en grupos de a 20 -->
 <% @group_details.each_with_index do |details_page, index| %>
-  <div class="alwaysbreak">
-
-    <!-- HEADER ORIGINAL/DUPLICADO -->
-    <!-- <div class="container">
-      <div class="row">
-        <div class="border">
-            <center>
-              <h2 class="text_size_25">
-                PRESUPUESTO
-              </h2>
-            </center>
-        </div>
-      </div>
-    </div> -->
-   <!-- FIN HEADER ORIGINAL/DUPLICADO -->
-
-
+  <div>
     <% total_page = details_page.map {|a| a.subtotal unless a.nil?}.compact.reduce(:+).to_f %>
     <%= render template: '/budgets/pdf_partials/_header.html.erb' %>
     <%= render template: '/budgets/pdf_partials/_details.html.erb', :locals => { :details => details_page, :total_of_page => total_page, :total_pages => @group_details.count} %>
