@@ -1,6 +1,5 @@
-<%= error_explanation @budget %>
-
 <%= nested_form_for(@budget) do |f| %>
+  <%= error_explanation @budget %>
   <div class="card">
     <div class="card-body">
       <div class="row">
@@ -18,27 +17,16 @@
         </div>
         <div class="form-group col-4">
           <%= f.label :reserv_stock, "¿Reservar stock?" %>
-          <div>
+          <div class="text-center">
             <%= f.check_box :reserv_stock, class: "toggle", data:{ toggle: 'toggle', on: "Si", off: "No" }, disabled: !@budget.editable? %>
           </div>
         </div>
-        <% if @budget.facturado? %>
-          <div class="form-group col-2">
-            <%= f.label :state, "Estado" %>
-            <div class="h4">
-              <%= state_label_helper_budget @budget %>
-            </div>
+        <div class="form-group col-4">
+          <%= label_tag :state, "Estado" %>
+          <div class="h4 text-center">
+            <%= state_label_helper_budget(@budget) %>
           </div>
-          <div class="form-group col-2">
-            <%= label_tag :state, "Factura" %>
-            <%= link_to "#{icon('fas', 'arrow-right')} Ir".html_safe, edit_invoice_path(@budget.invoice), class: 'btn btn-primary w-100' %>
-          </div>
-        <% else %>
-          <div class="form-group col-4">
-            <%= f.label :state, "Estado" %>
-            <%= f.select :state, options_for_select([["Válido", "Válido"], ["Confirmado", "Confirmado"], ["Anulado", "Anulado"]], f.object.state), {}, { class: 'form-control', disabled: !@budget.editable? } %>
-          </div>
-        <% end %>
+        </div>
         <div class="form-group col-4">
           <%= f.label :total, "Total ($)" %>
           <%= f.number_field :total, class: "form-control", disabled: true %>
@@ -49,10 +37,18 @@
         </div>
       </div>
 
-      <% if @budget.persisted? && @budget.confirmado? %>
+      <% if @budget.persisted? %>
         <div class="d-flex justify-content-center m-2">
-          <%= link_to "#{icon('fas', 'check-square')} Confirmar venta".html_safe, new_invoice_path(budget_id: @budget.id), class: 'btn btn-success mx-2' %>
-          <%= link_to "#{icon('fas', 'file-pdf')} Imprimir".html_safe, budget_path(@budget.id, format: :pdf), class: 'btn btn-primary mx-2' %>
+          <% if @budget.confirmado? %>
+            <%= link_to "#{icon('fas', 'times')} Anular".html_safe, cancel_budget_path(@budget), method: :patch, class: 'btn btn-danger mx-2' %>
+            <%= link_to "#{icon('fas', 'file-pdf')} Imprimir".html_safe, budget_path(@budget.id, format: :pdf), class: 'btn btn-primary mx-2' %>
+          <% elsif @budget.editable? %>
+            <%= link_to "#{icon('fas', 'dollar-sign')} Facturar".html_safe, new_invoice_path(budget_id: @budget.id), class: 'btn btn-success mx-2' %>
+            <%= link_to "#{icon('fas', 'check-square')} Confirmar".html_safe, confirm_budget_path(@budget), method: :patch, class: 'btn btn-primary mx-2' %>
+          <% elsif @budget.facturado? %>
+            <%= link_to "#{icon('fas', 'arrow-right')} Factura".html_safe, edit_invoice_path(@budget.invoice), class: 'btn btn-primary mx-2' %>
+            <%= link_to "#{icon('fas', 'file-pdf')} Imprimir".html_safe, budget_path(@budget.id, format: :pdf), class: 'btn btn-primary mx-2' %>
+          <% end %>
         </div>
       <% end -%>
     </div>

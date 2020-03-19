@@ -22,7 +22,7 @@ class Budget < ApplicationRecord
   validates_presence_of :budget_details, message: "Debe ingresar al menos un detalle."
   after_validation :set_total
 
-  after_save :schedule_expiration_date, :handle_stock_reservation
+  after_save :schedule_expiration_date
 
   default_scope { where(active: true) }
 
@@ -76,12 +76,28 @@ class Budget < ApplicationRecord
     state == "Vencido"
   end
 
+  def anulado?
+    state == "Anulado"
+  end
+
+  def valido!
+    update_columns(state: "Válido")
+  end
+
   def facturado!
     update_columns(state: "Facturado")
   end
 
   def vencido!
     update_columns(state: "Vencido")
+  end
+
+  def confirmado!
+    update_columns(state: "Confirmado")
+  end
+
+  def anulado!
+    update_columns(state: "Anulado")
   end
 
   def client
@@ -99,12 +115,6 @@ class Budget < ApplicationRecord
   end
   handle_asynchronously :schedule_expiration_date, :run_at => Proc.new { |budget| budget.expiration_date + 1.days }
 
-  def handle_stock_reservation
-    if self.reserv_stock && self.confirmado? && self.saved_change_to_state?
-      BudgetManager::StockSaver.call(self)
-    end
-  end
-
   def set_total
     self.total = budget_details.reject(&:marked_for_destruction?).pluck(:subtotal).inject(0, :+)
   end
@@ -115,7 +125,8 @@ class Budget < ApplicationRecord
 
   def check_depots
     if reserv_stock
-      errors.add(:base, "Si quiere reservar stock debe especificar el depósito en cada detalle.") unless !budget_details.reject(:marked_for_destruction?).each{ |detail| detail.depot_id.blank? }.include?(true)
+      depositos_vacios = budget_details.reject(&:marked_for_destruction?).reject!{ |detail| !detail.depot_id.blank? }.nil?
+      errors.add(:base, "Para reservar stock debe seleccionar DEPÓSITO en cada detalle.") if depositos_vacios
     end
   end
 

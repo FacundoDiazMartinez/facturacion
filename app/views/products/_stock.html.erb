@@ -1,31 +1,37 @@
-<%= nested_form_for @product do |form| %>
-
-  <table class="table table-striped" id="stock_fields">
-    <thead>
-      <tr>
-        <th scope="col">Depósito</th>
-        <th scope="col">Estado</th>
-        <th scope="col">Cantidad</th>
-        <th colspan="1"></th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <%= form.fields_for :stocks, @product.stocks.where(active: true).order(:depot_id), wrapper: false do |f|%>
-        <tr class="fields">
-            <td><%= f.select :depot_id, options_for_select(current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, f.object.depot_id), {}, {class: 'form-control'} %></td>
-            <td><%= f.select :state, Stock::STATES, {}, {class: 'form-control'} %></td>
-            <td><%= f.number_field :quantity, required: true, class: 'form-control' %></td>
-            <td><%= f.link_to_remove icon('fas', 'trash'), class: 'btn btn-danger', onclick:'removeRequired($(this))' %></td>
-        </tr>
-      <% end -%>
-    </tbody>
-  </table>
-  <div class="row">
-    <div class="col text-center mb-3">
-      <%= form.link_to_add "Agregar", :stocks, class: 'btn btn-success', data:{target: "#stock_fields"} %>
-      <button type="submit" class="btn btn-primary">Guardar</button>
+<div class="container-fluid">
+  <p class="text-muted">Stock</p>
+  <%= nested_form_for @product do |form| %>
+    <div class="card  mb-4">
+      <div class="card-body" id="stock">
+        <table class="table table-striped" id="stock_fields">
+          <thead>
+            <tr>
+              <th scope="col">Depósito</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Cantidad</th>
+              <th colspan="1"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <%= form.fields_for :stocks, @product.stocks.where(active: true).order(:depot_id), wrapper: false do |f|%>
+              <tr class="fields">
+                <td><%= f.select :depot_id, options_for_select(current_user.company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, f.object.depot_id), {}, {class: 'form-control'} %></td>
+                <td><%= f.select :state, Stock::STATES, {}, {class: 'form-control'} %></td>
+                <td><%= f.number_field :quantity, required: true, class: 'form-control' %></td>
+                <td><%= f.link_to_remove icon('fas', 'trash'), class: 'btn btn-danger', onclick:'removeRequired($(this))' %></td>
+              </tr>
+            <% end -%>
+          </tbody>
+        </table>
+        <div class="row">
+          <div class="col text-center mb-3">
+            <%= form.link_to_add "#{icon('fas', 'plus')} Agregar".html_safe, :stocks, class: 'btn btn-success', data:{target: "#stock_fields"} %>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-
-<% end %>
+    <div class="text-center">
+      <%= save_button %>
+    </div>
+  <% end %>
+</div>

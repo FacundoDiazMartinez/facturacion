@@ -27,9 +27,15 @@ Rails.application.routes.draw do
     end
   end
   resources :budgets do
-    get :autocomplete_client, on: :collection
-    get :autocomplete_product_code, on: :collection
-    get :search_product, on: :collection
+    collection do
+      get :autocomplete_client
+      get :autocomplete_product_code
+      get :search_product
+    end
+    member do
+      patch :confirm
+      patch :cancel
+    end
   end
 
   get 'daily_cash_movements/show'

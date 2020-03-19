@@ -1,5 +1,5 @@
 class BudgetsController < ApplicationController
-  before_action :set_budget, only: [:show, :edit, :update, :destroy, :make_sale]
+  before_action :set_budget, only: [:show, :edit, :update, :confirm, :cancel, :destroy]
 
   def index
     @budgets = current_company.budgets.includes(:user, :client).search_by_state(params[:budget_state]).search_by_number(params[:number]).search_by_client(params[:client_name]).search_by_stock(params[:reserv_stock]).order(number: :desc).paginate(per_page: 15, page: params[:page])
@@ -25,13 +25,13 @@ class BudgetsController < ApplicationController
 
   def new
     @budget = current_company.budgets.new()
-    @client = @budget.client || current_company.clients.consumidor_final.first_or_create
+    set_client
     @budget.expiration_date = @budget.expiration_date || Date.today + 30.days
     @budget.state = "Válido"
   end
 
   def edit
-    @client = @budget.client
+    set_client
   end
 
   def create
@@ -39,24 +39,48 @@ class BudgetsController < ApplicationController
     @budget.user = current_user
     @client      = @budget.client
     if @budget.save
-      redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue registrado correctamente.'
+      redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue registrado.'
     else
       render :new
     end
   end
 
   def update
-    @client = @budget.client
     if @budget.update(budget_params)
-      redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue actualizado correctamente.'
+      redirect_to edit_budget_path(@budget.id), notice: 'El presupuesto fue actualizado.'
     else
+      set_client
       render :edit
+    end
+  end
+
+  def confirm
+    if @budget.editable?
+      @budget = BudgetManager::Confirmator.call(@budget)
+      if @budget.errors.empty? && @budget.confirmado?
+        redirect_to edit_budget_path(@budget), notice: "El presupuesto fue confirmado."
+      else
+        set_client
+        render :edit
+      end
+    end
+  end
+
+  def cancel
+    if @budget.confirmado?
+      @budget = BudgetManager::Cancelator.call(@budget)
+      if @budget.anulado?
+        redirect_to edit_budget_path(@budget), notice: "El presupuesto fue anulado."
+      else
+        set_client
+        render :edit
+      end
     end
   end
 
   def destroy
     @budget.destroy
-    redirect_to budgets_url, notice: 'El presupuesto fue eliminado correctamente.'
+    redirect_to budgets_url, notice: 'El presupuesto fue eliminado.'
   end
 
   def autocomplete_client
@@ -80,6 +104,10 @@ class BudgetsController < ApplicationController
 
   def set_budget
     @budget = current_company.budgets.find(params[:id])
+  end
+
+  def set_client
+    @client = @budget.client || current_company.clients.consumidor_final.first_or_create
   end
 
   def budget_params

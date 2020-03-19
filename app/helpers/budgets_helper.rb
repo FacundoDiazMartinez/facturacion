@@ -9,6 +9,8 @@ module BudgetsHelper
 	     	label_span('badge badge-pill badge-secondary', 'Válido')
 	    when 'Facturado'
 	     	label_span('badge badge-pill badge-success', 'Facturado')
+	    when 'Anulado'
+	     	label_span('badge badge-pill badge-danger', 'Anulado')
 	    end
 	end
 
