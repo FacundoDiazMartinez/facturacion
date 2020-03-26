@@ -10,85 +10,35 @@ class DeliveryNoteDetail < ApplicationRecord
   validates_presence_of :delivery_note, message:  "El concepto debe tener asociado un remito."
   validates_presence_of :product, message:  "El concepto debe tener asociado un producto."
   validates_presence_of :depot, message:  "El concepto debe tener asociado un depósito."
-  validate :same_or_less_quantity
-  validate :depot_has_stock?
 
   default_scope { where(active: true ) }
 
-  #ATRIBUTOS
-  	def product_name
-  		product.nil? ? "" : product.name
-  	end
+  attr_accessor :available_product_quantity
 
-  	def product_code
-  		product.nil? ? "" : product.code
-  	end
+	def product_name
+		product.nil? ? "" : product.name
+	end
 
-    def product
-      Product.unscoped{super}
-    end
+	def product_code
+		product.nil? ? "" : product.code
+	end
 
-    def _destroy
-      @_destroy
-    end
-
-    def _destroy=(val)
-      @_destroy = val
-    end
-  #ATRIBUTOS
-
-  def adjust_product_stock
-    #difference = invoice_detail.quantity.to_f - quantity.to_f
-    self.product.impact_stock_from_delivery_note_detail(id_depot_id: invoice_detail.depot_id, dn_depot_id: depot_id, quantity: quantity)
-    # if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
-    #   difference = invoice_detail.quantity.to_f - quantity.to_f
-    #   self.product.rollback_reserved_stock(quantity: difference, depot_id: self.depot_id)  #Se descuenta diferencia restante de STOCK RESERVADO y se la suma a STOCK DISPONIBLE WTF(?)
-    #   self.product.deliver_product(quantity: quantity, depot_id: self.depot_id, from: "Reservado")  #Agrega cantidad entregada en STOCK ENTREGADO y se la resta de STOCK RESERVADO ?
-    # elsif !invoice_detail.blank? && invoice_detail.depot_id != self.depot_id
-    #   self.product.rollback_reserved_stock(quantity: quantity.to_f, depot_id: self.depot_id) #Se descuenta cantidad entregada de STOCK RESERVADO y suma a STOCK DISPONIBLE WTF(?)
-    #   self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible") #Agrega cantidad entregada en STOCK ENTREGADO y se la resta de STOCK DISPONIBLE ?
-    # else
-    #   self.product.deliver_product(quantity: quantity.to_f, depot_id: self.depot_id, from: "Disponible") #Agrega cantidad entregada en STOCK ENTREGADO y se la resta de STOCK DISPONIBLE ?
-    # end
+  def product
+    Product.unscoped{super}
   end
 
-  def depot_has_stock?
-    stocks = self.depot.stocks.where(product_id: self.product_id)
-    reservado = stocks.where(state: "Reservado").first.nil? ? 0 : stocks.where(state: "Reservado").first.quantity
-    disponible = stocks.where(state: "Disponible").first.nil? ? 0 : stocks.where(state: "Disponible").first.quantity
-
-    if !invoice_detail.blank? && invoice_detail.depot_id == self.depot_id
-      if reservado < self.quantity.to_f
-        errors.add(:quantity, "Se esta intentando entregar mayor cantidad que la que se reservo cuando se realizo la factura. Verifique depósito seleccionado. Si desea proceeder borre este detalle (fila) y cree uno nuevamente")
-      end
-    elsif !invoice_detail.blank? && invoice_detail.depot_id != self.depot_id
-      if disponible < self.quantity.to_f
-        errors.add(:quantity, "El deposito que seleccionó no tiene suficiente stock disponible. Disponible = #{disponible} #{self.product.measurement_unit_name}")
-      end
-    else
-      if disponible < self.quantity.to_f
-        errors.add(:quantity, "El deposito que seleccionó no tiene suficiente stock disponible. Disponible = #{disponible} #{self.product.measurement_unit_name}")
-      end
-    end
+  def _destroy
+    @_destroy
   end
 
-  def same_or_less_quantity
-    invoice_detail_quantity = 0
-    delivery_note_detail = 0
-    invoice_product_quantity = 0
-    self.delivery_note.invoice.invoice_details.where(product_id: self.product_id).each do |inv_det|
-      invoice_product_quantity = inv_det.quantity
-    end
+  def _destroy=(val)
+    @_destroy = val
+  end
 
-    delivered_quantity = 0
-    self.delivery_note.invoice.delivery_notes.where(state: "Finalizado").each do |delivery_note|
-      delivery_note.delivery_note_details.where(product_id: self.product_id).each do |dn_det|
-        delivered_quantity += dn_det.quantity
-      end
-    end
-    diferencia = invoice_product_quantity - delivered_quantity
-    unless self.quantity <= diferencia
-      errors.add(:quantity, "Se esta intentando entregar mayor cantidad que la que se reservo cuando se realizo la factura. Si desea proceeder modifique la cantidad")
-    end
+  def self.pendiente_de_entrega(invoice_detail)
+    entregado_previamente = self.includes(:delivery_note).where(delivery_notes: { state: "Finalizado", invoice_id: invoice_detail.invoice_id }, product_id: invoice_detail.product_id).pluck(:quantity).inject(0, :+)
+    faltante = invoice_detail.quantity - entregado_previamente
+    return 0 if faltante < 0
+    faltante
   end
 end

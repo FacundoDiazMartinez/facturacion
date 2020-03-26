@@ -1,0 +1,6 @@
+<h5 class="text-muted">Total facturado por día</h5>
+<div class="card">
+	<div class="card-body">
+		<%= column_chart amount_per_month_invoices_path(month: params[:month]), prefix: "$", messages: {empty: "Sin datos"} %>
+	</div>
+</div>

@@ -44,14 +44,12 @@ $(document).ready(function() {
     $('#file_input').click();
   })
 
-  console.log("document ready")
   initializeNumberInputPatterns();
   initializeDatepickers();
   directUpload()
 });
 
 $(document).on('pjax:complete', function() {
-  console.log("pjax complete")
   initializeNumberInputPatterns();
   initializeBootstrapToggles();
   initializeDatepickers();
@@ -64,9 +62,7 @@ $(document).on("click","#notification_link",function(){
 
 $(document).on("keyup", "input.ui-autocomplete-input", function(e){
   target = $($(this).data("id-element"))
-  if (target.length != 0){
-    target.val("")
-  }
+  if (target.length != 0) { target.val("") }
 });
 
 function readURL(input) {

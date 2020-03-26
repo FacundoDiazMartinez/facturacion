@@ -87,6 +87,7 @@ class Product < ApplicationRecord
 	accepts_nested_attributes_for :stocks, reject_if: :all_blank, allow_destroy: true
 
   scope :active, -> { where(active: true) }
+	scope :productos, -> { where(tipo: "Producto") }
 
   def validate_unique_state
     validate_uniqueness_of_in_memory(stocks, [:active, :state, :depot_id], 'Está intentando generar estados duplicados para un mismo depósito.')
@@ -303,63 +304,6 @@ class Product < ApplicationRecord
 		end
 	end
 
-  def impact_stock_from_delivery_note_detail attrs={}
-    reserved_stock = self.stocks.where(depot_id: attrs[:id_depot_id], state: "Reservado").first_or_initialize
-    if reserved_stock.quantity.blank? || reserved_stock.quantity < attrs[:quantity].to_f
-      if reserved_stock.quantity > 0
-        remaining_quantity = attrs[:quantity].to_f - reserved_stock.quantity
-        available_stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Disponible").first_or_initialize
-        available_stock.quantity -= remaining_quantity
-        available_stock.save
-      end
-      reserved_stock.quantity = 0
-    else
-      reserved_stock.quantity -= attrs[:quantity].to_f
-    end
-
-    if reserved_stock.save
-      delivered_stock = self.stocks.where(depot_id: attrs[:dn_depot_id], state: "Entregado").first_or_initialize
-      if delivered_stock.quantity.blank?
-        delivered_stock.quantity = attrs[:quantity].to_f
-      else
-        delivered_stock.quantity += attrs[:quantity].to_f
-      end
-      delivered_stock.save
-    end
-  end
-
-  # def destroy
-  # 	update_columns(active: false)
-  # 	run_callbacks :destroy
-  # 	freeze
-  # end
-
-  def rollback_stock_from_delivered_to_reserved attrs={}
-  	#Se buscan los depositos con stock entregado y reservado
-		delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
-		reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
-
-		#Se resta la cantidad de productos al deposito Entregado, y se suman al depósito Reservado
-		delivered_stock.quantity = delivered_stock.quantity.to_f - attrs[:quantity].to_f
-		reserved_stock.quantity = reserved_stock.quantity.to_f + attrs[:quantity].to_f
-
-		delivered_stock.save
-		reserved_stock.save
-	end
-
-	def rollback_stock_from_delivered_to_available attrs={}
-  	#Se buscan los depositos con stock entregado y reservado
-		delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
-		available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
-
-		#Se resta la cantidad de productos al deposito Entregado, y se suman al depósito Reservado
-		delivered_stock.quantity = delivered_stock.quantity.to_f - attrs[:quantity].to_f
-		available_stock.quantity = available_stock.quantity.to_f + attrs[:quantity].to_f
-
-		delivered_stock.save
-		available_stock.save
-	end
-
 	private
 
 	def self.default_scope
@@ -367,66 +311,42 @@ class Product < ApplicationRecord
 	end
 
   def self.search_by_name name
-		if not name.blank?
-			where("products.name ILIKE ? ", "%#{name}%")
-		else
-			all
-		end
+		return all if name.blank?
+		where("products.name ILIKE ? ", "%#{name}%")
 	end
 
 	def self.search_by_code code
-		if not code.blank?
-			where("products.code ILIKE ? ", "%#{code}%")
-		else
-			all
-		end
+		return all if code.blank?
+		where("products.code ILIKE ? ", "%#{code}%")
 	end
 
 	def self.search_by_category category
-		if not category.blank?
-			joins(:product_category).where("product_categories.id = ? ", category)
-		else
-			all
-		end
+		return all if category.blank?
+		joins(:product_category).where("product_categories.id = ? ", category)
 	end
 
 	def self.search_by_product_category_id category_id
-		unless category_id.blank?
-			where(product_category_id: category_id)
-		else
-			all
-		end
+		return all if category_id.blank?
+		where(product_category_id: category_id)
 	end
 
 	def self.search_by_supplier supplier
-		if not supplier.blank?
-			joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
-		else
-			all
-		end
+		return al if supplier.blank?
+		joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
 	end
 
 	def self.search_by_supplier_id supplier_id
-		unless supplier_id.blank?
-			where(supplier_id: supplier_id)
-		else
-			all
-		end
+		return all if supplier_id.blank?
+		where(supplier_id: supplier_id)
 	end
 
 	def self.search_with_stock stock
-		if stock == "on"
-			joins(:stocks).where("stocks.state = 'Disponible'")
-		else
-			all
-		end
+		return all unless stock == "on"
+		joins(:stocks).where("stocks.state = 'Disponible'")
 	end
 
 	def self.search_by_depot depot_id
-		if !depot_id.blank?
-			joins(stocks: :depot).where("depots.id = ?", depot_id)
-		else
-			all
-		end
+		return all if depot_id.blank?
+		joins(stocks: :depot).where("depots.id = ?", depot_id)
 	end
 end

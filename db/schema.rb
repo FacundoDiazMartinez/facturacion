@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_19_150605) do
+ActiveRecord::Schema.define(version: 2020_03_26_154936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -435,6 +435,7 @@ ActiveRecord::Schema.define(version: 2020_03_19_150605) do
     t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
     t.bigint "sales_file_id"
+    t.text "observation"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
     t.index ["company_id"], name: "index_delivery_notes_on_company_id"
     t.index ["invoice_id"], name: "index_delivery_notes_on_invoice_id"
@@ -537,6 +538,7 @@ ActiveRecord::Schema.define(version: 2020_03_19_150605) do
     t.decimal "base_imponible", precision: 8, scale: 2, default: "0.0"
     t.decimal "total_tributos", precision: 8, scale: 2, default: "0.0"
     t.boolean "on_account", default: false, null: false
+    t.boolean "delivered", default: false, null: false
     t.index ["budget_id"], name: "index_invoices_on_budget_id"
     t.index ["client_id"], name: "index_invoices_on_client_id"
     t.index ["company_id"], name: "index_invoices_on_company_id"

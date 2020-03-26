@@ -1,7 +1,7 @@
 <div class="p-4">
 	<div class="row">
 		<div class="col">
-			<h1 class="h2"><%= icon('fas', 'hand-holding-usd') %> Editar Remito Nº <%= @delivery_note.number.to_s %></h1>
+			<h1 class="h2"> Remito Nº <%= @delivery_note.number.to_s %></h1>
 		</div>
 		<div class="col text-right">
 			<%= link_to "#{icon('fas', 'file-pdf')} Ver PDF".html_safe, delivery_note_path(@delivery_note.id, format: :pdf), target: '_blank', class: 'btn btn-info' %>

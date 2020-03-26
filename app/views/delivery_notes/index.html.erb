@@ -1,51 +1,43 @@
 <div class="p-4">
-  <%= title_helper 'Remitos de Venta' %>
-
-  <% if can? :create, DeliveryNote %>
-    <%= button_new_helper new_delivery_note_path %>
-  <% end %>
+  <%= title_helper 'Remitos de Salida' %>
+  <%= button_new_helper new_delivery_note_path if can? :create, DeliveryNote %>
 
   <div class="page-section">
     <div class="card">
       <div class="card-header">
         <%= form_tag delivery_notes_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR PROVEEDOR -->
+
           <%= label_tag :invoice_number, "Nº Factura", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
+          <div class="input-group mb-2 col-3">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'plane') %></div>
             </div>
             <%= text_field_tag :invoice_number, params[:invoice_number], class: 'form-control', placeholder: 'Buscar por factura', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR PROVEEDOR -->
 
-          <!-- BUSCAR POR USUARIO -->
           <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
+          <div class="input-group mb-2 col-4">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'user') %></div>
             </div>
-            <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+            <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Buscar por responsable', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR USUARIO -->
 
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
           <%= label_tag :state, "Estado", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
+          <div class="input-group mb-2 col-3">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('far', 'check-square') %></div>
             </div>
-            <%= select_tag :state, options_for_select(DeliveryNote::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+            <%= select_tag :state, options_for_select(DeliveryNote::STATES, params[:state]), {prompt: 'Todos los estados', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
-          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
-          <div class="input-group mb-2 col">
-            <div class="input-group-prepend">
-              <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
-            </div>
+
+          <div class="input-group mb-2 col-2">
+            <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button w-100' %>
           </div>
       <% end %>
       </div>
-      <div class="card-body" id="delivery_notes_table">
+
+      <div class="card-body" id="delivery_notes">
         <%= render 'delivery_notes_table' %>
       </div>
     </div>

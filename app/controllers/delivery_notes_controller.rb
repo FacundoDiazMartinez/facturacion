@@ -1,21 +1,16 @@
 class DeliveryNotesController < ApplicationController
-  before_action :set_delivery_note, only: [:show, :edit, :update, :destroy, :cancel]
+  before_action :set_delivery_note, only: [:show, :edit, :update, :destroy, :cancel, :confirm]
 
-  # GET /delivery_notes
-  # GET /delivery_notes.json
   def index
-    @delivery_notes = current_user.company.delivery_notes.joins(:invoice, :user).without_system.search_by_invoice(params[:invoice_number]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("delivery_notes.number DESC").paginate(page: params[:page])
+    @delivery_notes = current_company.delivery_notes.joins(:invoice, :user).without_system.search_by_invoice(params[:invoice_number]).search_by_user(params[:user_name]).search_by_state(params[:state]).order("delivery_notes.number DESC").paginate(page: params[:page], per_page: 15)
   end
 
-  # GET /delivery_notes/1
-  # GET /delivery_notes/1.json
   def show
     @group_details = @delivery_note.delivery_note_details.includes(:product).in_groups_of(20, fill_with= nil)
-
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@delivery_note.id}",
+        render pdf: "REMITO#{@delivery_note.number}",
         layout: 'pdf.html',
         template: 'delivery_notes/show',
         #zoom: 3.1,
@@ -26,75 +21,71 @@ class DeliveryNotesController < ApplicationController
     end
   end
 
-  # GET /delivery_notes/new
   def new
-    @delivery_note = current_user.company.delivery_notes.new(invoice_id: params[:associated_invoice])
-    @delivery_note.set_number
-    @client = current_user.company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
+    @delivery_note = current_company.delivery_notes.new(invoice_id: params[:associated_invoice])
+    @client        = current_company.clients.where(document_type: "99", document_number: "0", name: "Consumidor Final", iva_cond:  "Consumidor Final").first_or_create
   end
 
-  # GET /delivery_notes/1/edit
   def edit
     @client = @delivery_note.client
+    set_available_product_quantity
   end
 
-  # POST /delivery_notes
-  # POST /delivery_notes.json
   def create
-    @delivery_note = current_user.company.delivery_notes.new(delivery_note_params)
+    @delivery_note = current_company.delivery_notes.new(delivery_note_params)
     @delivery_note.user_id = current_user.id
     @delivery_note.generated_by = current_user.name
     @client = @delivery_note.client
-    respond_to do |format|
-      if @delivery_note.save
-        format.html { redirect_to edit_delivery_note_path(@delivery_note.id), notice: 'El remito fué creado correctamente.' }
-        format.json { render :show, status: :created, location: @delivery_note }
-      else
-        format.html { render :new }
-        format.json { render json: @delivery_note.errors, status: :unprocessable_entity }
-      end
+    if @delivery_note.save
+      redirect_to edit_delivery_note_path(@delivery_note), notice: 'Remito registrado correctamente.'
+    else
+      render :new
     end
   end
 
-  # PATCH/PUT /delivery_notes/1
-  # PATCH/PUT /delivery_notes/1.json
   def update
-    @delivery_note.user_id = current_user.id
     @client = @delivery_note.client
-    respond_to do |format|
-      if @delivery_note.update(delivery_note_params)
-        format.html { redirect_to edit_delivery_note_path(@delivery_note.id), notice: 'El remito fué actualizado correctamente.' }
-        format.json { render :show, status: :ok, location: @delivery_note }
+    if @delivery_note.editable? && @delivery_note.update(delivery_note_params)
+      if params[:confirm] && params[:confirm] == "true"
+        @delivery_note = DeliveryNoteManager::Confirmator.call(@delivery_note)
+        if !@delivery_note.errors.any?
+          redirect_to edit_delivery_note_path(@delivery_note), notice: 'El remito fue confirmado y el inventario actualizado.'
+        else
+          set_available_product_quantity
+          render :edit
+        end
       else
-        format.html { render :edit }
-        format.json { render json: @delivery_note.errors, status: :unprocessable_entity }
+        redirect_to edit_delivery_note_path(@delivery_note), notice: 'El remito actualizado correctamente.'
       end
+    else
+      set_available_product_quantity
+      render :edit
     end
   end
 
-  # DELETE /delivery_notes/1
-  # DELETE /delivery_notes/1.json
   def destroy
     @delivery_note.destroy
-    respond_to do |format|
-      format.html { redirect_to delivery_notes_url, notice: 'El remito fue eliminado correctamente.' }
-      format.json { head :no_content }
-    end
+    redirect_to delivery_notes_url, notice: 'El remito fue eliminado correctamente.'
   end
 
   def cancel
-    @delivery_note.user_id = current_user.id
-    respond_to do |format|
-      if @delivery_note.update(state: "Anulado")
-        format.html { redirect_to delivery_notes_path, notice: 'El remito se actualizó correctamente.' }
+    @client = @delivery_note.client
+    if @delivery_note.finalizado?
+      @delivery_note.user = current_user
+      @delivery_note = DeliveryNoteManager::Cancelator.call(@delivery_note)
+      if @delivery_note.errors.empty?
+        redirect_to edit_delivery_note_path(@delivery_note), notice: 'El remito fue anulado.'
       else
-        format.html { render :edit }
+        set_available_product_quantity
+        render :edit
       end
+    else
+      redirect_to edit_delivery_note_path(@delivery_note), notice: "El remito no puede ser anulado. Estado actual: [#{@delivery_note.state}]."
     end
   end
 
   def search_product
-    @products = current_user.company.products.search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
+    @products = current_company.products.search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).paginate(page: params[:page], per_page: 10)
     render '/delivery_notes/details/search_product'
   end
 
@@ -104,50 +95,54 @@ class DeliveryNotesController < ApplicationController
     else
       new
     end
-    @associated = true
-    @associated_invoice = current_user.company.invoices.where(id: params[:associated_invoice_id] || @delivery_note.invoice_id).first
-    @client = @associated_invoice.client
-    @delivery_note.client_id = @associated_invoice.client_id
-    #@delivery_note.delivery_note_details.each{ |dnd| dnd.mark_for_destruction  }
-    @associated_invoice.invoice_details.joins(:product).where("products.tipo = 'Producto'").each do |detail|
-      @delivery_note.delivery_note_details.build(
-        product_id: detail.product_id,
-        depot_id: detail.depot_id,
-        quantity: get_product_quantity_left(detail.product_id,@associated_invoice, detail.quantity.to_f),
-        invoice_detail_id: detail.id
-      )
-    end
+    @associated_invoice     = current_company.invoices.where(id: params[:associated_invoice_id] || @delivery_note.invoice_id).first
+    @client                 = @associated_invoice.client
+    @delivery_note.client   = @associated_invoice.client
+
+    build_delivery_note_details(@delivery_note, @associated_invoice)
   end
 
+  # mover a invoices_controller
   def autocomplete_invoice
     term = params[:term]
-    invoices = current_user.company.invoices.where("comp_number ILIKE ? AND state = 'Confirmado'", "%#{term}%").order(:comp_number).all
-    render :json => invoices.map { |invoice| { :id => invoice.id, :label => invoice.full_number, :value => invoice.full_number, client: invoice.client.attributes } }
+    invoices = current_company.invoices.facturas_y_notas_debito.confirmados.pendientes_de_entrega.search_by_number(term).order(:comp_number)
+    render :json => invoices.map { |invoice| { :id => invoice.id, :label => "#{invoice.name_with_comp} - #{invoice.client.name}", :value => invoice.name_with_comp, client: invoice.client.attributes } }
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_delivery_note
-      @delivery_note = current_user.company.delivery_notes.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def delivery_note_params
-      params.require(:delivery_note).permit(:invoice_id, :date, :number, :client_id, :active, :state, delivery_note_details_attributes: [:id, :invoice_detail_id, :product_id, :quantity, :depot_id, :observation, :cumpliment, :_destroy])
-    end
+  def set_delivery_note
+    @delivery_note = current_company.delivery_notes.find(params[:id])
+  end
 
-    def get_product_quantity_left product_id, invoice, invoice_detail_quantity
-      delivered = 0
-      invoice.delivery_notes.where(state: "Finalizado").each do |dn|
-        dn.delivery_note_details.where(product_id: product_id).each do |dn_detail|
-          delivered += dn_detail.quantity
-        end
-      end
-      prod_quantity = invoice_detail_quantity - delivered
-      if prod_quantity < 0
-        prod_quantity = 0
-      end
-      return prod_quantity.to_f
-    end
+  def delivery_note_params
+    params.require(:delivery_note).permit(:invoice_id, :date, :number, :client_id, :active, :state, delivery_note_details_attributes: [:id, :invoice_detail_id, :product_id, :quantity, :depot_id, :observation, :cumpliment, :_destroy])
+  end
 
+  def build_delivery_note_details(delivery_note, invoice)
+    invoice.invoice_details.joins(:product).where("products.tipo = 'Producto'").each do |detail|
+      dn = delivery_note.delivery_note_details.build(
+        product_id: detail.product_id,
+        depot_id: detail.depot_id,
+        invoice_detail_id: detail.id,
+        quantity: undelivered_product_quantity(detail)
+      )
+      dn.available_product_quantity = available_product_quantity(detail)
+    end
+  end
+
+  def undelivered_product_quantity(detail)
+    DeliveryNoteDetail.pendiente_de_entrega(detail)
+  end
+
+  def available_product_quantity(detail)
+    available_quantity = Stock.where(product_id: detail.product_id, depot_id: detail.depot_id).pluck(:quantity).inject(0, :+)
+    return available_quantity
+  end
+
+  def set_available_product_quantity
+    @delivery_note.delivery_note_details.each do |detail|
+      detail.available_product_quantity = available_product_quantity(detail)
+    end
+  end
 end

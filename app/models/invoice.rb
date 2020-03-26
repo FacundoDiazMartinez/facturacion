@@ -6,12 +6,6 @@ class Invoice < ApplicationRecord
   belongs_to :invoice, foreign_key: :associated_invoice, optional: true
   belongs_to :budget, optional: true
 
-  default_scope { where(active: true) }
-  scope :only_invoices, 				-> { where(cbte_tipo: COD_INVOICE) }
-  scope :unassociated_invoices, -> { where(associated_invoice: nil) }
-  scope :debit_notes, 					-> { where(cbte_tipo: COD_ND).where(state: "Confirmado") }
-  scope :credit_notes, 					-> { where(cbte_tipo: COD_NC).where(state: "Confirmado") }
-
   has_many :notes, 															foreign_key: :associated_invoice, class_name: 'Invoice'
   has_many :debit_notes, 	-> { debit_notes }, 	foreign_key: :associated_invoice, class_name: 'Invoice'
   has_many :credit_notes, -> { credit_notes }, 	foreign_key: :associated_invoice, class_name: 'Invoice'
@@ -44,52 +38,43 @@ class Invoice < ApplicationRecord
 																		numericality: { greater_than_or_equal_to: 0.0, message: "El total debe ser mayor o igual a 0." }
 	validates_presence_of 		:total_pay, message: "El total pagado no debe estar en blanco."
 	validates_presence_of 		:sale_point_id, message: "El punto de venta no debe estar en blanco."
+	validates_presence_of			:invoice_details, message: "El comprobante debe tener al menos 1 (un) concepto."
 	validates_inclusion_of 		:state, in: STATES, message: "Estado inválido."
 	validates_uniqueness_of 	:associated_invoice, scope: [:company_id, :active, :cbte_tipo, :state], allow_blank: true, if: Proc.new{ |i| i.state == "Pendiente" }
-	validate 									:verifica_confirmado, :cliente_habilitado, :al_menos_un_detalle, :tipo_de_comprobante_habilitado, :fecha_de_servicio, :total_pagado
+	validate 									:verifica_confirmado, :cliente_habilitado, :tipo_de_comprobante_habilitado, :fecha_de_servicio
 
 	after_save 		:touch_commissioners, :touch_payments, :impact_stock_if_cn, :check_cancelled_state_of_invoice
   after_save 		:set_invoice_activity, if: Proc.new{ |i| (i.state == "Confirmado" || i.state == "Anulado") && (i.changed?) }
 	after_touch 	:update_total_pay
 
-	#FILTROS DE BUSQUEDA
+	default_scope { where(active: true) }
+	scope :confirmados, 						-> { where(state: ["Confirmado", "Anulado parcialmente"]) }
+	scope :only_invoices, 					-> { where(cbte_tipo: COD_INVOICE) }
+	scope :facturas_y_notas_debito, -> { where(cbte_tipo: COD_INVOICE + COD_ND) }
+	scope :unassociated_invoices, 	-> { where(associated_invoice: nil) }
+	scope :debit_notes, 						-> { where(cbte_tipo: COD_ND).where(state: "Confirmado") }
+	scope :credit_notes, 						-> { where(cbte_tipo: COD_NC).where(state: "Confirmado") }
+	scope :pendientes_de_entrega,		-> { where(delivered: false) }
+
 	def self.search_by_client name
-		if not name.blank?
-			joins(:client).where("clients.name ILIKE ?", "%#{name}%")
-		else
-			all
-		end
+		return all if name.blank?
+		joins(:client).where("clients.name ILIKE ?", "%#{name}%")
 	end
 
 	def self.search_by_tipo tipo
-		if not tipo.blank?
-			where(cbte_tipo: tipo)
-		else
-			all
-		end
+		return all if tipo.blank?
+		where(cbte_tipo: tipo)
 	end
 
 	def self.search_by_state state
-		if not state.blank?
-			where(state: state)
-		else
-			all
-		end
+		return all if state.blank?
+		where(state: state)
 	end
 
   def self.search_by_number comp_number
-    if not comp_number.blank?
-      where("comp_number ILIKE ?", "%#{comp_number}%")
-    else
-      all
-    end
+    return all if comp_number.blank?
+    where("comp_number ILIKE ?", "%#{comp_number}%")
   end
-	#FILTROS DE BUSQUEDA
-
-  #VALIDACIONES
-	def total_pagado
-	  # errors.add("Pagos", "El monto pagado no puede ser mayor al total de la factura") if self.total_pay > self.total
-	end
 
 	def verifica_confirmado
 		errors.add("Factura confirmada", "No puede modificar una factura confirmada.") if state_was == "Confirmado" && changed?
@@ -98,10 +83,6 @@ class Invoice < ApplicationRecord
 	def cliente_habilitado
 	  errors.add("Cliente", "El cliente seleccionado está inhabilitado para operaciones.") unless client && client.enabled?
 	end
-
-  def al_menos_un_detalle
-		errors.add(:base, "El comprobante debe tener al menos 1 (un) concepto") unless self.invoice_details.reject(&:marked_for_destruction?).count > 0
-  end
 
   def fecha_de_servicio
     unless concepto == "Productos"
@@ -151,6 +132,14 @@ class Invoice < ApplicationRecord
 
 		def set_expired!
 		  update_columns(expired: true)
+		end
+
+		def entregado!
+		  update_columns(delivered: true)
+		end
+
+		def no_entregado!
+		  update_columns(delivered: false)
 		end
 
     def authorized_invoice?
@@ -242,7 +231,7 @@ class Invoice < ApplicationRecord
     end
 
     def stock_between_invoice_and_credit_notes
-			if self.is_credit_note? || self.state == "Pendiente"
+			if self.is_credit_note? || self.editable?
 	      unless self.associated_invoice.nil?
 					#anulada_totalmente = true
 	        invoice = self.invoice
@@ -257,24 +246,15 @@ class Invoice < ApplicationRecord
 	            end
 	          end
 
-	          self.invoice_details.each do |cn_detail|
-	            if cn_detail.product_id == invoice_product.id
-	              cn_detail_quantity += cn_detail.quantity
-	            end
-	          end
-						if cn_detail_quantity > invoice_quantity
-							errors.add(:quantity, "La cantidad ingresada de uno o más de los productos supera a la cantidad de la factura inicial asociada.")
-						elsif cn_detail_quantity < invoice_quantity
-							#ACTUALIZA LA FACTURA A ANULADA parcialmente
-							#anulada_totalmente = false
-						end
+	          self.invoice_details.each { |cn_detail| cn_detail_quantity += cn_detail.quantity if cn_detail.product_id == invoice_product.id }
+						errors.add(:quantity, "La cantidad ingresada de uno o más de los productos supera a la cantidad de la factura inicial asociada.") if cn_detail_quantity > invoice_quantity
 	        end
 	      end
 			end
     end
 
     def delete_barcode path
-       File.delete(path) if File.exist?(path)
+      File.delete(path) if File.exist?(path)
     end
     handle_asynchronously :delete_barcode, :run_at => Proc.new { 5.seconds.from_now }
 
@@ -294,24 +274,6 @@ class Invoice < ApplicationRecord
       update_column(:total_pay, sum_payments)
     end
 
-    def check_delivery_note_quantity_left?
-      a_entregar = invoice_details
-				.joins(:product)
-				.where("products.tipo = 'Producto'")
-				.pluck(:quantity)
-				.inject(0) {|suma, quantity| suma + quantity}
-      delivered = 0
-      self.delivery_notes.where(state: "Finalizado").each do |delivery_note|
-        delivered += delivery_note
-					.delivery_note_details
-					.pluck(:quantity)
-					.inject(0) { |suma, quantity| suma + quantity }
-      end
-
-      return true if a_entregar > delivered
-      return false
-    end
-
     def touch_payments
       income_payments.each{ |p| p.run_callbacks(:save) }
     end
@@ -329,143 +291,80 @@ class Invoice < ApplicationRecord
     end
   #PROCESOS
 
-	#ATRIBUTOS
-    def client
-      Client.unscoped{ super }
-    end
-
-		def client_name
-			client.nil? ? "Sin nombre" : client.name
-		end
-
-		def client_document
-			client.nil? ? 0 : client.document_number
-		end
-
-		def client_iva_cond
-			client.nil? ? "Consumidor Final" : client.iva_cond
-		end
-
-    def confirmed_notes
-      notes.where(state: "Confirmado")
-    end
-
-    def sum_payments
-      self.income_payments.sum(:total)
-    end
-
-    def cbte_fch
-      fecha = read_attribute("cbte_fch")
-      fecha.blank? ? nil : I18n.l(fecha.to_date)
-    end
-
-    def invoice_comp_number
-      invoice.nil? ? "" : invoice.comp_number
-    end
-
-    def nombre_comprobante
-      case cbte_tipo
-      when "01", "06", "11"
-        "Factura"
-      when "02", "07", "12"
-        "Nota de Débito"
-      when "03", "08", "13"
-        "Nota de Crédito"
-      end
-    end
-
-    def full_number
-      if !editable?
-        "#{sale_point.name} - #{comp_number}"
-      else
-        "Falta confirmar"
-      end
-    end
-
-    def full_number_with_debt
-      if !editable?
-        "#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_left} "
-      else
-        "Falta confirmar"
-      end
-    end
-
-    def full_number_with_nc_and_nd
-      if !editable?
-        "#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_left_including_debit_notes} "
-      else
-        "Falta confirmar"
-      end
-    end
-
-    def full_name
-      "Pto. venta: #{sale_point.name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
-    end
-
-    def name
-      comp_number.nil? ? "Sin confirmar" : "#{sale_point.name} - #{comp_number}"
-    end
-
-    def name_with_comp
-      if is_credit_note?
-        "Nota de crédito: #{full_number}"
-      elsif is_debit_note?
-        "Nota de débito: #{full_number}"
-      else
-        "Factura: #{full_number}"
-      end
-    end
-
-    def type_of_model
-      "invoice"
-    end
-	#ATRIBUTOS
-
-  #AFIP
-    def code_hash
-      {
-        cuit: 			self.company.cuit,
-        cbte_tipo: 	self.cbte_tipo.to_s.rjust(3,padstr= '0'),
-        pto_venta: 	self.sale_point.name,
-        cae: 				self.cae,
-        vto_cae: 		self.cae_due_date
-      }
-    end
-
-    def code_numbers(code_hash)
-      require "check_digit.rb"
-      code 				= code_hash.values.join("")
-      last_digit 	= CheckDigit.new(code).calculate
-      result 			= "#{code}#{last_digit}"
-      result.size.odd? ? "0" + result : result
-    end
-  #AFIP
-
-  def fill_comp_number
-    self.comp_number.to_s.rjust(8,padstr= '0') unless self.comp_number.nil?
+  def client
+    Client.unscoped{ super }
   end
 
-  def all_payments_string
-		if self.receipts.any?
-			if self.on_account?
-				array = []
-				self.receipts.each do |receipt|
-					receipt.account_movement.account_movement_payments.user_payments.each do |payment|
-						array << payment.payment_name
-					end
-				end
-				return array.uniq.compact.join(', ')
-			else
-				array = []
-				AccountMovement.unscoped do
-					self.income_payments.each do |payment|
-						array << payment.payment_name
-					end
-					return array.uniq.compact.join(', ')
-				end
-			end
-		else
-			return "Cta. Cte."
-		end
+	def client_name
+		client.nil? ? "Sin nombre" : client.name
+	end
+
+	def client_document
+		client.nil? ? 0 : client.document_number
+	end
+
+	def client_iva_cond
+		client.nil? ? "Consumidor Final" : client.iva_cond
+	end
+
+  def confirmed_notes
+    notes.where(state: "Confirmado")
+  end
+
+  def sum_payments
+    self.income_payments.sum(:total)
+  end
+
+  def cbte_fch
+    fecha = read_attribute("cbte_fch")
+    fecha.blank? ? nil : I18n.l(fecha.to_date)
+  end
+
+  def invoice_comp_number
+    invoice.nil? ? "" : invoice.comp_number
+  end
+
+  def nombre_comprobante
+    case cbte_tipo
+    when *COD_INVOICE
+      "Factura"
+    when *COD_ND
+      "Nota de Débito"
+    when *COD_NC
+      "Nota de Crédito"
+    end
+  end
+
+  def full_number
+		return "Falta confirmar" if editable?
+		"#{sale_point.name} - #{comp_number}"
+  end
+
+  def full_number_with_debt
+		return "Falta confirmar" if editable?
+		"#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_left} "
+  end
+
+  def full_number_with_nc_and_nd
+		return "Falta confirmar" if editable?
+		"#{nombre_comprobante.split().map{|w| w.first unless w.first != w.first.upcase}.join()}: #{sale_point.name} - #{comp_number} - Total: $#{total} - Faltante: $#{real_total_left_including_debit_notes} "
+  end
+
+  def full_name
+    "Pto. venta: #{sale_point.name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
+  end
+
+  def name
+    full_number
+  end
+
+  def name_with_comp
+    return "Nota de crédito: #{full_number}" if is_credit_note?
+    return "Nota de débito: #{full_number}" if is_debit_note?
+    "Factura: #{full_number}"
+  end
+
+  def type_of_model
+    "invoice"
   end
 end

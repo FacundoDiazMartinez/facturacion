@@ -20,7 +20,6 @@
 						<%= link_to "<span class='nav-span'>Facturación</span>".html_safe, invoices_path, class: 'dropdown-item', title: 'Ventas' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Recibos</span>".html_safe, receipts_path, class: 'dropdown-item', title: 'Recibos' if can? :read, Receipt  %>
 						<%= link_to "<span class='nav-span'>Remitos</span>".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos" %>
-						<%# link_to "<span class='nav-span'>Expedientes</span>".html_safe, sales_files_path, class: 'dropdown-item', title: 'Expediente' if can? :read, Invoice  %>
 						<%= link_to "<span class='nav-span'>Clientes</span>".html_safe, clients_path, class: 'dropdown-item', title: 'Clientes' if can? :read, Client %>
 						<%= link_to "<span class='nav-span'>Estadísticas</span>".html_safe, sales_stadistics_path, class: 'dropdown-item', title: 'Estadísticas' if can? :read, Stadistic %>
 				</div>
@@ -29,7 +28,7 @@
 	  	<li class="nav-item dropdown">
   			<%= link_to "<span class='nav-span'>Compras</span> #{icon('fas', 'shopping-cart')}".html_safe, "#", role: 'button', data:{toggle: 'dropdown'}, aria:{haspopup: true, expanded: false}, class: 'nav-link dropdown-toggle' if can? :menu, PurchaseOrder %>
  				<div class="dropdown-menu">
- 					<%= link_to "<span class='nav-span'>Ordenes de compra</span>".html_safe, purchase_orders_path, class: 'dropdown-item', title: "Ordenes de compra" if can? :read, PurchaseOrder %>
+ 					<%= link_to "<span class='nav-span'>Ordenes</span>".html_safe, purchase_orders_path, class: 'dropdown-item', title: "Ordenes de compra" if can? :read, PurchaseOrder %>
  					<%= link_to "<span class='nav-span'>Remitos</span>".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos" if can? :read, ArrivalNote %>
 					<%= link_to "<span class='nav-span'>Comprobantes</span>".html_safe, purchase_invoices_path, class: 'dropdown-item', title: "Compras" if can? :read, PurchaseInvoice %>
 					<%= link_to "<span class='nav-span'>Proveedores</span>".html_safe, suppliers_path, class: 'dropdown-item', title: "Proveedores" if can? :read, Supplier %>

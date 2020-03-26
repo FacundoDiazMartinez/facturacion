@@ -2,4 +2,4 @@
 	@builder = f
 end %>
 
-$("#idetails").html("<%= j render template: '/delivery_notes/details/index.html.erb', locals:{form: @builder} %>")
+$("#details_form").html("<%= j render template: '/delivery_notes/details/index.html.erb', locals:{ form: @builder } %>")

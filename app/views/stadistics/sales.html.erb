@@ -1,24 +1,22 @@
-<%= form_tag sales_stadistics_path, remote: true, id: 'search_form' do %>
-  <div class="col-sm-5 col-xs-5">
-    <div class="form-group">
-        <div class="row">
-        	<hr>
-        	<h4 style="padding-top: 10px; padding-right: 10px;">Selecccione un mes para filtrar: </h4>
-        	<span style="padding-top: 5px;">        	
-        	<%= select_tag :month,options_for_select([["Enero", 1], ["Febrero", 2], ["Marzo", 3], ["Abril", 4], ["Mayo", 5], ["Junio", 6], ["Julio", 7], ["Agosto", 8], ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]], Date.today.month),
-      		class: 'form-control',onchange: 'remoteSubmit("#search_form");'%>
-      		</span>
-      	</div>
+<div class="p-4">
+
+  <div class="mb-5">
+    <h3>Indicadores anuales</h3>
+    <%= render '/stadistics/sales/sales_per_year' %>
+  </div>
+
+  <div class="mb-5">
+    <h3>Indicadores mensuales</h3>
+
+    <%= form_tag sales_stadistics_path, remote: true, id: 'search_form', class: "mb-4" do %>
+    <span>
+      <%= select_tag :month, options_for_select([["Enero", 1], ["Febrero", 2], ["Marzo", 3], ["Abril", 4], ["Mayo", 5], ["Junio", 6], ["Julio", 7], ["Agosto", 8], ["Septiembre", 9], ["Octubre", 10], ["Noviembre", 11], ["Diciembre", 12]], Date.today.month), prompt: "Busca por mes...",
+      class: 'form-control', onchange: 'remoteSubmit("#search_form");'%>
+    </span>
+    <% end %>
+
+    <div id="graphics_sales">
+      <%= render 'graphics' %>
     </div>
   </div>
-  
-<% end %>
-<div id="graphics_sales">
-  <%= render '/stadistics/sales/graphics' %>
-</div>
-
-<div class="row">
-	<div class="form-group col-md-12 col-xs-12">
-		<%= render template: '/stadistics/sales/sales_per_year.html.erb' %>
-	</div>
 </div>

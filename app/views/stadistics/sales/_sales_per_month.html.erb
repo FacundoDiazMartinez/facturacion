@@ -1,0 +1,6 @@
+<p class="h5 text-muted">Cantidad de ventas <%= I18n.t("date.month_names")[params[:month].to_i] %></p>
+<div class="card">
+	<div class="card-body">
+		<%= area_chart sales_per_month_invoices_path(month: params[:month]), messages: {empty: "Sin datos"} %>
+	</div>
+</div>

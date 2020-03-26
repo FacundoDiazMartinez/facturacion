@@ -8,8 +8,6 @@ module InvoiceManager
     end
 
     def call
-      pp @invoice.invoice_details
-
       calcula_base_imponible()
       calcula_descuentos()
       calcula_tributos()

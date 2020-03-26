@@ -39,9 +39,7 @@
           <td rowspan="5" style="width: 1px;"></td>
           <td>
             <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
-              <% if !@invoice.fill_comp_number.nil? %>
-               - Comp.Nro: <%= @invoice.fill_comp_number %>
-              <% end %>
+               - Comp.Nro: <%= invoice_comp_number @invoice %>
             </b>
           </td>
         </tr>
@@ -84,7 +82,7 @@
 
     <tr>
       <td>
-        <b>Medios de pago: </b>&nbsp <%= @invoice.all_payments_string %>
+        <b>Medios de pago: </b>&nbsp <%= invoice_payments @invoice %>
       </td>
       <td>
         <% unless @invoice.associated_invoice.nil? ##|| !@invoice.is_invoice? %>

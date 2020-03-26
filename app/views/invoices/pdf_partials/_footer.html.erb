@@ -20,14 +20,14 @@
           <b>
             <center>
               <% if @invoice.authorized_invoice? %>
-                <% barcode    = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
+                <% barcode    = Barby::Code25Interleaved.new(invoice_bar_code(@invoice)) %>
                 <% outputter  = Barby::PngOutputter.new(barcode) %>
                 <% file       = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 30) } %>
                 <%= image_tag(@barcode_path, class: "img-responsive") %>
               <% else %>
                 -- Comprobante NO Autorizado --
                 <% unless @invoice.cae.blank? %>
-                  <% barcode  = Barby::Code25Interleaved.new(@invoice.code_numbers(@invoice.code_hash)) %>
+                  <% barcode  = Barby::Code25Interleaved.new(invoice_bar_code(@invoice)) %>
                   <% bar_png  = barcode.to_png(xdim:1, height: 30) %>
                   <% image    = Base64.encode64(bar_png.to_s).gsub(/\s+/, "") %>
                   <%= image_tag "data:image/png;base64,#{Rack::Utils.escape(image)}" %>

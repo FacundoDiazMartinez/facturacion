@@ -6,7 +6,6 @@
         <th scope="col">Documento</th>
         <th scope="col">Vencimiento</th>
         <th scope="col">Saldo</th>
-        <th scope="col">Cta. corriente</th>
         <th scope="col"></th>
       </tr>
     </thead>
@@ -14,20 +13,14 @@
     <tbody>
       <% @clients.each do |client| %>
       <tr>
-        <td><%= client.name %></td>
+        <td><%= link_to client.name, client %></td>
         <td><%= client.full_document %></td>
         <td><%= boolean_to_icon client.check_if_expired %></td>
         <td>$ <%= client.saldo %></td>
-        <td>
-          <% if client.valid_for_account %>
-            <%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <% end -%>
-        </td>
-        <td class="text-right">
-          <%= link_to icon('fas', 'eye'), client, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, Client %>
-
+        <td class="td-action-buttons">
+          <%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if client.valid_for_account %>
           <% if can? :manage, Client %>
-            <%= link_to icon('fas', 'edit'), edit_client_path(client), class: 'btn btn-sm btn-icon btn-outline-secondary', data: { toggle: 'modal', target: '#clientModal'}, remote: true %>
+            <%= link_to icon('fas', 'edit'), edit_client_path(client), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
             <%= link_to icon('fas', 'trash'), client, method: :delete, data: { confirm: '¿Está seguro de eliminar este cliente?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <% end %>
         </td>

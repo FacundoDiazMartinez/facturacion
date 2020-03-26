@@ -1,0 +1,6 @@
+<h5 class="text-muted">Comprobantes por estado de <%= I18n.t("date.month_names")[params[:month].to_i] %></h5>
+<div class="card">
+	<div class="card-body">
+		<%= pie_chart states_per_month_invoices_path(month: params[:month]), colors: ["#000000", "#17a2b8","#28a745","#7E817C"], messages: {empty: "Sin datos"} %>
+	</div>
+</div>

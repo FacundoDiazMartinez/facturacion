@@ -78,20 +78,15 @@ class InvoicesController < ApplicationController
   end
 
   def update
-    ActiveRecord::Base.transaction do
-      @client        = @invoice.client
-      @invoice.user  = current_user
-      @invoice.update!(invoice_params)
-      @invoice      = InvoiceManager::TotalsSetter.call(@invoice)
+    @client        = @invoice.client
+    @invoice.user  = current_user
+    @invoice.update!(invoice_params)
+    @invoice      = InvoiceManager::TotalsSetter.call(@invoice)
 
-      if @invoice.custom_save(params[:send_to_afip])
-        redirect_to edit_invoice_path(@invoice), notice: 'Comprobante actualizado con éxito.'
-      else
-        @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
-        render :edit
-      end
-    rescue StandardError => error
-      pp error.inspect
+    if @invoice.custom_save(params[:send_to_afip])
+      redirect_to edit_invoice_path(@invoice), notice: 'Comprobante actualizado con éxito.'
+    else
+      # @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
       render :edit
     end
   end
@@ -233,27 +228,27 @@ class InvoicesController < ApplicationController
 
   #ESTADISTICAS
   def sales_per_month
-    invoices = Invoice.where(state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
+    invoices = current_company.invoices.confirmados.where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
     render json: invoices
   end
 
   def states_per_month
-    invoices = Invoice.where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group(:state).count
+    invoices = current_company.invoices.where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group(:state).count
     render json: invoices
   end
 
   def amount_per_month
-    invoices = Invoice.where(state: "Confirmado").where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").sum(:total)
+    invoices = current_company.invoices.confirmados.where("to_date(cbte_fch, 'dd/mm/YYYY') BETWEEN ? AND ?", @first_date,  @last_date).group_by_day("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").sum(:total)
     render json: invoices
   end
 
   def commissioner_per_month
-    invoices = Invoice.joins(:commissioners, commissioners: :user).where(commissioners: {created_at: @first_date .. @last_date}).group("users.first_name || ' ' || users.last_name").sum(:total_commission)
+    invoices = current_company.invoices.joins(:commissioners, commissioners: :user).where(commissioners: {created_at: @first_date .. @last_date}).group("users.first_name || ' ' || users.last_name").sum(:total_commission)
     render json: invoices
   end
 
   def sales_per_year
-    invoices = Invoice.where(state:"Confirmado", cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_month("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
+    invoices = current_company.invoices.confirmados.where(cbte_fch: Date.today.at_beginning_of_year.to_s .. Date.today.at_end_of_year.to_s).group_by_month("to_date(invoices.cbte_fch, 'dd/mm/YYYY')").count
     render json: invoices
   end
 
