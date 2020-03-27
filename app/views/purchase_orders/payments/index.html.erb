@@ -1,45 +1,41 @@
-<h3 class="d-flex mb-2">
-    <div class="p-2" id="payment_title">
-      	Pagos
+<h5 class="text-muted">Pagos</h5>
+
+<div class="card ">
+  <div class="card-body">
+    <div id="saldo_disponible" class="text-muted ml-4"></div>
+    <div class="table-responsive-sm">
+      <table class="table table-striped purchase_order-table" id="payments" style="width: 100%;">
+        <thead>
+          <tr>
+            <th scope="col">Tipo de pago</th>
+            <th scope="col">Monto ($)</th>
+            <th scope="col">Fecha de pago</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @purchase_order.expense_payments.each do |payment| %>
+          <% if payment.errors.empty? %>
+          <tr>
+            <td><%= payment.payment_name %></td>
+            <td><%= payment.total %></td>
+            <td><%= payment.payment_date %></td>
+            <td>
+              <% unless (payment.errors.any? || payment.id.blank?) || !@purchase_order.editable? %>
+              <%= link_to icon('fas', 'trash'), payment_path(payment.id,purchase_order_id: @purchase_order.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
+              <% end -%>
+            </td>
+          </tr>
+          <% end -%>
+          <% end -%>
+        </tbody>
+      </table>
     </div>
-</h3>
-<div id="saldo_disponible" class="text-muted ml-4"></div>
-<div class="table-responsive-sm">
-	<table class="table table-striped purchase_order-table" id="payments" style="width: 100%;">
-		<thead>
-			<tr>
-				<th scope="col">Tipo de pago</th>
-				<th scope="col">Monto ($)</th>
-				<th scope="col">Fecha de pago</th>
-				<th scope="col"></th>
-			</tr>
-		</thead>
-		<tbody>
-			<% @purchase_order.expense_payments.each do |payment| %>
-				<% if payment.errors.empty? %>
-					<tr>
-						<td><%= payment.payment_name %></td>
-						<td><%= payment.total %></td>
-						<td><%= payment.payment_date %></td>
-						<td>
-							<% unless (payment.errors.any? || payment.id.blank?) || !@purchase_order.editable? %>
-								<%= link_to icon('fas', 'trash'), payment_path(payment.id,purchase_order_id: @purchase_order.id), method: :delete, data:{confirm: "¿Está seguro?"}, class: "btn btn-sm btn-icon btn-outline-secondary" %>
-							<% end -%>
-						</td>
-					</tr>
-				<% end -%>
-			<% end -%>
-		</tbody>
-	</table>
+    <div class="text-center">
+      <%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id: "normal" if @purchase_order.editable? %>
+    </div>
+  </div>
 </div>
-<% if @purchase_order.editable? %>
-	<center>
-		<div class="m-2">
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, data: {toggle: 'modal', target: '#paymentModal'}, class: 'btn btn-primary', type: 'button', id: "normal", style: "display: #{@purchase_order.total_left > 0 ? 'block' : 'none'};" %>
-    	<%= button_tag "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar pago</span>".html_safe, class: 'btn btn-primary', type: 'button', remote: true, id: "with_alert", style: "display: #{@purchase_order.total_left <= 0 ? 'block' : 'none'};" %>
-		</div>
-	</center>
-<% end %>
 
 <div class="modal fade bd-example-modal-lg" id="paymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">

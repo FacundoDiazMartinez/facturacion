@@ -71,8 +71,16 @@ class PurchaseOrder < ApplicationRecord
       state == STATES[0]
     end
 
+    def pendiente?
+      state == "Pendiente"
+    end
+
     def editable?
-      state != "Anulado" && state != "Finalizada"
+      pendiente? || new_record?
+    end
+
+    def confirmado?
+      state == "Finalizada"
     end
 
     def nombre_comprobante
@@ -157,12 +165,6 @@ class PurchaseOrder < ApplicationRecord
     def touch_payments
       expense_payments.map{|p| p.run_callbacks(:save)}
     end
-
-    # def close_arrival_notes
-    #   self.arrival_notes.each do |an|
-    #     an.update_column(:state, "Finalizado") unless an.state == "Anulado"
-    #   end
-    # end
 
     def set_paid_out
       set_total_pay

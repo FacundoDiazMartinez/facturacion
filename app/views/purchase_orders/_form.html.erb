@@ -1,132 +1,101 @@
 <%= nested_form_for @purchase_order do |form| %>
-
-<%= error_explanation @purchase_order %>
-
-  <!-- HEADER -->
-  <p class="text-muted">Datos del comprobante</p>
-    <div class="card ">
-      <div class="card-body">
-        <div class="row">
-          <!-- PRIMERA COLUMNA -->
-          <div class="col-sm">
-            <div class="form-group">
-              <%= form.label :supplier_id, "Proveedor" %>
-              <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier' } %>
-              <%= form.hidden_field :supplier_id, class: 'pu-supplier-id' %>
-            </div>
-            <div id="supplier_form">
-              <%= render '/purchase_orders/supplier_column' %>
-            </div>
-          </div>
-          <!-- PRIMERA COLUMNA -->
-
-          <!-- SEGUNDA COLUMNA -->
-          <div class="col-sm">
-            <div class="form-group">
-              <%= form.label :total %>
-              <%= form.text_field :total, class: 'form-control', readonly: true %>
-            </div>
-
-            <div class="form-group">
-              <%= form.label :total_pay, "Total pagado" %>
-              <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
-            </div>
-
-            <div class="form-group">
-              <%= form.label :state %>
-              <% if @purchase_order.new_record? || @purchase_order.state == "Pendiente" %>
-                <%= form.select :state, @purchase_order.array_for_new, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
-              <% elsif @purchase_order.state == "Aprobado" %>
-                  <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: orange;'}%>
-              <% else %>
-                  <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: green;'}%>
-              <% end %>
-            </div>
-
-          </div>
-          <!-- SEGUNDA COLUMNA -->
+  <%= error_explanation @purchase_order %>
 
 
-          <!-- TERCERA COLUMNA -->
-          <div class="col-sm">
-
-            <div class="form-group">
-              <%= form.label :budget %>
-              <div class="input-group">
-                <div class="custom-file">
-                  <%= form.file_field :budget, class: 'custom-file-input' %>
-                  <%= form.label :budget, "Presupuesto", class: 'custom-file-label' %>
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <%= form.label :created_at %>
-              <%= form.text_field :created_at, class: 'form-control', readonly: true %>
-            </div>
-            <div class="form-group">
-              <%= form.label :shipping, "¿Incluye transporte?" %>
-              <div class="row">
-                <div class="col-2">
-                  <%= form.check_box :shipping, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle' %>
-                </div>
-                <div class="col-10">
-                  <%= form.number_field :shipping_cost, class: 'form-control', placeholder: "Precio del transporte", style: "display: #{@purchase_order.shipping ? 'block' : 'none'};" %>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- TERCERA COLUMNA -->
-        </div>
-        <% if @purchase_order.state != "Finalizada" %>
-          El estado de la OC debe ser "Finalizada" para que los pagos impacten en contabilidad.
-        <% end %>
-
-        <!-- BOTONES DE ACCION -->
-        <center>
-          <% if not @purchase_order.new_record? %>
-            <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-primary' %>
-            <% if not @purchase_order.delivered && @purchase_order.state != "Pendiente" %>
-              <%= button_tag "#{icon('fas', 'envelope')} Enviar a proveedor".html_safe, type: 'button', class: 'btn btn-info', data:{toggle: 'modal', target: '#sendMailModal'} %>
-            <% end -%>
-          <% end %>
-          <% if @purchase_order.state != PurchaseOrder::STATES[1] && !@purchase_order.new_record? && @purchase_order.state != PurchaseOrder::STATES[3]%>
-            <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-danger' %>
-          <% end %>
-          <% if @purchase_order.delivered %>
-            <p class="text-muted">Presupuesto enviado</p>
-          <% end -%>
-        </center>
-        <!-- BOTONES DE ACCION -->
-      </div>
-    </div>
-  <!-- HEADER -->
-
-  <!-- DETALLE -->
+  <p class="text-muted h5">Datos del comprobante</p>
   <div class="card ">
     <div class="card-body">
-      <%= render template: '/purchase_orders/details/index.html.erb', locals:{form: form} %>
-    </div>
-  </div>
-  <!-- DETALLE -->
+      <div class="row">
 
-  <!-- PAGOS -->
-   <div class="card ">
-    <div class="card-body">
-      <%= render template: '/purchase_orders/payments/index.html.erb', locals:{form: form} %>
+        <div class="col-4 form-group">
+          <%= form.label :supplier_id, "Proveedor" %>
+          <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {prompt: "Seleccione..."}, {class: 'form-control select-pu-supplier' } %>
+          <%= form.hidden_field :supplier_id, class: 'pu-supplier-id' %>
+        </div>
+        <div class="col-4 form-group">
+          <%= label_tag :suppplier_phone, "Contacto" %>
+          <%= text_field_tag :suppplier_phone, @purchase_order.supplier_phone, class: 'form-control', readonly: true %>
+        </div>
+        <div class="col-4 form-group">
+          <%= label_tag :supplier_email, "E-mail" %>
+          <%= text_field_tag :supplier_email, @purchase_order.supplier_email, class: 'form-control', readonly: true %>
+        </div>
+
+        <div class="col-4 form-group">
+          <%= form.label :budget %>
+          <div class="input-group">
+            <div class="custom-file">
+              <%= form.file_field :budget, class: 'custom-file-input' %>
+              <%= form.label :budget, "Presupuesto", class: 'custom-file-label' %>
+            </div>
+          </div>
+        </div>
+        <div class="col-4 form-group">
+          <%= label_tag :date %>
+          <%= label_tag :date, form.object.created_at || Date.today, class: 'form-control', readonly: true %>
+        </div>
+        <div class="col-4 form-group">
+          <%= form.label :shipping, "¿Incluye transporte?" %>
+          <div class="row">
+            <div class="col-4 text-center">
+              <%= form.check_box :shipping, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle' %>
+            </div>
+            <div class="col-8">
+              <%= form.number_field :shipping_cost, class: 'form-control', placeholder: "Precio del transporte", style: "display: #{@purchase_order.shipping ? 'block' : 'none'};" %>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-4 form-group">
+          <%= form.label :state %>
+          <% if @purchase_order.new_record? || @purchase_order.state == "Pendiente" %>
+            <%= form.select :state, @purchase_order.array_for_new, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: red;'}%>
+          <% elsif @purchase_order.state == "Aprobado" %>
+              <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: orange;'}%>
+          <% else %>
+              <%= form.select :state, @purchase_order.array_of_state_values, {}, {class: 'form-control', disabled: !(@purchase_order.editable? && !@purchase_order.pending_approval?), style: 'color: green;'}%>
+          <% end %>
+        </div>
+        <div class="col-4 form-group">
+          <%= form.label :total_pay, "Total pagado" %>
+          <%= form.text_field :total_pay, class: 'form-control', readonly: true %>
+        </div>
+        <div class="col-4 form-group">
+          <%= form.label :total %>
+          <%= form.text_field :total, class: 'form-control', readonly: true %>
+        </div>
+      </div>
+
+      <% if @purchase_order.editable? %>
+        <p class="alert alert-info text-center">
+          El estado de la OC debe ser "Finalizada" para que los pagos impacten en contabilidad.
+        </p>
+      <% end %>
+
+      <div class="text-center">
+        <% if @purchase_order.confirmado? %>
+          <%= link_to "#{icon('fas', 'file-pdf')} Generar PDF".html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-primary' %>
+          <%= button_tag "#{icon('fas', 'envelope')} Enviar a proveedor".html_safe, type: 'button', class: 'btn btn-info', data:{toggle: 'modal', target: '#sendMailModal'} unless @purchase_order.delivered %>
+        <% end %>
+        <% if @purchase_order.pendiente? && @purchase_order.persisted? %>
+          <%= link_to "#{icon('fas', 'thumbs-up')} Aprobar".html_safe, approve_purchase_order_path(@purchase_order.id), method: :patch, class: 'btn btn-danger' %>
+        <% end %>
+      </div>
+
     </div>
   </div>
-  <!-- PAGOS -->
+
+  <%= render template: '/purchase_orders/details/index.html.erb', locals:{form: form} %>
+
+  <%= render template: '/purchase_orders/payments/index.html.erb', locals:{form: form} %>
 
   <%= render '/purchase_orders/details/search_product' %>
 
   <%= render template: '/purchase_orders/send_mail.html.erb' if @purchase_order.persisted? %>
 
-  <center>
-    <% if @purchase_order.editable? %>
-      <%= save_button_danger %>
-    <% end %>
-  </center>
+  <div class="text-center">
+    <%= save_button_danger if @purchase_order.editable? %>
+  </div>
 
   <%= render_modal_lg %>
-
 <% end %>
