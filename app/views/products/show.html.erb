@@ -15,9 +15,7 @@
     </center>
   </div>
 </div>
-<% if can? :update, Product %>
-	<%= button_edit_helper(edit_product_path(@product.id)) %>
-<% end %>
+<%= button_edit_helper(edit_product_path(@product.id)) if can? :update, Product %>
 <div class="p-4">
 		<div class="container-fluid">
 		  	<div class="row">
@@ -120,5 +118,5 @@
 		</div>
 
 	<%= render 'stock' %>
-	
+
 </div>

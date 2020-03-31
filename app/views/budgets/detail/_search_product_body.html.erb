@@ -31,7 +31,7 @@
 				<% @products.each do |product| %>
 					<tr>
 						<td><%= product.name %></td>
-						<td><%= product.stock_html %></td>
+						<td><%= product_stock_helper(product) %></td>
 						<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, #{params[:depot_id]})" %></td>
 					</tr>
 				<% end -%>

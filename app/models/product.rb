@@ -74,37 +74,23 @@ class Product < ApplicationRecord
 	validates :price,
     presence: { message: "Debe ingresar el precio final del producto." },
     numericality: { greater_than: 0, message: "El precio final debe ser mayor a 0." }
-	validates_presence_of :created_by, :updated_by, :company_id
 	validates_presence_of :iva_aliquot, message: "Ingrese un número válido para el IVA, por ejemplo '21'."
-  validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil?}, allow_blank: true
-  validate :validate_unique_state
+  validates_inclusion_of :measurement_unit, :in => MEASUREMENT_UNITS.keys, if: Proc.new{|p| not p.measurement_unit.nil? }, allow_blank: true
+	validates_presence_of :created_by, :updated_by, :company_id
 
   before_save :check_net_price, :check_category_products_count
-	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
 	after_create :create_price_history
-  after_create :user_activity_for_create, if: Proc.new{ |p| p.name != "Intereses tarjeta de crédito" }
+	after_create :user_activity_for_create, if: Proc.new{ |p| p.name != "Intereses tarjeta de crédito" }
+	after_save :add_price_history, if: Proc.new{|p| p.saved_change_to_price?}
 
 	accepts_nested_attributes_for :stocks, reject_if: :all_blank, allow_destroy: true
 
   scope :active, -> { where(active: true) }
 	scope :productos, -> { where(tipo: "Producto") }
 
-  def validate_unique_state
-    validate_uniqueness_of_in_memory(stocks, [:active, :state, :depot_id], 'Está intentando generar estados duplicados para un mismo depósito.')
-  end
-
   def check_net_price
 		if net_price.to_f == 0.0
 			self.net_price = (price.to_f / (1 + simple_iva_aliquot.to_f)).round(2)
-		end
-	end
-
-	#este metodo chequea que los available stock esten todos concordando, pero no se esta ejecutando en ningun lado, lo corro en consola por ahora
-	def check_available_stock
-		available = 0
-		available += stocks.where(state: "Disponible").map(&:quantity).inject(0) { |suma, quantity| suma + quantity }
-		unless available_stock == available
-			update_column(:available_stock, available)
 		end
 	end
 
@@ -130,6 +116,10 @@ class Product < ApplicationRecord
 
 	def category_name
 		product_category.nil? ? "Sin categoría" : product_category.name
+	end
+
+	def producto?
+	  tipo == "Producto"
 	end
 
 	def set_available_stock
@@ -161,18 +151,6 @@ class Product < ApplicationRecord
 
 	def supplier_name
 		supplier_id.nil? ? "Sin proveedor" : supplier.name
-	end
-
-	def stock_html
-		if !minimum_stock.blank?
-			if available_stock <= minimum_stock
-				return "<div class='text-danger'>#{available_stock}</div>".html_safe
-			else
-				return "<div class='text-success'>#{available_stock}</div>".html_safe
-			end
-		else
-			return "<div class='text-success'>#{available_stock}</div>".html_safe
-		end
 	end
 
 	#ATRIBUTOS VIRTUALES
@@ -234,16 +212,6 @@ class Product < ApplicationRecord
 		self.set_available_stock
 	end
 
-	def deliver_product attrs={}
-		s = self.stocks.where(depot_id: attrs[:depot_id], state: attrs[:from]).first_or_initialize
-		s.quantity = s.quantity.to_f - attrs[:quantity].to_f
-		if s.save
-			d = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
-			d.quantity = d.quantity.to_f + attrs[:quantity].to_f
-			d.save
-		end
-	end
-
 	def reserve_stock attrs={}
 		s = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
 		s.quantity = s.quantity.to_f + attrs[:quantity].to_f
@@ -258,13 +226,9 @@ class Product < ApplicationRecord
     if attrs[:associated_invoice]
       comprobante = Invoice.where(id: attrs[:associated_invoice]).first
       reserved_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Reservado").first_or_initialize
-  		delivered_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Entregado").first_or_initialize
   		available_stock = self.stocks.where(depot_id: attrs[:depot_id], state: "Disponible").first_or_initialize
   		if reserved_stock.new_record?
   			reserved_stock.quantity = 0
-  		end
-  		if delivered_stock.new_record?
-  			delivered_stock.quantity = 0
   		end
   		if available_stock.new_record?
   			available_stock.quantity = 0
@@ -275,20 +239,16 @@ class Product < ApplicationRecord
         reserved_stock_saved = comprobante.invoice_details.where(product_id: self.id)
 
         comprobante.delivery_notes.where(state: "Finalizado").each do |dn|
-      		delivered_stock_saved += dn.delivery_note_details.where(product_id: self.id).map(&:quantity).inject(0) { |suma, quantity| suma + quantity }
+      		delivered_stock_saved += dn.delivery_note_details.where(product_id: self.id).pluck(:quantity).inject(0, :+)
     		end
-    		#Fin del bloque
 
         if (attrs[:quantity].to_f > delivered_stock_saved) #Si la NC es mayor que la cantidad entregada en los remitos
-        	delivered_stock.quantity 	-=	delivered_stock_saved
         	reserved_stock.quantity		-=	(attrs[:quantity].to_f - delivered_stock_saved)
         	available_stock.quantity 	+=	attrs[:quantity].to_f
         else #Si la NC es menor igual que la cantidad entrega en los remitos
         	# Saca el total de la cantidad entregada, y lo pasa a disponible
-        	delivered_stock.quantity  -=	attrs[:quantity].to_f
         	available_stock.quantity 	+=	attrs[:quantity].to_f
         end
-        delivered_stock.save
         available_stock.save
         reserved_stock.save
       end

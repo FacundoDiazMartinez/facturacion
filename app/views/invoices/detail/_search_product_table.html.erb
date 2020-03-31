@@ -27,7 +27,7 @@
 			<% @products.each do |product| %>
 				<tr>
 					<td><%= product.name %></td>
-					<td><%= product.stock_html %></td>
+					<td><%= product_stock_helper(product) %></td>
           			<td><%= select_tag :depot_id, options_for_select(product.depots.uniq.map{|s| [s.name, s.id]}, params[:depot_id]), class: 'form-control depot' %></td>
 					<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, $(this).closest('tr').find('.depot').val())" %></td>
 				</tr>

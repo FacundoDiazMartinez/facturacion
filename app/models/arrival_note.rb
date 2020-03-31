@@ -10,7 +10,6 @@ class ArrivalNote < ApplicationRecord
   accepts_nested_attributes_for :purchase_order, reject_if: :all_blank
 
   after_validation :check_state
-  # after_save :set_state
   after_save :remove_stock, if: Proc.new{|an| pp an.saved_change_to_state? && state == "Anulado"}
   after_initialize :set_default_number, if: :new_record?
 
@@ -60,33 +59,6 @@ class ArrivalNote < ApplicationRecord
     end
   #ATRIBUTOS
 
-
-  #FILTROS DE BUSQUEDA
-    def self.search_by_purchase_order number
-      if not number.blank?
-        where("purchase_orders.number ILIKE ?", "%#{number}%")
-      else
-        all
-      end
-    end
-
-    def self.search_by_user name
-      if not name.blank?
-        where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
-      else
-        all
-      end
-   end
-
-    def self.search_by_state state
-      if not state.blank?
-        where(state: state)
-      else
-        all
-      end
-    end
-  #FILTROS DE BUSQUEDA
-
   #PROCESOS
     def check_state
       if self.errors.any?
@@ -98,18 +70,6 @@ class ArrivalNote < ApplicationRecord
       last_an = ArrivalNote.where(company_id: company_id).last
       self.number ||= last_an.nil? ? "00000001" : (last_an.number.to_i + 1).to_s.rjust(8,padstr= '0')
     end
-
-    # def set_number
-    #   self.number = self.number.to_s.rjust(8,padstr= '0')
-    # end
-
-    # def set_state
-    #   if !arrival_note_details.map(&:completed).include?(false)
-    #     update_column(:state, "Finalizado") unless state == "Anulado"
-    #   else
-    #     update_column(:state, "Pendiente") unless state == "Anulado"
-    #   end
-    # end
 
     def remove_stock
       arrival_note_details.each do |detail|
@@ -149,7 +109,15 @@ class ArrivalNote < ApplicationRecord
 
   #FUNCIONES
     def editable?
-      state == "Pendiente"
+      state == "Pendiente" || new_record?
+    end
+
+    def confirmado?
+      state == "Finalizado"
+    end
+
+    def confirmar!
+      update_columns(state: "Finalizado")
     end
 
     def array_of_state_values
@@ -164,4 +132,20 @@ class ArrivalNote < ApplicationRecord
       Depot.unscoped{super}
     end
   #FUNCIONES
+  private
+
+  def self.search_by_purchase_order number
+    return all if number.blank?
+    where("purchase_orders.number ILIKE ?", "%#{number}%")
+  end
+
+  def self.search_by_user name
+    return all if name.blank?
+    where("LOWER(users.first_name || ' ' || users.last_name) LIKE LOWER(?)", "%#{name}%")
+ end
+
+  def self.search_by_state state
+    return all if state.blank?
+    where(state: state)
+  end
 end

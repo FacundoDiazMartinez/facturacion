@@ -10,14 +10,14 @@ class InvoiceDetail < ApplicationRecord
 
   before_validation :check_product
   before_validation :calculate_iva_amount
-  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
-  before_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.tipo == "Producto"}
+  after_validation :reserve_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.producto?}
+  before_destroy :remove_reserved_stock, if: Proc.new{|detail| detail.invoice.is_invoice? && quantity_changed? && detail.product.producto?}
 
   default_scope {where(active: true)}
 
   validates_presence_of :product, message: "El detalle debe estar vinculado a un producto."
   validates_presence_of :quantity, message: "El detalle debe especificar una cantidad."
-  validates_presence_of :depot_id, message: "El detalle debe especificar un deposito.", if: Proc.new{|detail| detail.product.tipo == "Producto"}
+  validates_presence_of :depot_id, message: "El detalle debe especificar un deposito.", if: Proc.new{|detail| detail.product.producto?}
   validates_numericality_of :quantity, greater_than: 0.0, message: "La cantidad debe ser mayor a 0."
   validates_inclusion_of :measurement_unit, in: Product::MEASUREMENT_UNITS.keys, message: "Unidad de medida inválida.", if: Proc.new{|id| not id.product.nil?}
   validates_presence_of :measurement_unit, message: "Debe especificar la unidad de medida en el detalle de la factura.", if: Proc.new{|id| not id.product.nil?}
@@ -86,7 +86,7 @@ class InvoiceDetail < ApplicationRecord
   end
 
   def impact_stock_cn
-    if self.product.tipo == "Producto"
+    if self.product.producto?
       self.product.impact_stock_by_cred_note(quantity: self.quantity, depot_id: depot_id, associated_invoice: self.invoice.associated_invoice)
     end
   end

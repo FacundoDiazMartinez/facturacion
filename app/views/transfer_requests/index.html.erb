@@ -1,56 +1,44 @@
 <div class="p-4">
-  <%= title_helper 'Remitos de traslado' %>
-
-  <% if can? :create, TransferRequest %>
-    <%= button_new_helper new_transfer_request_path %>
-  <% end %>
+  <%= title_helper 'Cesiones entre depósitos' %>
+  <%= button_new_helper new_transfer_request_path if can? :create, TransferRequest %>
 
   <div class="page-section">
     <div class="card">
       <div class="card-header">
         <%= form_tag transfer_requests_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR numero -->
+
           <%= label_tag :number, "Nº Remito", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
+          <div class="input-group col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'plane') %></div>
             </div>
             <%= text_field_tag :number, params[:number], class: 'form-control', placeholder: 'Buscar por número', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR numero -->
 
-          <!-- BUSCAR POR SENDER -->
-          <%= label_tag :from_depot_id, "Remitente", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'user') %></div>
-            </div>
-            <%= select_tag :from_depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}, params[:from_depot_id]), {prompt: 'Buscar por remitente...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          <%= label_tag :from_depot_id, "Origen", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend"><div class="input-group-text"><%= icon('fas', 'user') %></div></div>
+            <%= select_tag :from_depot_id, options_for_select(current_company.depots.map{|d| [d.name, d.id]}, params[:from_depot_id]), { prompt: 'Todos los origenes', class: 'form-control', onchange: 'remoteSubmit("#search_form")' } %>
           </div>
-          <!-- BUSCAR POR SENDER -->
 
-          <!-- BUSCAR POR RECEIVER -->
           <%= label_tag :to_depot_id, "Destinatario", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
+          <div class="input-group col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'user') %></div>
             </div>
-            <%= select_tag :to_depot_id, options_for_select(current_user.company.depots.map{|d| [d.name, d.id]}, params[:to_depot_id]), {prompt: 'Buscar por destinatario...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+            <%= select_tag :to_depot_id, options_for_select(current_company.depots.map{|d| [d.name, d.id]}, params[:to_depot_id]), { prompt: 'Todos los destinos', class: 'form-control', onchange: 'remoteSubmit("#search_form")' } %>
           </div>
-          <!-- BUSCAR POR RECEIVER -->
 
-          <!-- BUSCAR POR TIPO DE ESTADO -->
           <%= label_tag :state, "Estado", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('far', 'check-square') %></div>
-            </div>
-            <%= select_tag :state, options_for_select(TransferRequest::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          <div class="input-group col">
+            <div class="input-group-prepend"><div class="input-group-text"><%= icon('far', 'check-square') %></div></div>
+            <%= select_tag :state, options_for_select(TransferRequest::STATES, params[:state]), {prompt: 'Todos los estados', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
-          <!-- BUSCAR POR TIPO DE ESTADO -->
+
           <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
       <% end %>
       </div>
+      
       <div class="card-body" id="transfer_requests_table">
         <%= render 'transfer_requests_table' %>
       </div>

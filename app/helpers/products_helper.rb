@@ -19,4 +19,16 @@ module ProductsHelper
 		end
 	end
 
+	def product_stock_helper(product)
+	  if not product.minimum_stock.blank?
+			if product.available_stock <= product.minimum_stock
+				return "<div class='text-danger'>#{product.available_stock}</div>".html_safe
+			else
+				return "<div class='text-success'>#{product.available_stock}</div>".html_safe
+			end
+		else
+			return "<div class='text-success'>#{product.available_stock}</div>".html_safe
+	  end
+	end
+
 end

@@ -8,8 +8,6 @@ module ProductManager
     def call
       ActiveRecord::Base.transaction do
         resultado = validar_existencias_en_deposito_de_origen()
-        pp "RESULTADO"
-        pp resultado
         unless resultado
           raise ActiveRecord::Rollback
           return false

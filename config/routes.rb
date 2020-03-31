@@ -2,7 +2,6 @@ Rails.application.routes.draw do
 
   resources :transfer_requests do
     patch :cancel, on: :member
-    patch :send_transfer, on: :member
     patch :receive_transfer, on: :member
     get :search_product, on: :collection
   end

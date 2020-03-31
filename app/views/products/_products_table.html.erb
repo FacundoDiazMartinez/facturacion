@@ -7,10 +7,9 @@
 					<th>Código</th>
 					<th scope="col">Nombre</th>
 					<th scope="col" class="only-desktop">Categoría</th>
-					<th scope="col">Precio</th>
 					<th scope="col" class="only-desktop">Proveedor</th>
-					<th scope="col">Stock Disponible</th>
-					<!-- <th scope="col">Reservado</th> -->
+					<th scope="col">Disponible</th>
+					<th scope="col">Precio</th>
 					<th scope="col">
 						<div class="btn-group" role="group">
 					    <button id="btnMenuDrop" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -22,7 +21,6 @@
 					    </div>
 						</div>
 					</th>
-					<th scope="col"> Eliminar </th>
 				</tr>
 			</thead>
 			<tbody>
@@ -32,12 +30,11 @@
 						<td><%= product.code %></td>
 						<td><%= link_to product.name, product_path(product.id) %></td>
 						<td class="only-desktop"><%= product.product_category.nil? ? "-" : product.product_category.name %></td>
-						<td>$ <%= product.price %></td>
 						<td class="only-desktop"><%= product.supplier_name %></td>
-						<td><%= product.stock_html %></td>
-						<!-- <td><%# product.stocks.where(state: "Reservado").map{|s| s.quantity}.sum() %></td> -->
-						<td><%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
-						<td>
+						<td class="text-center"><b><%= product_stock_helper(product) %></b></td>
+						<td class="text-center"><b><%= number_to_ars product.price %></b></td>
+						<td class="td-action-buttons text-left">
+							<%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
 							<%= link_to icon('fas', 'trash').html_safe, product , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
 						</td>
 					</tr>

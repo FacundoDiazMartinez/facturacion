@@ -2,24 +2,31 @@
   <%= title_helper "Productos: Actualización Múltiple" %>
 
   <%= form_tag update_multiple_products_path, method: :put do %>
-    <p class="text-muted">Productos seleccionados</p>
     <div class="d-flex justify-content-center">
-      <div class="card col-12 col-sm-8 col-md-6 col-lg-6">
-        <div class="card-body">
-          <ul class="text-center list-unstyled">
-            <% @products.each do |product| %>
-            <li>
-              <%= hidden_field_tag "product_ids[]", product.id %>
-              <%= product.code + " - " + product.name + " - " + product.category_name %>
-            </li>
-            <% end %>
-          </ul>
+      <div class="col-12 col-sm-8 col-md-6 col-lg-6">
+        <h5 class="text-muted">Productos seleccionados</h5>
+        <div class="card">
+          <div class="card-body">
+            <ul class="list-unstyled">
+              <% @products.each do |product| %>
+              <li>
+                <%= hidden_field_tag "product_ids[]", product.id %>
+                <%= product.code + " - " + product.name + " - " + product.category_name %>
+                <span class="float-right">
+                  <strong>
+                    <%= number_to_ars product.price %>
+                  </strong>
+                </span>
+              </li>
+              <% end %>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
     <% if @products.first.errors.any? %>
-    <p class="text-muted">Errores al actualizar</p>
+    <h5 class="text-muted">Errores al actualizar</h5>
     <ul class="text-center list-unstyled">
       <% @products.first.errors.full_messages.each do |msg| %>
       <li style="color:red"><%= msg %></li>
@@ -27,9 +34,10 @@
     </ul>
     <% end %>
 
-    <p class="text-muted">Elementos a actualizar</p>
     <div class="d-flex justify-content-center">
-      <div class="card col-12 col-sm-8 col-md-6 col-lg-6">
+      <div class="col-12 col-sm-8 col-md-6 col-lg-6">
+        <h5 class="text-muted">Elementos a actualizar</h5>
+        <div class="card">
         <div class="card-body">
           <%= fields_for :product do |f| %>
           <div class="form-row">
@@ -56,6 +64,7 @@
           </div>
           <% end %>
         </div>
+      </div>
       </div>
     </div>
     <center>

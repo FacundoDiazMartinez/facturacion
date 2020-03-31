@@ -5,12 +5,11 @@ class Stock < ApplicationRecord
   STATES = ["Disponible", "Reservado"]
 
   validate :check_company_of_depot
-  validates_uniqueness_of :state, scope: [:active, :product_id, :depot_id], message: "No puede generar dos estados iguales para un mismo depósito."
+  validates_uniqueness_of :state, scope: [:product, :depot], message: "No puede generar dos estados iguales para un mismo depósito."
 
   after_save :set_stock_to_product, :set_stock_to_depot
-  after_destroy :reduce_stock_in_depot
+  before_destroy :reduce_stock_in_depot
 
-  default_scope { where(active: true) }
   scope :disponibles, ->{ where(state: "Disponible") }
   scope :reservados, ->{ where(state: "Reservado") }
 
@@ -27,11 +26,6 @@ class Stock < ApplicationRecord
   def reduce_stock_in_depot
     self.depot.change_stock(-self.quantity)
     self.product.set_available_stock if disponible?
-  end
-
-  def destroy
-    update_column(:active, false)
-    run_callbacks :destroy
   end
 
   def disponible?

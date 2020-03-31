@@ -21,20 +21,20 @@ module DeliveryNoteManager
     private
 
     def existen_productos_disponibles?
-      errores = true
+      disponibilidad = true
       delivery_note.delivery_note_details.includes(:depot, product: :stocks).each do |detail|
         disponible =  detail.product.stocks.where(depot_id: detail.depot_id).pluck(:quantity).inject(0, :+)
         if disponible < detail.quantity
           delivery_note.errors.add(:quantity, "[#{detail.product.name}]: Stock insuficiente. Disponible en [#{detail.depot.name}]: #{disponible} (#{detail.product.measurement_unit_name})")
-          errores = false
+          disponibilidad = false
         end
       end
-      return errores
+      return disponibilidad
     end
 
     def extrae_productos_disponibles
       delivery_note.delivery_note_details.includes(:depot, product: :stocks).each do |detail|
-        stock_reservado = detail.product.stocks.where(depot_id: detail.depot_id, state: "Reservado").first_or_initialize
+        stock_reservado = detail.product.stocks.reservados.where(depot_id: detail.depot_id).first_or_initialize
         if stock_reservado.quantity < detail.quantity
           faltante_a_entregar        = detail.quantity.to_f - stock_reservado.quantity
           quita_de_stock_disponible!(detail.product, detail.depot_id, faltante_a_entregar)
@@ -48,7 +48,7 @@ module DeliveryNoteManager
     end
 
     def quita_de_stock_disponible!(product, depot_id, cantidad)
-      stock_disponible           = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
+      stock_disponible           = product.stocks.disponibles.where(depot_id: depot_id).first_or_initialize
       stock_disponible.quantity -= cantidad
       stock_disponible.save
     end
