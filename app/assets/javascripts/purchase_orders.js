@@ -1,135 +1,74 @@
 $(document).on("change", '#purchase_order_shipping', function() {
-		if ($(this).prop('checked')){
-			$("#purchase_order_shipping_cost").show("");
-			$("#purchase_order_shipping_cost").val("0.0");
-		}else{
-			$("#purchase_order_shipping_cost").hide();
-			$("#purchase_order_shipping_cost").val("0.0");
-		}
-  });
-
-$(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field', function(event, data){
-	if (typeof data.item.nomatch !== 'undefined'){
-		if (data.item.nomatch.length) {
-			$(this).closest("tr.fields").find("input.purchase_order-autocomplete_field").val(data.item.nomatch);
-		}
+	if ($(this).prop('checked')){
+		$("#purchase_order_shipping_cost").show().val("0.00");
+	} else {
+		$("#purchase_order_shipping_cost").hide().val("0.00");
 	}
-  	$(this).closest("tr.fields").find("input.product_id").val(data.item.id);
-  	$(this).closest("tr.fields").find("input.name").val(data.item.name);
-  	$(this).closest("tr.fields").find("input.prodPrice").val(data.item.price);
-  	$(this).closest("tr.fields").find("select.measurement_unit").val(data.item.measurement_unit);
-  	$(this).closest("tr.fields").find("input.supplier_code").val(data.item.supplier_code);
-		$(this).closest("tr.fields").find("input.prodSubtotal").val(data.item.price);
-
-		subtotal = $(this).closest("tr.fields").find("input.prodSubtotal");
-		subtotal.trigger("change");
 });
 
-$(document).on("change", "#purchase_order_supplier_id", function(){
-	$.get("/purchase_orders/set_supplier", {'supplier_id': $(this).val()}, null, "script");
+$(document).on('railsAutocomplete.select', '.purchase_order-autocomplete_field', function(event, data) {
+	if ((typeof data.item.nomatch !== 'undefined') && (data.item.nomatch.length)){
+		$(this).closest(".fields").find("input.purchase_order-autocomplete_field").val(data.item.nomatch);
+	}
+	$(this).closest(".fields").find("input.product_id").val(data.item.id);
+	$(this).closest(".fields").find("input.supplier_code").val(data.item.supplier_code);
+	$(this).closest(".fields").find("input.name").val(data.item.name);
+	$(this).closest(".fields").find("input.prodPrice").val(data.item.price);
+	$(this).closest(".fields").find("input.prodSubtotal").val(data.item.price);
+
+	sumTotalPurchaseOrder()
+	disableSupplierSelect()
 });
 
-$(document).on("change", ".prodPrice, .prodQuant", function(){
+// $(document).on("change", "#purchase_order_supplier_id", () => {
+// 	$.get("/purchase_orders/set_supplier", {'supplier_id': $(this).val()}, null, "script");
+// });
 
-	price				= $(this).closest("tr.fields").find("input.prodPrice");
-	subtotal 			= $(this).closest("tr.fields").find("input.prodSubtotal");
-	quantity 			= $(this).closest("tr.fields").find("input.prodQuant");
-
-	total = (parseFloat(price.val()) * parseFloat(quantity.val()));
-
-
-	subtotal.val(total);
-	subtotal.trigger("change");
-});
-
-$(document).on("change", '.prodSubtotal', function(){
+$(document).on("change", ".prodPrice, .prodQuant", function() {
+	calculateRows()
 	sumTotalPurchaseOrder()
 });
 
 $(document).on('nested:fieldRemoved:purchase_order_details', function(event){
 	sumTotalPurchaseOrder()
+	disableSupplierSelect();
 });
 
 $(document).on("change", '.select-pu-supplier', function(){
 	$(".pu-supplier-id").val($(".select-pu-supplier").val());
 });
 
-$(document).on('nested:fieldRemoved:purchase_order_details', function(){
-	disable_purchase_order_select();
-})
-
 $(document).on('nested:fieldAdded:purchase_order_details', function(){
-	$("#purchase_order_supplier_id").attr("disabled",true);
+	disableSupplierSelect();
 })
 
-function disable_purchase_order_select(){
-	if ($("#details > tbody > tr:visible").length > 0) {
-		$("#purchase_order_supplier_id").attr("disabled",true);
-	}else {
-		$("#purchase_order_supplier_id").attr("disabled",false);
+function disableSupplierSelect(){
+	if ($("#purchase_order_supplier_id").val()) {
+		if ($("#details > tbody > tr:visible").length > 0) {
+			$("#purchase_order_supplier_id").attr("disabled", true);
+		} else {
+			$("#purchase_order_supplier_id").attr("disabled", false);
+		}
 	}
 }
 
-$(document).on('pjax:complete', function() {
-	disable_purchase_order_select();
-})
+function calculateRows(){
+	$(".fields:visible").each( function() {
+		price		 = $(this).find("input.prodPrice");
+		quantity = $(this).find("input.prodQuant");
 
-$( document ).ready(function() {
-	disable_purchase_order_select();
-})
-
+		total = (parseFloat(price.val()) * parseFloat(quantity.val())).toFixed(2);
+		$(this).find("input.prodSubtotal").val(total);
+	})
+}
 
 function sumTotalPurchaseOrder(){
 	sumaTotales = parseFloat(0);
-	$(".prodSubtotal:visible").each(function(){
-	  sumaTotales = parseFloat(sumaTotales) + parseFloat($(this).val());
-	});
-	sumaTotales = parseFloat(sumaTotales) +  parseFloat($("#purchase_order_shipping_cost").val())
-	$('#purchase_order_total').val(sumaTotales);
-	total_left = parseFloat(sumaTotales) - parseFloat($("#purchase_order_total_pay").val())
-	$("span#total_left_venta").text("$ " + total_left)
-	if (total_left > 0) {
-		$("#normal").show();
-		$("#with_alert").hide();
-	}else{
-		console.log("alert");
-		$("#normal").hide();
-		$("#with_alert").show();
-	}
+	$(".prodSubtotal:visible").each( function() { sumaTotales = parseFloat(sumaTotales) + parseFloat($(this).val())	});
+	sumaTotales += parseFloat($("#purchase_order_shipping_cost").val())
+	$('#purchase_order_total').val( sumaTotales.toFixed(2) );
 }
 
-$(document).on("change", '#purchase_order_shipping_cost', function(){
-	$(".prodSubtotal").trigger("change");
-})
+$(document).on("change", '#purchase_order_shipping_cost', function() { sumTotalPurchaseOrder() })
 
-$(document).on("click", "#save_btn", function(){
-	var suma = parseFloat(0);
-	$(".purchase_order_payment_amount").each(function(){  /// calculamos la suma total en sector pagos
-		suma = parseFloat(suma) + parseFloat($(this).val());
-	});
-	if (suma > parseFloat($("#faltante").text())) {
-		return window.confirm("Los pagos superan el monto faltante. ¿Desea continuar de todas formas?");
-	}
-});
-
-$(document).on('nested:fieldAdded', function(event){
-
-  $('.datepicker').datepicker({
-      language: "es",
-      dateFormat: "dd/mm/yyyy",
-      todayHighlight: true,
-      autoClose: true,
-      autoSize: true
-  });
-
-	$(':input[type="number"]').attr('pattern', "[0-9]+([\.,][0-9]+)?").attr('step', 'any');
-});
-
-
-$(document).on('hidden.bs.modal', "#sendMailModal", function (e) {
-	$("input#send_mail").val("false")
-})
-
-$(document).on('shown.bs.modal', "#sendMailModal", function (e) {
-	$("input#send_mail").val("true")
-})
+$(document).on('pjax:complete ready', () => {	disableSupplierSelect() })

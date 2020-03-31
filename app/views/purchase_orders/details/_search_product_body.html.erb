@@ -1,7 +1,7 @@
-<%= form_tag search_product_purchase_orders_path(), id: 'serach_form' do %>
+<%= form_tag search_product_purchase_orders_path, id: 'search_form' do %>
 	<%= hidden_field_tag :index_id, params[:index_id] %>
 
-	<div class="form-row">
+	<div class="form-row mb-5">
 	    <div class="col">
 			<%= label_tag :supplier_id, "Proveedor" %>
 			<%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}, params[:supplier_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
@@ -12,7 +12,7 @@
 			<%= select_tag :product_category_id, options_for_select(current_user.company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.name]}, params[:product_category_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
 		</div>
 	</div>
-	<hr>
+
 	<div class="table-responsive">
   		<table class="table table-hover">
 			<thead>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_26_154936) do
+ActiveRecord::Schema.define(version: 2020_03_31_133257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -741,7 +741,7 @@ ActiveRecord::Schema.define(version: 2020_03_26_154936) do
 
   create_table "purchase_orders", force: :cascade do |t|
     t.string "number", null: false
-    t.string "state", default: "Pendiente de aprobación", null: false
+    t.string "state", default: "Pendiente", null: false
     t.bigint "supplier_id"
     t.text "observation"
     t.float "total", default: 0.0, null: false
@@ -756,6 +756,7 @@ ActiveRecord::Schema.define(version: 2020_03_26_154936) do
     t.boolean "paid_out", default: false
     t.float "total_pay", default: 0.0, null: false
     t.boolean "delivered", default: false, null: false
+    t.date "date"
     t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
     t.index ["company_id"], name: "index_purchase_orders_on_company_id"
     t.index ["supplier_id"], name: "index_purchase_orders_on_supplier_id"

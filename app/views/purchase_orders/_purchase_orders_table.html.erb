@@ -1,40 +1,29 @@
 <table class="table table-hover" id="details">
   <thead>
-    <tr>
-      <th>Número</th>
-      <th>Proveedor</th>
-      <th>Creado por</th>
-      <th>Estado</th>
-      <th>Total</th>
-      <th style="text-align: center;">Pagado</th>
-      <th style="text-align: center;">Fecha</th>
-      <th></th>
-    </tr>
+    <th>Número</th>
+    <th>Estado</th>
+    <th>Fecha</th>
+    <th>Proveedor</th>
+    <th>Responsable</th>
+    <th>TOTAL</th>
+    <th></th>
   </thead>
-
   <tbody>
     <% @purchase_orders.each do |purchase_order| %>
       <tr>
-        <td><strong><%= purchase_order.number %></strong></td>
+        <td><%= purchase_order.number %></td>
+        <td><%= po_state_label_helper(purchase_order) %></td>
+        <td><%= purchase_order.date %></td>
         <td><%= link_to purchase_order.supplier.name, edit_supplier_path(purchase_order.supplier_id) %></td>
         <td><%= link_to purchase_order.user.name, user_path(purchase_order.user_id) %></td>
-        <td><%= po_state_label_helper(purchase_order) %></td>
-        <td><%= purchase_order.total %></td>
-        <td style="text-align: center;"><%= boolean_to_icon(purchase_order.paid_out)%></td>
-        <td style="text-align: center;"><%= purchase_order.created_at %></td>
-        <td class="text-right">
-          <% if !purchase_order.paid_out %>
-            <%= link_to icon('fas', 'money-bill-alt').html_safe, add_payment_purchase_order_path(purchase_order.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, PurchaseOrder %>
-          <% end %>
-          <%= link_to icon('fas', 'eye').html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :show, PurchaseOrder %>
-          <%= link_to icon('fas', 'edit').html_safe, edit_purchase_order_path(purchase_order.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, PurchaseOrder %>
-          <% if purchase_order.editable? %>
-            <%= link_to icon('fas', 'trash').html_safe, purchase_order, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, PurchaseOrder %>
-          <% end %>
+        <td><b><%= number_to_ars(purchase_order.total) %></b></td>
+        <td class="td-action-buttons">
+          <%= link_to icon('fas', 'file-pdf').html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-sm btn-icon btn-outline-secondary' if purchase_order.confirmado? %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_purchase_order_path(purchase_order.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash').html_safe, purchase_order, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if purchase_order.editable? %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
 <%= paginate @purchase_orders %>

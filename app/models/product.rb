@@ -291,7 +291,7 @@ class Product < ApplicationRecord
 	end
 
 	def self.search_by_supplier supplier
-		return al if supplier.blank?
+		return all if supplier.blank?
 		joins(product_category: :supplier).where("suppliers.id = ? ", supplier)
 	end
 

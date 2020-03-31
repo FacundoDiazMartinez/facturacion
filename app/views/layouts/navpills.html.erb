@@ -39,8 +39,8 @@
 					<%= link_to "<span class='nav-span'>Depósitos</span>".html_safe, depots_path, class: 'dropdown-item', title: 'Depósitos' if can? :read, Depot %>
 					<%= link_to "<span class='nav-span'>Productos</span>".html_safe, products_path, class: 'dropdown-item', title: 'Productos' if can? :read, Product %>
 					<%= link_to "<span class='nav-span'>Servicios</span>".html_safe, services_path, class: 'dropdown-item', title: 'Servicios' if can? :read, Service %>
-					<%= link_to "<span class='nav-span'>Entradas</span>".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos de entrada" %>
-					<%= link_to "<span class='nav-span'>Salidas</span>".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos de salida" if can? :read, ArrivalNote %>
+					<%= link_to "<span class='nav-span'>Entradas</span>".html_safe, arrival_notes_path, class: 'dropdown-item', title: "Remitos de entrada" if can? :read, ArrivalNote %>
+					<%= link_to "<span class='nav-span'>Salidas</span>".html_safe, delivery_notes_path, class: 'dropdown-item', title: "Remitos de salida" %>
  					<%= link_to "<span class='nav-span'>Traslados</span>".html_safe, transfer_requests_path, class: 'dropdown-item', title: 'Cesiones' %>
  					<%= link_to "<span class='nav-span'>Estadísticas</span>".html_safe, products_stadistics_path, class: 'dropdown-item', title: 'Estadísticas' if can? :read, Stadistic %>
 				</div>

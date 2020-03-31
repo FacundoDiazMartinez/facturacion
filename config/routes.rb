@@ -146,12 +146,15 @@ Rails.application.routes.draw do
 
   resources :purchase_orders do
     resources :purchase_order_details, shallow: true
-    get :autocomplete_product_code, on: :collection
-    get :set_supplier, on: :collection
-    get :generate_pdf, on: :member
-    patch :approve, on: :member
-    get :search_product, on: :collection
-    get :add_payment, on: :member
+    collection do
+      get :autocomplete_product_code
+      get :set_supplier
+      get :search_product
+    end
+    member do
+      get :cancel
+      post :deliver
+    end
   end
 
   resources :products do

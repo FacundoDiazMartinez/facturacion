@@ -1,49 +1,47 @@
-<h5 class="text-muted">Conceptos</h5>
+<h5 class="text-muted">Productos</h5>
 
 <div class="card">
   <div class="card-body">
     <div class="table-responsive">
-      <table class="table" id="details">
+      <table class="table table-hover" id="details">
         <thead>
-          <th></th>
-          <th scope="col" style="width:10%;">Cód. interno</th>
-          <th scope="col" style="width:12%;">Cód. proveed.</th>
-          <th scope="col" style="width:46%;">Producto</th>
-          <th scope="col" style="width:12%;">Precio unitario</th>
-          <th scope="col" style="width:10%;">Cantidad</th>
-          <th scope="col" style="width:10%;">Subtotal</th>
-          <th scope="col"></th>
+          <th style="width:5%;"></th>
+          <th style="width:10%;">Cód. interno</th>
+          <th style="width:10%;">Cód. proveed.</th>
+          <th>Producto</th>
+          <th style="width:9%;">Cantidad</th>
+          <th style="width:12%;">Precio unit.</th>
+          <th style="width:12%;">Subtotal</th>
+          <th style="width:5%;"></th>
         </thead>
         <tbody>
           <%= form.fields_for :purchase_order_details, wrapper: false do |f| %>
-          <tr class="fields" id="<%= f.index %>">
-            <%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
-            <td>
-              <% if @purchase_order.editable? %>
-              <%= link_to icon('fas', 'search'), search_product_purchase_orders_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-sm btn-secondary' %>
-              <% else %>
-              #
+            <tr class="fields" id="<%= f.index %>">
+              <%= f.fields_for :product, (f.object.build_product unless !f.object.product.nil?) do |pf| %>
+                <td>
+                  <%= link_to icon('fas', 'search'), search_product_purchase_orders_path(index_id: f.index), data:{toggle: 'modal', target:'#search_product_modal', remote: true}, class: 'btn btn-secondary' if @purchase_order.editable? %>
+                  <%= pf.hidden_field :id, class: 'product_id' %>
+                </td>
+                <td>
+                  <%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'purchase_order-autocomplete_field form-control code', fields: {supplier_id: "#purchase_order_supplier_id"},data:{noMatchesLabel: "Crear nuevo producto."}, required: true, disabled: !@purchase_order.editable?  %>
+                </td>
+                <td>
+                  <%= pf.text_field :supplier_code, class: 'purchase_order-autocomplete_field form-control supplier_code', disabled: !@purchase_order.editable?  %>
+                </td>
+                <td><%= pf.text_field :name, class: 'form-control name', disabled: !@purchase_order.editable?, required: true %></td>
+                <td><%= f.number_field :quantity, class: 'form-control prodQuant', min: 1, disabled: !@purchase_order.editable?, required: true  %></td>
+                <td><%= pf.number_field :cost_price, class: 'form-control prodPrice',step: :any, disabled: !@purchase_order.editable?, required: true  %></td>
               <% end %>
-              <%= pf.hidden_field :id, class: 'product_id' %>
-            </td>
-            <td><%= pf.autocomplete_field :code, autocomplete_product_code_purchase_orders_path, class: 'purchase_order-autocomplete_field form-control code', fields: {supplier_id: "#purchase_order_supplier_id"},data:{noMatchesLabel: "Crear nuevo producto."}, required: true, disabled: !@purchase_order.editable?  %></td>
-            <td><%= pf.text_field :supplier_code, class: 'purchase_order-autocomplete_field form-control supplier_code', disabled: !@purchase_order.editable?  %></td>
-            <td><%= pf.text_field :name, class: 'form-control name', disabled: !@purchase_order.editable?  %></td>
-            <td><%= pf.number_field :cost_price, class: 'form-control prodPrice',step: :any, disabled: !@purchase_order.editable?  %></td>
-            <% end %>
-            <td><%= f.number_field :quantity, class: 'form-control prodQuant', min: 1, disabled: !@purchase_order.editable?  %></td>
-            <td><%= f.number_field :total, class: 'form-control prodSubtotal', readonly: true %></td>
-            <% if @purchase_order.editable? %>
-            <td class="verical-align"><%= f.link_to_remove icon('fas', 'times') %></td>
-            <% end %>
-          </tr>
+              <td><%= f.number_field :total, class: 'form-control prodSubtotal', readonly: true %></td>
+              <td class="verical-align"><%= f.link_to_remove icon('fas', 'times'), class: 'btn btn-danger' if @purchase_order.editable? %></td>
+            </tr>
           <% end %>
         </tbody>
       </table>
     </div>
 
     <div class="text-center">
-      <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-primary', data: {target: '#details'} if @purchase_order.editable? %>
+      <%= form.link_to_add "#{icon('fas', 'plus')} Agregar producto".html_safe, :purchase_order_details, class: 'btn btn-primary my-3', data: {target: '#details'} if @purchase_order.editable? %>
     </div>
   </div>
 </div>

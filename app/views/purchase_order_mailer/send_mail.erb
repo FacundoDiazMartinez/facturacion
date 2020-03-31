@@ -1,0 +1,30 @@
+<tr id = "data">
+  <td class="innerpadding borderbottom">
+    <table cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tbody>
+        <tr>
+        <td class="h3">
+          <h2><%= @purchase_order.company.name %></h2>
+          <h3>Orden de compra <%= @purchase_order.number %></h3>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <br>
+          <div class="form-group">
+            <p>A la atención de <%= @purchase_order.supplier.name %>, mediante el documento adjunto informamos la intención de compra de los productos allí especificados.</p>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <br>
+          <div class="form-group">
+            <p>Saludos.</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+   </table>
+  </td>
+</tr>
