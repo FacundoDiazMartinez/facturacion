@@ -4,45 +4,38 @@
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">
-
         <%= form_tag iva_books_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <div class="row w-100">
+            <div class="col-sm-4">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><%= icon('fas', 'calendar-alt') %></div>
+                </div>
+                <%= text_field_tag :from, params[:from], class: 'form-control datepicker', placeholder: 'Desde', onchange: 'remoteSubmit("#search_form")' %>
+                <%= text_field_tag :to, params[:to], class: 'form-control datepicker', placeholder: 'Hasta', onchange: 'remoteSubmit("#search_form")' %>
+              </div>
+            </div>
 
-          <!-- BUSCAR POR RANGO DE FECHAS -->
-          <%= label_tag :from, "Desde", class: 'sr-only' %>
-          <div class="input-group mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'calendar-alt') %></div>
-            </div>
-            <%= text_field_tag :from, params[:from], class: 'form-control datepicker', placeholder: 'Fecha desde', onchange: 'remoteSubmit("#search_form")' %>
-          </div>
+            <div class="col-sm-4">
+              <div class="custom-control custom-radio custom-control-inline mx-2">
+                <%= radio_button_tag :iva_compras, true, false, class: 'custom-control-input', id: 'iva_compras_true', onchange: 'remoteSubmit("#search_form")' %>
+                <%= label_tag :iva_compras_true, "Compras", class: 'custom-control-label' %>
+              </div>
 
-          <%= label_tag :to, "Hasta", class: 'sr-only' %>
-          <div class="input-group mb-2 mr-sm-2">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'calendar-alt') %></div>
+              <div class="custom-control custom-radio custom-control-inline  mx-2">
+                <%= radio_button_tag :iva_compras, false, false, class: 'custom-control-input', id: 'iva_compras_false', onchange: 'remoteSubmit("#search_form")' %>
+                <%= label_tag :iva_compras_false, "Ventas", class: 'custom-control-label' %>
+              </div>
             </div>
-            <%= text_field_tag :to, params[:to], class: 'form-control datepicker', placeholder: 'Fecha hasta', onchange: 'remoteSubmit("#search_form")' %>
-          </div>
-          <div class="input-group mb-2 mr-sm-2" id="pdf_file">
-          </div>
-          <!-- BUSCAR POR RANGO DE FECHAS -->
 
-          <!-- BUSCADOR POR TIPO -->
-            <div class="custom-control custom-radio custom-control-inline">
-              <%= radio_button_tag :iva_compras, true, false, class: 'custom-control-input', id: 'iva_compras_true', onchange: 'remoteSubmit("#search_form")' %>
-              <%= label_tag :iva_compras_true, "I.V.A. compras", class: 'custom-control-label' %>
+            <div class="col-sm-2" id="excel_file"></div>
+            <div class="col-sm-2">
+              <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button float-right' %>
             </div>
-            <div class="custom-control custom-radio custom-control-inline">
-              <%= radio_button_tag :iva_compras, false, false, class: 'custom-control-input', id: 'iva_compras_false', onchange: 'remoteSubmit("#search_form")' %>
-              <%= label_tag :iva_compras_false, "I.V.A. ventas", class: 'custom-control-label' %>
-            </div>
-          <!-- BUSCADOR POR TIPO -->
-          <div id="excel_file">
           </div>
-          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
         <% end %>
-
       </div>
+
       <div class="card-body" id="iva_books_table">
         <%= render 'iva_books_table' %>
       </div>

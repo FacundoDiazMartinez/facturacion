@@ -1,31 +1,25 @@
 <div class="p-4">
-  <%= title_helper 'Comprobantes de Compras' %>
-  <% if can? :create, PurchaseInvoice %>
-    <%= button_new_helper new_purchase_invoice_path %>
-  <% end %>
+  <%= title_helper 'Comprobantes de Compra' %>
+  <%= button_new_helper new_purchase_invoice_path if can? :create, PurchaseInvoice %>
   <div class="page-section">
     <div class="card">
       <div class="card-header">
         <%= form_tag purchase_invoices_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR PROVEEDOR -->
           <%= label_tag :supplier_name, "Proveedor", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
+          <div class="input-group col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'plane') %></div>
             </div>
             <%= text_field_tag :supplier_name, params[:supplier_name], class: 'form-control', placeholder: 'Buscar por proveedor', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR PROVEEDOR -->
 
-          <!-- BUSCAR POR USUARIO -->
           <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
-          <div class="input-group mb-2 col">
+          <div class="input-group col">
             <div class="input-group-prepend">
               <div class="input-group-text"><%= icon('fas', 'user') %></div>
             </div>
             <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR USUARIO -->
           <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
         <% end %>
       </div>

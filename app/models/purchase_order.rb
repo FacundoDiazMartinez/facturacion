@@ -18,10 +18,10 @@ class PurchaseOrder < ApplicationRecord
   validates_presence_of :purchase_order_details, message: "Debe ingresar al menos 1 producto."
   validates_inclusion_of :state, in: STATES
 
-  default_scope { where(active: true) }
-
   before_create :set_number
-  # after_save :set_sended_activity, if: Proc.new{|po| po.saved_change_to_state? && po.state == "Enviado" }
+
+  default_scope { where(active: true) }
+  scope :confirmados, -> { where(state: "Finalizada") }
 
   def pendiente?
     state == "Pendiente"

@@ -1,104 +1,69 @@
-<%= form_with(model: purchase_invoice, local: true) do |form| %>
-  <% if purchase_invoice.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(purchase_invoice.errors.count, "error") %> prohibited this purchase_invoice from being saved:</h2>
-
-      <ul>
-      <% purchase_invoice.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%= form_for @purchase_invoice do |form| %>
+  <%= error_explanation @purchase_invoice %>
 
   <div class="card">
     <div class="card-body">
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <%= form.label :purchase_order_id %>
-          <%= autocomplete_field_tag :purchase_order_id, purchase_invoice.purchase_order_number, autocomplete_purchase_order_purchase_invoices_path, class: 'form-control purchase-order-autocomplete_field', id_element: "#purchase_invoice_purchase_order_id", placeholder: "Número de Orden de compra" %>
+      <div class="row">
+        <div class="form-group col-md-4">
+          <%= label_tag :autocom_purchase_order_id %>
+          <%= autocomplete_field_tag :autocom_purchase_order_id, @purchase_invoice.purchase_order.try(:number), autocomplete_purchase_order_purchase_invoices_path, class: 'form-control autocomplete-purchase-order-pi', placeholder: "Busca por número" %>
           <%= form.hidden_field :purchase_order_id %>
         </div>
-        <div class="form-group col-md-6">
-          <%= form.label :arrival_note_id %>
-          <%= autocomplete_field_tag :arrival_note_id, '', autocomplete_arrival_note_id_purchase_invoices_path, class: 'form-control', id_element: "#purchase_invoice_arrival_note_id", placeholder: "Número de remito" %>
-          <%= form.hidden_field :arrival_note_id %>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group col-md-6">
+
+        <div class="form-group col-md-4">
           <%= form.label :supplier_id %>
-          <div class="input-group">
-            <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, {include_blank: "Sin proveedor"}, {class: 'form-control', required: true, aria:{label: "Proveedor", describedby: "add-supplier"}} %>
-            <div class="input-group-append">
-              <%= link_to icon('fas', 'plus'), new_supplier_path(), data:{remote: true, toggle: 'modal', target: '#supplierModal'}, class: 'btn btn-success' %>
-            </div>
-          </div>
+          <%= form.select :supplier_id, current_user.company.suppliers.map{|s| [s.name, s.id]}, { include_blank: "Seleccione..." }, {class: 'form-control', required: true } %>
         </div>
-        <div class="form-group col-md-6">
+
+        <div class="form-group col-md-4">
           <%= form.label :date %>
-          <%= form.text_field :date, class: 'form-control datepicker' %>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group col-md-6">
-          <%= label_tag :document_number, "Comprobante" %>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <%= form.select :cbte_tipo, Afip::CBTE_TIPO.map{|tipo| [tipo.last, tipo.first]}, {prompt: "Tipo..."}, {class: 'form-control'} %>
-            </div>
-            <%= form.text_field :number, class: 'form-control', placeholder: "Número de comprobante" %>
-          </div>
+          <%= form.text_field :date, class: 'form-control datepicker', required: true %>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-4">
+          <%= form.label :cbte_tipo %>
+          <%= form.select :cbte_tipo, PurchaseInvoice::BILL_TYPES.map{ |tipo| [tipo.last, tipo.first] }, { prompt: "Seleccione..." }, { class: 'form-control', required: true } %>
+        </div>
+
+        <div class="form-group col-md-4">
+          <%= form.label :number %>
+          <%= form.text_field :number, class: 'form-control', placeholder: "XXXX-12345678"  %>
+        </div>
+
+        <div class="form-group col-md-4">
           <%= form.label :cae %>
           <%= form.text_field :cae, class: 'form-control' %>
         </div>
-      </div>
 
-      <div class="form-row" id="invoice_a_div">
-        <div class="form-group col-md-6">
-          <%= label_tag :net_amount, "Monto neto" %>
-          <%= form.number_field :net_amount, class: 'form-control invoice_amount', min: 0, required: true %>
+        <div class="form-group col-md-2">
+          <%= form.label :net_amount %>
+          <%= form.number_field :net_amount, class: 'form-control invoice_values', min: 0 %>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-2">
+          <%= form.label :percep %>
+          <%= form.number_field :percep, class: 'form-control invoice_values', min: 0 %>
+        </div>
+
+        <div class="form-group col-md-2">
           <%= form.label :imp_op_ex %>
-          <%= form.number_field :imp_op_ex, class: 'form-control' %>
+          <%= form.number_field :imp_op_ex, class: 'form-control invoice_values', min: 0 %>
         </div>
-      </div>
 
-      <div class="form-row">
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-2">
           <%= form.label :iva_amount %>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <%= form.select :iva_aliquot, Afip::ALIC_IVA.map{|iva, id| [id, iva]}, {prompt: "Seleccione..."}, {class: 'form-control', required: true} %>
-            </div>
-            <%= form.number_field :iva_amount, class: 'form-control invoice_amount', min: 0, readonly:true %>
-          </div>
+          <%= form.number_field :iva_amount, class: 'form-control invoice_values', min: 0 %>
         </div>
 
-        <div class="form-group col-md-6">
+        <div class="form-group col-md-4">
           <%= form.label :total %>
-          <%= form.number_field :total, class: 'form-control', readonly: true %>
+          <%= form.number_field :total, class: 'form-control invoice_total', min: 0, required: true %>
         </div>
       </div>
     </div>
   </div>
 
-  <center>
+  <div class="text-center">
     <%= save_button %>
-  </center>
-<% end %>
-
-<div class="modal fade bd-example-modal-lg" id="supplierModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div id="supplier">
-      </div>
-    </div>
   </div>
-</div>
+<% end %>

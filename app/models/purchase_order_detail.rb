@@ -2,10 +2,9 @@ class PurchaseOrderDetail < ApplicationRecord
   belongs_to :purchase_order
   belongs_to :product
 
-  before_validation :check_product
-
   accepts_nested_attributes_for :product, reject_if: :all_blank, allow_destroy: true
 
+  before_validation :check_product
   validates_presence_of :product_id, message: "Falta id de producto."
   validates_presence_of :price, message: "Falta precio unitario."
   validates_presence_of :quantity, message: "Falta especificar cantidad."
@@ -38,17 +37,5 @@ class PurchaseOrderDetail < ApplicationRecord
       end
     end
     super
-  end
-
-  def associates_arrival_note_details
-    purchase_order.arrival_note_details.where('arrival_note_details.product_id = ? ', product_id)
-  end
-
-  def left_quantity
-    unless self.nil?
-      quantity - associates_arrival_note_details.sum(:quantity)
-    else
-      0
-    end
   end
 end

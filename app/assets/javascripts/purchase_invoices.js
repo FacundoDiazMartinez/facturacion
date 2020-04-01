@@ -1,62 +1,52 @@
-$(document).ready(function(){
-invoice_amount = $("#purchase_invoice_total").val();
-toggle_invoice_a_div();
+$(document).on('railsAutocomplete.select', '.autocomplete-purchase-order-pi', function(event, data){
+	if (typeof data.item.nomatch !== 'undefined'){
+		if (data.item.nomatch.length) {	$(this).val(data.item.nomatch) }
+	} else {
+		$("#purchase_invoice_supplier_id").val(data.item.supplier_id).attr('readonly', true)
+		$("#purchase_invoice_purchase_order_id").val(data.item.id)
+		$("#purchase_invoice_net_amount").val(data.item.total)
+		calculaTotalPI()
+	}
 })
 
-function toggle_invoice_a_div(){
-	if ($("#purchase_invoice_cbte_tipo").val() == 01) {
-		$("#invoice_a_div").show();
-		// $("#purchase_invoice_total").attr("disabled","true");
-		$( ".invoice_amount" ).trigger( "change" );
+$(document).on('focusin', '.autocomplete-purchase-order-pi', function() {
+	$(this).data('value', $(this).val());
+}).on('change', '.autocomplete-purchase-order-pi', function(){
+	if ($(this).val() == "") {
+		$("#purchase_invoice_purchase_order_id").val("")
+		verificaOrdenDeCompra()
+	} else {
+		$("#purchase_invoice_purchase_order_id").val($(this).data('value'))
 	}
-	else {
-		$("#invoice_a_div").hide();
-		// $("#purchase_invoice_total").removeAttr("disabled");
-		$("#purchase_invoice_total").val(invoice_amount);
-	}
+})
+
+$(document).on("change",".invoice_values", function(){
+	aseguraValorNumerico(this)
+	calculaTotalPI()
+})
+
+$(document).on('ready pjax:Complete', function() {
+	verificaOrdenDeCompra()
+})
+
+$(document).on("change", "#purchase_invoice_purchase_order_id", function() {
+	verificaOrdenDeCompra()
+})
+
+function calculaTotalPI() {
+	total = 0
+	$(".invoice_values").each( function() { total += parseFloat($(this).val()) } )
+	$("#purchase_invoice_total").val(total.toFixed(2))
 }
 
-$(document).on('railsAutocomplete.select', '.purchase-order-autocomplete_field', function(event, data){
-	if (typeof data.item.nomatch !== 'undefined'){
-		if (data.item.nomatch.length) {
-			$(this).val(data.item.nomatch);
-		}
-	};
-	$("#purchase_invoice_supplier_id").val(data.item.supplier_id);
-	$("#purchase_invoice_total").val(data.item.total);
-})
+function aseguraValorNumerico(element) {
+	if (!$(element).val()) { $(element).val('0.0') }
+}
 
-$(document).on("change", "#purchase_invoice_cbte_tipo", function(){
-	toggle_invoice_a_div();
-})
-
-$(document).on("change","#purchase_invoice_net_amount", function(){ //Cuando cambia valor en MONTO NETO
-	if ($("#purchase_invoice_iva_amount").val() != "") {
-		$("#purchase_invoice_iva_amount").val(parseFloat(($("#purchase_invoice_net_amount").val() - parseFloat($("#purchase_invoice_imp_op_ex").val())) * parseFloat($("#purchase_invoice_iva_aliquot :selected").text())));
-		$("#purchase_invoice_total").val(parseFloat($("#purchase_invoice_net_amount").val()) + parseFloat($("#purchase_invoice_iva_amount").val()));
+function verificaOrdenDeCompra() {
+	if ( $("#purchase_invoice_purchase_order_id").val() ) {
+		$("#purchase_invoice_supplier_id").attr('readonly', true)
+	} else {
+		$("#purchase_invoice_supplier_id").removeAttr('readonly')
 	}
-	else {
-		$("#purchase_invoice_total").val(parseFloat($("#purchase_invoice_net_amount").val()));
-	}
-})
-
-$(document).on("change","#purchase_invoice_iva_amount", function(){ //Cuando cambia valor en IVA
-	$("#purchase_invoice_total").val(parseFloat($("#purchase_invoice_net_amount").val()) + parseFloat($("#purchase_invoice_iva_amount").val()));
-})
-
-$(document).on("change","#purchase_invoice_iva_aliquot", function(){
-	if ($("#purchase_invoice_iva_aliquot").val() != "") {
-		if (!isNaN(($("#purchase_invoice_iva_aliquot :selected").text()))) {
-			$("#purchase_invoice_iva_amount").val(parseFloat($("#purchase_invoice_net_amount").val()) * parseFloat($("#purchase_invoice_iva_aliquot :selected").text()));
-			$( ".invoice_amount" ).trigger( "change" );
-		}
-		else {
-			if (($("#purchase_invoice_iva_aliquot :selected").text() == "Exento") || ($("#purchase_invoice_iva_aliquot :selected").text() == "No gravado")) {
-				// $("#purchase_invoice_iva_amount").attr("disabled","true");
-				$("#purchase_invoice_iva_amount").val(parseFloat(0));
-				$("#purchase_invoice_total").val(parseFloat($("#purchase_invoice_net_amount").val()));
-			}
-		}
-		// $("#purchase_invoice_iva_amount").attr("disabled","true");
-	}
-})
+}

@@ -7,7 +7,7 @@
       <th>Monto neto</th>
       <th>Monto I.V.A.</th>
       <th>Total</th>
-      <th colspan="1"></th>
+      <th></th>
     </tr>
   </thead>
 
@@ -17,9 +17,9 @@
         <td><%= iva_book.tipo %></td>
         <td><%= invoice_with_link(iva_book) %></td>
         <td><%= iva_book.date %></td>
-        <td>$<%= iva_book.net_amount %></td>
-        <td>$<%= iva_book.iva_amount %></td>
-        <td>$<%= iva_book.total %></td>
+        <td><%= number_to_ars iva_book.net_amount %></td>
+        <td><%= number_to_ars iva_book.iva_amount %></td>
+        <td><%= number_to_ars iva_book.total %></td>
         <% if iva_book.is_credit?  %>
           <td><%= link_to icon('fas', 'eye').html_safe, iva_book.purchase_invoice, class: 'btn btn-sm btn-icon btn-outline-secondary' %></td>
         <% else %>

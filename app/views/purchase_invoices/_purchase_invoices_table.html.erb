@@ -6,26 +6,20 @@
         <th>Tipo</th>
         <th>Proveedor</th>
         <th>Creado por</th>
-        <th>Neto</th>
-        <th>I.V.A.</th>
-        <th>Exento</th>
         <th>Total</th>
-        <th colspan="3"></th>
+        <th></th>
       </tr>
     </thead>
 
     <tbody>
       <% @purchase_invoices.each do |purchase_invoice| %>
       <tr>
-        <td><strong><%= purchase_invoice.number %></strong></td>
+        <td><%= purchase_invoice.number %></td>
         <td><%= purchase_invoice.tipo %></td>
         <td><%= link_to purchase_invoice.supplier.name, edit_supplier_path(purchase_invoice.supplier_id) %></td>
         <td><%= link_to purchase_invoice.user.name, user_path(purchase_invoice.user_id) %></td>
-        <td>$<%= purchase_invoice.net_amount %></td>
-        <td>$<%= purchase_invoice.iva_amount %></td>
-        <td>$<%= purchase_invoice.imp_op_ex %></td>
-        <td>$<%= purchase_invoice.total %></td>
-        <td>
+        <td><strong><%= number_to_ars purchase_invoice.total %></strong></td>
+        <td class="td-action-buttons">
           <%= link_to icon('fas', 'edit'), edit_purchase_invoice_path(purchase_invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, PurchaseInvoice %>
           <%= link_to icon('fas', 'trash'), purchase_invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, PurchaseInvoice %>
         </td>
@@ -33,6 +27,5 @@
       <% end %>
     </tbody>
   </table>
-
+  <%= paginate @purchase_invoices %>
 </div>
-<%= paginate @purchase_invoices %>
