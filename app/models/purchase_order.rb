@@ -22,6 +22,7 @@ class PurchaseOrder < ApplicationRecord
 
   default_scope { where(active: true) }
   scope :confirmados, -> { where(state: "Finalizada") }
+  scope :entregas_pendientes, -> { where(delivered: false) }
 
   def pendiente?
     state == "Pendiente"
@@ -55,10 +56,6 @@ class PurchaseOrder < ApplicationRecord
     update_columns(delivered: true)
   end
 
-  def details
-    purchase_order_details
-  end
-
   def name
     "Nº: #{number} - De: #{supplier.name}"
   end
@@ -79,19 +76,6 @@ class PurchaseOrder < ApplicationRecord
     "purchase_order"
   end
 
-  def set_number
-    last_po = PurchaseOrder.where(company_id: company_id).last
-    self.number = last_po.nil? ? "00000001" : (last_po.number.to_i + 1).to_s.rjust(8,padstr= '0')
-  end
-
-  def set_sended_activity
-    UserActivity.create_for_sended_purchase_order self
-  end
-
-  def set_activity
-    UserActivity.create_for_purchase_order self
-  end
-
   def destroy
     if self.editable?
       update_column(:active, false)
@@ -102,16 +86,6 @@ class PurchaseOrder < ApplicationRecord
       return false
     end
   end
-
-    # def update purchase_order_params, send_mail = false, email = nil
-    #   response = super(purchase_order_params)
-    #   if send_mail == "true" && response
-    #     PurchaseOrderMailer.send_mail(self, email, company).deliver
-    #     update_column(:delivered, true)
-    #   end
-    #   return response
-    # end
-  #PROCESOS
 
   private
 
@@ -128,5 +102,10 @@ class PurchaseOrder < ApplicationRecord
   def self.search_by_state state
     return all if state.blank?
     where(state: state)
+  end
+
+  def set_number
+    last_po = PurchaseOrder.where(company_id: company_id).last
+    self.number = last_po.nil? ? "00000001" : (last_po.number.to_i + 1).to_s.rjust(8,padstr= '0')
   end
 end

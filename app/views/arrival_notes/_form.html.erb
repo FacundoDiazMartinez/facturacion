@@ -5,33 +5,38 @@
       <div class="card-body">
         <div class="row">
           <div class="col-sm-6 form-group">
-            <%= form.label :number, "Número de remito" %>
-            <%= form.text_field :number, class: 'form-control', disabled: !@arrival_note.editable?, required: true %>
+            <%= label_tag :number, "Número de remito" %>
+            <%= text_field_tag :number, @arrival_note.number || "Generado automáticamente", class: 'form-control', disabled: true %>
           </div>
 
           <div class="col-sm-6 form-group">
             <%= form.label :purchase_order_id, "Orden de compra" %>
-            <%= autocomplete_field_tag :purchase_order_id, form.object.purchase_order_number, autocomplete_purchase_order_arrival_notes_path, class: 'form-control arrival_note-purchase_order-autocomplete_field', id_element: ".arrival_note_purchase_order_id", placeholder: "Número de Orden de Compra aprobada", disabled: !@arrival_note.editable?, required: true %>
+            <%= autocomplete_field_tag :purchase_order_id, @arrival_note.purchase_order.try(:number), autocomplete_purchase_order_arrival_notes_path, class: 'form-control arrival-note-autocomplete-purchase-order', placeholder: "Busca por número", disabled: !@arrival_note.editable?, required: true %>
+            <%= form.hidden_field :purchase_order_id %>
           </div>
 
           <div class="col-sm-6 form-group">
-            <%= form.label :depot_id, "Almacén receptor" %>
+            <%= form.label :depot_id, "Almacén" %>
             <%= form.select :depot_id, current_company.depots.map{|d| [d.name, d.id]}, { prompt: "Seleccione..." }, {class: 'form-control', required: true, disabled: !@arrival_note.editable? } %>
           </div>
 
           <div class="col-sm-6 form-group">
-            <%= form.label :state, "Estado" %>
-            <%= form.select :state, @arrival_note.array_of_state_values, {}, { class: 'form-control', disabled: !@arrival_note.editable?} %>
+            <%= label_tag :state, "Estado" %>
+            <div class="text-center h4">
+              <%= arrival_state_label_helper(@arrival_note) %>
+            </div>
           </div>
         </div>
 
         <div class="text-center">
-          <%= link_to "#{icon('fas', 'eraser ')} Anular".html_safe, cancel_arrival_note_path(@arrival_note.id), method: :patch, class: 'btn btn-danger' if @arrival_note.confirmado? %>
+          <%= button_tag "#{icon('fas', 'check ')} Confirmar".html_safe, type: :submit, name: :confirm, value: :true, class: 'btn btn-success my-3' if @arrival_note.pendiente? && @arrival_note.persisted?%>
         </div>
       </div>
     </div>
 
-    <%= render template: '/arrival_notes/details/index.html.erb', locals:{form: form} %>
+    <div id="arrival_note_details">
+      <%= render template: '/arrival_notes/details/index.html.erb', locals: { form: form } %>
+    </div>
 
     <div class="text-center">
       <%= save_button if @arrival_note.editable? %>

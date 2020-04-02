@@ -5,8 +5,7 @@
   <div class="page-section">
     <div class="card card-fluid">
       <div class="card-header">
-        <%= form_tag depots_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR CLIENTE -->
+        <%= form_tag depots_path, {class: 'form-inline', id: 'search_form'} do %>
           <%= label_tag :name, "Nombre", class: 'sr-only' %>
           <div class="input-group col">
             <div class="input-group-prepend">
@@ -14,9 +13,7 @@
             </div>
             <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
           </div>
-          <!-- BUSCAR POR CLIENTE -->
 
-          <!-- BUSCAR POR DISPONIBILIDAD-->
           <%= label_tag :state, "Disponibilidad", class: 'sr-only' %>
           <%= label_tag :filled, "Disponibilidad", class: 'sr-only' %>
           <div class="input-group col">
@@ -26,14 +23,13 @@
             <%= select_tag :state, options_for_select([["Disponible"], ["Lleno"]]), {prompt: 'Buscar por disponibilidad...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
             <%= select_tag :filled, options_for_select([["Disponible"], ["Lleno"]]), {prompt: 'Buscar por disponibilidad...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
           </div>
-          <!-- BUSCAR POR DISPONIBILIDAD-->
+
           <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
         <% end %>
       </div>
+
       <div id="depots_table" class="card-body">
-        <!-- STOCK ASOCIADO -->
         <%= render 'depots_table' %>
-        <!-- STOCK ASOCIADO -->
       </div>
     </div>
   </div>

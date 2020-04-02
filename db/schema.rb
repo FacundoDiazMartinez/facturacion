@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_01_141915) do
+ActiveRecord::Schema.define(version: 2020_04_02_142619) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -753,8 +753,6 @@ ActiveRecord::Schema.define(version: 2020_04_01_141915) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "active", default: true
-    t.boolean "paid_out", default: false
-    t.float "total_pay", default: 0.0, null: false
     t.boolean "delivered", default: false, null: false
     t.date "date"
     t.index ["budget_id"], name: "index_purchase_orders_on_budget_id"
