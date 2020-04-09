@@ -1,6 +1,5 @@
 <%= sales_layout_helper("facturacion") do %>
 
-  <%= title_helper 'Ventas registradas' %>
   <%= button_new_helper(new_invoice_path()) if can? :create, Invoice %>
 
   <div class="page-section">

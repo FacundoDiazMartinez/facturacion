@@ -1,4 +1,4 @@
-class Budgets::ClientsController < ApplicationController
+class Sales::Budgets::ClientsController < ApplicationController
 	before_action :set_budget, only: [:update]  #Se necesita un budget porque al renderizar el client_column pregunta si el budget es editable
 	before_action :set_client, only: [:edit, :update]
 

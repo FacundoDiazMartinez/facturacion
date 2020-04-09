@@ -1,7 +1,7 @@
 '<% if not @client.errors.any? %>'
 	$("#clientModal").modal('hide');
 	$('#clientModal').on('hidden.bs.modal', function (e) {
-	  	$("#client_form").html("<%= j render '/budgets/client_column' %> ");
+	  	$("#client_form").html("<%= j render '/sales/budgets/client_column' %> ");
 	  	$("#budget_client_id").val("<%= @client.id %>");
 	});
 '<% else %>'

@@ -3,8 +3,8 @@
     <thead>
       <tr>
         <th scope="col">Número</th>
-        <th scope="col" colspan="2">Cliente</th>
         <th scope="col">Fecha</th>
+        <th scope="col">Cliente</th>
         <th scope="col">Vencimiento</th>
         <th scope="col">Estado</th>
         <th scope="col">Total</th>
@@ -18,9 +18,8 @@
       <% @budgets.each do |budget| %>
       <tr>
         <td><%= budget.number %></td>
-        <td><%= image_tag budget.client.avatar, alt: budget.client.name, class: 'avatar' %></td>
-        <td><%= link_to budget.client.name, client_path(budget.client_id) %></td>
         <td><%= l(budget.date) %></td>
+        <td><%= image_tag budget.client.avatar, alt: budget.client.name, class: 'avatar' %> <%= link_to budget.client.name, client_path(budget.client_id) %></td>
         <td><%= budget.expiration_date %></td>
         <td class="text-center"><%= state_label_helper_budget(budget) %></td>
         <td>$<%= budget.total %></td>

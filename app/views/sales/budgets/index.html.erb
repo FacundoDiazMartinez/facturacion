@@ -1,5 +1,5 @@
-<div class="p-4">
-  <%= title_helper 'Presupuestos' %>
+<%= sales_layout_helper("presupuestos") do %>
+
   <%= button_new_helper(new_budget_path()) %>
 
   <div class="page-section">
@@ -60,4 +60,4 @@
       </div>
     </div>
   </div>
-</div>
+<% end %>

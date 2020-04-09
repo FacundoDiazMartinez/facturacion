@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+
+  ### VENTAS
   scope module: :sales, path: "/sales" do
     resources :home, as: :sales_home
     resources :invoices do
@@ -34,6 +36,22 @@ Rails.application.routes.draw do
         get :autocomplete_name,     on: :collection
       end
     end
+    resources :budgets do
+      collection do
+        get :autocomplete_client
+        get :autocomplete_product_code
+        get :search_product
+      end
+      member do
+        patch :confirm
+        patch :cancel
+      end
+    end
+    namespace :budgets do
+      resources :clients do
+        get :autocomplete_document, on: :collection
+      end
+    end
   end
 
   resources :transfer_requests do
@@ -61,17 +79,7 @@ Rails.application.routes.draw do
       get :apply
     end
   end
-  resources :budgets do
-    collection do
-      get :autocomplete_client
-      get :autocomplete_product_code
-      get :search_product
-    end
-    member do
-      patch :confirm
-      patch :cancel
-    end
-  end
+
 
   get 'daily_cash_movements/show'
 
@@ -85,11 +93,7 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :budgets do
-    resources :clients do
-      get :autocomplete_document, on: :collection
-    end
-  end
+
 
   resources :stadistics do
     collection do

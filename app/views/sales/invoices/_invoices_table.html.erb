@@ -3,11 +3,11 @@
       <thead>
         <tr>
           <th colspan="2">Nº</th>
-          <th scope="col" class="only-desktop">Fecha</th>
-          <th scope="col">Cliente</th>
-          <th scope="col" class="only-desktop">Tipo</th>
-          <th scope="col">Total</th>
-          <th scope="col">Faltante</th>
+          <th class="only-desktop">Fecha</th>
+          <th>Cliente</th>
+          <th class="only-desktop">Tipo</th>
+          <th>Total</th>
+          <th>Faltante</th>
           <th></th>
         </tr>
       </thead>
@@ -17,7 +17,7 @@
           <tr class="<%= bordered_invoice_by_state(invoice.state) %>">
             <td colspan="2"><%= invoice.full_number %></td>
             <td class="only-desktop"><%= invoice.cbte_fch %></td>
-            <td><%= link_to invoice.client.name, client_path(invoice.client_id) %></td>
+            <td><%= image_tag invoice.client.avatar, alt: invoice.client.name, class: 'avatar' %> <%= link_to invoice.client.name, client_path(invoice.client_id) %></td>
             <td class="only-desktop"><%= invoice.tipo %></td>
             <td>$ <%= invoice.total %></td>
             <td>$ <%= invoice.total_left%>
