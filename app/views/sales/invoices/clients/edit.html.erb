@@ -1,0 +1,15 @@
+<div class="modal-header">
+  <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'user').html_safe %> Cliente</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<%= form_for [:invoices, @client] , remote: true, format: :js  do |f| %>
+	<div class="modal-body">
+	  <%= render '/sales/invoices/clients/form', f: f %>
+	</div>
+	<div class="modal-footer">
+	  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+	  <%= save_button class:'btn_save btn btn-primary' %>
+	</div>
+<% end %>

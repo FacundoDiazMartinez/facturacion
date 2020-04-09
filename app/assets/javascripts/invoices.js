@@ -75,7 +75,7 @@ function runInvoice(){
   })
 
 	if (data['invoice_details_attributes'].length > 0) {
-		fetch('/invoices/calculate_invoice_totals', {
+		fetch('/sales/invoices/calculate_invoice_totals', {
 			method: 'POST',
 			body: JSON.stringify(data),
 			headers: {

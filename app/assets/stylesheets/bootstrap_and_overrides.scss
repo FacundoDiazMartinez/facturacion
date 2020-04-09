@@ -1,7 +1,8 @@
+@import "variables";
+
 // Bootstrap classes overrides
 $light-dark-background: #e6e8ed;
-$light-background: #f5f5f5;
-$primary-color: #007bff;
+$light-background: #fefefe;
 
 body {
   background-color: $light-background !important;
@@ -97,7 +98,7 @@ h6 small {
   box-shadow: 0px 3px 12px 1px rgba(0, 0, 0, 0.2);
 
   .card-header {
-    background-color: $light-dark-background;
+    background-color: $dark-background-color;
   }
 
   .card-div-img-top {

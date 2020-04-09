@@ -1,0 +1,31 @@
+@import "variables";
+
+.nav-view {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+
+  .nav-view-item {
+
+    a {
+      color: $text-muted;
+      margin-right: 3rem;
+      padding: 1rem 0;
+
+      &:hover {
+        text-decoration: none;
+        color: $text-regular;
+        border-bottom: 4px solid $primary-color;
+      }
+    }
+
+    &.active {
+
+      a {
+        color: $text-regular;
+        border-bottom: 4px solid $primary-color;
+      }
+    }
+  }
+}

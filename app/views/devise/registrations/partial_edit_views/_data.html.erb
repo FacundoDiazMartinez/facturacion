@@ -1,78 +1,68 @@
 <div class="container-fluid">
-  <div class="col-md-8" style="margin:auto">
-    <div class="card p-4">
-      <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-
-        <div id="company_code" class="form-group">
+  <div class="col-md-8 m-auto">
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <div class="card">
+        <div class="card-body">
           <div class="row">
-            <div class="col-md-12">
-              <div cla>
+
+            <div class="col-md-12 form-group">
+              <div>
                 <%= f.label :code, 'Código de compañía' %>
-                <a href="#" id="company_code_popover" data-toggle="popover" title="¿Donde puedo conseguir el código?" class="my-auto">
+                <a href="#" id="company_code_popover" data-toggle="popover" title="¿Dónde puedo conseguir el código?" class="my-auto">
                   <%= icon('fas', 'question-circle') %>
                 </a>
               </div>
               <%= autocomplete_field_tag :code, '', autocomplete_company_code_users_path, class: 'form-control', id_element:'#user_company_id' %>
               <%= f.hidden_field :company_id %>
             </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <div class="row">
-            <div class=" col-md-6">
+            <div class=" col-md-6 form-group">
               <%= f.label :first_name, 'Nombre' %>
               <%= f.text_field :first_name, autofocus: true, class:'form-control', required: true %>
             </div>
-            <div class="col-md-6" id="container-date">
+
+            <div class="col-md-6 form-group" id="container-date">
               <%= f.label :last_name, 'Apellido' %>
               <%= f.text_field :last_name, class:'form-control', required: true %>
             </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 form-group">
               <%= f.label :dni, 'DNI' %>
               <%= f.text_field :dni, class:'form-control', placeholder: "D.N.I.", required: true %>
             </div>
 
-            <div class="col-md-6" id="picker-containter">
+            <div class="col-md-6 form-group" id="picker-containter">
               <%= f.label :birthday, 'Fecha de nacimiento' %>
               <%= f.text_field :birthday, class:'form-control datepicker', required: true, autocomplete: "off" %>
             </div>
-          </div>
-        </div>
 
-        <div class="form-group">
-          <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 form-group">
               <%= f.label :province_id, "Provincia", class:'control-label' %>
               <%= f.select :province_id, options_from_collection_for_select(Province.all, :id, :name, f.object.province_id), {prompt: "Seleccione..."}, {:class => 'form-control', onchange: 'reloadLocality($(this).val(), "user_locality_id")', required: true} %>
             </div>
-            <div class="col-md-6 with-spinner">
+
+            <div class="col-md-6 form-group">
               <%= f.label :locality_id, "Localidad", class:'control-label' %>
               <%= f.select :locality_id, options_from_collection_for_select(Locality.where(province_id: f.object.province_id).order(:name), :id, :name, f.object.locality_id), {prompt: "Seleccione..."}, {:class => 'form-control', required: true} %>
             </div>
+
+            <div class="col-md-12 form-group">
+              <%= f.label :address, 'Dirección' %>
+              <%= f.text_field :address, class:'form-control' %>
+            </div>
+
+            <div class="col-md-12 form-group">
+              <%= f.label :email, 'Email' %>
+              <%= f.email_field :email, class:'form-control', required: true %>
+            </div>
+
           </div>
         </div>
+      </div>
 
-
-        <div class="form-group">
-          <%= f.label :address, 'Dirección' %>
-          <%= f.text_field :address, class:'form-control' %>
-        </div>
-
-        <div class="form-group">
-          <%= f.label :email, 'Email' %>
-          <%= f.email_field :email, class:'form-control', required: true %>
-        </div>
-
-        <center>
-          <%= save_button %>
-        </center>
-      <% end %>
-    </div>
+      <div class="text-center">
+        <%= save_button %>
+      </div>
+    <% end %>
   </div>
 </div>

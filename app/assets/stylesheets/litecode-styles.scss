@@ -1,3 +1,5 @@
+@import "variables";
+
 .alert-lc {
   line-height: 3rem;
   text-align: center;
@@ -5,6 +7,7 @@
   border: none;
   border-radius: 0;
   display: none;
+  margin-bottom: 0px;
 
   &.alert-lc-success {
     color: #ffffff;
@@ -13,6 +16,6 @@
 
   &.alert-lc-danger {
     color: #ffffff;
-    background-color: #bf1d1d;
+    background-color: $accent-color;
   }
 }

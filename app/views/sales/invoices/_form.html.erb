@@ -1,0 +1,203 @@
+<%= nested_form_for @invoice do |form| %>
+<%= error_explanation @invoice %>
+<%= form.hidden_field :budget_id %>
+<div class="card invoice-header card-bordered <%= bordered_invoice_by_state(@invoice.state) %>">
+  <div class="card-body">
+    <div id="on_account" class="row" style="display: none">
+      <div class="col-md-4">
+        <div class="form-group row">
+          <%= form.label :on_account, "A Cta. Cte.", class:'col-4 col-form-label col-form-label-sm' %>
+          <div class="col-8">
+            <%= form.check_box :on_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle', disabled: true, checked: true %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div id="client_form" class="col-md-4">
+        <%= render 'client_column' %>
+      </div>
+      <%= form.hidden_field :client_id, value: @client.id %>
+
+      <div class="col-md-4">
+        <div class="form-group row">
+          <%= label_tag :total, "TOTAL", class:'col-4 col-form-label col-form-label-sm' %>
+          <div class="col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <%= text_field_tag :total, @invoice.total, class: 'form-control text-right', readonly: true %>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <%= label_tag :total_pay, "Pagado", class:'col-4 col-form-label col-form-label-sm' %>
+          <div class="col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <%= text_field_tag :total_pay, @invoice.total_pay, class: 'form-control text-right', readonly: true %>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <%= label_tag :total_left, "Monto faltante", class:'col-4 col-form-label col-form-label-sm' %>
+          <div class="col-8">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">$</span>
+              </div>
+              <%= text_field_tag :total_left, @invoice.total_left.round(2), class: 'form-control text-right', readonly: true %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="form-group row">
+          <%= form.label :concepto, class:'col-4 col-form-label col-form-label-sm' %>
+          <div class="col-8">
+            <%= form.select :concepto, options_for_select(Company::CONCEPTOS, @invoice.concepto), {}, {class: 'form-control', disabled: @invoice.confirmado?} %>
+          </div>
+        </div>
+        <div class="form-group row">
+          <%= form.label :sale_point_id, "Punto de venta", class:'col-4 col-form-label col-form-label-sm' %>
+          <div class="col-8">
+            <%= form.select :sale_point_id, options_for_select( @sale_points.map{|sp| [sp.name, sp.id]}, @invoice.sale_point_id ), {}, {class: 'form-control', disabled: @invoice.confirmado?} %>
+          </div>
+        </div>
+        <div class="form-group row">
+          <%= form.label :cbte_tipo, "Tipo", class:'col-4 col-form-label col-form-label-sm' %>
+          <div class="col-8">
+            <%= form.select :cbte_tipo, options_for_select(InvoiceManager::CbteTypesGetter.call(current_company, @client), form.object.cbte_tipo), {} ,{ class: 'form-control', disabled: @invoice.confirmado? } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row" id="dynamic_attributes">
+      <%= render 'dynamic_attributes', form: form %>
+    </div>
+  </div>
+</div>
+
+<div id="idetails">
+  <%= render 'details', { form: form, invoice: @invoice } %>
+</div>
+
+<div id="ibonifications">
+  <%= render 'bonifications', { form: form, invoice: @invoice } %>
+</div>
+
+<div id="itaxes">
+  <%= render 'taxes', { form: form, invoice: @invoice } if current_company.iva_cond == "Responsable Inscripto" %>
+</div>
+
+<% unless @invoice.new_record? %>
+  <div id="ipayments">
+    <%= render( 'payments', { invoice: @invoice } ) unless @invoice.new_record? %>
+  </div>
+<% end %>
+
+<% if @invoice.new_record? %>
+  <p class="alert alert-info text-center"> <%= icon('fas', 'exclamation-triangle') %> Para registrar pagos debes guardar la factura.</p>
+<% end %>
+
+<div id="div_iauthorized">
+  <%= render 'authorized_people', { form: form, client: @client } %>
+</div>
+
+<div class="invoice-resume">
+  <%= render 'resume', invoice: @invoice %>
+</div>
+
+<div class="text-center">
+  <div hidden="hidden"><%= check_box_tag :send_to_afip, true %></div>
+  <div class="row">
+    <div class="col-4"></div>
+    <div class="col-4">
+      <center>
+        <%= button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn_invoice', data: { disable_with: "#{icon('fas', 'sync')} Cargando...".html_safe } if @invoice.editable? %>
+      </center>
+    </div>
+    <div class="col-4">
+      <%= button_tag "#{icon('fas', 'check-circle')} Confirmar".html_safe, type: 'button', onclick: 'openConfirmationModal()', class: 'btn btn-danger', style:'float: right;' unless @invoice.confirmado? %>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<div class="modal fade bd-example-modal-lg" id="confirm_invoice_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="confirmation_modal">
+        <%= render '/sales/invoices/confirmation_modal/confirm_invoice_content' %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @invoice.confirmado? %>
+<div class="modal fade bd-example-modal-lg" id="sendClientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientModalTitle"><%= icon('fas', 'users').html_safe %>
+          Enviar factura a
+          <%= @client.name %></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <%= form_tag deliver_invoice_path(@invoice.id),method: :get do %>
+      <div class="modal-body">
+        <h5>Enviar la factura Nº
+          <%= @invoice.full_number %></h5>
+        <div class="form-group">
+          <%= label_tag :email, "Email" %>
+          <%= email_field_tag :email, @client.email, class: 'form-control', required: true %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <%= save_button %>
+      </div>
+    <% end -%>
+  </div>
+</div>
+</div>
+<% else %>
+<div class="modal fade bd-example-modal-lg" id="sendToAfipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="confirm_modal"></div>
+    </div>
+  </div>
+</div>
+<% end -%>
+
+<%= render_modal_lg %>
+<%= render '/sales/invoices/detail/search_product' %>
+
+<script>
+$(document).ready(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+  initializeInvoice();
+});
+
+$(document).on("change", "select", function () {
+  $("#save_btn_invoice").attr("class", "btn btn-danger");
+});
+
+$(document).on("keyup", "input:visible", function () {
+  $("#save_btn_invoice").attr("class", "btn btn-danger");
+});
+
+$(document).on('nested:fieldRemoved', function () {
+  $("#save_btn_invoice").attr("class", "btn btn-danger");
+})
+</script>

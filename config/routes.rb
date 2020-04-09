@@ -1,4 +1,40 @@
 Rails.application.routes.draw do
+  scope module: :sales, path: "/sales" do
+    resources :home, as: :sales_home
+    resources :invoices do
+      resources :invoice_details
+      collection do
+        get :autocomplete_product_code
+        get :search_product
+        get :autocomplete_associated_invoice
+        get :autocomplete_invoice_number
+        get :change_attributes
+        get :set_associated_invoice
+        get :get_total_payed_and_left
+        get :sales_per_month
+        get :sales_per_year
+        get :states_per_month
+        get :amount_per_month
+        get :commissioner_per_month
+        post :calculate_invoice_totals
+      end
+      member do
+        get :confirm
+        get :cancel
+        get :change_attributes
+        get :set_associated_invoice
+        get :deliver
+        get :paid_invoice_with_debt
+        get :get_associated_invoice_details
+      end
+    end
+    namespace :invoices do
+      resources :clients do
+        get :autocomplete_document, on: :collection
+        get :autocomplete_name,     on: :collection
+      end
+    end
+  end
 
   resources :transfer_requests do
     patch :cancel, on: :member
@@ -46,12 +82,6 @@ Rails.application.routes.draw do
   resources :roles do
     resources :role_permissions do
       post :toggle_association, on: :collection
-    end
-  end
-  namespace :invoices do
-    resources :clients do
-      get :autocomplete_document, on: :collection
-      get :autocomplete_name,     on: :collection
     end
   end
 
@@ -203,30 +233,6 @@ Rails.application.routes.draw do
   resources :companies
 
   devise_for :users, :path_prefix => 'sessions', controllers: { registrations: 'users/registrations' }
-
-  resources :invoices do
-    resources :invoice_details
-    get :autocomplete_product_code, :on => :collection
-    get :confirm, on: :member
-    get :cancel, on: :member
-    get :search_product, on: :collection
-    get :autocomplete_associated_invoice, on: :collection
-    get :autocomplete_invoice_number, on: :collection
-    get :change_attributes, on: :collection
-    get :change_attributes, on: :member
-    get :set_associated_invoice, on: :collection
-    get :set_associated_invoice, on: :member
-    get :deliver, on: :member
-    get :paid_invoice_with_debt, on: :member
-    get :get_associated_invoice_details, on: :member
-    get :get_total_payed_and_left, on: :collection
-    get :sales_per_month, on: :collection
-    get :sales_per_year, on: :collection
-    get :states_per_month, on: :collection
-    get :amount_per_month, on: :collection
-    get :commissioner_per_month, on: :collection
-    post :calculate_invoice_totals, on: :collection
-  end
 
   resources :income_payments
 

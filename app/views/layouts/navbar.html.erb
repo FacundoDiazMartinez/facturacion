@@ -14,8 +14,8 @@
       <% if !user_signed_in? %>
         <%= image_tag '/images/default_company.png', alt: "Sistema de facturación online", width: '90px;', class: 'company_logo' %>
       <% else %>
-        <% if !current_user.company.blank? %>
-          <%= image_tag current_user.company.logo, alt: "Sistema de facturación online", width: '90px;', class: 'company_logo' %>
+        <% if !current_company.blank? %>
+          <%= image_tag current_company.logo, alt: "Sistema de facturación online", width: '90px;', class: 'company_logo' %>
         <% else %>
           <%= image_tag '/images/default_company.png', alt: "Sistema de facturación online", width: '90px;', class: 'company_logo' %>
         <% end %>
@@ -46,7 +46,7 @@
             Mi cuenta</a>
           <div class="dropdown-menu text-center right-nav" aria-labelledby="navbarDropdownMenuMiCuenta">
             <% if current_user.has_company? %>
-  		    		<%= link_to "Mi empresa".html_safe, company_path(current_user.company_id), class: 'dropdown-item' %>
+  		    		<%= link_to "Mi empresa".html_safe, company_path(current_company.id), class: 'dropdown-item' %>
               <%= link_to "Mi perfil", edit_user_registration_path, class: 'dropdown-item' %>
   		    	<% end %>
             <div class="dropdown-divider only-desktop"></div>

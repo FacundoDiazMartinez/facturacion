@@ -1,25 +1,22 @@
 <% if can? :see_personal, Company %>
-<div class="row d-flex align-items-stretch">
-  <% @users.each do |user| %>
-  <div class="col-xs-12 col-md-6 col-lg-3 mb-4">
-    <div class="card " style="height:100%;">
-      <%= link_to user_path(user) do %>
-      <div class="card-div-img-top" style="background: url('<%= user.avatar %>')">
-			</div>
-      <div class="card-body">
-        <h6 class="card-title"><%= user.name %></h6>
-        <h6><small><%= user.email %></small></h6>
-        <h6><small><%= user.role_label %></small></h6>
+  <div class="d-flex align-items-stretch">
+    <% @users.each do |user| %>
+      <div class="col-xs-12 col-md-6 col-lg-3 mb-4">
+        <%= link_to user_path(user) do %>
+          <div class="card " style="height:100%;">
+            <div class="card-div-img-top" style="background: url('<%= user.avatar %>'); background-size: contain;">
+      			</div>
+            <div class="card-body">
+              <h6 class="card-title text-regular text-bold"><%= user.name %></h6>
+              <h6><small><%= user.email %></small></h6>
+              <h6><small><%= user.role_label %></small></h6>
+            </div>
+          </div>
+        <% end %>
       </div>
-      <% end %>
-    </div>
+    <% end %>
   </div>
-  <% end %>
-</div>
 
 <% else %>
-<center>
-  <h3>No tienes permiso para realizar esta acción</h3>
-</center>
-
+  <h3 class="text-center">No tienes permiso para realizar esta acción.</h3>
 <% end %>

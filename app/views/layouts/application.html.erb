@@ -15,16 +15,12 @@
   </head>
 
   <body>
-    <%= render template: '/layouts/navbar.html.erb' %>
-    <div id="main-content">
-      <div id="sidebar-wrapper" class="navbar-expand-lg">
-        <%= render template: '/layouts/navpills.html.erb' %>
-      </div>
-      <div id="<%= user_signed_in? ? 'yield-wrapper' : '' %>">
-        <!-- HELPER NEDDED -->
-          <p class="alert-lc alert-lc-success"><%= notice %></p>
-          <p class="alert-lc alert-lc-danger"><%= alert %></p>
-        <!-- HELPER NEDDED -->
+    <!-- <%# render template: '/layouts/navbar.html.erb' %> -->
+    <div class="main-grid-wrapper">
+      <%= render template: '/layouts/navpills.html.erb' %>
+      <div id="yield-wrapper" class="scrolleable h100vh">
+        <p class="alert-lc alert-lc-success"><%= notice %></p>
+        <p class="alert-lc alert-lc-danger"><%= alert %></p>
         <div data-pjax-container>
           <%= yield %>
         </div>

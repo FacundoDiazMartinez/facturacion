@@ -1,0 +1,40 @@
+<div class="p-4">
+	<div class="row">
+		<div class="col-7">
+			<h2>
+				<%= @invoice.editable? ? @invoice.nombre_comprobante : "#{@invoice.nombre_comprobante} Nº #{@invoice.comp_number}" %>
+			</h2>
+		</div>
+		<div class="col-5 text-right">
+			<%= button_tag "#{icon('fas', 'plus')} Agregar pago".html_safe, id: 'agregar_pago_modal', data: { toggle: 'modal', target: '#paymentModal' }, class: 'btn btn-secondary new_payment d-none', type: 'button' if @invoice.editable? %>
+			<div class="btn-group dropleft">
+			  <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    Acciones
+			  </button>
+			  <div class="dropdown-menu">
+					<a class="dropdown-item" href="#" onclick="toggleHeader()" id="toggle_header"><%= icon('fas' ,'eye-slash') %> Encabezado</a>
+			    <a class="dropdown-item" href="#" onclick="toggleAuthorized()" id="toggle_authorized"><%= icon('fas' ,'eye') %> Autorizados</a>
+					<% if @invoice.confirmado?  %>
+						<% if @invoice.is_invoice? && @invoice.credit_notes.blank? && !@invoice.delivered? %>
+							<div class="dropdown-divider"></div>
+							<% if @invoice.delivery_notes.pendientes.last.nil? %>
+								<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_notes_path(associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'dropdown-item' %>
+							<% else %>
+								<%= link_to "#{icon('fas', 'file-invoice')} Generar remito".html_safe, set_associated_invoice_delivery_note_path(@invoice.delivery_notes.pendientes.last.id, associated_invoice: @invoice.id, invoice_comp_number: @invoice.full_number), class: 'dropdown-item' %>
+							<% end -%>
+						<% end -%>
+						<div class="dropdown-divider"></div>
+						<%= link_to "#{icon('fas', 'file-pdf')} Ver PDF".html_safe, invoice_path(@invoice.id, format: :pdf), class: 'dropdown-item', target: '_blank', data: { 'skip-pjax': true } %>
+						<%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'dropdown-item' %>
+					<% end %>
+			  </div>
+			</div>
+		</div>
+	</div>
+	<div id="invoice_form">
+		<%= render 'form' %>
+	</div>
+	<div>
+		<%= render('new_payment', { invoice: @invoice } ) if @invoice.editable? %>
+	</div>
+</div>

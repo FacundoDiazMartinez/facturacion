@@ -68,7 +68,7 @@ module ApplicationHelper
 	end
 
 	def full_title(titulo)
-		content_tag :h1, class: 'h2' do
+		content_tag :h4, class: 'text-regular' do
 			concat(titulo.html_safe)
 		end
 	end
