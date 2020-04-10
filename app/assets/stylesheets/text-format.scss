@@ -1,9 +1,31 @@
 @import "variables";
 
+* {
+	font-family: "Montserrat", sans-serif;
+}
+
+h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
+	font-weight: 600;
+  color: $text-regular;
+}
+
+a {
+	color: $primary-color;
+
+	&:hover {
+		color: $primary-darker-color;
+	}
+}
+
 .text-bold {
-	font-weight: bold !important;
+	font-weight: 600 !important;
+	color: $text-regular !important;
 }
 
 .text-regular {
   color: $text-regular !important;
+}
+
+.font-weight-regular {
+	font-weight: 400 !important;
 }

@@ -25,7 +25,7 @@ $(document).on("change",".invoice_values", function(){
 	calculaTotalPI()
 })
 
-$(document).on('ready pjax:Complete', function() {
+$(document).on('ready pjax:complete', function() {
 	verificaOrdenDeCompra()
 })
 

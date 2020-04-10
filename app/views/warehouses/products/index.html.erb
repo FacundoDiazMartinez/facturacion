@@ -1,0 +1,59 @@
+<%= warehouses_layout_helper("productos") do %>
+
+  <div class="btn-toolbar mb-2">
+    <div class="btn-group">
+      <%= link_to "#{icon('fas','download')} Exportar".html_safe, export_products_path(format: :xlsx), data:{"skip-pjax": true}, class: 'btn btn-sm btn-outline-success', title: 'Exportar productos a una hoja de cálculo' if can? :export, Product %>
+      <%= link_to "#{icon('fas','upload')} Importar".html_safe, "#", class: 'btn btn-sm btn-outline-success', title: 'Importar productos desde una hoja de cálculo', data:{toggle: 'modal', target: '#importModal'} if can? :import, Product %>
+    </div>
+  </div>
+
+  <%= button_new_helper(new_product_path()) if can? :create, Product %>
+
+  <div class="page-section">
+    <div class="card card-fluid">
+      <div class="card-header">
+        <%= form_tag products_path(), { id: 'search_form', class: 'form-inline' } do %>
+        <div class="row">
+          <div class="input-group col-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'cubes') %></div>
+            </div>
+            <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form"); clearPagination();' %>
+          </div>
+
+          <div class="input-group col-3">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'barcode') %></div>
+            </div>
+            <%= text_field_tag :code, params[:code], class: 'form-control', placeholder: 'Buscar por código', onkeyup: 'remoteSubmit("#search_form"); clearPagination();' %>
+          </div>
+
+          <div class="input-group col-4">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'list') %></div>
+            </div>
+            <%= select_tag :category, options_for_select( current_company.product_categories.map { |c| [c.name, c.id] }, params[:category] ),{ class: 'form-control', prompt: "Todas las categorías" , onchange: 'remoteSubmit("#search_form"); clearPagination();'} %>
+          </div>
+
+          <div class="col-1">
+            <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
+          </div>
+          <%= hidden_field_tag :page, 1 %>
+        </div>
+      </div>
+      <% end %>
+
+      <div class="card-body">
+        <div id="products-wrapper">
+          <%= render 'products_table' %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+
+<%= render 'import' %>
+
+<%= javascript_include_tag "product_prices.js" %>

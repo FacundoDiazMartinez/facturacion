@@ -27,17 +27,10 @@
 @import "table-row-borders";
 @import "navs";
 @import "custom-cards";
+@import "custom-pagination";
 
-.hidden{
+.hidden {
   display: none;
-}
-
-* {
-	font-family: "Montserrat", sans-serif;
-}
-
-h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
-	font-weight: 400;
 }
 
 .custom-control-label{
@@ -47,10 +40,6 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5 {
 
 .close{
   font-size: 1rem;
-}
-
-.navbar-nav > li > a{
-  color:white;
 }
 
 .navbar-nav > li{
@@ -152,10 +141,6 @@ img#image{
 .input-group-text > a:hover{
   color: black;
   background-color: transparent;
-}
-
-.full_height{
-  height: 100vh;
 }
 
 .nav-col{

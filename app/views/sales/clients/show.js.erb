@@ -1,2 +1,2 @@
 <% @account_movements = @client.account_movements.order("created_at ASC").paginate(page: params[:page], per_page: 10) %>
-$("#amovements").html("<%= j render '/account_movements/account_movements_table' %>")
+$("#amovements").html("<%= j render '/sales/account_movements/account_movements_table' %>")

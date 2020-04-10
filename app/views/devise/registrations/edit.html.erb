@@ -1,4 +1,4 @@
-<div class="d-flex flex-column justify-content-center">
+<div class="d-flex flex-column justify-content-center mb-3">
   <div class="text-center py-3">
     <%= image_tag @user.avatar, alt: @user.name, style: 'width:200px; border-radius: 50%;' %>
   </div>
@@ -10,21 +10,18 @@
   </p>
 </div>
 
-<div class="mt-1">
-  <ul class="nav nav-border justify-content-center">
-    <li class="nav-item data">
-      <%= link_to "Datos personales", edit_user_registration_path(user_view: 'data'), id: 'data-tab', remote: true, class: 'nav-link active', data: { toggle: 'tab' } %>
+<div class="mb-3">
+  <ul class="nav-view justify-content-center">
+    <li class="nav-view-item general">
+      <%= link_to "General", edit_user_registration_path(user_view: 'data'), remote: true %>
     </li>
-    <li class="nav-item password">
-      <%= link_to "Contraseña", edit_user_registration_path(user_view: 'password'), id: 'password-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    <li class="nav-view-item contraseña">
+      <%= link_to "Contraseña", edit_user_registration_path(user_view: 'password'), remote: true %>
     </li>
   </ul>
 </div>
 
-<div id="show_section" class="light-background border-top py-4">
-	<% if params[:user_view] %>
-		<%= render "/devise/registrations/partial_edit_views/#{params[:user_view]}" %>
-	<% else %>
-		<%= render '/devise/registrations/partial_edit_views/data' %>
-	<% end %>
+<div id="show_section" class="py-4">
+	<% params[:user_view] ||= "data" %>
+	<%= render "/devise/registrations/partial_edit_views/#{params[:user_view]}" %>
 </div>

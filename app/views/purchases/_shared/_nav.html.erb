@@ -1,0 +1,18 @@
+<ul class="nav-view">
+  <li class="nav-view-item general">
+    <%= link_to "General", purchases_home_index_path %>
+  </li>
+  <li class="nav-view-item ordenes">
+    <%= link_to "Órdenes", purchase_orders_path %>
+  </li>
+  <li class="nav-view-item facturacion">
+    <%= link_to "Facturación", purchase_invoices_path %>
+  </li>
+  <li class="nav-view-item proveedores">
+    <%= link_to "Proveedores", suppliers_path %>
+  </li>
+</ul>
+
+<script type="text/javascript">
+  initializeActiveNav('<%= active_view %>');
+</script>

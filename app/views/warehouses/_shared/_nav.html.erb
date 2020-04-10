@@ -1,0 +1,30 @@
+<ul class="nav-view">
+  <li class="nav-view-item general">
+    <%= link_to "General", warehouses_home_index_path %>
+  </li>
+  <li class="nav-view-item productos">
+    <%= link_to "Productos", products_path %>
+  </li>
+  <li class="nav-view-item servicios">
+    <%= link_to "Servicios", services_path %>
+  </li>
+  <li class="nav-view-item categorias">
+    <%= link_to "Categorías", product_categories_path %>
+  </li>
+  <li class="nav-view-item entradas">
+    <%= link_to "Entradas", arrival_notes_path %>
+  </li>
+  <li class="nav-view-item salidas">
+    <%= link_to "Salidas", delivery_notes_path %>
+  </li>
+  <li class="nav-view-item cesiones">
+    <%= link_to "Cesiones", transfer_requests_path %>
+  </li>
+  <li class="nav-view-item depositos">
+    <%= link_to "Depósitos", depots_path %>
+  </li>
+</ul>
+
+<script type="text/javascript">
+  initializeActiveNav('<%= active_view %>');
+</script>

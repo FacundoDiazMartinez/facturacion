@@ -1,0 +1,48 @@
+<%= purchases_layout_helper("ordenes") do %>
+
+  <%= button_new_helper(new_purchase_order_path) if can? :create, PurchaseOrder %>
+
+  <div class="page-section">
+    <div class="card ">
+      <div class="card-header">
+        <%= form_tag purchase_orders_path(), {class: 'form-inline', id: 'search_form'} do %>
+          <!-- BUSCAR POR PROVEEDOR -->
+          <%= label_tag :supplier_name, "Proveedor", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'plane') %></div>
+            </div>
+            <%= text_field_tag :supplier_name, params[:supplier_name], class: 'form-control', placeholder: 'Buscar por proveedor', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR PROVEEDOR -->
+
+          <!-- BUSCAR POR USUARIO -->
+          <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('fas', 'user') %></div>
+            </div>
+            <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+          </div>
+          <!-- BUSCAR POR USUARIO -->
+
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= label_tag :state, "Estado", class: 'sr-only' %>
+          <div class="input-group col">
+            <div class="input-group-prepend">
+              <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+            </div>
+            <%= select_tag :state, options_for_select(PurchaseOrder::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+          </div>
+          <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+          <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
+        <% end %>
+      </div>
+
+      <div id="purchase_orders_table" class="card-body">
+        <%= render 'purchase_orders_table' %>
+      </div>
+    </div>
+  </div>
+
+<% end %>

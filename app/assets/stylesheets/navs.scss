@@ -28,5 +28,11 @@
         border-bottom: 4px solid $primary-color;
       }
     }
+
+    &:last-child {
+      a {
+        margin-right: 0;
+      }
+    }
   }
 }

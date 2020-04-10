@@ -14,7 +14,7 @@ module ApplicationHelper
 	end
 
 	def save_button(options = {})
-		button_tag "#{icon('fas', 'save')} Guardar".html_safe,{ type: 'submit', class: 'btn btn-primary', id: 'save_btn', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."}}.merge(options)
+		button_tag "#{icon('fas', 'save')} Guardar".html_safe,{ type: 'submit', class: 'btn btn-success', id: 'save_btn', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."}}.merge(options)
 	end
 
 	def save_button_danger
@@ -22,7 +22,7 @@ module ApplicationHelper
 	end
 
 	def save_button_lock
-		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-primary', id: 'save_btn'
+		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn'
 	end
 
 	def back_button icon = nil

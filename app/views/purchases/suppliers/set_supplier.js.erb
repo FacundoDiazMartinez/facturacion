@@ -1,0 +1,19 @@
+<% if not @supplier.errors.any? %>
+	$("#supplier_modal").modal('hide');
+	$("#supplier_modal").on('hidden.bs.modal', function (e) {
+		if ($("#suppliers_table").length != 0){
+	  		$("#suppliers_table").html("<%= j render '/purchases/suppliers/suppliers_table' %>");
+	  	}
+	  	if ($("#supplier").length != 0){
+	  		'<%= form_for Product.new do |f| %>'
+	  			$("#supplier").find("select").replaceWith("<%= j f.select :supplier_id, options_for_select(current_user.company.suppliers.all.map{|pc| [pc.name, pc.id]}, @supplier.id), {include_blank: 'Sin proveedor'}, {:class => 'form-control'} %>");
+	  		'<% end %>'
+	  	}
+	});
+
+	if ($("#purchase_invoice_supplier_id").length != 0){
+		$('#purchase_invoice_supplier_id').html(new Option("<%= @supplier.name %>","<%= @supplier.id %>") );
+	}
+<% else %>
+	$("#supplier_errors").html("<%= j error_explanation(@supplier) %>");
+<% end %>

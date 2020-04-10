@@ -94,11 +94,11 @@ h6 small {
 
 .card {
   margin-bottom: 20px;
-  border: none !important;
-  box-shadow: 0px 3px 12px 1px rgba(0, 0, 0, 0.2);
+  // box-shadow: 0px 3px 12px 1px rgba(0, 0, 0, 0.2);
 
   .card-header {
     background-color: $dark-background-color;
+    border-bottom: none;
   }
 
   .card-div-img-top {

@@ -48,7 +48,7 @@ function initializePaymentsLimit() {
 
 $(document).on("change",".credit-card-select", function(){
   emptyCreditCard()
-  fetch(`/receipts/get_cr_card_fees?id=${$(this).val()}`)
+  fetch(`/sales/receipts/get_cr_card_fees?id=${$(this).val()}`)
     .then((response) => response.json())
     .then((data) => {
       $(".credit-card-installments").empty().append($('<option>', {
@@ -66,7 +66,7 @@ $(document).on("change",".credit-card-select", function(){
 
 $(document).on("change", ".credit-card-installments", function(){
   if ($(".credit-card-installments :selected").val() > 0) {
-    fetch(`/receipts/get_fee_details?fee_id=${$(this).val()}&cr_card_id=${$(".credit-card-select").val()}`)
+    fetch(`/sales/receipts/get_fee_details?fee_id=${$(this).val()}&cr_card_id=${$(".credit-card-select").val()}`)
       .then((response) => response.json())
       .then((data) => {
         let fee = data.fee_data;

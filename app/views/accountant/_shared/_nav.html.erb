@@ -1,0 +1,18 @@
+<ul class="nav-view">
+  <li class="nav-view-item general">
+    <%= link_to "General", accountant_home_index_path %>
+  </li>
+  <li class="nav-view-item caja">
+    <%= link_to "Caja", daily_cashes_path %>
+  </li>
+  <li class="nav-view-item libro_iva">
+    <%= link_to "Libro IVA", iva_books_path %>
+  </li>
+  <li class="nav-view-item tarjetas">
+    <%= link_to "Tarjetas", credit_cards_path %>
+  </li>
+</ul>
+
+<script type="text/javascript">
+  initializeActiveNav('<%= active_view %>');
+</script>

@@ -1,0 +1,42 @@
+<%= staff_layout_helper("usuarios") do %>
+  <div class="card card-fluid">
+    <div class="card-header">
+      <%= form_tag users_path(), {class: 'form-inline', id: 'search_form'} do %>
+        <!-- BUSCAR POR CLIENTE -->
+        <%= label_tag :name, "Nombre", class: 'sr-only' %>
+        <div class="input-group col">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><%= icon('fas', 'user') %></div>
+          </div>
+          <%= text_field_tag :name, params[:name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+        </div>
+        <!-- BUSCAR POR CLIENTE -->
+
+        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+        <%= label_tag :document_number, "Documento", class: 'sr-only' %>
+        <div class="input-group col">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
+          </div>
+          <%= text_field_tag :document_number, params[:document_number], class: 'form-control', placeholder: 'Buscar por documento', onkeyup: 'remoteSubmit("#search_form")' %>
+        </div>
+        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+
+        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+        <%= label_tag :state, "Estado", class: 'sr-only' %>
+        <div class="input-group col">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+          </div>
+          <%= select_tag :state, options_for_select([["Aprobados"], ["No aprobados"]]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+        </div>
+        <!-- BUSCAR POR TIPO DE COMPROBANTE -->
+      <% end %>
+    </div>
+    <div class="card-body">
+      <div id="users_table">
+        <%= render 'users_table' %>
+      </div>
+    </div>
+  </div>
+<% end %>

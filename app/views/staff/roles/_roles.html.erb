@@ -1,0 +1,22 @@
+<div class="table-responsive">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th scope="col">Rol del usuario </th>
+				<th scope="col" colspan="2"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<% @roles.each do |role|%>
+				<tr>
+					<td><%= role.name %></td>
+					<td><%= link_to icon('fas', 'eye'), role_path(role), class: 'btn btn-sm btn-icon btn-outline-secondary',remote: true, "data-toggle" => "modal", "data-target" => "#showModal" if can? :show, Role %> </td>
+					<td><%= link_to icon('fas', 'edit'), edit_role_path(role), class: 'btn btn-sm btn-icon btn-outline-secondary', remote: true, "data-toggle" => "modal", "data-target" => "#editModal" if can? :edit, Role %></td>
+					<td><%= link_to icon('fas', 'unlock-alt'), role_role_permissions_path(role), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :read, RolePermission %></td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+</div>
+
+<%= paginate @roles %>
