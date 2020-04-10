@@ -69,6 +69,11 @@ Rails.application.routes.draw do
         get :autocomplete_name,     on: :collection
       end
     end
+    resources :clients do
+      resources :account_movements do
+        get :export, on: :collection
+      end
+    end
   end
 
   resources :transfer_requests do
@@ -223,15 +228,9 @@ Rails.application.routes.draw do
     get :edit_commission, on: :member
     patch :update_commission, on: :member
   end
+
   resources :suppliers
   resources :depots
-
-  resources :clients do
-    resources :account_movements do
-      get :export, on: :collection
-    end
-  end
-
   resources :product_categories
   resources :companies
 

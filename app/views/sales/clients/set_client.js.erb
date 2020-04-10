@@ -1,7 +1,7 @@
 '<% if not @client.errors.any? %>'
 	$("#clientModal").modal('hide');
 	$('#clientModal').on('hidden.bs.modal', function (e) {
-	  	$("#clients_table").html("<%= j render '/clients/clients_table' %>");
+	  	$("#clients_table").html("<%= j render '/sales/clients/clients_table' %>");
 	});
 '<% else %>'
 	$("#client_errors").html("<%= j error_explanation(@client) %>");

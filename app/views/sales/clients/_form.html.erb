@@ -1,0 +1,176 @@
+<%= nested_form_for @client  do |f| %>
+  <%= error_explanation @client %>
+
+  <h5 class="text-muted">Datos personales</h5>
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-6 form-group">
+          <%= f.label :name, "Nombre *" %>
+          <%= f.text_field :name, class: 'form-control form-control-sm client_name', required: true %>
+        </div>
+        <div class="col-6 form-group">
+          <%= f.label :document_number, "Documento *" %>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <%= f.select :document_type, Afip::DOCUMENTOS, {}, {class: 'form-control form-control-sm input-group-text client_document'} %>
+            </div>
+            <%= f.text_field :document_number, class: 'form-control form-control-sm', required: true %>
+          </div>
+        </div>
+
+        <div class="col-6 form-group">
+          <%= f.label :iva_cond, "Condición I.V.A. *" %>
+          <%= f.select :iva_cond, options_for_select(Client::IVA_COND, @client.iva_cond),{},{class: 'form-control form-control-sm client_iva_con'} %>
+        </div>
+        <div class="col-6 form-group">
+          <%= f.label :address, "Dirección" %>
+          <%= f.text_field :address,class: 'form-control form-control-sm' %>
+        </div>
+
+        <div class="col-6 form-group">
+          <%= f.label :contact_1, "Contacto Fijo 1" %>
+          <%= f.text_field :contact_1, class: 'form-control form-control-sm' %>
+        </div>
+        <div class="col-6 form-group">
+          <%= f.label :contact_2, "Contacto Fijo 2" %>
+          <%= f.text_field :contact_2, class: 'form-control form-control-sm' %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <h5 class="text-muted">Configuraciones</h5>
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-6 form-group">
+          <%= f.label :valid_for_account, "¿Cuenta corriente habilitada?" %><br>
+          <center>
+            <%= f.check_box :valid_for_account, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle', style: "width: 50px; height: 50px;" %>
+          </center>
+        </div>
+        <div class="col-6 form-group">
+          <%= f.label :enabled, "¿Cliente habilitado?" %><br>
+          <center>
+            <%= f.check_box :enabled, data:{toggle: 'toggle', on: "Si", off: "No"}, class: 'toggle enabled', onchange: 'toggleClientChecked()' %>
+          </center>
+        </div>
+        <div class="col-6 form-group">
+          <%= f.label :recharge, "Recargos (%)" %>
+          <%= f.number_field :recharge, class: 'form-control form-control-sm', placeholder: "Serán aplicados a las facturas." %>
+        </div>
+
+        <div class="col-6 form-group">
+          <%= f.label :payment_day, "Día de pago" %>
+          <%= f.text_field :payment_day,class: 'form-control form-control-sm' %>
+        </div>
+        <div class="col-12 form-group">
+          <%= f.label :observation, "Observación" %>
+          <%= f.text_area :observation, class: 'form-control form-control-sm', rows:2 %>
+        </div>
+
+
+        <div class="col-12 form-group" style="display: none;" id="enabled_observation">
+          <%= f.label :enabled_observation, "Observación" %>
+          <%= f.text_area :enabled_observation, class: 'form-control form-control-sm', rows:2 %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted">Contactos</h5>
+  <div class="card">
+    <div class="card-body">
+      <%= f.fields_for :client_contacts do |cf| %>
+        <div class="fields" id="client_contact">
+          <div class="row">
+            <div class="col-3 form-group client_contact_col">
+              <%= cf.text_field :name, class: 'form-control form-control-sm', placeholder: "Nombre completo" %>
+            </div>
+            <div class="col-3 form-group client_contact_col">
+              <%= cf.text_field :charge, class: 'form-control form-control-sm', placeholder: "Puesto" %>
+            </div>
+            <div class="col-2 form-group client_contact_col">
+              <%= cf.text_field :phone, class: 'form-control form-control-sm', placeholder: "Telefono" %>
+            </div>
+            <div class="col-3 form-group client_contact_col">
+              <%= cf.email_field :email, class: 'form-control form-control-sm', placeholder: "Email" %>
+            </div>
+            <div class="col-1 form-group text-center">
+              <%= cf.link_to_remove icon('fas', 'times'), class: 'btn btn-danger btn-sm w-100' %>
+            </div>
+          </div>
+        </div>
+      <% end -%>
+
+      <div class="text-center">
+        <%= f.link_to_add "Añadir contacto", :client_contacts, class: 'btn btn-secondary btn-sm'  %>
+      </div>
+    </div>
+  </div>
+
+  <h5 class="text-muted">Personal autorizado a retirar mercadería</h5>
+  <div class="card">
+    <div class="card-body">
+      <%= f.fields_for :authorized_personals do |ap| %>
+        <div class="fields" id="authorized_personal">
+
+          <div class="row">
+            <div class="col-6 form-group client_contact_col">
+              <%= ap.text_field :first_name, class: 'form-control form-control-sm', placeholder: "Apellido y nombre" %>
+            </div>
+            <div class="col-5 form-group client_contact_col">
+              <%= ap.text_field :dni, class: 'form-control form-control-sm', placeholder: "Dni" %>
+            </div>
+            <div class="col-1 form-group">
+              <%= ap.link_to_remove icon('fas', 'times'), class: 'btn btn-secondary btn-sm' %>
+            </div>
+
+            <div class="col-3 form-group">
+              <%= ap.label :need_purchase_order, "¿Orden de compra obligatoria?" %>
+            </div>
+            <div class="col-3 form-group">
+              <%= ap.check_box :need_purchase_order, data: { toggle: 'toggle', on: "Si", off: "No" }, class: 'toggle' %>
+            </div>
+          </div>
+        </div>
+      <% end -%>
+      <div class="text-center">
+        <%= f.link_to_add "Añadir autorizado", :authorized_personals, class: 'btn btn-secondary btn-sm'  %>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="form-group text-center">
+    <%= save_button %>
+  </div>
+<% end %>
+
+<script type="text/javascript">
+  function toggleClientChecked(){
+    if ($("#client_enabled").is(':checked')) {
+      $('#enabled_observation').hide("slow");
+      $('#enabled_observation').attr("disabled",true);
+    } else  {
+      $('#enabled_observation').show("slow");
+      $('#enabled_observation').removeAttr("disabled");
+    }
+  };
+
+  $(document).ready(function(){
+    if ($("#client_enabled").is(':checked')) {
+      $('#enabled_observation').hide("slow");
+      $('#enabled_observation').attr("disabled",true);
+    } else {
+      $('#enabled_observation').show("slow");
+      $('#enabled_observation').removeAttr("disabled");
+    };
+    $('input[type=checkbox][data-toggle^=toggle]').bootstrapToggle()
+  });
+
+  Event.observe(document, ‘keypress’, function(event) { if(event.keyCode
+  == Event.KEY_RETURN) document.getElementById(‘.client_observation’).submit();});
+</script>

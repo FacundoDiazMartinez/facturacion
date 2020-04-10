@@ -3,7 +3,7 @@
 	<%= button_edit_helper(edit_client_path(@client.id)) if can? :update, Client %>
 	<div class="row">
 		<div class="col">
-			<%= render '/clients/basic_info' %>
+			<%= render '/sales/clients/basic_info' %>
 		</div>
 		<div class="col">
 			<%# link_to "Últimos movimientos", client_account_movements_path(@client), class: 'text-muted' %>

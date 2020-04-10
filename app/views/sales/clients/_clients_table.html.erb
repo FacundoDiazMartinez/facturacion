@@ -16,7 +16,7 @@
         <td><%= link_to client.name, client %></td>
         <td><%= client.full_document %></td>
         <td><%= boolean_to_icon client.check_if_expired %></td>
-        <td>$ <%= client.saldo %></td>
+        <td><%= number_to_ars client.saldo %></td>
         <td class="td-action-buttons">
           <%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if client.valid_for_account %>
           <% if can? :manage, Client %>
@@ -29,6 +29,4 @@
     </tbody>
   </table>
 </div>
-<center>
-  <%= paginate @clients %>
-</center>
+<%= paginate @clients %>
