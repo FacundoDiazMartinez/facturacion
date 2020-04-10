@@ -52,6 +52,23 @@ Rails.application.routes.draw do
         get :autocomplete_document, on: :collection
       end
     end
+    resources :receipts do
+      resources :account_movements
+      collection do
+        get :autocomplete_invoice
+        get :autocomplete_credit_note
+        get :autocomplete_invoice_and_debit_note
+        get :get_cr_card_fees
+        get :get_fee_details
+        get :associate_invoice
+      end
+    end
+    namespace :receipts  do
+      resources :clients do
+        get :autocomplete_document, on: :collection
+        get :autocomplete_name,     on: :collection
+      end
+    end
   end
 
   resources :transfer_requests do
@@ -99,24 +116,6 @@ Rails.application.routes.draw do
     collection do
       get :sales
       get :products
-    end
-  end
-
-  resources :receipts do
-    resources :account_movements
-    get :autocomplete_invoice, on: :collection
-    get :autocomplete_credit_note, on: :collection
-    get :autocomplete_invoice_and_debit_note, on: :collection
-    get :get_cr_card_fees, on: :collection
-    get :get_fee_details, on: :collection
-    get :associate_invoice, on: :collection
-  end
-
-
-  namespace :receipts  do
-    resources :clients do
-      get :autocomplete_document, on: :collection
-      get :autocomplete_name,     on: :collection
     end
   end
 

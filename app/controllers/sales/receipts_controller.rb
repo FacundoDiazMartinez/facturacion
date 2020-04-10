@@ -1,4 +1,4 @@
-class ReceiptsController < ApplicationController
+class Sales::ReceiptsController < ApplicationController
   include DailyCashChecker
   before_action :set_receipt, only: [:show, :edit, :update, :destroy]
   before_action :check_daily_cash, only: [:new, :create]
@@ -15,7 +15,7 @@ class ReceiptsController < ApplicationController
       format.pdf do
         render pdf: "#{@receipt.id}",
         layout: 'pdf.html',
-        template: 'receipts/show',
+        template: 'sales/receipts/show',
         #zoom: 3.4,
         viewport_size: '1280x1024',
         page_size: 'A4',

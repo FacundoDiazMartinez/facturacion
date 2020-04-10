@@ -8,7 +8,6 @@
         <th scope="col">Vencimiento</th>
         <th scope="col">Estado</th>
         <th scope="col">Total</th>
-        <th scope="col">Creado por</th>
         <th scope="col">¿R.Stock?</th>
         <th scope="col"></th>
       </tr>
@@ -22,8 +21,7 @@
         <td><%= image_tag budget.client.avatar, alt: budget.client.name, class: 'avatar' %> <%= link_to budget.client.name, client_path(budget.client_id) %></td>
         <td><%= budget.expiration_date %></td>
         <td class="text-center"><%= state_label_helper_budget(budget) %></td>
-        <td>$<%= budget.total %></td>
-        <td><%= link_to budget.user.name, user_path(budget.user_id) %></td>
+        <td><%= number_to_ars budget.total %></td>
         <td class="text-center"><%= stock_label_helper_budget(budget) %>
         <td class="td-action-buttons">
           <%= link_to icon('fas', 'file-pdf').html_safe, budget_path(budget.id, format: :pdf), class: 'btn btn-sm btn-icon btn-outline-secondary' %>

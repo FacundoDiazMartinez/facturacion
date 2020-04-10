@@ -1,5 +1,5 @@
-class Receipts::ClientsController < ApplicationController
-	before_action :set_receipt, only: [:update]  #Se necesita un receipt porque al renderizar el client_column pregunta si el receipt es editable
+class Sales::Receipts::ClientsController < ApplicationController
+	before_action :set_receipt, only: [:update]
 	before_action :set_client, only: [:edit, :update]
 
 	def show
@@ -7,23 +7,21 @@ class Receipts::ClientsController < ApplicationController
 	end
 
 	def edit
-
 	end
 
 	def update
 		@client = current_user.company.clients.find_by_full_document(client_params).first_or_initialize
-		pp @client
 		@client.set_attributes(params["client"].as_json)
 		@client.user_id = current_user.id
 		respond_to do |format|
 			if @client.save
 				format.html { render :back, notice: 'Cliente creado con éxito.' }
 				format.js 	{ render :edit_client }
-	      	else
-	        	format.html { render :edit }
-	        	format.js 	{ render :edit_client }
-	      	end
-	    end
+    	else
+      	format.html { render :edit }
+      	format.js 	{ render :edit_client }
+    	end
+    end
 	end
 
 	def autocomplete_name

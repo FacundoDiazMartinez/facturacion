@@ -2,7 +2,7 @@
     <table class="table table-hover table-row-bordered">
       <thead>
         <tr>
-          <th colspan="2">Nº</th>
+          <th>Nº</th>
           <th class="only-desktop">Fecha</th>
           <th>Cliente</th>
           <th class="only-desktop">Tipo</th>
@@ -15,7 +15,7 @@
       <tbody>
         <% @invoices.unassociated_invoices.each do |invoice| %>
           <tr class="<%= bordered_invoice_by_state(invoice.state) %>">
-            <td colspan="2"><%= invoice.full_number %></td>
+            <td><%= invoice.full_number %></td>
             <td class="only-desktop"><%= invoice.cbte_fch %></td>
             <td><%= image_tag invoice.client.avatar, alt: invoice.client.name, class: 'avatar' %> <%= link_to invoice.client.name, client_path(invoice.client_id) %></td>
             <td class="only-desktop"><%= invoice.tipo %></td>
