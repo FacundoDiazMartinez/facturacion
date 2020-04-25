@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_02_142619) do
+ActiveRecord::Schema.define(version: 2020_04_11_183516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -169,11 +169,9 @@ ActiveRecord::Schema.define(version: 2020_04_02_142619) do
     t.boolean "reserv_stock", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "sales_file_id"
     t.text "observation"
     t.index ["client_id"], name: "index_budgets_on_client_id"
     t.index ["company_id"], name: "index_budgets_on_company_id"
-    t.index ["sales_file_id"], name: "index_budgets_on_sales_file_id"
     t.index ["user_id"], name: "index_budgets_on_user_id"
   end
 
@@ -434,12 +432,10 @@ ActiveRecord::Schema.define(version: 2020_04_02_142619) do
     t.datetime "updated_at", null: false
     t.date "date", default: -> { "CURRENT_DATE" }, null: false
     t.string "generated_by", default: "system", null: false
-    t.bigint "sales_file_id"
     t.text "observation"
     t.index ["client_id"], name: "index_delivery_notes_on_client_id"
     t.index ["company_id"], name: "index_delivery_notes_on_company_id"
     t.index ["invoice_id"], name: "index_delivery_notes_on_invoice_id"
-    t.index ["sales_file_id"], name: "index_delivery_notes_on_sales_file_id"
     t.index ["user_id"], name: "index_delivery_notes_on_user_id"
   end
 
@@ -832,22 +828,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_142619) do
     t.index ["company_id"], name: "index_sale_points_on_company_id"
   end
 
-  create_table "sales_files", force: :cascade do |t|
-    t.bigint "company_id"
-    t.bigint "client_id"
-    t.bigint "responsable_id", null: false
-    t.string "observation"
-    t.string "number", null: false
-    t.date "init_date", default: -> { "CURRENT_DATE" }, null: false
-    t.date "final_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "state", default: "Abierto", null: false
-    t.boolean "active", default: true, null: false
-    t.index ["client_id"], name: "index_sales_files_on_client_id"
-    t.index ["company_id"], name: "index_sales_files_on_company_id"
-  end
-
   create_table "sended_advertisements", force: :cascade do |t|
     t.bigint "advertisement_id"
     t.text "clients_data", null: false
@@ -1026,7 +1006,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_142619) do
   add_foreign_key "budget_details", "products"
   add_foreign_key "budgets", "clients"
   add_foreign_key "budgets", "companies"
-  add_foreign_key "budgets", "sales_files"
   add_foreign_key "budgets", "users"
   add_foreign_key "card_payments", "credit_cards"
   add_foreign_key "card_payments", "fees"
@@ -1057,7 +1036,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_142619) do
   add_foreign_key "delivery_notes", "clients"
   add_foreign_key "delivery_notes", "companies"
   add_foreign_key "delivery_notes", "invoices"
-  add_foreign_key "delivery_notes", "sales_files"
   add_foreign_key "delivery_notes", "users"
   add_foreign_key "depots", "companies"
   add_foreign_key "fees", "credit_cards"
@@ -1114,8 +1092,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_142619) do
   add_foreign_key "role_permissions", "roles"
   add_foreign_key "roles", "companies"
   add_foreign_key "sale_points", "companies"
-  add_foreign_key "sales_files", "clients"
-  add_foreign_key "sales_files", "companies"
   add_foreign_key "sended_advertisements", "advertisements"
   add_foreign_key "stocks", "depots"
   add_foreign_key "stocks", "products"

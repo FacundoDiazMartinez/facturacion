@@ -19,6 +19,7 @@
     <div class="main-grid-wrapper">
       <%= render template: '/layouts/navpills.html.erb' %>
       <div id="yield-wrapper" class="scrolleable h100vh">
+        <%= render template: '/layouts/user_pill' if current_user %>
         <p class="alert-lc alert-lc-success"><%= notice %></p>
         <p class="alert-lc alert-lc-danger"><%= alert %></p>
         <div data-pjax-container>

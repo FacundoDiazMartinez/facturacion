@@ -118,6 +118,12 @@ h6 small {
   }
 }
 
+a {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 .card-shadow:hover {
   box-shadow: 0px 0px 20px 1px #888888;
 }

@@ -25,7 +25,7 @@ module LayoutHelper
 
   def warehouses_layout_helper(view, &block)
     content_tag :div, class: 'p-4' do
-      concat(title("Almacén e inventario"))
+      concat(title("Depósitos e inventario"))
       concat(warehouses_nav(view))
       concat(view_wrapper(&block))
     end

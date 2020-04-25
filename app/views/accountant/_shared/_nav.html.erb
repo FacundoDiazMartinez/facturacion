@@ -1,15 +1,24 @@
 <ul class="nav-view">
-  <li class="nav-view-item general">
-    <%= link_to "General", accountant_home_index_path %>
-  </li>
   <li class="nav-view-item caja">
     <%= link_to "Caja", daily_cashes_path %>
   </li>
-  <li class="nav-view-item libro_iva">
-    <%= link_to "Libro IVA", iva_books_path %>
+  <li class="nav-view-item caja_diaria">
+    <%= link_to "Caja diaria", general_payments_daily_cashes_path %>
   </li>
   <li class="nav-view-item tarjetas">
-    <%= link_to "Tarjetas", credit_cards_path %>
+    <%= link_to "Tarjetas", payments_card_payments_path %>
+  </li>
+  <li class="nav-view-item cheques">
+    <%= link_to "Cheques", payments_cheque_payments_path %>
+  </li>
+  <li class="nav-view-item bancos">
+    <%= link_to "Bancos", payments_bank_payments_path %>
+  </li>
+  <li class="nav-view-item retenciones">
+    <%= link_to "Retenciones", payments_retention_payments_path %>
+  </li>
+  <li class="nav-view-item libro_iva">
+    <%= link_to "Libro IVA", iva_books_path %>
   </li>
 </ul>
 

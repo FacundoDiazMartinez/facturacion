@@ -1,6 +1,9 @@
 class Depot < ApplicationRecord
   belongs_to :company
   has_many   :stocks
+  has_many   :delivery_note_details
+  has_many   :delivery_notes, through: :delivery_note_details
+  has_many   :arrival_notes
 
   validates_presence_of :company_id, message: "El depósito debe estar vinculado a una compañía."
   validates_presence_of :name, message: "El nombre no puede estar en blanco."

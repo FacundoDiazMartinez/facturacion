@@ -5,6 +5,8 @@
   list-style: none;
   padding: 0;
   margin-top: 2rem;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 6px;
 
   .nav-view-item {
 
@@ -26,6 +28,7 @@
       a {
         color: $text-regular;
         border-bottom: 4px solid $primary-color;
+        font-weight: 700;
       }
     }
 

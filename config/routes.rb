@@ -1,7 +1,21 @@
 Rails.application.routes.draw do
   scope module: :accountant, path: "/accountant" do
-    resources :home, as: :accountant_home, only: :index
+    resources :daily_cashes do
+      get :general_payments, on: :collection
+    end
+    resources :credit_cards do
+      get :new_charge, on: :member
+      post :charge, on: :member
+    end
+    resources :iva_books do
+      collection do
+        get :generate_pdf
+        get :export
+      end
+    end
   end
+
+
   ### ALMACEN
   scope module: :warehouses, path: "/warehouses" do
     resources :home, as: :warehouses_home, only: :index
@@ -87,7 +101,6 @@ Rails.application.routes.draw do
 
   ### PERSONAL
   scope module: :staff, path: "/staff" do
-    resources :home, as: :staff_home, only: :index
     resources :roles do
       resources :role_permissions do
         post :toggle_association, on: :collection
@@ -180,12 +193,6 @@ Rails.application.routes.draw do
     end
   end
 
-
-  resources :credit_cards do
-    get :new_charge, on: :member
-    post :charge, on: :member
-  end
-
   resources :banks do
     get :new_extraction, on: :member
     post :extract, on: :member
@@ -204,9 +211,7 @@ Rails.application.routes.draw do
 
   get 'daily_cash_movements/show'
 
-  resources :daily_cashes do
-    get :general_payments, on: :collection
-  end
+
   resources :daily_cash_movements
 
 
@@ -239,17 +244,8 @@ Rails.application.routes.draw do
   end
 
   resources :notifications, only: [:index, :show]
-  resources :iva_books do
-    collection do
-      get :generate_pdf
-      get :export
-    end
-  end
-
   resources :companies
-
   devise_for :users, :path_prefix => 'sessions', controllers: { registrations: 'users/registrations' }
-
   resources :income_payments
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

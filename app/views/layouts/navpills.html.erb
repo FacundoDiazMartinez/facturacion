@@ -2,7 +2,7 @@
 	<div class="sidebar sidebar-animate" id="navpills">
 		<div class="mb-2">
 			<div class="py-3">
-				<%= image_tag current_company.logo, alt: "Sistema de facturación online", class: 'company_logo' %>
+				<div class="img-background img-background-rounded img-background-rounded-md" style="background-image: url('<%= current_company.logo %>')"></div>
 			</div>
 			<p class="text-bold text-regular mb-0">
 				<%= current_company.name %>
@@ -18,7 +18,7 @@
 		  	</li>
 
 				<li class="nav-item">
-					<%= link_to "#{icon('fas', 'users')} <span class='nav-span'> Personal</span>".html_safe, staff_home_index_path, class: 'nav-link staff' %>
+					<%= link_to "#{icon('fas', 'users')} <span class='nav-span'> Personal</span>".html_safe, users_path, class: 'nav-link staff' %>
 				</li>
 
 		  	<li class="nav-item">
@@ -30,16 +30,16 @@
 				</li>
 
 				<li class="nav-item">
-	  			<%= link_to "#{icon('fas', 'cubes')} <span class='nav-span'>Almacén</span>".html_safe, warehouses_home_index_path, class: 'nav-link warehouses' %>
+	  			<%= link_to "#{icon('fas', 'cubes')} <span class='nav-span'>Inventario</span>".html_safe, warehouses_home_index_path, class: 'nav-link warehouses' %>
 				</li>
 
 		  	<li class="nav-item">
-					<%= link_to "#{icon('fas', 'book')} <span class='nav-span'> Contable</span>".html_safe, accountant_home_index_path, class: 'nav-link accountant'%>
+					<%= link_to "#{icon('fas', 'book')} <span class='nav-span'> Contable</span>".html_safe, daily_cashes_path, class: 'nav-link accountant'%>
 		  	</li>
 
-				<!-- <li class="nav-item">
-		    	<%= link_to "#{icon('fas', 'at')} <span class='nav-span'>Publicidad</span>".html_safe, advertisements_path, class: 'nav-link', title: 'Publicidad' %>
-		  	</li> -->
+				<li class="nav-item">
+		    	<%= link_to "#{icon('fas', 'at')} <span class='nav-span'>Marketing</span>".html_safe, advertisements_path, class: 'nav-link advertisements' %>
+		  	</li>
 			</ul>
 		</div>
 		<div class="mt-4">

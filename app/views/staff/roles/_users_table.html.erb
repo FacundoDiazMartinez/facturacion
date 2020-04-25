@@ -1,22 +1,2 @@
-<% @users = @role.users %>
-<div class="table-responsive">
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>D.N.I.</th>
-        <th>Nacimiento</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <% @users.each do |user| %>
-      <tr>
-        <td><%= image_tag user.avatar, alt: user.name, class: 'avatar' %> <%= link_to user.name, user_path(user) if can? :read, User %></td>
-        <td><%= user.dni %></td>
-        <td><%= l(user.birthday.to_date) %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
+<p class="text-muted mb-1">Usuarios con este rol</p>
+<%= render '/staff/users/users_table'  %>

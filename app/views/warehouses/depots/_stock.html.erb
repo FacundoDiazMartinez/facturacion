@@ -4,13 +4,12 @@
       <tr>
         <th>Producto</th>
         <th>Disponible</th>
-        <th>Reservado</th>
         <th>Cantidad</th>
       </tr>
     </thead>
 
     <tbody>
-      <% @stocks.each do |product| %>
+      <% @stocks.each do |stock| %>
         <tr>
           <td><%= link_to stock.product.name, product_path(stock.product) %></td>
           <td><%= stock.state %></td>

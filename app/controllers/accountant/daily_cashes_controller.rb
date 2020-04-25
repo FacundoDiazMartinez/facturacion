@@ -1,4 +1,4 @@
-class DailyCashesController < ApplicationController
+class Accountant::DailyCashesController < ApplicationController
   before_action :set_daily_cash, only: [:show, :edit, :update, :destroy]
 
   def index

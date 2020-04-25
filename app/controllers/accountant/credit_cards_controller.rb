@@ -1,4 +1,4 @@
-class CreditCardsController < ApplicationController
+class Accountant::CreditCardsController < ApplicationController
   before_action :set_credit_card, only: [:show, :edit, :update, :destroy, :new_charge, :charge]
 
   def index

@@ -1,37 +1,29 @@
-<div class="container-fluid justify-flex-content p-4 light-dark-background">
-  <div class="form-group">
+<div class="p-4 text-center">
+  <div class="py-3">
     <%= image_tag @user.avatar, alt: @user.name, style: 'max-height:150px; max-width:300px; border-radius: 50%;' %>
   </div>
-  <div class="form-group">
-    <center>
-      <h4>
-        <%= @user.name %>
-      </h4>
-      <h6>
-        <small>
-          <%= @user.company.name %>
-        </small>
-      </h6>
-    </center>
-  </div>
-
+  <h4>
+    <%= @user.name %>
+  </h4>
+  <h6>
+    <small>
+      <%= @user.company.name %>
+    </small>
+  </h6>
 </div>
 
-<div style="padding-top:10px">
-  <ul class="nav nav-border justify-content-center display-menu">
-    <li class="nav-item overview">
-      <%= link_to "General", user_path(@user, user_view: 'overview'), id: 'overview-tab', remote: true, class: 'nav-link active', data: { toggle: 'tab' } %>
+<div class="mb-3">
+  <ul class="nav-view justify-content-center">
+    <li class="nav-view-item overview">
+      <%= link_to "General", user_path(@user, user_view: 'overview'), remote: true %>
     </li>
-    <li class="nav-item activities">
-      <%= link_to "Actividades", user_path(@user, user_view: 'activities'), id: 'activities-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    <li class="nav-view-item activities">
+      <%= link_to "Actividades", user_path(@user, user_view: 'activities'), remote: true %>
     </li>
   </ul>
 </div>
 
-<div id="show_section" class="light-background border-top padding-20">
-	<% if params[:user_view] %>
-		<%= render "/staff/users/partial_show_views/#{params[:user_view]}" %>
-	<% else %>
-		<%= render '/staff/users/partial_show_views/overview' %>
-	<% end %>
+<div id="show_section">
+	<% params[:user_view] ||= "overview" %>
+	<%= render "/staff/users/partial_show_views/#{params[:user_view]}" %>
 </div>

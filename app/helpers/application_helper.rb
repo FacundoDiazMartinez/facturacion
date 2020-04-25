@@ -14,20 +14,19 @@ module ApplicationHelper
 	end
 
 	def save_button(options = {})
-		button_tag "#{icon('fas', 'save')} Guardar".html_safe,{ type: 'submit', class: 'btn btn-success', id: 'save_btn', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."}}.merge(options)
+		button_tag "Guardar".html_safe,{ type: 'submit', class: 'btn btn-success', id: 'save_btn', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."}}.merge(options)
 	end
 
 	def save_button_danger
-		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'save_btn', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."}
+		button_tag "Guardar".html_safe, type: 'submit', class: 'btn btn-danger', id: 'save_btn', data: {disable_with: "#{icon('fas', 'sync')} Cargando..."}
 	end
 
 	def save_button_lock
-		button_tag "#{icon('fas', 'save')} Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn'
+		button_tag "Guardar".html_safe, type: 'submit', class: 'btn btn-success', id: 'save_btn'
 	end
 
 	def back_button icon = nil
-		given_icon ||= 'chevron-left'
-		link_to "#{icon('fas', given_icon)} Volver".html_safe, :back, :class => 'btn btn-danger', :style => 'color:#fff'
+		link_to "Volver".html_safe, :back, :class => 'btn btn-danger', :style => 'color:#fff'
 	end
 
 	def paginate resource, param_name = nil

@@ -1,13 +1,10 @@
-class IvaBooksController < ApplicationController
+class Accountant::IvaBooksController < ApplicationController
   before_action :set_iva_book, only: [:show, :edit, :update, :destroy]
   before_action :set_iva_books, only: [:index, :generate_pdf]
 
-  # GET /iva_books
-  # GET /iva_books.json
   def index
     #se establecio: before_action :set_iva_books
   end
-
 
   def generate_pdf
     @group_details = @iva_books.in_groups_of(10, fill_with= nil)
@@ -25,12 +22,11 @@ class IvaBooksController < ApplicationController
       format.pdf do
         render pdf: "Libro IVA " + "(comp vtas) " + params[:from] + " hasta " + params[:to],
         layout: 'pdf.html',
-        template: 'iva_books/informe',
+        template: 'accountant/iva_books/informe',
         viewport_size: '1280x1024',
         page_size: 'A4',
         orientation: 'Landscape',
         #zoom: 3.4,
-        #si en local se ve mal, poner en 3.4 solo para local
         encoding:"UTF-8"
       end
     end

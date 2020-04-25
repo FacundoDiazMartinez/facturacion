@@ -1,0 +1,76 @@
+<%= accountant_layout_helper("caja_diaria") do %>
+
+  <p class="alert alert-success my-3 text-center">
+    Solamente se reflejan los pagos correspondientes a facturas confirmadas
+  </p>
+
+  <div class="row">
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          Saldo HOY:
+          <span class="float-right text-bold">
+            <%= number_to_ars(@contado + @cheques + @tarjetas + @transferencias + @retention_payment_total) %>
+          </span>
+        </div>
+        <div class="card-body">
+          Contado:
+          <span class="float-right text-bold">
+            <%= number_to_ars(@contado) %>
+          </span>
+        </div>
+        <div class="card-body">
+          Cheques:
+          <span class="float-right text-bold">
+            <%= number_to_ars(@cheques) %>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="card">
+        <div class="card-body">
+          Tarjetas:
+          <span class="float-right text-bold">
+            <%= number_to_ars(@tarjetas) %>
+          </span>
+        </div>
+        <div class="card-body">
+          Bancos:
+          <span class="float-right text-bold">
+            <%= number_to_ars(@transferencias) %>
+          </span>
+        </div>
+        <div class="card-body">
+          Retenciones:
+          <span class="float-right text-bold">
+            <%= number_to_ars(@retention_payment_total) %>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <%= form_tag general_payments_daily_cashes_path(), {class: 'form-inline', id: 'search_form'} do %>
+        <div class="input-group col-6">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><%= icon('fas', 'user') %></div>
+          </div>
+          <%= select_tag :type_of_payment, options_for_select(Payment::GENERALPAYMENTS.map{|u,v| [v,u]}), {prompt: 'Buscar por tipo de pago...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+        </div>
+        <div class="input-group col-6">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
+          </div>
+          <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha...', onchange: 'remoteSubmit("#search_form")' %>
+        </div>
+      <% end %>
+    </div>
+
+    <div id="general_payments_table" class="card-body">
+      <%= render '/accountant/daily_cashes/general_payments_table' %>
+    </div>
+  </div>
+<% end %>

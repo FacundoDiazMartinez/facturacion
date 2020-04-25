@@ -1,34 +1,112 @@
 <div class="p-4">
-	<%= title_helper("#{@depot.name}") %>
+	<%= title_helper("Depósito: #{@depot.name}") %>
+	<p class="text-muted mb-5">
+		<%= "#{icon('fas', 'map-marker-alt')} #{@depot.location}".html_safe %>
+	</p>
 
-	<div class="page-section">
-		<div class="card">
-			<div class="card-header">
-				<%= form_tag depot_path(@depot), {class: 'form-inline', id: 'search_form'} do %>
-          <%= label_tag :product_name, "Producto", class: 'sr-only' %>
-          <div class="input-group col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'user') %></div>
-            </div>
-            <%= text_field_tag :product_name, params[:product_name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
-          </div>
+	<div class="row mb-5">
+		<div class="col-lg-6">
+			<p class="mb-1">
+				<span class="text-muted">
+					Entrada de productos
+				</span>
+				<span class="float-right">
+					<%= link_to "#{icon('fas', 'plus')} Nuevo".html_safe, new_arrival_note_path %>
+				</span>
+			</p>
+			<div class="card">
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-hover">
+							<thead>
+								<tr>
+									<th>Número</th>
+									<th>Fecha</th>
+									<th>Orden de compra</th>
+								</tr>
+							</thead>
 
-          <%= label_tag :state, "Estado", class: 'sr-only' %>
-          <div class="input-group col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'file-invoice') %></div>
-            </div>
-            <%= select_tag :state, options_for_select(Stock::STATES, params[:state]), {class: 'form-control', prompt: 'Buscar por estado', onchange: 'remoteSubmit("#search_form")'} %>
-          </div>
-        <% end %>
-			</div>
-			<div class="card-body">
-				
-				<div id="stock">
-					<%= render 'stock' %>
+							<tbody>
+								<% @arrival_notes.each do |arrival_note| %>
+								<tr>
+									<td>
+										<%= link_to arrival_note.number, edit_arrival_note_path(arrival_note) %>
+									</td>
+									<td><%= arrival_note.created_at %></td>
+									<td><%= link_to arrival_note.purchase_order.number, edit_purchase_order_path(arrival_note.purchase_order_id) %></td>
+								</tr>
+								<% end %>
+							</tbody>
+						</table>
+					</div>
+					<div class="text-center">
+						<%= link_to "Ver más", arrival_notes_path %>
+					</div>
 				</div>
-
 			</div>
+		</div>
+
+
+		<div class="col-lg-6">
+			<p class="mb-1">
+				<span class="text-muted">
+					Salida de productos
+				</span>
+				<span class="float-right">
+					<%= link_to "#{icon('fas', 'plus')} Nuevo".html_safe, new_delivery_note_path %>
+				</span>
+			</p>
+			<div class="card">
+				<div class="card-body">
+					<div class="table-responsive">
+					  <table class="table table-hover">
+					    <thead>
+					      <tr>
+					        <th>Número</th>
+					        <th>Fecha</th>
+					        <th>Factura asociada</th>
+					      </tr>
+					    </thead>
+
+					    <tbody>
+					      <% @delivery_notes.each do |delivery_note| %>
+					      <tr>
+					        <td>
+										<%= link_to delivery_note.number, edit_delivery_note_path(delivery_note) %>
+									</td>
+					        <td><%= delivery_note.date %></td>
+					        <td><%= link_to delivery_note.invoice.name_with_comp, edit_invoice_path(delivery_note.invoice_id) %></td>
+					      </tr>
+					      <% end %>
+					    </tbody>
+					  </table>
+					</div>
+					<div class="text-center">
+						<%= link_to "Ver más", delivery_notes_path %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<p class="text-muted mb-1">Lista de productos</p>
+	<div class="card">
+		<div class="card-header">
+			<%= form_tag depot_path(@depot), {class: 'w-100', id: 'search_form'} do %>
+				<div class="row">
+					<div class="col-md-6">
+						<%= label_tag :product_name, "Producto", class: 'sr-only' %>
+						<%= text_field_tag :product_name, params[:product_name], class: 'form-control', placeholder: 'Buscar por nombre', onkeyup: 'remoteSubmit("#search_form")' %>
+					</div>
+					<div class="col-md-6">
+						<%= label_tag :state, "Estado", class: 'sr-only' %>
+						<%= select_tag :state, options_for_select(Stock::STATES, params[:state]), {class: 'form-control', prompt: 'Buscar por estado', onchange: 'remoteSubmit("#search_form")'} %>
+					</div>
+				</div>
+      <% end %>
+		</div>
+		<div id="stock" class="card-body">
+			<%= render 'stock' %>
 		</div>
 	</div>
 </div>

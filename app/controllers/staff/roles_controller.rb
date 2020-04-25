@@ -2,10 +2,12 @@ class Staff::RolesController < ApplicationController
   before_action :set_role, only: [:show, :edit, :update, :destroy]
 
   def index
-    @roles = current_user.company.roles.paginate(per_page: 10, page: params[:page])
+    @roles = current_company.roles.paginate(per_page: 10, page: params[:page])
   end
 
   def show
+    @users = @role.users.paginate(per_page: 40, page: params[:page])
+    @permissions = @role.role_permissions
   end
 
   def new
@@ -16,41 +18,25 @@ class Staff::RolesController < ApplicationController
   end
 
   def create
-    @role = current_user.company.roles.new(role_params)
-    respond_to do |format|
-      if @role.save
-        format.html { redirect_to roles_path, notice: 'Rol creado exitosamente' }
-        format.json { render :show, status: :created, location: @role }
-      else
-        format.html { render :new }
-        format.json { render json: @role.errors, status: :unprocessable_entity }
-      end
+    @role = current_company.roles.new(role_params)
+    if @role.save
+      redirect_to roles_path, notice: 'Rol registrado con éxito'
+    else
+      render :new
     end
   end
 
   def update
-    respond_to do |format|
-      if @role.update(role_params)
-        format.html { redirect_to @role, notice: 'Rol actualizado.' }
-        format.json { render :show, status: :ok, location: @role }
-      else
-        format.html { render :edit }
-        format.json { render json: @role.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  def destroy
-    @role.destroy
-    respond_to do |format|
-      format.html { redirect_to roles_url, notice: 'Rol destruido.' }
-      format.json { head :no_content }
+    if @role.update(role_params)
+      redirect_to @role, notice: 'Rol actualizado.'
+    else
+      render :edit
     end
   end
 
   private
     def set_role
-      @role = current_user.company.roles.find(params[:id])
+      @role = current_company.roles.find(params[:id])
     end
 
     def role_params

@@ -1,29 +1,24 @@
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th scope="col">Nombre</th>
-      <th scope="col">Total de productos</th>
-      <th scope="col">Disponibles</th>
-      <th scope="col">Reservados</th>
-      <th scope="col">Ubicación</th>
-      <th></th>
-    </tr>
-  </thead>
+<p class="text-muted mb-1">Lista de depósitos</p>
+<div class="row">
+  <% @depots.each do |depot| %>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="mb-1">
+            <span class="h4">
+              <%= link_to depot.name, depot %>
+            </span>
+          </p>
+          <p class="text-bold">
+            <%= depot.location %>
+          </p>
+          <p class="text-right font-small m-0">
+            <%= link_to "Editar #{icon('fas', 'edit')}".html_safe, edit_depot_path(depot.id), data: { remote: true, toggle: 'modal', target: '#mainModalLg' } %>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
 
-  <tbody>
-    <% @depots.each do |depot| %>
-      <tr>
-        <td><%= link_to depot.name, depot %></td>
-        <td><%= depot.stock_total %></td>
-        <td><%= depot.stock_available %></td>
-        <td><%= depot.stock_reserved %></td>
-        <td><%= depot.location %></td>
-        <td class="td-action-buttons">
-          <%= link_to icon('fas', 'edit'), edit_depot_path(depot.id), data: {remote: true, toggle: 'modal', target: '#depotModal'}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-          <%= link_to icon('fas', 'trash'), depot, method: :delete, data: {confirm: '¿Estás seguro?'}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
 <%= paginate @depots %>
