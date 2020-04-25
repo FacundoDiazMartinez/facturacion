@@ -53,14 +53,19 @@
   }
 }
 
-.user-pill {
+.user-account-button {
+  position: absolute;
+  right: 0;
+
+  .user-pill {
     border: 1px solid;
     border-color: #46b04a;
     border-radius: 7px;
     cursor: pointer;
 
-  &:focus {
-    outline: none !important;
+    &:focus {
+      outline: none !important;
+    }
   }
 }
 
