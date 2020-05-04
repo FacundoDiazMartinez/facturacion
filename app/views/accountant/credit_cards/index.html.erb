@@ -1,0 +1,10 @@
+<%= accountant_layout_helper("general") do %>
+  <%= button_new_helper new_credit_card_path if can? :create, PurchaseInvoice %>
+
+  <div class="card">
+    <div id="receipts_table" class="card-body">
+      <%= render 'credit_cards_table' %>
+    </div>
+  </div>
+
+<% end %>

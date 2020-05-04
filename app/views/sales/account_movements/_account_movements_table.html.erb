@@ -1,0 +1,60 @@
+<div class="table-responsive">
+	<table class="table table-hover">
+		<thead>
+			<th>Fecha</th>
+			<th>Comprobante</th>
+			<th>Días</th>
+			<th>Debe</th>
+			<th>Haber</th>
+			<th>Saldo</th>
+			<th>Asignar</th>
+			<th></th>
+		</thead>
+		<tbody>
+		<% @account_movements.each do |am| %>
+		    <tr>
+		    	<td><%= l(am.created_at, format: :only_date) %></td>
+		    	<td><%= comprobante_con_link(am) %></td>
+		    	<td>
+						<% if !am.invoice_id.nil? && IvaBook::CBTE_TIPO.map{|k,v| k unless v.include? "NC"}.compact.include?(am.invoice.cbte_tipo) %>
+							<!-- Se muestran los días sólo para facturas y notas de debito -->
+								<%= am.days %>
+						<% else %>
+							0
+						<% end %>
+					</td>
+		    	<% if !am.invoice_id.nil? %>
+		    		<% if (am.invoice.real_total.round(2) - am.invoice.total_pay.round(2)) > 0 %>
+		    			<td class="text-danger"><%= number_to_ars(am.total) unless !am.debe %></td>
+		    		<% else %>
+		    			<td><%= number_to_ars(am.total) unless !am.debe %></td>
+		    		<% end %>
+		    	<% else %>
+		    		<td><%= number_to_ars(am.total) unless !am.debe %></td>
+		    	<% end %>
+		    	<td><%= number_to_ars(am.total) unless !am.haber %></td>
+		    	<% if am == @ultimo %>
+		    		<% if am.saldo > 0 %>
+		    			<td class="text-white text-bold" style="background-color: red;"> $ <%= am.saldo %></td>
+		    		<% else %>
+		    			<td class="text-white text-bold" style="background-color: green;">$ <%= am.saldo %></td>
+		    		<% end %>
+		    	<% else %>
+		    		<td>$ <%= am.saldo %></td>
+		    	<% end %>
+					<td>
+						<%= link_to icon('fas', 'dollar-sign'), paid_invoice_with_debt_invoice_path(am.invoice_id), class: 'btn btn-sm btn-icon btn-outline-success', data: { "skip-pjax": true } unless (am.invoice_id.blank? || !(["Factura A", "Factura B", "Factura C", "Nota de Débito A", "Nota de Débito B", "Nota de Débito C"].include?(am.cbte_tipo)) || (am.invoice.real_total_left) <= 0) %>
+					</td>
+		    	<td>
+		    		<%= link_to icon('fas', 'file-pdf').html_safe, receipt_path(am.receipt_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.receipt_id.blank? || am.cbte_tipo == "Devolución" %>
+		    		<%= link_to icon('fas', 'file-pdf').html_safe, invoice_path(am.invoice_id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless am.invoice_id.blank? %>
+						<% if !am.receipt_id.nil? && !am.receipt.state == "Finalizado" %>
+							<%= link_to icon('fas', 'trash'), client_account_movement_path(@client.id, am.id), method: :delete, data: {confirm: "Se eliminaran los pagos asociados a este recibo ¿desea continuar?"}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+						<% end %>
+					</td>
+		    </tr>
+		<% end %>
+		</tbody>
+	</table>
+</div>
+<%= paginate @account_movements %>

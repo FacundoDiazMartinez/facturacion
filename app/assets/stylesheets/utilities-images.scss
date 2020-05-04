@@ -1,0 +1,15 @@
+.img-background {
+  // background-image: url();
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.img-background-rounded {
+  border-radius: 50%;
+
+  &.img-background-rounded-md {
+    height: 80px;
+    width: 80px;
+  }
+}

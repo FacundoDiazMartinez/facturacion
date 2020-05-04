@@ -1,88 +1,135 @@
 <div class="container-fluid">
   <div class="row">
+
     <div class="col-md">
-      <div class="card">
-        <div class="card-header">
-          <h6>
-            Compañía
-          </h6>
-        </div>
-        <ul class="list-group list-group-flush">
+      <p class="text-muted mb-0">Información de la empresa</p>
+      <div class="card mb-5">
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <small>Nombre:</small> <%= @company.name %>
+            <small>Nombre</small>
+            <span class="float-right text-bold">
+              <%= @company.name %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Razón social:</small> <%= @company.society_name %>
+            <small>Razón social</small>
+            <span class="float-right text-bold">
+              <%= @company.society_name %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Código de registro:</small> <%= @company.code %>
+            <small>Código de registro</small>
+            <span class="float-right text-bold">
+              <%= @company.code %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>E-mail:</small> <%= @company.email %>
+            <small>E-mail</small>
+            <span class="float-right text-bold">
+              <%= @company.email %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>CUIT:</small> <%= @company.cuit %>
+            <small>CUIT</small>
+            <span class="float-right text-bold">
+              <%= @company.cuit %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Condición IVA:</small> <%= @company.iva_cond %>
+            <small>Condición IVA</small>
+            <span class="float-right text-bold">
+              <%= @company.iva_cond %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Concepto:</small> <%= @company.concepto_text %>
+            <small>Concepto</small>
+            <span class="float-right text-bold">
+              <%= @company.concepto_text %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Moneda:</small> <%= @company.moneda.capitalize %>
+            <small>Moneda</small>
+            <span class="float-right text-bold">
+              <%= @company.moneda.capitalize %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Actividad desde:</small> <%= @company.activity_init_date %>
+            <small>Actividad desde</small>
+            <span class="float-right text-bold">
+              <%= @company.activity_init_date %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Contacto:</small> <%= @company.contact_number %>
+            <small>Contacto</small>
+            <span class="float-right text-bold">
+              <%= @company.contact_number %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>CBU:</small> <%= @company.cbu %>
+            <small>CBU</small>
+            <span class="float-right text-bold">
+              <%= @company.cbu %>
+            </span>
           </li>
         </ul>
+        </div>
       </div>
     </div>
 
     <div class="col-md">
-      <div class="card">
-        <div class="card-header">
-          <h6>
-            Ubicación
-          </h6>
-        </div>
-        <ul class="list-group list-group-flush">
+      <p class="text-muted mb-0">Ubicación</p>
+      <div class="card mb-5">
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            <small>País:</small> <%= @company.country %>
+            <small>País</small>
+            <span class="float-right text-bold">
+              <%= @company.country %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Provincia:</small> <%= @company.province.name %>
+            <small>Provincia</small>
+            <span class="float-right text-bold">
+              <%= @company.province.name %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Localidad:</small> <%= @company.locality.name %>
+            <small>Localidad</small>
+            <span class="float-right text-bold">
+              <%= @company.locality.name %>
+            </span>
           </li>
           <li class="list-group-item">
-            <small>Dirección:</small> <%= @company.address %>
+            <small>Dirección</small>
+            <span class="float-right text-bold">
+              <%= @company.address %>
+            </span>
           </li>
         </ul>
+        </div>
       </div>
 
-      <div class="card">
-        <div class="card-header">
-          <h6>
-            Contable
-          </h6>
-        </div>
-        <ul class="list-group list-group-flush">
+      <p class="text-muted mb-0">Información contable</p>
+      <div class="card mb-5">
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
           <% @company.sale_points.all.each do |sp| %>
           <li class="list-group-item">
-            <small>Punto de venta:</small> <%= sp.name %>
+            <small>Punto de venta</small>
+            <span class="float-right text-bold">
+              <%= sp.name %>
+            </span>
           </li>
           <% end %>
         </ul>
+        </div>
       </div>
     </div>
 
   </div>
 </div>
+
+<script type="text/javascript">
+  initializeActiveNav('general');
+</script>

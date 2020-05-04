@@ -1,0 +1,39 @@
+<%= warehouses_layout_helper("entradas") do %>
+
+  <%= button_new_helper new_arrival_note_path if can? :create, ArrivalNote %>
+
+  <div class="card">
+    <div class="card-header">
+      <%= form_tag arrival_notes_path(), {class: 'form-inline', id: 'search_form'} do %>
+
+      <%= label_tag :purchase_order_number, "Nº Orden de compra", class: 'sr-only' %>
+      <div class="input-group col">
+        <div class="input-group-prepend"><div class="input-group-text"><%= icon('fas', 'plane') %></div></div>
+        <%= text_field_tag :purchase_order_number, params[:purchase_order_number], class: 'form-control', placeholder: 'Buscar por orden de compra', onkeyup: 'remoteSubmit("#search_form")' %>
+      </div>
+
+      <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
+      <div class="input-group col">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('fas', 'user') %></div>
+        </div>
+        <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Creado por...', onkeyup: 'remoteSubmit("#search_form")' %>
+      </div>
+
+      <%= label_tag :state, "Estado", class: 'sr-only' %>
+      <div class="input-group col">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+        </div>
+        <%= select_tag :state, options_for_select(ArrivalNote::STATES, params[:state]), {prompt: 'Buscar por estado...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+      </div>
+
+      <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button' %>
+      <% end %>
+    </div>
+
+    <div class="card-body" id="arrival_notes_table">
+      <%= render 'arrival_notes_table' %>
+    </div>
+  </div>
+<% end %>

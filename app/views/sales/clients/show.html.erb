@@ -1,0 +1,11 @@
+<div class="p-4">
+	<%= title_helper "#{icon('fas', 'user')} #{@client.name}"%>
+
+	<%= button_edit_helper(edit_client_path(@client.id)) if can? :update, Client %>
+	<%= render '/sales/clients/basic_info' %>
+
+	<p class="text-muted">Últimos movimientos</p>
+	<div class="card card-fluid " id="amovements">
+		<%= render '/sales/account_movements/account_movements_table' %>
+	</div>
+</div>

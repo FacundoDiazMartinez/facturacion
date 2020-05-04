@@ -1,0 +1,34 @@
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Número</th>
+        <th>Fecha</th>
+        <th>Cliente</th>
+        <th>Comprobante asoc.</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @receipts.each do |receipt| %>
+        <tr>
+          <td><%= receipt.number %></td>
+          <td><%= receipt.date %></td>
+          <td><%= image_tag receipt.client.avatar, alt: receipt.client.name, class: 'avatar' %> <%= link_to receipt.client.name, client_path(receipt.client_id) %></td>
+          <td><%= invoices_with_link(receipt) %></td>
+          <td><%= number_to_ars receipt.total %></td>
+          <td class="td-action-buttons">
+            <%= link_to icon('fas', 'print').html_safe, receipt_path(receipt.id, format: :pdf), target: "_blank", class: 'btn btn-sm btn-icon btn-outline-secondary' if receipt.state == "Finalizado" %>
+            <% if receipt.editable? %>
+              <%= link_to icon('fas', 'edit').html_safe, edit_receipt_path(receipt),class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+              <%= link_to icon('fas', 'trash').html_safe, receipt, method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+<%= paginate @receipts %>

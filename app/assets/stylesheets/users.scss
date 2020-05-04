@@ -1,3 +1,5 @@
+@import "variables";
+
 #bg {
   position: fixed;
   top: 0;
@@ -21,7 +23,7 @@
 }
 
 
-.full-table{
+.full-table {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -35,12 +37,36 @@
 }
 
 .avatar{
-  border-radius: 100%;
-  border-color: grey;
-  border-style: solid;
-  width: 35px;
-  border-width: 2px;
+  border: 2px solid $primary-color;
+  border-radius: 50% !important;
+  width: 2.25rem;
+  height: 2.25rem;
 
+  &.avatar-md {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  &.avatar-sm {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+.user-account-button {
+  position: absolute;
+  right: 0;
+
+  .user-pill {
+    border: 1px solid;
+    border-color: #46b04a;
+    border-radius: 7px;
+    cursor: pointer;
+
+    &:focus {
+      outline: none !important;
+    }
+  }
 }
 
 .responsive-img{

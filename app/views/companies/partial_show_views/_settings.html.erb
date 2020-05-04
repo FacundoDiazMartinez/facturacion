@@ -1,7 +1,0 @@
-<center>
-	<% if can? :update, Company %>
-	<%= link_to "#{icon('fas', 'edit')} Editar compañía".html_safe, edit_company_path(@company), class: 'btn btn-primary' %>
-	<% else %>
-	<h3>No tienes permiso de editar la compañía</h3>
-	<% end %>
-</center>

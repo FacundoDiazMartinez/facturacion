@@ -21,6 +21,7 @@ class DeliveryNote < ApplicationRecord
   validates_presence_of :delivery_note_details, message: "Debe ingresar al menos 1 concepto en el remito."
 
   default_scope { where(active: true) }
+  scope :confirmados, -> { where(state: "Finalizado") }
   scope :pendientes,  -> { where(state: "Pendiente") }
   scope :anulados,    -> { where(state: "Anulado") }
   scope :finalizados, -> { where(state: "Finalizado") }

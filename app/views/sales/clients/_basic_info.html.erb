@@ -1,0 +1,153 @@
+
+	<p class="text-muted mb-1">Información basica</p>
+
+		<ul class="list-group mb-5">
+    	<li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<small>
+          		Nombre
+        		</small>
+      	</div>
+      	<span class="text-bold"><%= @client.name %></span>
+    	</li>
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+            <small>
+              Documento
+            </small>
+        </div>
+        <span class="text-bold"><%= @client.full_document %></span>
+      </li>
+    	<li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<small>
+          		Condición I.V.A.
+        		</small>
+      	</div>
+      	<span class="text-bold"><%= @client.iva_cond %></span>
+    	</li>
+      <li class="list-group-item d-flex justify-content-between lh-condensed">
+        <div>
+            <small>
+              Dirección
+            </small>
+        </div>
+        <span class="text-bold"><%= @client.address %></span>
+      </li>
+	    <li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<small>
+          		¿Cuenta corriente?
+        		</small>
+      	</div>
+      	<span class="text-bold"><%= boolean_to_icon(@client.valid_for_account) %><%= @client.valid_for_account ? "Si" : "No" %></span>
+    	</li>
+    	<li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<small>
+          		Recargo
+        		</small>
+      	</div>
+      	<span class="text-bold"><%= @client.recharge %></span>
+    	</li>
+    	<li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<small>
+          		Día de pago
+        		</small>
+      	</div>
+      	<span class="text-bold"><%= @client.payment_day %></span>
+    	</li>
+    	<li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<small>
+          		Saldo
+        		</small>
+      	</div>
+      	<span class="text-bold"><%= number_to_ars @client.saldo %></span>
+    	</li>
+    	<li class="list-group-item d-flex justify-content-between lh-condensed">
+      	<div>
+        		<small>
+          		Observación
+        		</small>
+      	</div>
+      	<span class="text-bold"><%= @client.observation %></span>
+    	</li>
+    </ul>
+
+
+
+  <p class="text-muted mb-1">Personal autorizado a retirar mercadería</p>
+
+    <ul class="list-group mb-5">
+      <% @client.authorized_personals.each do |ap| %>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <small>
+                Nombre
+              </small>
+          </div>
+          <span class="text-bold"><%= ap.first_name %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <small>
+                Dni
+              </small>
+          </div>
+          <span class="text-bold"><%= ap.dni %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <small>
+                ¿Requiere de orden de compra para retirar?
+              </small>
+          </div>
+          <span class="text-bold"><%= ap.need_purchase_order? ? "Si" : "No" %></span>
+        </li>
+        <br>
+      <% end %>
+    </ul>
+
+
+
+  <p class="text-muted mb-1">Información adicional</p>
+
+    <ul class="list-group mb-5">
+      <% @client.client_contacts.each do |cc| %>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <small>
+                Apellido y nombre
+              </small>
+          </div>
+          <span class="text-bold"><%= cc.name %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <small>
+                Puesto
+              </small>
+          </div>
+          <span class="text-bold"><%= cc.charge %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <small>
+                Telefono
+              </small>
+          </div>
+          <span class="text-bold"><%= cc.phone %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+              <small>
+                Email
+              </small>
+          </div>
+          <span class="text-bold"><%= cc.email %></span>
+        </li>
+        <br>
+      <% end %>
+    </ul>

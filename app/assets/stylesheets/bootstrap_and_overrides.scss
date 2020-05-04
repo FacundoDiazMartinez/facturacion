@@ -1,7 +1,8 @@
+@import "variables";
+
 // Bootstrap classes overrides
 $light-dark-background: #e6e8ed;
-$light-background: #f5f5f5;
-$primary-color: #007bff;
+$light-background: #fefefe;
 
 body {
   background-color: $light-background !important;
@@ -93,11 +94,11 @@ h6 small {
 
 .card {
   margin-bottom: 20px;
-  border: none !important;
-  box-shadow: 0px 3px 12px 1px rgba(0, 0, 0, 0.2);
+  // box-shadow: 0px 3px 12px 1px rgba(0, 0, 0, 0.2);
 
   .card-header {
-    background-color: $light-dark-background;
+    background-color: $dark-background-color;
+    border-bottom: none;
   }
 
   .card-div-img-top {
@@ -114,6 +115,12 @@ h6 small {
         text-decoration: none;
       }
     }
+  }
+}
+
+a {
+  &:hover {
+    text-decoration: none;
   }
 }
 

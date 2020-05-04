@@ -1,0 +1,28 @@
+<% for i in 1..2 do %>
+  <% @group_details.each_with_index do |details_page, index| %>
+   <div class="alwaysbreak">
+     <!-- HEADER ORIGINAL/DUPLICADO -->
+     <div class="container">
+       <div class="row">
+         <div class="border">
+               <center>
+                 <h2 class="text_size_25">
+                   <% case i
+                     when 1 %>
+                      ORIGINAL
+                     <% when 2 %>
+                      DUPLICADO
+                   <% end %>
+                 </h2>
+               </center>
+         </div>
+       </div>
+     </div>
+    <!-- FIN HEADER ORIGINAL/DUPLICADO -->
+
+     <%= render template: '/warehouses/transfer_requests/pdf_partials/_header.html.erb' %>
+     <%= render template: '/warehouses/transfer_requests/pdf_partials/_details.html.erb', :locals => { :details => details_page, :total_pages => @group_details.count} %>
+     <%= render template: '/warehouses/transfer_requests/pdf_partials/_footer.html.erb', :locals => { :page_number => (index + 1), :total_pages => @group_details.count } %>
+   </div>
+  <% end %>
+<% end %>

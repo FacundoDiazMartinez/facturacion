@@ -1,0 +1,10 @@
+<%= form_for @role do |f| %>
+  <div class="form-group">
+      <%= f.label :name, 'Nombre' %>
+      <%= f.text_field :name, required: true, class:'form-control' %>
+  </div>
+
+  <div class="text-center">
+    <%= save_button %>
+  </div>
+<% end %>

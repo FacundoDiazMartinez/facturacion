@@ -1,0 +1,24 @@
+<p class="text-muted mb-1">Lista de depósitos</p>
+<div class="row">
+  <% @depots.each do |depot| %>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <p class="mb-1">
+            <span class="h4">
+              <%= link_to depot.name, depot %>
+            </span>
+          </p>
+          <p class="text-bold">
+            <%= depot.location %>
+          </p>
+          <p class="text-right font-small m-0">
+            <%= link_to "Editar #{icon('fas', 'edit')}".html_safe, edit_depot_path(depot.id), data: { remote: true, toggle: 'modal', target: '#mainModalLg' } %>
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= paginate @depots %>

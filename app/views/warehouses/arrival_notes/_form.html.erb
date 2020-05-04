@@ -1,0 +1,45 @@
+<%= nested_form_for @arrival_note do |form| %>
+  <%= error_explanation @arrival_note %>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-6 form-group">
+            <%= label_tag :number, "Número de remito" %>
+            <%= text_field_tag :number, @arrival_note.number || "Generado automáticamente", class: 'form-control', disabled: true %>
+          </div>
+
+          <div class="col-sm-6 form-group">
+            <%= form.label :purchase_order_id, "Orden de compra" %>
+            <%= autocomplete_field_tag :purchase_order_id, @arrival_note.purchase_order.try(:number), autocomplete_purchase_order_arrival_notes_path, class: 'form-control arrival-note-autocomplete-purchase-order', placeholder: "Busca por número", disabled: !@arrival_note.editable?, required: true %>
+            <%= form.hidden_field :purchase_order_id %>
+          </div>
+
+          <div class="col-sm-6 form-group">
+            <%= form.label :depot_id, "Almacén" %>
+            <%= form.select :depot_id, current_company.depots.map{|d| [d.name, d.id]}, { prompt: "Seleccione..." }, {class: 'form-control', required: true, disabled: !@arrival_note.editable? } %>
+          </div>
+
+          <div class="col-sm-6 form-group">
+            <%= label_tag :state, "Estado" %>
+            <div class="text-center h4">
+              <%= arrival_state_label_helper(@arrival_note) %>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <%= button_tag "#{icon('fas', 'check ')} Confirmar".html_safe, type: :submit, name: :confirm, value: :true, class: 'btn btn-success my-3' if @arrival_note.pendiente? && @arrival_note.persisted?%>
+        </div>
+      </div>
+    </div>
+
+    <div id="arrival_note_details">
+      <%= render template: '/warehouses/arrival_notes/details/index.html.erb', locals: { form: form } %>
+    </div>
+
+    <div class="text-center">
+      <%= save_button if @arrival_note.editable? %>
+    </div>
+
+<% end %>

@@ -1,46 +1,32 @@
-<div class="container-fluid justify-flex-content p-4 light-dark-background">
-  <div class="form-group">
-    <%= image_tag @company.logo, alt: @company.name, style: 'max-height:150px; max-width:300px;' %>
+<div class="d-flex flex-column text-center justify-content-center mb-3">
+  <div class="py-3">
+    <%= image_tag current_company.logo, alt: current_company.name, style: 'width:200px;' %>
   </div>
-  <div class="form-group">
-    <center>
-      <h4>
-        <%= @company.name %>
-      </h4>
-      <h6>
-        <small>
-          <%= @company.society_name %>
-        </small>
-      </h6>
-    </center>
-  </div>
+  <h4 class="text-regular">
+    <%= current_company.name %>
+  </h4>
+  <p class="text-muted">
+    <%= current_company.society_name %>
+  </p>
 </div>
 
-<% if can? :edit, Company %>
-  <%= button_edit_helper(edit_company_path(@company.id)) %>
-<% end %>
+<%= button_edit_helper(edit_company_path(current_company.id)) if can? :edit, Company %>
 
-<div style="padding-top:10px">
-  <ul class="nav nav-border justify-content-center display-menu">
-    <li class="nav-item info">
-      <%= link_to "General", company_path(@company, company_view: 'info'), id: 'info-tab', remote: true, class: 'nav-link active', data: { toggle: 'tab' } %>
+<div class="mb-3">
+  <ul class="nav-view justify-content-center">
+    <li class="nav-view-item general">
+      <%= link_to "General", company_path(current_company, company_view: 'info'), remote: true %>
     </li>
-    <li class="nav-item users">
-      <%= link_to "Personal", company_path(@company, company_view: 'users'), id: 'users-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    <li class="nav-view-item personal">
+      <%= link_to "Personal", company_path(current_company, company_view: 'users'), remote: true %>
     </li>
-    <li class="nav-item activities">
-      <%= link_to "Actividades", company_path(@company, company_view: 'activities'), id: 'activities-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
-    </li>
-    <li class="nav-item settings">
-      <%= link_to "Configuraciones", company_path(@company, company_view: 'settings'), id: 'settings-tab', remote: true, class: 'nav-link', data: { toggle: 'tab' } %>
+    <li class="nav-view-item actividades">
+      <%= link_to "Actividades", company_path(current_company, company_view: 'activities'), remote: true %>
     </li>
   </ul>
 </div>
 
-<div id="show_section" class="light-background border-top padding-20">
-  <%= render '/companies/partial_show_views/info' %>
+<div id="show_section" class="py-4">
+  <% params[:company_view] ||= "info" %>
+  <%= render "/companies/partial_show_views/#{params[:company_view]}" %>
 </div>
-
-<script type="text/javascript">
-
-</script>

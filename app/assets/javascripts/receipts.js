@@ -13,16 +13,16 @@ function initializeReceipt() {
 
   $(document).on("change","#receipt_cbte_tipo",() => {
     if ($("#receipt_cbte_tipo option:selected").val() == "99") {
-      $("#comp_number").attr("data-autocomplete","/receipts/autocomplete_credit_note");
+      $("#comp_number").attr("data-autocomplete","/sales/receipts/autocomplete_credit_note");
     } else if ($("#receipt_cbte_tipo option:selected").val() == "00") {
-      $("#comp_number").attr("data-autocomplete","/receipts/autocomplete_invoice_and_debit_note");
+      $("#comp_number").attr("data-autocomplete","/sales/receipts/autocomplete_invoice_and_debit_note");
     }
   })
 
   $(document).on('railsAutocomplete.select', '.receipt_associated-invoice-autocomplete_field', (event, data) => {
     $(".receipt_associated-invoice-autocomplete_field").val("")
     if (unrepeatedInvoices(data.item.comp_number)) {
-      fetch(`/receipts/associate_invoice?invoice_id=${data.item.id}`)
+      fetch(`/sales/receipts/associate_invoice?invoice_id=${data.item.id}`)
         .then((response) => response.json())
         .then((details) => {
           fillDetails(details)
@@ -57,7 +57,7 @@ function runReceipt(){
       .each((index, current_field) => invoices_array.push($(current_field).find('.invoice_id').val()) )
 
     if (invoices_array.length > 0) {
-      $.get(`/invoices/get_total_payed_and_left`, { invoices_ids: invoices_array },null,"json")
+      $.get(`/sales/invoices/get_total_payed_and_left`, { invoices_ids: invoices_array },null,"json")
       .done((data) => {
         $('#details > tbody > tr.fields').filter(":visible").each(function(index, current_field){
           // asigna los valores reales de la factura a las variables

@@ -1,0 +1,12 @@
+<ul class="nav-view">
+  <li class="nav-view-item usuarios">
+    <%= link_to "Usuarios", users_path %>
+  </li>
+  <li class="nav-view-item roles">
+    <%= link_to "Roles de acceso", roles_path %>
+  </li>
+</ul>
+
+<script type="text/javascript">
+  initializeActiveNav('<%= active_view %>');
+</script>

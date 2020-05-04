@@ -1,0 +1,17 @@
+<div class="p-4">
+  <div class="mb-5">
+    <h2 class="mb-1">
+      <%= @role.name %>
+    </h2>
+    <p>Rol de acceso</p>
+  </div>
+
+  <div class="mb-5">
+    <%= render '/staff/roles/users_table' %>
+  </div>
+
+  <div class="mb-5">
+    <%= render 'permissions'  %>
+  </div>
+
+</div>

@@ -1,0 +1,8 @@
+<% nested_form_for @arrival_note do |f|
+	@builder = f
+end %>
+
+$("#arrival_note_details").html("<%= j render template: '/warehouses/arrival_notes/details/index.html.erb', locals:{form: @builder} %>");
+
+$(".arrival_note_purchase_order_id").val("<%= @purchase_order.id %>");
+$("#an-id").html("<%= @purchase_order.number %>");

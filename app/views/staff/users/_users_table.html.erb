@@ -1,0 +1,24 @@
+<div class="row">
+  <% @users.each do |user| %>
+    <div class="col-lg-3 col-md-6">
+      <%= link_to user do %>
+        <div class="card">
+          <div class="card-body">
+            <div class="text-center">
+              <div class="py-3">
+                <%= image_tag user.avatar, alt: user.name, class: 'avatar avatar-md' %>
+              </div>
+              <p class="mb-1 h4">
+                <%= user.name %>
+              </p>
+              <p class="font-small text-muted">
+                <%= change_state_to_user(user) %>
+              </p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+  <%= paginate @users %>
+</div>

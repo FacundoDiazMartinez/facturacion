@@ -1,0 +1,41 @@
+@import "variables";
+
+.nav-view {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin-top: 2rem;
+  border-bottom: 1px solid #e5e5e5;
+  padding-bottom: 6px;
+
+  .nav-view-item {
+
+    a {
+      color: #afafb1;
+      margin-right: 2rem;
+      padding: 0.5rem 0;
+      font-size: 0.8rem;
+
+      &:hover {
+        text-decoration: none;
+        color: $text-regular;
+        border-bottom: 4px solid $primary-color;
+      }
+    }
+
+    &.active {
+
+      a {
+        color: $text-regular;
+        border-bottom: 4px solid $primary-color;
+        font-weight: 700;
+      }
+    }
+
+    &:last-child {
+      a {
+        margin-right: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,97 @@
+<div class="d-flex flex-column justify-content-center mb-3">
+  <div class="text-center py-3">
+    <%= image_tag @product.photo, alt: @product.photo, style: 'width:200px; border-radius: 50%' %>
+  </div>
+  <div class="text-center">
+    <h4 class="text-regular">
+      <%= @product.name %>
+    </h4>
+    <p class="text-muted">
+      Código:
+      <%= @product.code %>
+    </p>
+  </div>
+</div>
+
+<%= button_edit_helper(edit_product_path(@product.id)) if can? :update, Product %>
+
+<div class="p-4">
+  <div class="row">
+    <div class="col-md-6 mb-3">
+
+      <p class="text-muted mb-1">Información general</p>
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Medida
+          </div>
+          <span class="text-bold"><%= @product.full_measurement %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Categoría
+          </div>
+          <span class="text-bold"><%= @product.category_name %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Proveedor
+          </div>
+          <span class="text-bold"><%= @product.supplier_name %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Código de proveedor
+          </div>
+          <span class="text-bold"><%= @product.supplier_code %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Cantidad disponible
+          </div>
+          <span class="text-bold"><%= @product.available_stock %></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <p class="text-muted mb-1">Valores de venta</p>
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Precio de costo
+          </div>
+          <span class="text-bold"><%= number_to_ars @product.cost_price %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Ganancia
+          </div>
+          <span class="text-bold"><%= @product.gain_margin %>%</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Precio bruto
+          </div>
+          <span class="text-bold"><%= number_to_ars @product.net_price %></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Alícuota IVA
+          </div>
+          <span class="text-bold"><%= @product.iva %>%</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            Precio final
+          </div>
+          <span class="text-bold"><%= number_to_ars @product.price %></span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-12 mb-3">
+      <%= render 'stock' %>
+    </div>
+  </div>
+</div>

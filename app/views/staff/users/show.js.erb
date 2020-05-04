@@ -1,0 +1,9 @@
+<% if params[:user_view] %>
+  $('#show_section').html('<%= j render "/staff/users/partial_show_views/#{params[:user_view]}" %>')
+<% else %>
+  $('#show_section').html('<%= j render "/companies/partial_show_views/info" %>')
+<% end %>
+
+<% if params[:user_view] == "activities" && params[:page] %>
+	$('#show_section').html('<%= j render "/staff/users/partial_show_views/activities" %>');
+<% end %>

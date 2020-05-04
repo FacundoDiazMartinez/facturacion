@@ -1,0 +1,3 @@
+<% if @client.errors.any? %>
+	$("#myModalContent").html("<%= j render template: '/sales/invoices/clients/edit.html.erb' %>");
+<% end %>

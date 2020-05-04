@@ -1,79 +1,57 @@
-<div class="p-4">
-  <ul class="nav justify-content-center">
-    <li class="nav-item bg-light rounded-left border">
-      <%= link_to "Caja Chica #{icon('fas', 'money-bill-alt')}".html_safe, daily_cashes_path, data: { "skip-pjax": true }, class: 'text-dark nav-link', title: 'caja diaria' %>
-    </li>
-    <li class="nav-item bg-light border">
-      <%= link_to "Caja Diaria #{icon('fas', 'credit-card')}".html_safe, general_payments_daily_cashes_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información caja general" %>
-    </li>
-    <li class="nav-item bg-light border">
-      <%= link_to "Tarjetas #{icon('fas', 'credit-card')}".html_safe, payments_card_payments_path(), data: { "skip-pjax": true }, class: 'text-white bg-secondary nav-link', title: "Información de tarjetas de crédito" %>
-    </li>
-    <li class="nav-item bg-light border">
-      <%= link_to "Cheques #{icon('fas', 'file-signature')}".html_safe, payments_cheque_payments_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información de tarjetas de crédito" %>
-    </li>
-    <li class="nav-item bg-light rounded-right border">
-      <%= link_to "Banco #{icon('fas', 'university')}".html_safe, payments_bank_payments_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información de movimientos bancarios" %>
-    </li>
-    <li class="nav-item bg-light rounded-right border">
-      <%= link_to "Retenciones #{icon('fas', 'university')}".html_safe, payments_retention_payments_path(), data: { "skip-pjax": true }, class: 'text-dark nav-link', title: "Información de movimientos bancarios" %>
-    </li>
-  </ul>
-  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-3">
-    <h1 class="h2">Transacciones con tarjetas</h1>
+<%= accountant_layout_helper("tarjetas") do %>
+
+  <div class="row">
+    <% current_company.credit_cards.each do |cc| %>
+      <div class="col-6">
+        <div class="card">
+          <div class="card-body">
+            <h6>Acumulado <strong><%= cc.name %></strong>
+              <span class="float-right h4">
+                $ <%= cc.payments.where(payments: { confirmed: true }).pluck(:total).inject(0) { |sum, n| sum + n } %>
+              </span>
+            </h6>
+          </div>
+        </div>
+      </div>
+    <% end -%>
   </div>
-
-  <div class="page-section">
-    <div class="card card-fluid">
-
-      <div class="card-header">
-        <%= form_tag payments_card_payments_path(), {class: 'form-inline', id: 'search_form'} do %>
-          <!-- BUSCAR POR TARJETA-->
-          <div class="input-group col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'user') %></div>
-            </div>
-            <%= select_tag :card, options_for_select(current_user.company.credit_cards.map{|u| [u.name, u.id]}), {prompt: 'Buscar por tarjeta...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+  
+  <div class="card">
+    <div class="card-header">
+      <%= form_tag payments_card_payments_path(), {class: 'form-inline', id: 'search_form'} do %>
+        <!-- BUSCAR POR TARJETA-->
+        <div class="input-group col">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><%= icon('fas', 'user') %></div>
           </div>
-          <!-- BUSCAR POR TARJETA-->
+          <%= select_tag :card, options_for_select(current_user.company.credit_cards.map{|u| [u.name, u.id]}), {prompt: 'Buscar por tarjeta...', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+        </div>
+        <!-- BUSCAR POR TARJETA-->
 
-          <!-- BUSCAR POR FECHA -->
-          <div class="input-group col">
-            <div class="input-group-prepend">
-              <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
-            </div>
-            <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha...', onchange: 'remoteSubmit("#search_form")' %>
+        <!-- BUSCAR POR FECHA -->
+        <div class="input-group col">
+          <div class="input-group-prepend">
+            <div class="input-group-text"><%= icon('fas', 'calendar') %></div>
           </div>
-          <!-- BUSCAR POR FECHA -->
-        <% end %>
-      </div>
+          <%= text_field_tag :date, params[:date], class: 'form-control datepicker', placeholder: 'Buscar por fecha...', onchange: 'remoteSubmit("#search_form")' %>
+        </div>
+        <!-- BUSCAR POR FECHA -->
+      <% end %>
+    </div>
 
-      <div class="card-body">
-        <div class="row">
-          <% current_company.credit_cards.each do |cc| %>
-            <div class="col-6">
-              <div class="card">
-                <div class="card-body">
-                  <h6>Acumulado <strong><%= cc.name %></strong>
-                    <span class="float-right h4">
-                      $ <%= cc.payments.where(payments: { confirmed: true }).pluck(:total).inject(0) { |sum, n| sum + n } %>
-                    </span>
-                  </h6>
-                </div>
-              </div>
-            </div>
-          <% end -%>
-        </div>
-        <hr>
-        <!-- MOVIMIENTOS ASOCIADOS -->
-        <div id="credit_cards_table">
-          <%= render 'credit_cards_table' %>
-        </div>
-        <!-- MOVIMIENTOS ASOCIADOS -->
+    <div class="card-body">
+      <!-- MOVIMIENTOS ASOCIADOS -->
+      <div id="credit_cards_table">
+        <%= render 'credit_cards_table' %>
       </div>
+      <!-- MOVIMIENTOS ASOCIADOS -->
     </div>
   </div>
-</div>
+
+
+
+<% end %>
+
 
 <div class="modal fade bd-example-modal-lg" id="showModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">

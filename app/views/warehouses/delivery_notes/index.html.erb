@@ -1,0 +1,43 @@
+<%= warehouses_layout_helper("salidas") do %>
+<%= button_new_helper new_delivery_note_path if can? :create, DeliveryNote %>
+
+<div class="card">
+  <div class="card-header">
+    <%= form_tag delivery_notes_path(), {class: 'form-inline', id: 'search_form'} do %>
+
+      <%= label_tag :invoice_number, "Nº Factura", class: 'sr-only' %>
+      <div class="input-group mb-2 col-3">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('fas', 'plane') %></div>
+        </div>
+        <%= text_field_tag :invoice_number, params[:invoice_number], class: 'form-control', placeholder: 'Buscar por factura', onkeyup: 'remoteSubmit("#search_form")' %>
+      </div>
+
+      <%= label_tag :user_name, "Usuario", class: 'sr-only' %>
+      <div class="input-group mb-2 col-4">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('fas', 'user') %></div>
+        </div>
+        <%= text_field_tag :user_name, params[:user_name], class: 'form-control', placeholder: 'Buscar por responsable', onkeyup: 'remoteSubmit("#search_form")' %>
+      </div>
+
+      <%= label_tag :state, "Estado", class: 'sr-only' %>
+      <div class="input-group mb-2 col-3">
+        <div class="input-group-prepend">
+          <div class="input-group-text"><%= icon('far', 'check-square') %></div>
+        </div>
+        <%= select_tag :state, options_for_select(DeliveryNote::STATES, params[:state]), {prompt: 'Todos los estados', class: 'form-control', onchange: 'remoteSubmit("#search_form")'} %>
+      </div>
+
+      <div class="input-group mb-2 col-2">
+        <%= button_tag "#{icon('fas', 'times-circle')} Filtros".html_safe, type: 'button', class: 'btn btn-dark clean-filter-button w-100' %>
+      </div>
+  <% end %>
+  </div>
+
+  <div class="card-body" id="delivery_notes">
+    <%= render 'delivery_notes_table' %>
+  </div>
+</div>
+
+<% end %>

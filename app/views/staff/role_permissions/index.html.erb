@@ -1,0 +1,98 @@
+
+	<div class="p-4">
+	  	
+	  <%= title_helper "Permisos del Rol: #{@role.name}" %>
+	  	<div id="notice">
+	  		
+	  	</div>
+		<div class="page-section">
+			<%= form_tag role_role_permissions_path(@role), id: 'permissions_tag', remote: true do %>
+				<div class="row">
+					<div class="col-lg-6 col-md-6 col-xs-12">
+					    <div class="card card-fluid">
+							<div class="card-header">
+								<center><strong>ASIGNADOS</strong></center>
+							</div>
+							<div class="card-body">
+								<div id="role_permissions_wrapper">
+									<%= render 'role_permissions' %>
+								</div>
+							</div>		
+						</div>
+					</div>
+
+					<div class="col-lg-6 col-md-6 col-xs-12">
+					    <div class="card card-fluid">
+							<div class="card-header">
+								<center><strong>PERMISOS A ASIGNAR</strong></center>
+							</div>
+							<div id="permissions_wrapper" class="card-body">
+								<%= render 'permissions' %>
+							</div>		
+						</div>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</div>
+
+<div class="modal fade bd-example-modal-lg" id="newRolePermissionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div id="new_permission">
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function changeTabPanel(klass){
+    $('a.permission_tab.').removeClass('active');
+    $('a.permission_tab. ' + klass).addClass('active');
+  }
+
+  function changeActive(id) {
+  	  current_active = $(".active");
+  	  console.log(current_active);
+	  a = $(id);
+	  console.log(a);
+	  current_active.removeClass("active");
+	  a.addClass("active ");
+  }
+
+  function toggleAssociation(role_id, permission_id, i, friendly_name) {
+  $.ajax({
+          url: "/roles/" + role_id + "/staff/role_permissions/toggle_association",
+          dataType: 'script',
+          type: "POST",
+          data: {
+            role_id: role_id,
+            permission_id: permission_id,
+            collapse_id: i,
+            friendly_name: friendly_name
+          },
+          cache: false,
+          success: function(data) {
+            //$([document.documentElement, document.body]).animate({
+            //    scrollTop: $('li#list_permission_id_' + permission_id).offset().top -100
+            //}, 'fast');
+            //$('li#permission_id_' + permission_id).hide();
+  			$("#notice").html("<%= error_for_modal_js('Asignado / revocado correctamente', 'success') %>");
+          },
+          error: function(data){
+			$("#notice").html("<%= error_for_modal_js('Error al revocar / asignar permiso', 'danger') %>");
+			if (data.status == 401 ){
+			  alert("---");
+			} else {
+			  //alert("Error")
+			}
+          }
+      });
+}
+
+</script>
+
+<style media="screen">
+	
+
+</style>

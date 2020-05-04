@@ -1,0 +1,49 @@
+<% if not @products.empty? %>
+	<div class="table-responsive">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Código</th>
+					<th scope="col">Nombre</th>
+					<th scope="col" class="only-desktop">Categoría</th>
+					<th scope="col" class="only-desktop">Proveedor</th>
+					<th scope="col">Disponible</th>
+					<th scope="col">Precio</th>
+					<th scope="col">
+						<div class="btn-group" role="group">
+					    <button id="btnMenuDrop" type="button" class="btn btn-outline-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					      <i class="fas fa-ellipsis-h"></i>
+					    </button>
+					    <div class="dropdown-menu" aria-labelledby="btnMenuDrop">
+								<%= button_tag "Editar seleccionados", id: 'btnMenu', type: 'button', onclick: "getRequest()", class: 'dropdown-item', disabled: true %>
+								<%= link_to "Actualizar precios", price_changes_path, class: 'dropdown-item' %>
+					    </div>
+						</div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @products.each do |product| %>
+					<tr>
+						<td><%= check_box_tag "product_ids[]", product.id, false, { class: 'checkbox-tag-multiple', onchange: 'abrir(this.value)' } %></td>
+						<td><%= product.code %></td>
+						<td><%= link_to product.name, product_path(product.id) %></td>
+						<td class="only-desktop"><%= product.product_category.nil? ? "-" : product.product_category.name %></td>
+						<td class="only-desktop"><%= product.supplier_name %></td>
+						<td class="text-center"><b><%= product_stock_helper(product) %></b></td>
+						<td class="text-center"><b><%= number_to_ars product.price %></b></td>
+						<td class="td-action-buttons">
+							<%= link_to icon('fas', 'edit').html_safe, edit_product_path(product.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+							<%= link_to icon('fas', 'trash').html_safe, product , method: :delete,data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+						</td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	</div>
+
+	<%= paginate @products %>
+<% else %>
+  <center><h1>¡No hay productos disponibles!</h1></center>
+<% end %>

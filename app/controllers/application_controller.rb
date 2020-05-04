@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
 	end
 
   def redirect_to_company
-    redirect_to root_path if current_user && !current_user.has_company?
+    redirect_to root_path unless current_company
   end
 
   def current_company

@@ -1,0 +1,36 @@
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Número</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Cliente</th>
+        <th scope="col">Vencimiento</th>
+        <th scope="col">Estado</th>
+        <th scope="col">Total</th>
+        <th scope="col">¿R.Stock?</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @budgets.each do |budget| %>
+      <tr>
+        <td><%= budget.number %></td>
+        <td><%= l(budget.date) %></td>
+        <td><%= image_tag budget.client.avatar, alt: budget.client.name, class: 'avatar' %> <%= link_to budget.client.name, client_path(budget.client_id) %></td>
+        <td><%= budget.expiration_date %></td>
+        <td class="text-center"><%= state_label_helper_budget(budget) %></td>
+        <td><%= number_to_ars budget.total %></td>
+        <td class="text-center"><%= stock_label_helper_budget(budget) %>
+        <td class="td-action-buttons">
+          <%= link_to icon('fas', 'file-pdf').html_safe, budget_path(budget.id, format: :pdf), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'edit').html_safe, edit_budget_path(budget.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'trash').html_safe, budget, method: :delete, data:{confirm: "¿Está seguro?"}, class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+        </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <%= paginate @budgets %>

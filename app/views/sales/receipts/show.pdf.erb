@@ -1,0 +1,8 @@
+
+  <% total_pages = 1 %>
+   <!--  @group_details lo cree en el controlador de receipts (en el show) con un include de productos. Son los detalles de la factura en grupos de a 20 -->
+  <div>
+    <%= render template: '/sales/receipts/pdf_partials/_header.html.erb' %>
+    <%= render template: '/sales/receipts/pdf_partials/_details.html.erb' %>
+    <%= render template: '/sales/receipts/pdf_partials/_footer.html.erb' %>
+  </div>
