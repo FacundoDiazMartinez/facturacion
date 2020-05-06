@@ -23,11 +23,10 @@ class Sales::InvoicesController < ApplicationController
         require 'barby/barcode/code_25_interleaved'
         require 'barby/outputter/png_outputter'
 
-        render pdf: "#{Afip::CBTE_TIPO[@invoice.cbte_tipo].split().map{|w| w.first unless w.first != w.first.upcase}.join()}" + "-" + "#{@invoice.sale_point.name}" + "-" + "#{@invoice.comp_number}" + "- Elasticos Martinez SRL",
+        render pdf: "#{@invoice.full_number} Elasticos M&M Srl",
           layout: 'pdf.html',
           template: 'sales/invoices/show',
           #zoom: 3.4,
-          # si en local se ve mal, poner en 3.4 solo para local
           viewport_size: '1280x1024',
           page_size: 'A4',
           encoding:"UTF-8"

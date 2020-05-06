@@ -335,9 +335,32 @@ class Invoice < ApplicationRecord
     end
   end
 
+	def acronimo_comprobante
+		case cbte_tipo
+    when "01" #Factura A
+      "FA"
+    when "06" #Factura B
+      "FB"
+    when "11" #Factura C
+      "FC"
+    when "02" #Nota de débito A
+      "NDA"
+    when "07" #Nota de débito B
+      "NDB"
+    when "12" #Nota de débito C
+      "NDC"
+    when "03" #Nota de credito A
+      "NCA"
+    when "08" #Nota de credito B
+      "NCB"
+    when "13" #Nota de credito C
+      "NCC"
+    end
+	end
+
   def full_number
 		return "Falta confirmar" if editable?
-		"#{sale_point.name} - #{comp_number}"
+		"#{acronimo_comprobante}-#{sale_point.name}-#{comp_number}"
   end
 
   def full_number_with_debt

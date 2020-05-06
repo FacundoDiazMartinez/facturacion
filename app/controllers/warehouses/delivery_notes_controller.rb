@@ -10,7 +10,7 @@ class Warehouses::DeliveryNotesController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "REMITO#{@delivery_note.number}",
+        render pdf: "RS-#{@delivery_note.number} Elasticos M&M Srl",
         layout: 'pdf.html',
         template: 'warehouses/delivery_notes/show',
         #zoom: 3.1,

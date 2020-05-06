@@ -12,7 +12,7 @@ class Sales::BudgetsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "Presup:#{@budget.number} - ElasticosM&M",
+        render pdf: "P#{@budget.number} Elasticos M&M Srl",
           layout: 'pdf.html',
           template: 'sales/budgets/show',
           #zoom: 3.1,

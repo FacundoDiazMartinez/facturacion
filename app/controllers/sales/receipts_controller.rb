@@ -13,7 +13,7 @@ class Sales::ReceiptsController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@receipt.id}",
+        render pdf: "X-#{@receipt.id} Elasticos M&M Srl",
         layout: 'pdf.html',
         template: 'sales/receipts/show',
         #zoom: 3.4,

@@ -13,7 +13,7 @@ class Warehouses::ArrivalNotesController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@arrival_note.id}",
+        render pdf: "RE-#{@arrival_note.number} Elasticos M&M Srl",
         layout: 'pdf.html',
         template: 'warehouses/arrival_notes/show',
         #zoom: 3.1,
