@@ -34,7 +34,7 @@
                     <div class="input-group-prepend">
                       <div class="input-group-text"><%= icon('fas', 'list') %></div>
                     </div>
-                    <%= select_tag :budget_state, options_for_select(Budget::STATES, params[:budget_state]), {class: 'form-control', include_blank: "Todos", onkeyup: 'remoteSubmit("#search_form")'} %>
+                    <%= select_tag :budget_state, options_for_select(Budget::STATES, params[:budget_state]), {class: 'form-control', include_blank: "Todos", onchange: 'remoteSubmit("#search_form")'} %>
                   </div>
                 </div>
                 <div class="col-12 col-md-3">
