@@ -3,9 +3,9 @@
     <thead>
       <tr>
         <th>Número</th>
-        <th>Fecha</th>
         <th>Cliente</th>
-        <th>Comprobante asoc.</th>
+        <th>Emisión</th>
+        <th>Asociado</th>
         <th>Total</th>
         <th></th>
       </tr>
@@ -14,11 +14,11 @@
     <tbody>
       <% @receipts.each do |receipt| %>
         <tr>
-          <td><%= receipt.number %></td>
+          <td><%= link_to "X-#{receipt.number}", edit_receipt_path(receipt) %></td>
+          <td><%= link_to_client_avatar(receipt.client) %></td>
           <td><%= receipt.date %></td>
-          <td><%= image_tag receipt.client.avatar, alt: receipt.client.name, class: 'avatar' %> <%= link_to receipt.client.name, client_path(receipt.client_id) %></td>
           <td><%= invoices_with_link(receipt) %></td>
-          <td><%= number_to_ars receipt.total %></td>
+          <td class="text-right text-bold"><%= number_to_ars receipt.total %></td>
           <td class="td-action-buttons">
             <%= link_to icon('fas', 'print').html_safe, receipt_path(receipt.id, format: :pdf), target: "_blank", class: 'btn btn-sm btn-icon btn-outline-secondary' if receipt.state == "Finalizado" %>
             <% if receipt.editable? %>

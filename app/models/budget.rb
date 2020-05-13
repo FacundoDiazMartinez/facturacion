@@ -26,11 +26,11 @@ class Budget < ApplicationRecord
 
   default_scope { where(active: true) }
 
-  scope :pendientes, -> { where(state: "Válido") }
-  scope :confirmados, -> { where(state: "Confirmado") }
-  scope :expirados, -> { where(state: "Vencido") }
-  scope :anulados, -> { where(state: "Anulado") }
-  scope :facturados, -> { where(state: "Facturado") }
+  scope :pendientes,    -> { where(state: "Válido") }
+  scope :confirmados,   -> { where(state: "Confirmado") }
+  scope :expirados,     -> { where(state: "Vencido") }
+  scope :anulados,      -> { where(state: "Anulado") }
+  scope :facturados,    -> { where(state: "Facturado") }
 
   def self.search_by_number number
     return where("number ILIKE ?", "%#{number}%") unless number.blank?

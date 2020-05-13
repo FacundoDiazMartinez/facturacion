@@ -56,7 +56,7 @@
 
       <div class="text-center">
         <% if @purchase_order.confirmado? %>
-          <%= link_to "#{icon('fas', 'file-pdf')} PDF".html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-primary my-5' %>
+          <%= link_to "#{icon('fas', 'print')} PDF".html_safe, purchase_order_path(purchase_order.id, format: :pdf), class: 'btn btn-primary my-5' %>
           <%= link_to "#{icon('fas', 'eraser')} Anular".html_safe, cancel_purchase_order_path(purchase_order.id), class: 'btn btn-danger my-3' %>
           <%= button_tag "#{icon('fas', 'envelope')} Enviar".html_safe, type: 'button', class: 'btn btn-info my-3', data:{ toggle: 'modal', target: '#sendMailModal'} %>
         <% end %>

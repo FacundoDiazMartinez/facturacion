@@ -20,7 +20,7 @@
         <td><%= link_to transfer_request.receiver.name, edit_invoice_path(transfer_request.to_depot_id) %></td>
         <td><%= transfer_request_state_helper transfer_request %></td>
         <td class="td-action-buttons">
-          <%= link_to icon('fas', 'file-pdf').html_safe, transfer_request_path(transfer_request.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'print').html_safe, transfer_request_path(transfer_request.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_transfer_request_path(transfer_request), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, TransferRequest %>
           <%= link_to icon('fas', 'trash'), transfer_request, method: :delete, data: { confirm: '¿Estás seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can?(:destroy, TransferRequest) && transfer_request.editable? %>
         </td>

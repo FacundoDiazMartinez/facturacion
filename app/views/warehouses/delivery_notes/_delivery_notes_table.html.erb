@@ -20,7 +20,7 @@
         <td><%= link_to delivery_note.user.name, user_path(delivery_note.user_id) %></td>
         <td><%= dn_state_label_helper(delivery_note) %></td>
         <td class="td-action-buttons">
-          <%= link_to icon('fas', 'file-pdf').html_safe, delivery_note_path(delivery_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'print').html_safe, delivery_note_path(delivery_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_delivery_note_path(delivery_note), class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :update, DeliveryNote %>
           <% if (delivery_note.state != "Anulado" && delivery_note.state != "Finalizado") %>
             <%= link_to icon('fas', 'trash'), delivery_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if can? :destroy, DeliveryNote %>

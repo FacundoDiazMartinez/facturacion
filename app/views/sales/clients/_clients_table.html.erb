@@ -2,21 +2,21 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th scope="col">Nombre</th>
-        <th scope="col">Documento</th>
-        <th scope="col">Vencimiento</th>
-        <th scope="col">Saldo</th>
-        <th scope="col"></th>
+        <th>Nombre</th>
+        <th>Documento</th>
+        <th>Vencimiento</th>
+        <th>SALDO</th>
+        <th></th>
       </tr>
     </thead>
 
     <tbody>
       <% @clients.each do |client| %>
       <tr>
-        <td><%= link_to client.name, client %></td>
+        <td><%= link_to_client_avatar(client) %></td>
         <td><%= client.full_document %></td>
-        <td><%= boolean_to_icon client.check_if_expired %></td>
-        <td><%= number_to_ars client.saldo %></td>
+        <td><%= boolean_to_icon(client.check_if_expired) %></td>
+        <td class="text-right text-bold"><%= number_to_ars client.saldo %></td>
         <td class="td-action-buttons">
           <%= link_to icon('fas', 'briefcase'), client_account_movements_path(client.id), class: 'btn btn-sm btn-icon btn-outline-secondary' if client.valid_for_account %>
           <% if can? :manage, Client %>

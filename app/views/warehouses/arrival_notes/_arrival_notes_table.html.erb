@@ -20,7 +20,7 @@
         <td><%= link_to arrival_note.user.name, user_path(arrival_note.user_id) %></td>
         <td><%= arrival_state_label_helper(arrival_note) %></td>
         <td class="td-action-buttons">
-          <%= link_to icon('fas', 'file-pdf').html_safe, arrival_note_path(arrival_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
+          <%= link_to icon('fas', 'print').html_safe, arrival_note_path(arrival_note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'edit'), edit_arrival_note_path(arrival_note), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
           <%= link_to icon('fas', 'trash'), arrival_note, method: :delete, data: { confirm: '¿Estas seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if arrival_note.editable? %>
         </td>

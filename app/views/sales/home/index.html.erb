@@ -1,3 +1,111 @@
 <%= sales_layout_helper("general") do %>
-  GENERAL
+  <div class="row">
+
+    <div class="col-lg-6 mb-3">
+      <p class="text-muted mb-1">Ventas</p>
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="widget-stats text-right col-lg-4 border-right">
+              <span class="font-small text-success">Confirmadas</span>
+              <p class="h2 mb-0">
+                <%= number_to_k(@facturas_anual.pluck(:total).inject(0,:+)) %>
+              </p>
+              <p class="mb-0 text-muted font-small">En el año</p>
+            </div>
+            <div class="widget-stats text-right col-lg-4">
+              <span class="font-small text-success">Confirmadas</span>
+              <p class="h2 mb-0">
+                <%= number_to_k(@facturas_mensual.confirmados.pluck(:total).inject(0,:+)) %>
+              </p>
+              <p class="mb-0 text-muted font-small">En el mes</p>
+            </div>
+            <div class="widget-stats text-right col-lg-4">
+              <span class="font-small text-warning">Pendientes</span>
+              <p class="h2 mb-0">
+                <%= number_to_k(@facturas_mensual.pendientes.pluck(:total).inject(0,:+)) %>
+              </p>
+              <p class="mb-0 text-muted font-small">En el mes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 mb-3">
+      <p class="text-muted mb-1">Presupuestos</p>
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="widget-stats text-right col-lg-4 border-right">
+              <span class="font-small text-success">Confirmados</span>
+              <p class="h2 mb-0">
+                <%= number_to_k(@presupuestos_anual.pluck(:total).inject(0,:+)) %>
+              </p>
+              <p class="mb-0 text-muted font-small">En el año</p>
+            </div>
+            <div class="widget-stats text-right col-lg-4">
+              <span class="font-small text-success">Confirmados</span>
+              <p class="h2 mb-0">
+                <%= number_to_k(@presupuestos_mensual.confirmados.pluck(:total).inject(0,:+)) %>
+              </p>
+              <p class="mb-0 text-muted font-small">En el mes</p>
+            </div>
+            <div class="widget-stats text-right col-lg-4">
+              <span class="font-small text-warning">Pendientes</span>
+              <p class="h2 mb-0">
+                <%= number_to_k(@presupuestos_mensual.pendientes.pluck(:total).inject(0,:+)) %>
+              </p>
+              <p class="mb-0 text-muted font-small">En el mes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8 mb-3">
+      <div class="widget-chart">
+        <p class="text-muted mb-1">Ventas confirmadas en el año</p>
+        <div class="card">
+          <div class="card-body">
+            <%= area_chart @facturas_anual.group_by_month(:created_at).count, colors: ["#46b04a"], label: "Facturas confirmadas", message: { empty: "Sin datos" } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+      <div class="widget-chart">
+        <p class="text-muted mb-1">Tipos de factura</p>
+        <div class="card">
+          <div class="card-body">
+            <%= pie_chart @facturas_anual.group(:cbte_tipo).count, donut: true, colors: ["#46b04a"], message: { empty: "Sin datos" } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="col-lg-6 mb-3">
+      <div class="widget-chart">
+        <p class="text-muted mb-1">Productos más vendidos</p>
+        <div class="card">
+          <div class="card-body">
+            <%= pie_chart top_ten_products_per_year_products_path, donut: true, messages: {empty: "Sin datos"} %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6 mb-3">
+      <div class="widget-chart">
+        <p class="text-muted mb-1">Productos más cotizados</p>
+        <div class="card">
+          <div class="card-body">
+            <%= pie_chart top_ten_products_per_year_products_path, donut: true, messages: {empty: "Sin datos"} %>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+  </div>
 <% end %>

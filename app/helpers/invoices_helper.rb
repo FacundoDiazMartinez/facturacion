@@ -66,4 +66,12 @@ module InvoicesHelper
 		result 			= "#{code}#{last_digit}"
 		result.size.odd? ? "0" + result : result
 	end
+
+	def payed_invoice_span invoice
+		if invoice.real_total_left_including_debit_notes.to_f <= 0
+			content_tag :span, class: "text-success" do
+				concat(icon("fas", "check-circle"))
+			end
+		end
+	end
 end

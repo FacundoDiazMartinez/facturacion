@@ -49,6 +49,7 @@ class Invoice < ApplicationRecord
 
 	default_scope { where(active: true) }
 	scope :confirmados, 						-> { where(state: ["Confirmado", "Anulado parcialmente"]) }
+	scope :pendientes, 							-> { where(state: "Pendiente") }
 	scope :only_invoices, 					-> { where(cbte_tipo: COD_INVOICE) }
 	scope :facturas_y_notas_debito, -> { where(cbte_tipo: COD_INVOICE + COD_ND) }
 	scope :unassociated_invoices, 	-> { where(associated_invoice: nil) }
@@ -374,7 +375,7 @@ class Invoice < ApplicationRecord
   end
 
   def full_name
-    "Pto. venta: #{sale_point.name}.  Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
+    "Pto. venta: #{sale_point.name}. Número: #{comp_number || 'Sin confirmar'}. Total: #{total}. Fecha: #{cbte_fch}."
   end
 
   def name

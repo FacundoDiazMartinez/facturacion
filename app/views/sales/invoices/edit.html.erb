@@ -24,7 +24,7 @@
 							<% end -%>
 						<% end -%>
 						<div class="dropdown-divider"></div>
-						<%= link_to "#{icon('fas', 'file-pdf')} Ver PDF".html_safe, invoice_path(@invoice.id, format: :pdf), class: 'dropdown-item', target: '_blank', data: { 'skip-pjax': true } %>
+						<%= link_to "#{icon('fas', 'print')} Ver PDF".html_safe, invoice_path(@invoice.id, format: :pdf), class: 'dropdown-item', target: '_blank', data: { 'skip-pjax': true } %>
 						<%= button_tag "#{icon('fas', 'envelope')} Enviar al cliente".html_safe, type: 'button', data:{toggle: 'modal', target: '#sendClientModal'}, class: 'dropdown-item' %>
 					<% end %>
 			  </div>
