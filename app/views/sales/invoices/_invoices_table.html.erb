@@ -19,7 +19,7 @@
               <%= link_to_client_avatar(invoice.client) %>
             </td>
             <td><%= invoice.cbte_fch %></td>
-            <td><%= invoice.tipo %><%= payed_invoice_span(invoice) %></td>
+            <td><%= invoice.tipo %> <%= payed_invoice_span(invoice) %></td>
             <td class="text-right">
               <%= number_to_ars invoice.total_left%>
             </td>
@@ -43,7 +43,7 @@
                   <% end %>
                 </td>
                 <td><%= note.cbte_fch %></td>
-                <td><%= note.tipo %><%= payed_invoice_span(invoice) %></td>
+                <td><%= note.tipo %> <%= payed_invoice_span(invoice) %></td>
                 <td class="text-right"><%= number_to_ars note.total_left %></td>
                 <td class="text-right text-bold"><%= number_to_ars note.total %></td>
                 <td class="td-action-buttons">
