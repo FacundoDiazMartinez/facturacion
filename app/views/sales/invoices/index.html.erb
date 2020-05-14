@@ -1,6 +1,6 @@
 <%= sales_layout_helper("facturacion") do %>
 
-  <%= button_new_helper(new_invoice_path()) if can? :create, Invoice %>
+  <%= button_new_helper(new_invoice_path(), "Nueva factura") if can? :create, Invoice %>
 
   <div class="page-section">
     <div class="card card-fluid navbar-expand-lg">
@@ -51,7 +51,7 @@
           </div>
         <% end %>
       </div>
-      
+
       <div class="card-body">
         <div id="invoices_table">
           <%= render 'invoices_table' %>

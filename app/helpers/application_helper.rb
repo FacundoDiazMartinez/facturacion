@@ -1,11 +1,11 @@
 module ApplicationHelper
 
-	def button_new_helper path
-		link_to "#{icon('fas', 'plus')}".html_safe, path, class: 'btn btn-success btn-floated'
+	def button_new_helper path, texto=nil
+		link_to "#{icon('fas', 'plus')} #{texto}".html_safe, path, class: 'btn btn-success btn-floated', data: { "skip-pjax": true }
 	end
 
-	def button_edit_helper path
-		link_to "#{icon('fas', 'edit')}".html_safe, path, class: 'btn btn-success btn-floated'
+	def button_edit_helper path, texto=nil
+		link_to "#{icon('fas', 'edit')} #{texto}".html_safe, path, class: 'btn btn-success btn-floated', data: { "skip-pjax": true }
 	end
 
 	def button_new_modal_helper path, target

@@ -1,6 +1,6 @@
 <%= sales_layout_helper("clientes") do %>
 
-  <%= button_new_helper(new_client_path()) if can? :create, Client %>
+  <%= button_new_helper(new_client_path(), "Nuevo cliente") if can? :create, Client %>
 
   <div class="page-section">
     <div class="card card-fluid">

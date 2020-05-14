@@ -1,5 +1,5 @@
 <%= sales_layout_helper("recibos") do %>
-  <%= button_new_helper new_receipt_path if can? :create, Receipt %>
+  <%= button_new_helper(new_receipt_path, "Nuevo recibo" )if can? :create, Receipt %>
   <div class="page-section">
     <div class="card">
       <div class="card-header">

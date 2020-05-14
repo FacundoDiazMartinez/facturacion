@@ -45,6 +45,7 @@ $(document).ready(function() {
   })
 
   initializeNumberInputPatterns();
+  initializeBootstrapToggles();
   initializeDatepickers();
   directUpload()
 });
@@ -96,7 +97,7 @@ function initializeNumberInputPatterns() {
 }
 
 function initializeBootstrapToggles() {
-  $('.toggle').bootstrapToggle();
+  $('.toggle').bootstrapToggle('destroy').bootstrapToggle();
 }
 
 function initializeDatepickers() {
