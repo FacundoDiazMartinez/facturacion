@@ -1,97 +1,66 @@
-<div class="container">
-  <div class="row">
-    <% unless @invoice.authorized_invoice? %>
-      <div class="text-center">
-        <% if @invoice.company.environment != "production" %>
-          -- COMPROBANTE NO AUTORIZADO --
-        <% end %>
-      </div>
-    <% end %>
-  </div>
+<div class="text-center text-bold" style="height: 17px">
+  <%= "-- COMPROBANTE NO AUTORIZADO --" unless @invoice.authorized_invoice?  %>
 </div>
-<!--ENCABEZADO NOMBRE - TIPO - FACTURA-->
-    <div class=" border">
-      <table class="width_100">
-        <tr style="line-height: 6px !important;">
-          <th class="text_size_25 text-left header_word_break" style="text-align: center; width: 830px;"><%= @invoice.company.name %>
-          </th>
-          <th class="text_size_invoice_type invoice_type" style="padding-left: 25px;"><%= InvoiceManager::CbteTypesGetter.call(@invoice.company, @invoice.client).first.first.last %>
-            <table>
-              <tbody>
-                <td>
-                  <td style="font-size: 11px; padding-top: 10px;"> <br> COD.<%= @invoice.cbte_tipo %></td>
-                </td>
-              </tbody>
-            </table>
-          </th>
-          <th class="text_size_25 header_word_break" style="width: 800px;">
-            <%= @invoice.nombre_comprobante.upcase %>
-          </th>
-        </tr>
-      </table>
 
-
-      <table class="width_100" >
-        <tr>
-          <td rowspan="5" style="width: 1px;"></td>
-          <td style="width: 50%;"> <b>Razon Social: </b> <%= @invoice.company.society_name %> </td>
-          <td rowspan="5" class="right_border"></td>
-          <td rowspan="5" style="width: 1px;"></td>
-          <td>
-            <b>Punto de Venta: <%= @invoice.sale_point.fill_name %>
-               - Comp.Nro: <%= invoice_comp_number @invoice %>
-            </b>
-          </td>
-        </tr>
-
-        <tr>
-          <td><b>Domicilio Comercial:</b> <%= @invoice.company.address %></td>
-
-          <td><b>Fecha de Emision:</b> <%= @invoice.created_at.strftime("%d/%m/%Y") %></td>
-        </tr>
-
-        <tr>
-          <td><b>Condicion frente al IVA:</b> <%= @invoice.company.iva_cond %></td>
-
-          <td ><b>CUIT: </b><%= @invoice.company.cuit %></td>
-        </tr>
-
-        <tr>
-          <td><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date.strftime("%d/%m/%Y") %></td>
-
-          <td><b>Ingresos Brutos: </b><%= @invoice.company.cuit %></td>
-        </tr>
-      </table>
-    </div>
-  <!-- FIN DEL ENCABEZADO -->
-
-<!-- DATOS CLIENTE -->
-<div>
-  <div class="container" style="border-right: 1px solid black; border-left: 1px solid black; border-bottom: 1px solid black;">
-    <table class="width_100">
+<div class="border">
+  <table class="width_100">
     <tr>
-      <td rowspan="3" style="width: 1px;"></td>
-      <td style="width: 51%;"><b>CUIT: </b><%= @invoice.client.document_number %></td>
+      <td class="text-lg text-center text-bold header_word_break">
+        <%= @invoice.company.name %>
+      </td>
+      <td class="text-xl text-center" style="width:15%">
+        <%= InvoiceManager::CbteTypesGetter.call(@invoice.company, @invoice.client).first.first.last %>
+        <p class="text-bold text-center text-sm m-0">Cod. <%= @invoice.cbte_tipo %></p>
+      </td>
+      <td class="text-lg text-center text-bold header_word_break">
+        <%= @invoice.tipo.upcase %>
+      </td>
+    </tr>
+  </table>
+
+  <table class="width_100 border-bottom">
+    <tr>
+      <td class="width_50">
+        <span class="text-bold">
+          Razon Social:
+        </span>
+        <%= @invoice.company.society_name %>
+      </td>
+      <td rowspan="5" class="right_border"></td>
+      <td class="text-bold">
+        Punto de Venta: <%= @invoice.sale_point.fill_name %> - Comp.Nro: <%= invoice_comp_number @invoice %>
+      </td>
+    </tr>
+    <tr>
+      <td><b>Domicilio Comercial:</b> <%= @invoice.company.address %></td>
+      <td><b>Fecha de Emision:</b> <%= @invoice.cbte_fch %></td>
+    </tr>
+    <tr>
+      <td><b>Condicion frente al IVA:</b> <%= @invoice.company.iva_cond %></td>
+      <td ><b>CUIT: </b><%= @invoice.company.cuit %></td>
+    </tr>
+    <tr>
+      <td><b>Fecha de Inicio de Actividades: </b> <%= @invoice.company.activity_init_date.to_date %></td>
+      <td><b>Ingresos Brutos: </b><%= @invoice.company.cuit %></td>
+    </tr>
+  </table>
+
+  <table class="width_100">
+    <tr>
+      <td class="width_50"><b>CUIT: </b><%= @invoice.client.document_number %></td>
       <td><b>Cliente / Razon Social: </b> &nbsp <%= @invoice.client.name %></td>
     </tr>
-
     <tr>
       <td><b>Condicion frente al IVA: </b> &nbsp <%= @invoice.client.iva_cond %></td>
       <td><b>Domicilio: </b>&nbsp <%= @invoice.client.address %></td>
     </tr>
-
     <tr>
+      <td><b>Medios de pago: </b>&nbsp <%= invoice_payments @invoice %></td>
       <td>
-        <b>Medios de pago: </b>&nbsp <%= invoice_payments @invoice %>
-      </td>
-      <td>
-        <% unless @invoice.associated_invoice.nil? ##|| !@invoice.is_invoice? %>
-          <b> Factura asociada: </b>&nbsp <%= @invoice.invoice.full_number %>
+        <% unless @invoice.associated_invoice.nil? %>
+          <b> Factura asociada: </b><%= @invoice.invoice.full_number %>
         <% end %>
       </td>
     </tr>
-
   </table>
-  </div>
 </div>
-<!-- FIN DATOS CLIENTE -->

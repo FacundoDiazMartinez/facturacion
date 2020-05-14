@@ -1,74 +1,47 @@
-<!-- PIE DE PAGINA -->
-<div class="row footer_bottom">
-  <div class="container text-center" style="border-style: dotted; border-width: 1px; padding-right: 10px; padding-left: 10px; height:50px; overflow: hidden; font-size: 10px !important;">
-    <%= @invoice.company.invoice_footer.html_safe if @invoice.company.invoice_footer.length > 0 %>
-  </div>
-
-  <div class="container">
-    <table class="width_100">
-      <tr>
-        <td rowspan="2" style="width: 33%"><br>
-          <center>
-            <%= wicked_pdf_image_tag '/images/afip.png', :width => "150px"%>
-          </center>
-        </td>
-
-        <td rowspan="2" style="width: 33% !important;">
-          <b>
-            <center>
-              <% if @invoice.authorized_invoice? %>
-                <% barcode    = Barby::Code25Interleaved.new(invoice_bar_code(@invoice)) %>
-                <% outputter  = Barby::PngOutputter.new(barcode) %>
-                <% file       = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 30) } %>
-                <%= image_tag(@barcode_path, class: "img-responsive") %>
-              <% else %>
-                -- Comprobante NO Autorizado --
-                <% unless @invoice.cae.blank? %>
-                  <% barcode  = Barby::Code25Interleaved.new(invoice_bar_code(@invoice)) %>
-                  <% bar_png  = barcode.to_png(xdim:1, height: 30) %>
-                  <% image    = Base64.encode64(bar_png.to_s).gsub(/\s+/, "") %>
-                  <%= image_tag "data:image/png;base64,#{Rack::Utils.escape(image)}" %>
-                  <%= barcode.to_s %>
-                <% end %>
-              <% end %>
-            </center>
-          </b>
-        </td>
-
-        <td style="width: 33%;" class="text-right"><b>CAE N°:</b> <%= @invoice.cae %></td>
-      </tr>
-
-      <tr>
-        <td class="text-right"><b>Fecha de Vto. de CAE:</b> <%= Date.strptime(@invoice.cae_due_date , "%Y%m%d") %></td>
-      </tr>
-    </table>
-  </div>
-
-  <div class="container border">
-    <br>
-    <table class="width_100">
-      <col>
-      <col width="450">
-      <col>
-      <tr>
-        <td rowspan="3" style="width: 1px;"></td>
-        <td><b>Móvil:</b></td>
-        <td><b>Aclaración:</b></td>
-      </tr>
-      <tr>
-        <td colspan="2"><br></td>
-      </tr>
-      <tr>
-        <td><b>Firma:</b></td>
-        <td><b>DNI:</b></td>
-      </tr>
-      <tr>
-        <td colspan="2"><br></td>
-      </tr>
-    </table>
-  </div>
+<div class="text-center text-sm" style="height:50px; border-style: dotted; border-width: 1px; padding-right: 10px; padding-left: 10px; overflow: hidden;">
+  <%= @invoice.company.invoice_footer.html_safe if @invoice.company.invoice_footer.length > 0 %>
 </div>
-<div class="text-center" style="padding: 25px;">
+
+<table class="width_100">
+  <tr>
+    <td class="text-center" rowspan="2" style="width: 33%"><%= wicked_pdf_image_tag '/images/afip.png', :width => "150px" %></td>
+
+    <td class="text-center text-bold" rowspan="2" style="width: 33% !important;">
+      <% if @invoice.authorized_invoice? %>
+        <% barcode    = Barby::Code25Interleaved.new(invoice_bar_code(@invoice)) %>
+        <% outputter  = Barby::PngOutputter.new(barcode) %>
+        <% file       = File.open(@barcode_path,'wb') {|f| f.write barcode.to_png(xdim: 1, height: 30) } %>
+        <%= image_tag(@barcode_path, class: "img-responsive") %>
+      <% else %>
+        -- ATENCIÓN: Comprobante NO Autorizado --
+        <% unless @invoice.cae.blank? %>
+          <% barcode  = Barby::Code25Interleaved.new(invoice_bar_code(@invoice)) %>
+          <% bar_png  = barcode.to_png(xdim:1, height: 30) %>
+          <% image    = Base64.encode64(bar_png.to_s).gsub(/\s+/, "") %>
+          <%= image_tag "data:image/png;base64,#{Rack::Utils.escape(image)}" %>
+          <%= barcode.to_s %>
+        <% end %>
+      <% end %>
+    </td>
+
+    <td style="width: 34%;" class="text-right">
+      <p><span class="text-bold">CAE N°: </span><%= @invoice.cae %></p>
+      <p><span class="text-bold">Vencimiento CAE: </span><%= @invoice.cae_due_date.to_date %></p>
+    </td>
+  </tr>
+</table>
+
+<table class="width_100 text-bold lh-lg border p-2">
+  <tr>
+    <td class="p-2 width_50">Móvil:</td>
+    <td class="p-2">Aclaración:</td>
+  </tr>
+  <tr>
+    <td class="p-2">Firma:</td>
+    <td class="p-2">DNI:</td>
+  </tr>
+</table>
+
+<div class="text-center p-2">
   <%= "Página #{page_number} de #{total_pages}" %>
 </div>
-<!-- FIN PIE DE PAGINA -->

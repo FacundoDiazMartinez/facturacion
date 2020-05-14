@@ -15,17 +15,13 @@
         <% @invoices.unassociated_invoices.each do |invoice| %>
           <tr class="<%= bordered_invoice_by_state(invoice.state) %>">
             <td><%= link_to invoice.full_number, edit_invoice_path(invoice) %></td>
-            <td>
-              <%= link_to_client_avatar(invoice.client) %>
-            </td>
+            <td><%= link_to_client_avatar(invoice.client) %></td>
             <td><%= invoice.cbte_fch %></td>
             <td><%= invoice.tipo %> <%= payed_invoice_span(invoice) %></td>
-            <td class="text-right">
-              <%= number_to_ars invoice.total_left%>
-            </td>
+            <td class="text-right"><%= number_to_ars invoice.total_left%></td>
             <td class="text-right text-bold"><%= number_to_ars invoice.total %></td>
             <td class="td-action-buttons">
-              <%= link_to icon('fas', 'print').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless invoice.editable? %>
+              <%= link_to icon('fas', 'print').html_safe, invoice_path(invoice.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary', data: { "skip-pjax": true } unless invoice.editable? %>
               <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(invoice.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
               <%= link_to icon('fas', 'trash').html_safe, invoice, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if invoice.editable? %>
               <%= link_to icon('fas', 'eraser').html_safe, cancel_invoice_path(invoice.id), data: {confirm: "Está por anular un comprobante. ¿Está seguro que desea continuar?", "skip-pjax" => true}, class: 'btn btn-sm btn-icon btn-outline-danger' if (invoice.is_invoice? && (invoice.confirmado? || invoice.parcialmente_anulado?)) %>
@@ -47,7 +43,7 @@
                 <td class="text-right"><%= number_to_ars note.total_left %></td>
                 <td class="text-right text-bold"><%= number_to_ars note.total %></td>
                 <td class="td-action-buttons">
-                  <%= link_to icon('fas', 'print').html_safe, invoice_path(note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary' unless note.editable? %>
+                  <%= link_to icon('fas', 'print').html_safe, invoice_path(note.id, format: :pdf), target: '_blank', class: 'btn btn-sm btn-icon btn-outline-secondary', data: { "skip-pjax": true } unless note.editable? %>
                   <%= link_to icon('fas', 'edit').html_safe, edit_invoice_path(note.id), class: 'btn btn-sm btn-icon btn-outline-secondary' %>
                   <%= link_to icon('fas', 'trash').html_safe, note, method: :delete, data: { confirm: '¿Está seguro?' }, class: 'btn btn-sm btn-icon btn-outline-secondary' if note.editable? %>
                 </td>

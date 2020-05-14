@@ -79,13 +79,15 @@ class Sales::InvoicesController < ApplicationController
   def update
     @client        = @invoice.client
     @invoice.user  = current_user
-    @invoice.update!(invoice_params)
-    @invoice      = InvoiceManager::TotalsSetter.call(@invoice)
-
-    if @invoice.custom_save(params[:send_to_afip])
-      redirect_to edit_invoice_path(@invoice), notice: 'Comprobante actualizado con éxito.'
+    if @invoice.update(invoice_params)
+      InvoiceManager::TotalsSetter.call(@invoice)
+      if @invoice.custom_save(params[:send_to_afip])
+        redirect_to edit_invoice_path(@invoice), notice: 'Comprobante actualizado con éxito.'
+      else
+        # @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
+        render :edit
+      end
     else
-      # @invoice.reload ##el reload es necesario para que los conceptos con _destroy=true se reestablezcan
       render :edit
     end
   end

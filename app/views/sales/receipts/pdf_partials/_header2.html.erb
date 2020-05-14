@@ -2,10 +2,10 @@
     <div class="container border">
       <table class="width_100">
         <tr>
-          <th class="text_size_25 text-left header_word_break" style="text-align: center; width: 406px;">
+          <th class="text-lg text-left header_word_break" style="text-align: center; width: 406px;">
             <img class="card-img-top" src="<%= @receipt.company.logo %>" alt="Logo" id="image"  width="70%">
           </th>
-          <th class="text_size_invoice_type invoice_type"><%= @receipt.letra_tipo %>
+          <th class="text-xl invoice_type"><%= @receipt.letra_tipo %>
             <table>
               <tbody>
                 <tr>
@@ -14,7 +14,7 @@
               </tbody>
             </table>
           </th>
-          <th class="text_size_25 header_word_break" style="width: 400px;">
+          <th class="text-lg header_word_break" style="width: 400px;">
             <div class="row" style="font-size: 10px;">DOCUMENTO NO VÁLIDO COMO FACTURA</div>
             <div class="row">RECIBO</div>
             <div class="row" style="font-size: 20px;">N° <%= @receipt.sale_point.fill_name %> - <%= @receipt.number %></div>

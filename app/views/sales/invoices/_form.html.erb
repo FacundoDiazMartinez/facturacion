@@ -1,7 +1,7 @@
 <%= nested_form_for @invoice do |form| %>
 <%= error_explanation @invoice %>
 <%= form.hidden_field :budget_id %>
-<div class="card invoice-header card-bordered <%= bordered_invoice_by_state(@invoice.state) %>">
+<div class="card invoice-header card-bordered <%= bordered_invoice_by_state(@invoice.state) %> mb-5">
   <div class="card-body">
     <div id="on_account" class="row" style="display: none">
       <div class="col-md-4">
@@ -89,13 +89,19 @@
   <%= render 'details', { form: form, invoice: @invoice } %>
 </div>
 
-<div id="ibonifications">
-  <%= render 'bonifications', { form: form, invoice: @invoice } %>
+<div class="row">
+  <div class="col-lg-6">
+    <div id="ibonifications">
+      <%= render 'bonifications', { form: form, invoice: @invoice } %>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div id="itaxes">
+      <%= render 'taxes', { form: form, invoice: @invoice } if current_company.iva_cond == "Responsable Inscripto" %>
+    </div>
+  </div>
 </div>
 
-<div id="itaxes">
-  <%= render 'taxes', { form: form, invoice: @invoice } if current_company.iva_cond == "Responsable Inscripto" %>
-</div>
 
 <% unless @invoice.new_record? %>
   <div id="ipayments">
@@ -111,7 +117,7 @@
   <%= render 'authorized_people', { form: form, client: @client } %>
 </div>
 
-<div class="invoice-resume">
+<div class="invoice-resume mt-5">
   <%= render 'resume', invoice: @invoice %>
 </div>
 

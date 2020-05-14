@@ -1,81 +1,19 @@
+<span class="important-number text-right d-block">
+  Subtotal conceptos: $<span class="total_details">0.00</span>
+</span>
+<span class="important-number text-right text-success d-block">
+  Descuentos: -$<span class="total_bonifications">0.00</span>
+</span>
+<span class="important-number text-right d-block mb-3">
+  Otros impuestos: $<span class="total_tributes">0.00</span>
+</span>
 
-<span class="h3 important-number text-right d-block form-group text-bold">TOTAL VENTA: $<span class="final_total">0.00</span></span>
-<span class="important-number text-right d-block form-group">Total faltante: $<span class="total_payments_left">0.00</span></span>
-<a href="#" class="linkeable toggle-resumen-link text-right d-block form-group">
-  <span class="toggle-resumen-label">Mostrar</span> resumen
-</a>
-<div class="row toggle-resumen-target" style="display:none">
-  <div class="col-md-3">
-    <div class="card p-3">
-      <p class="text-muted">Conceptos s/imp</p>
-      <p class="important-number text-right">$ <span class="total_details">0.00</span></p>
-      <p class="text-muted">Conceptos + I.V.A.</p>
-      <p class="important-number text-right">$ <span class="detail_iva">0.00</span></p>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card p-3">
-      <p class="text-muted">Tributos</p>
-      <p class="important-number text-right">$ <span class="total_tributes">0.00</span></p>
-      <p class="text-muted">Notas de débito</p>
-      <p class="important-number text-right">$ <span><%= number_with_precision(invoice.debit_notes.pluck(:total).inject(0) { |sum, importe| sum + importe }, precision: 2, separator: '.') %></span></p>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card p-3">
-      <p class="text-muted">Descuentos</p>
-      <p class="important-number text-right">$ <span class="total_bonifications">0.00</span></p>
-      <p class="text-muted">Notas de crédito</p>
-      <p class="important-number text-right">$ <span><%= number_with_precision(invoice.credit_notes.pluck(:total).inject(0) { |sum, importe| sum + importe }, precision: 2, separator: '.') %></span></p>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card p-3">
-      <p class="text-muted">TOTAL VENTA</p>
-      <p class="important-number text-right">$ <span class="final_total">0.00</span></p>
-      <p class="text-muted">Pagos</p>
-      <p class="important-number text-right">$ <span class="total_payments">0.00</span></p>
-    </div>
-  </div>
-</div>
-
-<script type="text/javascript">
-  $(document).ready(() => {
-    $('.toggle-resumen-link').on('click', (e) => {
-      e.preventDefault();
-      let target  = $('.toggle-resumen-target');
-      let label   = $('.toggle-resumen-label');
-      let link    = $('.toggle-resumen-link');
-      if (target.css('display') == 'none') {
-        target.show('fast');
-        label.text('Ocultar');
-        //link.removeClass("text-right").addClass("text-left");
-        link.addClass("enabled-toggle");
-
-        $([document.documentElement, document.body]).animate({
-          scrollTop: target.offset().top
-        }, 300, function(){
-        	target.effect( "shake" );
-        });
-
-      } else {
-        target.hide('fast');
-        label.text('Mostrar');
-        //link.removeClass("text-left").addClass("text-right");
-        link.removeClass("enabled-toggle");
-      }
-    })
-  })
-</script>
-
-<style media="screen">
-  .toggle-resumen-link {
-    width: 100%;
-    transition: width .6s ease;
-    white-space: nowrap;
-  }
-
-  .toggle-resumen-link.enabled-toggle {
-    width: 0;
-  }
-</style>
+<span class="h3 important-number text-right d-block text-bold mb-1">
+  TOTAL VENTA: $<span class="final_total">0.00</span>
+</span>
+<span class="important-number text-right d-block">
+  Saldo: $<span class="total_payments_left">0.00</span>
+</span>
+<span class="important-number text-right d-block">
+  Abonado: $<span class="total_payments">0.00</span>
+</span>

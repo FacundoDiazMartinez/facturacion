@@ -1,47 +1,45 @@
+* {
+  box-sizing: border-box;
+}
 
+// MAQUETADO
+.width_100 { width:100%; }
+.width_50 { width:50%; }
+.width_75 { width:75%; }
+.width_25 { width:25%; }
+.m-0 { margin: 0; }
+.mb-2 { margin-bottom: 2rem; }
 
-.width_100 {
-  width:100%;
-}
-.width_50 {
-  width:50%;
-}
-.width_75 {
-  width:75%;
-}
-.width_25 {
-  width:25%;
-}
-.text_size_25 {
-  font-size: 25px;
-}
-.text_size_invoice_type{
-  font-size: 50px;
-}
+.p-2 { margin: 2rem; }
+
+.lh-lg { line-height: 2rem;}
+// MAQUETADO
+
 .border {
   border: 1px solid black;
   margin: 0 0 0 0;
+}
+.border-bottom {
+  border-bottom: 1px solid black;
 }
 .side_borders{
   border-right: 1px solid black;
   border-left: 1px solid black;
 }
 
-.text-right {
-  text-align: right;
-}
+// TEXTOS
+.text-sm { font-size: 10px; }
+.text-lg { font-size: 25px; }
+.text-xl { font-size: 50px; }
 
-.text-left {
-  text-align: left;
-}
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.text-left { text-align: left; }
 
-.text-center {
-  text-align: center;
-}
+.text_justify { text-align: justify; }
+.text-bold { font-weight: bold; }
 
-.text_justify {
-  text-align: justify;
-}
+// TEXTOS
 
 .right_border{
   border-right: solid 1px;

@@ -1,4 +1,6 @@
-<%= link_to icon('fas', 'search'), "#", data:{toggle: 'modal', target: "#add_commissioner_#{f.index}_modal", remote: true}, class: 'btn btn-sm btn-secondary' %>
+<button type="button" name="button" class="btn btn-sm btn-secondary" data-toggle="modal" data-target="#add_commissioner_<%= f.index %>_modal">
+	<%= icon('fas', 'users') %>
+</button>
 <div class="modal fade bd-example-modal-lg text-justify" id="add_commissioner_<%= f.index %>_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
   	<div class="modal-content">
