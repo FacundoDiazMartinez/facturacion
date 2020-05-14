@@ -111,7 +111,7 @@ class Sales::BudgetsController < ApplicationController
   end
 
   def budget_params
-    params.require(:budget).permit(:expiration_date, :state, :observation, :total, :client_id, :reserv_stock,
+    params.require(:budget).permit(:expiration_date, :state, :observation, :internal_observation, :total, :client_id, :reserv_stock,
       budget_details_attributes: [:id, :product_id, :product_name, :depot_id, :price_per_unit, :measurement_unit, :quantity, :bonus_percentage, :bonus_amount, :subtotal, :iva_aliquot, :iva_amount, :_destroy])
   end
 end

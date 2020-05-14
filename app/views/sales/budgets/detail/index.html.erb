@@ -33,7 +33,7 @@
 		  			<%= autocomplete_field_tag :product, f.object.product_code, autocomplete_product_code_budgets_path, class: 'budget_detail-autocomplete_field form-control form-control-sm code', disabled: !@budget.editable?, style: 'width: 120px;' %>
 		  		</td>
 		  		<td>
-		  			<%= f.text_field :product_name, class: 'form-control form-control-sm name', placeholder: "Concepto", disabled: !@budget.editable? %>
+		  			<%= f.text_field :product_name, class: 'form-control form-control-sm name', placeholder: "Concepto", required: true, disabled: !@budget.editable? %>
 		  		</td>
 		  		<td>
 		  			<%= f.select :depot_id, options_for_select(current_company.depots.order(created_at: :asc).map{|d| [d.name, d.id]}, f.object.depot_id), { prompt: "Seleccione..." }, {class: 'form-control form-control-sm depot_id', disabled: !@budget.editable?} %>
