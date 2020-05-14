@@ -29,35 +29,35 @@
       when "Crédito Fiscal"
         details.compact.each do |det| %>
             <tr style="height: 30px;">
-              <td class="text_left"><%= det.date %></td>
-              <td class="text_left"><%= det.purchase_invoice.supplier.name %></td>
-              <td class="text_left"><%= det.purchase_invoice.supplier.document_number %></td>
-              <td class="text_left"><%= det.purchase_invoice.supplier.iva_cond %></td>
-              <td class="text_left"><%= det.full_invoice %></td>
-              <td class="text_left"><%= det.purchase_invoice.cae %></td>
-              <td class="text_right"><%= det.purchase_invoice.net_amount.round(2) %></td>
-              <td class="text_right"><%= det.purchase_invoice.imp_op_ex.round(2) %></td>
-              <td class="text_right"><%= det.purchase_invoice.iva_amount.round(2) %></td>
-              <td class="text_right"> - </td>
-              <td class="text_right"> - </td>
-              <td class="text_right"><%= det.purchase_invoice.total.round(2) %></td>
+              <td class="text-left"><%= det.date %></td>
+              <td class="text-left"><%= det.purchase_invoice.supplier.name %></td>
+              <td class="text-left"><%= det.purchase_invoice.supplier.document_number %></td>
+              <td class="text-left"><%= det.purchase_invoice.supplier.iva_cond %></td>
+              <td class="text-left"><%= det.full_invoice %></td>
+              <td class="text-left"><%= det.purchase_invoice.cae %></td>
+              <td class="text-right"><%= det.purchase_invoice.net_amount.round(2) %></td>
+              <td class="text-right"><%= det.purchase_invoice.imp_op_ex.round(2) %></td>
+              <td class="text-right"><%= det.purchase_invoice.iva_amount.round(2) %></td>
+              <td class="text-right"> - </td>
+              <td class="text-right"> - </td>
+              <td class="text-right"><%= det.purchase_invoice.total.round(2) %></td>
             </tr>
         <% end
       when "Débito Fiscal"
         details.compact.each do |det| %>
           <tr style="height: 30px;">
-            <td class="text_left"><%= det.date %></td>
-            <td class="text_left"><%= det.invoice.client.name %></td>
-            <td class="text_left"><%= det.invoice.client.document_number %></td>
-            <td class="text_left"><%= det.invoice.client.iva_cond %></td>
-            <td class="text_left"><%= det.full_invoice %></td>
-            <td class="text_left"><%= det.invoice.cae %></td>
-            <td class="text_right"><%= det.invoice.imp_neto.round(2) %></td>
-            <td class="text_right"><%= det.invoice.imp_op_ex.round(2) %></td>
-            <td class="text_right"><%= det.invoice.imp_iva.round(2) %></td>
-            <td class="text_right"><%= det.invoice.imp_trib.round(2) %></td>
-            <td class="text_right"><%= det.invoice.bonifications.pluck(:amount).inject(0) { |suma, amount| suma + amount } %></td>
-            <td class="text_right"><%= det.invoice.total.round(2) %></td>
+            <td class="text-left"><%= det.date %></td>
+            <td class="text-left"><%= det.invoice.client.name %></td>
+            <td class="text-left"><%= det.invoice.client.document_number %></td>
+            <td class="text-left"><%= det.invoice.client.iva_cond %></td>
+            <td class="text-left"><%= det.full_invoice %></td>
+            <td class="text-left"><%= det.invoice.cae %></td>
+            <td class="text-right"><%= det.invoice.imp_neto.round(2) %></td>
+            <td class="text-right"><%= det.invoice.imp_op_ex.round(2) %></td>
+            <td class="text-right"><%= det.invoice.imp_iva.round(2) %></td>
+            <td class="text-right"><%= det.invoice.imp_trib.round(2) %></td>
+            <td class="text-right"><%= det.invoice.bonifications.pluck(:amount).inject(0) { |suma, amount| suma + amount } %></td>
+            <td class="text-right"><%= det.invoice.total.round(2) %></td>
           </tr>
         <% end
       end %>
@@ -77,10 +77,10 @@
       <% if total_pages > 1 %>
         <tr>
           <b>
-            <td class="text_right">
+            <td class="text-right">
               Subtotal IVA página:
             </td>
-            <td class="text_right">
+            <td class="text-right">
               $ <%= total_iva_of_page %>
             </td>
           </b>
@@ -93,8 +93,8 @@
       <% end %>
 
       <tr>
-        <td class="text_right"><b>TOTAL IVA:</b></td>
-        <td class="text_right"><b>$ <%= total_iva.round(2) %> </b></td>
+        <td class="text-right"><b>TOTAL IVA:</b></td>
+        <td class="text-right"><b>$ <%= total_iva.round(2) %> </b></td>
       </tr>
 
   </table>

@@ -1,6 +1,6 @@
 <!-- PIE DE PAGINA -->
 <div class="row footer_bottom">
-  <div class="container" style="border-style: dotted; border-width: 1px; padding-right: 10px; padding-left: 10px; height:100px; overflow: hidden; font-size: 10px !important;">
+  <div class="container text-center" style="border-style: dotted; border-width: 1px; padding-right: 10px; padding-left: 10px; height:50px; overflow: hidden; font-size: 10px !important;">
     <%= @invoice.company.invoice_footer.html_safe if @invoice.company.invoice_footer.length > 0 %>
   </div>
 
@@ -35,11 +35,11 @@
           </b>
         </td>
 
-        <td style="width: 33%;" class="text_right"><b>CAE N°:</b> <%= @invoice.cae %></td>
+        <td style="width: 33%;" class="text-right"><b>CAE N°:</b> <%= @invoice.cae %></td>
       </tr>
 
       <tr>
-        <td class="text_right"><b>Fecha de Vto. de CAE:</b> <%= Date.strptime(@invoice.cae_due_date , "%Y%m%d") %></td>
+        <td class="text-right"><b>Fecha de Vto. de CAE:</b> <%= Date.strptime(@invoice.cae_due_date , "%Y%m%d") %></td>
       </tr>
     </table>
   </div>
@@ -68,7 +68,7 @@
     </table>
   </div>
 </div>
-<div class="text_center" style="padding: 25px;">
+<div class="text-center" style="padding: 25px;">
   <%= "Página #{page_number} de #{total_pages}" %>
 </div>
 <!-- FIN PIE DE PAGINA -->

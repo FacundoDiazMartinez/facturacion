@@ -12,7 +12,7 @@
     <div class="container invoice-border">
       <table class="invoice-width">
       <tr>
-        <th class="invoice_text_size invoice_text_left invoice_header_width">
+        <th class="invoice_text_size invoice_text-left invoice_header_width">
           <%= @invoice.company.society_name %></th>
         <th class="invoice_text_size invoice_c"><%= InvoiceManager::CbteTypesGetter.call(@invoice.company, @invoice.client).first.first.last %></th>
         <th class="invoice_text_size invoice_header_width">FACTURA</th>
@@ -99,12 +99,12 @@
     <% @invoice.invoice_details.each do |det| %>
       <td><%= det.product.supplier_code %></td>
       <td><%= det.product.name %></td>
-      <td class="invoice_text_right"><%= det.quantity %></td>
-      <td class="invoice_text_right">unidades</td>
-      <td class="invoice_text_right"><%= det.product.price %></td>
-      <td class="invoice_text_right"><%= det.bonus_percentage %></td>
-      <td class="invoice_text_right"><%= det.bonus_amount %></td>
-      <td class="invoice_text_right"><%= det.subtotal %></td>
+      <td class="invoice_text-right"><%= det.quantity %></td>
+      <td class="invoice_text-right">unidades</td>
+      <td class="invoice_text-right"><%= det.product.price %></td>
+      <td class="invoice_text-right"><%= det.bonus_percentage %></td>
+      <td class="invoice_text-right"><%= det.bonus_amount %></td>
+      <td class="invoice_text-right"><%= det.subtotal %></td>
     </tr>
     <% end %>
   </table>
@@ -127,7 +127,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td class="invoice_text_right"><b>Subtotal: $ <%= det.subtotal %></b></td>
+      <td class="invoice_text-right"><b>Subtotal: $ <%= det.subtotal %></b></td>
     </tr>
 
     <tr>
@@ -135,7 +135,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td class="invoice_text_right"><b>Importe Otros Tributos: $ 0,00</b></td>
+      <td class="invoice_text-right"><b>Importe Otros Tributos: $ 0,00</b></td>
     </tr>
 
     <tr>
@@ -143,7 +143,7 @@
       <td></td>
       <td></td>
       <td></td>
-      <td class="invoice_text_right"><b>Importe Total: $ <%= det.subtotal %></b></td>
+      <td class="invoice_text-right"><b>Importe Total: $ <%= det.subtotal %></b></td>
     </tr>
   </table>
   </div>
@@ -155,14 +155,14 @@
       <td>AFIP</td>
       <td><b>Comprobante Autorizado</b></td>
       <td>Pag. 1/1</td>
-      <td class="invoice_text_right"><b>CAE Num.:</b> NUMERO DE CAE</td>
+      <td class="invoice_text-right"><b>CAE Num.:</b> NUMERO DE CAE</td>
     </tr>
 
     <tr>
       <td></td>
       <td></td>
       <td></td>
-      <td class="invoice_text_right"><b>Fecha de Vto. de CAE: </b>VTO DE CAE</td>
+      <td class="invoice_text-right"><b>Fecha de Vto. de CAE: </b>VTO DE CAE</td>
     </tr>
   </table>
   </div>
@@ -179,11 +179,11 @@
     border: 1px solid black;
   }
 
-  .invoice_text_right {
+  .invoice_text-right {
     text-align: right;
   }
 
-  .invoice_text_left {
+  .invoice_text-left {
     text-align: left;
   }
 

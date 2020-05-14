@@ -17,18 +17,18 @@
         <tr>
           <td><%= det.product.code %></td>
           <td><%= det.product.name %></td>
-          <td class="text_right"><%= det.quantity %></td>
+          <td class="text-right"><%= det.quantity %></td>
           <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
             <!-- Si el comprobante es FA, NCA, NDA, muestra el subtotal - iva_amount (ambos estan multiplicados por quantity) -->
-            <td class="text_right"><%= det.price_per_unit.round(2) %></td>
-            <td class="text_right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
-            <td class="text_right"><%= (det.subtotal - det.iva_amount).round(2) %>
-            <td class="text_right"><%= det.iva_amount %></td>
-            <td class="text_right"><%= sprintf('%.2f',det.subtotal) %></td>
+            <td class="text-right"><%= det.price_per_unit.round(2) %></td>
+            <td class="text-right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
+            <td class="text-right"><%= (det.subtotal - det.iva_amount).round(2) %>
+            <td class="text-right"><%= det.iva_amount %></td>
+            <td class="text-right"><%= sprintf('%.2f',det.subtotal) %></td>
           <% else %>
-            <td class="text_right"><%= (det.price_per_unit.round(2) * ( 1 + det.iva )).round(2) %></td>
-            <td class="text_right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
-            <td class="text_right"><%= sprintf('%.2f',det.subtotal) %></td>
+            <td class="text-right"><%= (det.price_per_unit.round(2) * ( 1 + det.iva )).round(2) %></td>
+            <td class="text-right"><%= det.bonus_percentage != 0 ? det.bonus_percentage : 0.0  %></td>
+            <td class="text-right"><%= sprintf('%.2f',det.subtotal) %></td>
           <% end %>
         </tr>
       <% end %>
@@ -66,8 +66,8 @@
             <% @invoice.tributes.where("importe > 0").each do |t| %>
               <tr>
                 <td><b><%= t.desc %></b></td>
-                <td class="text_right"><%= t.alic %> %</td>
-                <td class="text_right">$ <%= sprintf('%.2f',t.importe) %></td>
+                <td class="text-right"><%= t.alic %> %</td>
+                <td class="text-right">$ <%= sprintf('%.2f',t.importe) %></td>
               </tr>
             <% end %>
           </tbody>
@@ -75,7 +75,7 @@
             <tr>
               <td><b>Total tributos</b></td>
               <td></td>
-              <td class="text_right"><b>$ <%= @invoice.total_tributos %></b> </td>
+              <td class="text-right"><b>$ <%= @invoice.total_tributos %></b> </td>
             </tr>
           </tfoot>
         </table>
@@ -86,8 +86,8 @@
       <td rowspan="10" style="width: 1px;"></td>
     </tr>
     <tr>
-      <td class="text_right"><b><%= total_pages > 1 ? "Subtotal conceptos página:" : "Subtotal conceptos:" %></b></td>
-      <td class="text_right">$
+      <td class="text-right"><b><%= total_pages > 1 ? "Subtotal conceptos página:" : "Subtotal conceptos:" %></b></td>
+      <td class="text-right">$
       <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
         <%= sprintf('%.2f',total_of_page_without_bonif) %>
       <% else %>
@@ -105,20 +105,20 @@
       <% end %>
       <% @invoice.bonifications.each_with_index do |bon, index| %>
         <tr>
-          <td class="text_right"><b>Desc. <%= bon.percentage.round(0) %>%</b></td>
+          <td class="text-right"><b>Desc. <%= bon.percentage.round(0) %>%</b></td>
           <% descuentos_aplicados     += total_de_pagina_auxiliar * (bon.percentage / 100) %>
-          <td class="text_right">- $ <%= sprintf('%.2f', total_de_pagina_auxiliar * (bon.percentage / 100)) %></td>
+          <td class="text-right">- $ <%= sprintf('%.2f', total_de_pagina_auxiliar * (bon.percentage / 100)) %></td>
           <% total_de_pagina_auxiliar -= descuentos_aplicados  %>
         </tr>
       <% end %>
       <tr>
         <% if total_pages > 1 %>
           <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
-            <td class="text_right"><b>Subtotal:</b></td>
-            <td class="text_right">$ <%= sprintf('%.2f', total_page_iva - iva_of_page - @invoice.bonification ) %></td>
+            <td class="text-right"><b>Subtotal:</b></td>
+            <td class="text-right">$ <%= sprintf('%.2f', total_page_iva - iva_of_page - @invoice.bonification ) %></td>
           <% else %>
-            <td class="text_right"><b>Subtotal:</b></td>
-            <td class="text_right">$ <%= sprintf('%.2f', total_page_iva.round(2) - descuentos_aplicados.round(2)) %></td>
+            <td class="text-right"><b>Subtotal:</b></td>
+            <td class="text-right">$ <%= sprintf('%.2f', total_page_iva.round(2) - descuentos_aplicados.round(2)) %></td>
           <% end %>
         <% end %>
       </tr>
@@ -126,15 +126,15 @@
 
     <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" %>
       <tr>
-        <td class="text_right"><b>I.V.A.:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f', @invoice.imp_iva )%> </td>
+        <td class="text-right"><b>I.V.A.:</b></td>
+        <td class="text-right">$ <%= sprintf('%.2f', @invoice.imp_iva )%> </td>
       </tr>
     <% end %>
 
     <% if @invoice.cbte_tipo == "01" || @invoice.cbte_tipo == "02" || @invoice.cbte_tipo == "03" || @invoice.client.iva_cond != "Consumidor Final" %>
       <tr>
-        <td class="text_right"><b>Otros Tributos:</b></td>
-        <td class="text_right">$ <%= sprintf('%.2f',@invoice.total_tributos) %></td>
+        <td class="text-right"><b>Otros Tributos:</b></td>
+        <td class="text-right">$ <%= sprintf('%.2f',@invoice.total_tributos) %></td>
       </tr>
       <tr>
         <td colspan="2"> <hr> </td>
@@ -142,8 +142,8 @@
     <% end %>
 
     <tr>
-      <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%= sprintf('%.2f', @invoice.total) %></b></td>
+      <td class="text-right"><b>Importe Total:</b></td>
+      <td class="text-right"><b>$ <%= sprintf('%.2f', @invoice.total) %></b></td>
     </tr>
   </table>
 </div>

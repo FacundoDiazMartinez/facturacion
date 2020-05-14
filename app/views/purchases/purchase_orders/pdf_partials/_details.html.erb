@@ -14,10 +14,10 @@
         <tr>
           <td><%= det.product.supplier_code %></td>
           <td><%= det.product.name %></td>
-          <td class="text_right"><%= det.quantity %></td>
-          <td class="text_right"><%= det.product.measurement_unit_name %></td>
-          <td class="text_right"><%= det.product.cost_price.nil? ? "Sin precio de costo" : det.product.cost_price %></td>
-          <td class="text_right"><%= det.total %></td>
+          <td class="text-right"><%= det.quantity %></td>
+          <td class="text-right"><%= det.product.measurement_unit_name %></td>
+          <td class="text-right"><%= det.product.cost_price.nil? ? "Sin precio de costo" : det.product.cost_price %></td>
+          <td class="text-right"><%= det.total %></td>
         </tr>
     <% end %>
   </table>
@@ -33,7 +33,7 @@
       <col width="600">
       <col width="100">
     <tr>
-      <td class="text_right"><b>
+      <td class="text-right"><b>
         <% if total_pages > 1 %>
           Subtotal página:
         <% else %>
@@ -41,14 +41,14 @@
         <% end %>
       </b>
       </td>
-      <td class="text_right"><b>$ <%= total_of_page %></b></td>
+      <td class="text-right"><b>$ <%= total_of_page %></b></td>
     </tr>
 
 
 
     <tr>
-      <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%= @purchase_order.total %></b></td>
+      <td class="text-right"><b>Importe Total:</b></td>
+      <td class="text-right"><b>$ <%= @purchase_order.total %></b></td>
     </tr>
   </table>
   </div>

@@ -17,15 +17,15 @@
         <td><%= det.product.code %></td>
         <td><%= det.product.name %></td>
         <% if det.bonus_amount != 0 %>
-          <td class="text_right">$ <%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
+          <td class="text-right">$ <%= det.price_per_unit - (det.bonus_amount / det.quantity) %></td>
         <% else %>
-          <td class="text_right">$ <%= det.price_per_unit %></td>
+          <td class="text-right">$ <%= det.price_per_unit %></td>
         <% end %>
-        <td class="text_right"><%= det.quantity %></td>
-        <td class="text_right"><%= det.product.measurement_unit_name %></td>
-        <td class="text_right">$ <%= det.bonus_amount %></td>
-        <td class="text_right">$ <%= det.iva_amount %></td>
-        <td class="text_right">$ <%= det.subtotal.round(2) %></td>
+        <td class="text-right"><%= det.quantity %></td>
+        <td class="text-right"><%= det.product.measurement_unit_name %></td>
+        <td class="text-right">$ <%= det.bonus_amount %></td>
+        <td class="text-right">$ <%= det.iva_amount %></td>
+        <td class="text-right">$ <%= det.subtotal.round(2) %></td>
       </tr>
     <% end %>
   </table>
@@ -40,7 +40,7 @@
       <col width="100">
       <col width="20">
     <tr>
-      <td class="text_right">
+      <td class="text-right">
         <b>
           <% if total_pages > 1 %>
             Subtotal página:
@@ -49,13 +49,13 @@
           <% end %>
         </b>
       </td>
-      <td class="text_right"><b>$ <%= total_of_page.round(2) %></b></td>
+      <td class="text-right"><b>$ <%= total_of_page.round(2) %></b></td>
       <td rowspan="2" ></td>
     </tr>
 
     <tr>
-      <td class="text_right"><b>Importe Total:</b></td>
-      <td class="text_right"><b>$ <%= @budget.total.round(2) %></b></td>
+      <td class="text-right"><b>Importe Total:</b></td>
+      <td class="text-right"><b>$ <%= @budget.total.round(2) %></b></td>
     </tr>
   </table>
   </div>

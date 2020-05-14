@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <% unless @invoice.authorized_invoice? %>
-      <div class="text_center">
+      <div class="text-center">
         <% if @invoice.company.environment != "production" %>
           -- COMPROBANTE NO AUTORIZADO --
         <% end %>
@@ -13,7 +13,7 @@
     <div class=" border">
       <table class="width_100">
         <tr style="line-height: 6px !important;">
-          <th class="text_size_25 text_left header_word_break" style="text-align: center; width: 830px;"><%= @invoice.company.name %>
+          <th class="text_size_25 text-left header_word_break" style="text-align: center; width: 830px;"><%= @invoice.company.name %>
           </th>
           <th class="text_size_invoice_type invoice_type" style="padding-left: 25px;"><%= InvoiceManager::CbteTypesGetter.call(@invoice.company, @invoice.client).first.first.last %>
             <table>

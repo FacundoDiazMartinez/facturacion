@@ -4,7 +4,7 @@
   <div class="container" style="height: 800px; overflow-y: hidden;">
     <table class="width_100 TFtable">
       <tr>
-        <th class="text_left">Recibo manual: </th>
+        <th class="text-left">Recibo manual: </th>
       </tr>
       <tr>
         <td class="bg-white"><%= @receipt.concept %></td>
@@ -19,7 +19,7 @@
     <% if !@receipt.invoices.blank? %>
       <table class="width_100 TFtable">
         <tr>
-          <th class="text_left">
+          <th class="text-left">
             Concepto:
           </th>
           <th></th>
@@ -35,7 +35,7 @@
                   Pago parcial <%= rd.invoice.name_with_comp %>
                 <% end %>
               </td>
-              <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+              <td class="text-right">$ <%=  sprintf('%.2f', rd.total)%></td>
             </tr>
             <% rd.invoice.notes.each do |note| %>
               <tr class="bg-white child-note">
@@ -51,7 +51,7 @@
                     <%= note.name_with_comp %> <!-- leyenda de la nota de crédito, sólo el nombre -->
                   <% end %>
                 </td>
-                <td class="text_right">$ <%=  sprintf('%.2f', note.is_debit_note? ? rd_note.total : 0)%></td>
+                <td class="text-right">$ <%=  sprintf('%.2f', note.is_debit_note? ? rd_note.total : 0)%></td>
               </tr>
             <% end %>
           <% elsif rd.invoice.is_debit_note? %>
@@ -63,14 +63,14 @@
                 Pago parcial <%= rd.invoice.name_with_comp %>
               <% end %>
               </td>
-              <td class="text_right">$ <%=  sprintf('%.2f', rd.total)%></td>
+              <td class="text-right">$ <%=  sprintf('%.2f', rd.total)%></td>
             </tr>
           <% elsif rd.invoice.is_credit_note? %>
             <tr class="bg-white">
               <td>
                 <%= rd.invoice.name_with_comp %>
               </td>
-              <td class="text_right">$ 0.00</td>
+              <td class="text-right">$ 0.00</td>
             </tr>
           <% end %>
         <% end %>
@@ -81,7 +81,7 @@
           <td class="bg-white">
             Saldo a favor futuras compras
           </td>
-          <td class="text_right bg-white">
+          <td class="text-right bg-white">
             $ <%= sprintf('%.2f', @receipt.saved_amount_available) %>
           </td>
         </tr>
@@ -102,7 +102,7 @@
 
       <table class="width_100 TFtable">
         <tr>
-          <th class="text_left">Forma de pago</th>
+          <th class="text-left">Forma de pago</th>
           <th></th>
         </tr>
 
@@ -132,7 +132,7 @@
               <% end %>
 
             </td>
-            <td class="text_right"> <b> $ <%=  sprintf('%.2f', ip.total )%> </b> </td>
+            <td class="text-right"> <b> $ <%=  sprintf('%.2f', ip.total )%> </b> </td>
           </tr>
         <% end %>
       </table>
@@ -148,8 +148,8 @@
       <col width="600">
       <col width="100">
       <tr>
-        <td class="text_right"><b>Importe Total:</b></td>
-        <td class="text_right"><b>$ <%= sprintf('%.2f', @receipt.total ) %></b></td>
+        <td class="text-right"><b>Importe Total:</b></td>
+        <td class="text-right"><b>$ <%= sprintf('%.2f', @receipt.total ) %></b></td>
       </tr>
     </table>
   </div>
