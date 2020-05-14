@@ -97,7 +97,7 @@ class Sales::BudgetsController < ApplicationController
 
   def search_product
     @products = Product.unscoped.where(active: true, company_id: current_company.id).search_by_supplier(params[:supplier_id]).search_by_category(params[:product_category_id]).search_by_depot(params[:depot_id]).paginate(page: params[:page], per_page: 10)
-    render '/budgets/detail/search_product'
+    render '/sales/budgets/detail/search_product'
   end
 
   private

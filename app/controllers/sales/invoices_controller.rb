@@ -198,7 +198,7 @@ class Sales::InvoicesController < ApplicationController
 
   def search_product
     @products = Product.unscoped.includes(stocks: :depot).where(active: true, company_id: current_user.company_id).search_by_supplier_id(params[:supplier_id]).search_by_category(params[:product_category_id]).search_by_depot(params[:filter_depot_id]).search_by_name(params[:product_name]).search_by_code(params[:product_code]).paginate(page: params[:page], per_page: 10)
-    render '/invoices/detail/search_product'
+    render '/sales/invoices/detail/search_product'
   end
 
   def change_attributes

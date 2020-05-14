@@ -8,7 +8,7 @@
 				<th>Depósito</th>
 				<th>Precio ($)</th>
 				<th style="width:10%;"class="only-desktop">Medida</th>
-				<th style="width:1%;">Cantidad</th>
+				<th style="width:2%;">Cantidad</th>
 				<th style="width:7%;" class="only-desktop">Desc.(%)</th>
 				<th style="width:7%;" class="only-desktop">Desc.($)</th>
         <th>IVA (%)</th>
@@ -71,6 +71,6 @@
 
 <% if @budget.editable? %>
 	<div class="mt-2 mb-4 text-center">
-  	<%= form.link_to_add "#{icon('fas', 'plus')} <span class='only-desktop'>Agregar concepto</span>".html_safe, :budget_details, class: 'btn btn-success', data: {target: '#details'} %>
+  	<%= form.link_to_add "#{icon('fas', 'plus')} Agregar concepto".html_safe, :budget_details, class: 'btn btn-outline-success', data: {target: '#details'} %>
   </div>
 <% end %>

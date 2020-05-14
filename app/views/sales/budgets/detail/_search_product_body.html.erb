@@ -1,25 +1,26 @@
-<%= form_tag search_product_invoices_path(), id: 'serach_form' do %>
+<%= form_tag search_product_budgets_path(), id: 'serach_form' do %>
 	<%= hidden_field_tag :index_id, params[:index_id] %>
 
-	<div class="form-row">
+	<div class="form-row mb-5">
 	    <div class="col">
 			<%= label_tag :supplier_id, "Proveedor" %>
-			<%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}, params[:supplier_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
+			<%= select_tag :supplier_id, options_for_select(current_company.suppliers.map{|s| [s.name, s.id]}, params[:supplier_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Todos", class: 'form-control' %>
 		</div>
 
 	    <div class="col">
 			<%= label_tag :product_category_id, "Categoría" %>
-			<%= select_tag :product_category_id, options_for_select(current_user.company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.name]}, params[:product_category_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Seleccione...", class: 'form-control' %>
+			<%= select_tag :product_category_id, options_for_select(current_company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.id]}, params[:product_category_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Todas", class: 'form-control' %>
 		</div>
 
 		<div class="col">
 			<%= label_tag :depot_id, "Depósito" %>
-			<%= select_tag :depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}, params[:depot_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Todos", class: 'form-control' %>
+			<%= select_tag :depot_id, options_for_select(current_company.depots.map{|s| [s.name, s.id]}, params[:depot_id]), onchange: "remoteSubmit('#serach_form')", prompt: "Todos", class: 'form-control' %>
 		</div>
 	</div>
-	<hr>
+
 	<div class="table-responsive">
-  		<table class="table table-hover">
+		<% if @products.any? %>
+		<table class="table table-hover">
 			<thead>
 				<tr>
 					<th>Producto</th>
@@ -32,11 +33,18 @@
 					<tr>
 						<td><%= product.name %></td>
 						<td><%= product_stock_helper(product) %></td>
-						<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, #{params[:depot_id]})" %></td>
+						<td class="td-action-buttons">
+							<%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, #{params[:depot_id]})" %>
+						</td>
 					</tr>
 				<% end -%>
 			</tbody>
 		</table>
+		<% else %>
+		<h5 class="text-center my-5">
+			<%= icon('fas', 'exclamation-circle') %> ¡Vaya! No encontramos productos con estos filtros...
+		</h5>
+		<% end %>
 	</div>
 <% end -%>
 

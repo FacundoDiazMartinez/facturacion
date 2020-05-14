@@ -1,11 +1,11 @@
 <%= form_tag search_product_invoices_path(), id: 'search_form' do %>
 	<%= hidden_field_tag :index_id, params[:index_id] %>
 	<div class="form-row">
-	    <div class="col form-group">
-			<%= label_tag :product_name, "Nombre" %>
+	    <div class="col-md-8 form-group">
+			<%= label_tag :product_name, "Busca por nombre" %>
 			<%= text_field_tag :product_name, params[:product_name], onkeyup: "remoteSubmit('#search_form')", class: 'form-control', placeholder: "Nombre de producto" %>
 		</div>
-		<div class="col form-group">
+		<div class="col-md-4 form-group">
 			<%= label_tag :product_code, "Código" %>
 			<%= text_field_tag :product_code, params[:product_code], onkeyup: "remoteSubmit('#search_form')", class: 'form-control', placeholder: "Código de producto" %>
 		</div>
@@ -14,5 +14,3 @@
 		<%= render '/sales/invoices/detail/search_product_table' %>
 	</div>
 <% end -%>
-
-<%= paginate @products %>

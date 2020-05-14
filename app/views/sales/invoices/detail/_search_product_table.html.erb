@@ -1,11 +1,11 @@
-<div class="form-row">
+<div class="form-row mb-5">
     <div class="col form-group">
 		<%= label_tag :supplier_id, "Proveedor" %>
-		<%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}, params[:supplier_id]), onchange: "remoteSubmit('#search_form')", prompt: "Seleccione...", class: 'form-control' %>
+		<%= select_tag :supplier_id, options_for_select(current_user.company.suppliers.map{|s| [s.name, s.id]}, params[:supplier_id]), onchange: "remoteSubmit('#search_form')", prompt: "Todos", class: 'form-control' %>
 	</div>
   <div class="col form-group">
 		<%= label_tag :product_category_id, "Categoría" %>
-		<%= select_tag :product_category_id, options_for_select(current_user.company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.id]}, params[:product_category_id]), onchange: "remoteSubmit('#search_form')", prompt: "Seleccione...", class: 'form-control' %>
+		<%= select_tag :product_category_id, options_for_select(current_user.company.product_categories.search_by_supplier(params[:supplier_id]).map{|s| [s.name, s.id]}, params[:product_category_id]), onchange: "remoteSubmit('#search_form')", prompt: "Todas", class: 'form-control' %>
 	</div>
 
 	<div class="col form-group">
@@ -13,25 +13,31 @@
 		<%= select_tag :filter_depot_id, options_for_select(current_user.company.depots.map{|s| [s.name, s.id]}, params[:filter_depot_id]), onchange: "remoteSubmit('#search_form')", prompt: "Todos", class: 'form-control' %>
 	</div>
 </div>
-<div class="table-responsive">
-	<table class="table table-hover">
-		<thead>
-			<tr>
-				<th>Producto</th>
-				<th>Stock</th>
-        		<th>Depósito</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			<% @products.each do |product| %>
-				<tr>
-					<td><%= product.name %></td>
-					<td><%= product_stock_helper(product) %></td>
-          			<td><%= select_tag :depot_id, options_for_select(product.depots.uniq.map{|s| [s.name, s.id]}, params[:depot_id]), class: 'form-control depot' %></td>
-					<td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, $(this).closest('tr').find('.depot').val())" %></td>
-				</tr>
-			<% end -%>
-		</tbody>
-	</table>
-</div>
+<% if @products.any? %>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Stock</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @products.each do |product| %>
+        <tr>
+          <td><%= product.name %></td>
+          <td><%= product_stock_helper(product) %></td>
+          <td><%= button_tag icon('fas', 'check-square').html_safe, type: 'button', class: 'btn btn-sm btn-icon btn-outline-secondary', onclick: "setProduct(#{product.attributes.to_json}, #{params[:index_id]}, $(this).closest('tr').find('.depot').val())" %></td>
+        </tr>
+        <% end -%>
+      </tbody>
+    </table>
+  </div>
+  <%= paginate @products %>
+
+<% else %>
+  <h5 class="text-center my-5">
+    <%= icon('fas', 'exclamation-circle') %> ¡Vaya! No encontramos productos con estos filtros...
+  </h5>
+<% end %>

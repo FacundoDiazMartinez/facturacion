@@ -61,7 +61,7 @@
 
   <p class="h4 text-muted">Conceptos</p>
   <div class="card" id="idetails">
-    <%= render template: '/sales/budgets/detail/index.html.erb', locals:{form: f} %>
+    <%= render template: '/sales/budgets/detail/index.html.erb', locals:{ form: f } %>
   </div>
 
   <div class="text-center">
@@ -70,6 +70,7 @@
 <% end %>
 
 <%= render '/sales/budgets/detail/search_product' %>
+
 <div class="modal fade bd-example-modal-lg" id="clientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
