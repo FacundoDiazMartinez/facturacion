@@ -13,6 +13,7 @@ class Staff::UsersController < ApplicationController
   # GET /users/1.json
   def show
     @activities = @user.user_activities.order("updated_at DESC").paginate(page: params[:page], per_page: 5)
+    commission if params[:user_view] == "commissions"
   end
 
   def edit
@@ -85,7 +86,7 @@ class Staff::UsersController < ApplicationController
   def update_commission
     respond_to do |format|
       if @commission.update(commission_params)
-        format.html {redirect_to commission_user_path(@user.id), notice: "Comisión actualizada con éxito."}
+        format.html {redirect_to user_path(@user.id, user_view: 'commissions'), notice: "Comisión actualizada con éxito."}
       else
         format.html {render :edit_commission}
       end
