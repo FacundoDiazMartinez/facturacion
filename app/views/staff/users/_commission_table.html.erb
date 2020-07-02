@@ -1,5 +1,7 @@
-<h5><strong>Total comisionado: </strong> $<%= @commission_sum %></h5>
-<i>Si utiliza alguno de los filtros se mostrará el total comisionado en los resultados obtenidos.</i>
+<h4><strong>Total comisionado: </strong> $<%= @commission_sum %></h4>
+<p class="text-small text-muted">
+  <i>Si utiliza alguno de los filtros se mostrará el total comisionado en los resultados obtenidos.</i>
+</p>
 <div class="table-responsive">
   <table class="table table-hover">
     <thead>
@@ -8,8 +10,8 @@
         <th>Fecha</th>
         <th>Tipo</th>
         <th>Total</th>
-        <th>Comisión (%)</th>
-        <th>Total comisionado</th>
+        <th>Porcentage</th>
+        <th>COMISIÓN</th>
         <th></th>
       </tr>
     </thead>
@@ -20,10 +22,10 @@
           <td><%= commission.full_number %></td>
           <td><%= commission.cbte_fch %></td>
           <td><%= commission.tipo %></td>
-          <td><%= number_to_ars commission.total %></td>
-          <td><%= number_to_ars commission.percentage %></td>
-          <td><%= number_to_ars commission.total_commission %></td>
-          <td><%= link_to icon('fas', 'edit'), edit_commission_user_path(@user.id, commission_id: commission.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{toggle: 'modal', target: '#commissionModal', remote: true} if can? :manage, User %></td>
+          <td class="text-right"><%= number_to_ars commission.total %></td>
+          <td class="text-right"><%= commission.percentage %>%</td>
+          <td class="text-right"><%= number_to_ars commission.total_commission %></td>
+          <td class="td-action-buttons"><%= link_to icon('fas', 'edit'), edit_commission_user_path(@user.id, commission_id: commission.id), class: 'btn btn-sm btn-icon btn-outline-secondary', data:{toggle: 'modal', target: '#commissionModal', remote: true} if can? :manage, User %></td>
         </tr>
       <% end %>
     </tbody>
