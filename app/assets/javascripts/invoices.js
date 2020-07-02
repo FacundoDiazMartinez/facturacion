@@ -34,8 +34,7 @@ $(document).on("change", "#invoice_cbte_tipo, #invoice_concepto", function(){
 
 $(document).on('railsAutocomplete.select', '.associated-invoice-autocomplete_field', function(event, data){
 	if (COD_ND.indexOf($("#invoice_cbte_tipo").find('option:selected').val()) == -1) {
-		form = $(this).parents('form:first');
-		$.get(form.attr("action")+'/set_associated_invoice', {associated_invoice: $(this).val()}, null, "script");
+		getAssociatedInvoice($("#invoice_associated_invoice").val())
 	}
 });
 
@@ -168,4 +167,33 @@ function toggleAuthorized(){
 	} else {
 		$("#div_iauthorized").hide('fast');
 	}
+}
+
+$(document).on("railsAutocomplete.select", "#invoice_associated_invoice", function(){
+
+	getAssociatedInvoice(invoice)
+})
+
+const getAssociatedInvoice = (invoice) => {
+	$.get(`/sales/invoices/${invoice}/get_associated_invoice_details`, (response) => {
+		response.map( (item, index) => {
+			let tr = $('table#details > tbody > tr:last-child')
+			if (tr.find("[id$=product_attributes_code]").val() != null){
+				const link = $('.add_nested_fields[data-target="#details"]');
+				link.click();
+				let tr = $('table#details > tbody > tr:last-child')
+			}
+
+			tr.find("[id$=product_attributes_code]").val(item.product_attributes.code);
+			tr.find("[id$=product_attributes_name]").val(item.product_attributes.name);
+			tr.find("[id$=_price_per_unit]").val(item.price_per_unit);
+			tr.find("[id$=quantity]").val(item.quantity);
+			tr.find("[id$=depot_id]").val(item.depot_id);
+			tr.find("[id$=measurement_unit]").val(item.measurement_unit);
+			tr.find("[id$=bonus_amount]").val(item.bonus_amount);
+			tr.find("[id$=iva_aliquot]").val(item.iva_aliquot).trigger("change");
+			tr.find("[id$=iva_amount]").val(item.iva_amount);
+		})
+
+	})
 }
