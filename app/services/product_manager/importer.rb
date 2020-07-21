@@ -18,7 +18,7 @@ module ProductManager
 
     private
 
-    def save_excel (file, supplier_id, current_user, depot_id, type_of_movement)
+    def save_excel(file, supplier_id, current_user, depot_id, type_of_movement)
     	spreadsheet = open_spreadsheet(file)
     	excel = []
     	(2..spreadsheet.last_row).each do |r|
@@ -31,7 +31,6 @@ module ProductManager
     end
 
     def load_products spreadsheet, header, categories, current_user, supplier_id, depot_id, type_of_movement
-  		products 	= []
     	invalid 	= []
   		(0..spreadsheet.size - 1).each do |i|
     		row = Hash[[header, spreadsheet[i]].transpose]
@@ -62,24 +61,24 @@ module ProductManager
   			end
   			product.gain_margin					= 0
     		product.price 				    	= row[:price].round(2) unless row[:price].nil?
-    		product.measurement_unit 		= row[:measurement_unit].nil? ? '07' : Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
+    		product.measurement_unit 		= row[:measurement_unit].nil? ? '7' : Product::MEASUREMENT_UNITS.map{|k,v| k unless v != row[:measurement_unit]}.compact.join()
     		product.iva_aliquot 		  	= row[:iva_aliquot].nil? ? '05' : Afip::ALIC_IVA.map{|k,v| k unless (v*100 != row[:iva_aliquot])}.compact.join()
     		product.company_id 			  	= current_user.company_id
     		product.created_by 			  	= current_user.id
     		product.updated_by 			  	= current_user.id
     		if !product.save
-    			invalid << [i, product.errors.messages.values]
+    			invalid << [i, product.errors.full_messages]
     		else
     			unless depot_id.blank?
       			stock = product.stocks.where(depot_id: depot_id, state: "Disponible").first_or_initialize
             if type_of_movement == "0"
-              stock.quantity = row[:stock]
+              stock.quantity = row[:stock] || 1
             else
               stock.quantity += row[:stock]
             end
       			stock.save
-      		end
-    		end
+          end
+    	  end
     	end
   		return_process_result(invalid, current_user)
   	end

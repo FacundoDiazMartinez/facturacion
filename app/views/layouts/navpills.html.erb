@@ -49,6 +49,15 @@
 		  	<li class="nav-item">
 					<%= link_to "#{icon('fas', 'industry')} <span class='nav-span'> Empresa</span>".html_safe, company_path(current_company.id), class: 'nav-link companies', title: 'Mi empresa' %>
 		  	</li>
+				<%= subscribe_to "/facturacion/notifications/#{current_user.id}" %>
+        <li class="nav-item">
+          <a href="<%= notifications_path() %>" data-remote="true" id="notifications-link" class="nav-link menu-item">
+            <%= icon('fas', 'bell') %>
+						Notificaciones
+            <span class='badge notifications badge-primary' id="span_notify"><%= current_user.count_notifications %></span>
+          </a>
+          <%= render '/notifications/notification-container' %>
+        </li>
 		  	<li class="nav-item">
 					<%= link_to "#{icon('fas', 'user-cog')} <span class='nav-span'> Mi perfil</span>".html_safe, edit_user_registration_path, class: 'nav-link sessions', title: 'Edita tu perfil' %>
 		  	</li>

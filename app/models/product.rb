@@ -88,6 +88,7 @@ class Product < ApplicationRecord
   scope :active, -> { where(active: true) }
 	scope :productos, -> { where(tipo: "Producto") }
 
+
   def check_net_price
 		if net_price.to_f == 0.0
 			self.net_price = (price.to_f / (1 + simple_iva_aliquot.to_f)).round(2)
